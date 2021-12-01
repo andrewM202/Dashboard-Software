@@ -1,14 +1,14 @@
 from dataclasses import dataclass
-from new_york_times.seed_db_newyorktimes import main as seed_nyt
-from zerohedge.seed_db_zerohedge import main as  seed_zerohedge
-from the_guardian.seed_db_the_guardian import main as seed_the_guardian
+from news_sites.new_york_times.seed_db_newyorktimes import main as seed_nyt
+from news_sites.zerohedge.seed_db_zerohedge import main as  seed_zerohedge
+from news_sites.the_guardian.seed_db_the_guardian import main as seed_the_guardian
 
 @dataclass
 class Seed_DB():
     @staticmethod
     def new_york_times(month, year):
         print("Seeding The New York Times.\n")
-        seed_nyt()
+        seed_nyt(month, year)
 
     @staticmethod
     def the_guardian(month, year):
