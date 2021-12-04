@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rollup -c",
+    "autobuild": "rollup -w -c",
     "dev": "rollup -c -w",
     "start": "sirv public -s",
     "build:tailwind": "tailwind build public/assets/styles/index.css -o public/assets/styles/tailwind.css",
