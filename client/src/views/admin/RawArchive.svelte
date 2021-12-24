@@ -7,6 +7,7 @@
 
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
+    import CardTable from "components/Cards/CardTable.svelte";
 
     // Defines input buttons for HeaderStats
     const HeaderSettings = {
@@ -92,12 +93,10 @@
 />
 <div class="px-4 md:px-10 mx-auto w-full m-24">
     <div class="flex flex-wrap ml-8">
-        <div class="w-full h-500-px bg-blueGray-700 mt-24 mb-24">
-            <h2
-                class="text-5xl font-normal leading-normal mt-0 mb-2 text-white"
-            >
-                Test
-            </h2>
+        <div
+            class="w-full h-600-px bg-blueGray-700 mt-24 mb-24 flex justify-center items-center p-8"
+        >
+            <CardTable color="dark" />
         </div>
     </div>
 </div>
