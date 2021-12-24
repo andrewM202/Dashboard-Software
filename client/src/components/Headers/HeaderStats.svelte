@@ -11,7 +11,7 @@
 
 <!-- Header -->
 <div class="relative bg-red-500 md:pt-24 pb-16 pt-16" {id}>
-    <div class="px-4 md:px-10 mx-auto w-full">
+    <div class="px-4 py-2 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
                 <h3
@@ -21,7 +21,7 @@
                 </h3>
             {/if}
             <!-- Card stats -->
-            <div class="flex flex-wrap sm:p-4 md:py-4">
+            <div class="flex flex-wrap py-4">
                 {#if cards !== undefined}
                     {#each cards as card}
                         <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
@@ -91,20 +91,6 @@
                 {/if}
             </div>
             {#if inputs !== undefined}
-                <!-- <div class="flex flex-wrap justify-center w-full">
-                    {#each inputs as input}
-                        <div
-                            class="mb-3 py-0 mx-4 w-full sm:w-1/3 lg:w-6/12 xl:w-3/12 mt-4"
-                        >
-                            <input
-                                type={input.type}
-                                placeholder={input.placeholder}
-                                name={input.name}
-                                class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
-                        </div>
-                    {/each}
-                </div> -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                     {#each inputs as input}
                         <div class="mb-3 py-0 mx-4">
@@ -112,6 +98,9 @@
                                 type={input.type}
                                 placeholder={input.placeholder}
                                 name={input.name}
+                                value={input.type === "Submit"
+                                    ? input.placeholder
+                                    : ""}
                                 class="{input.type === 'Submit'
                                     ? 'cursor-pointer'
                                     : ''} px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"

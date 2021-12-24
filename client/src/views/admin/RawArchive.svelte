@@ -41,7 +41,7 @@
                 },
                 {
                     type: "Submit",
-                    placeholder: "Submit",
+                    placeholder: "Search",
                     name: "",
                 },
             ],
