@@ -16,7 +16,7 @@
             href="https://www.creative-tim.com?ref=ns-footer-admin"
             class="text-blueGray-500 hover:text-blueGray-700 text-sm font-semibold py-1"
           >
-            Creative Tim
+            Filluis
           </a>
         </div>
       </div>
@@ -27,7 +27,7 @@
               href="https://www.creative-tim.com?ref=ns-footer-admin"
               class="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
             >
-              Creative Tim
+              Filluis
             </a>
           </li>
           <li>

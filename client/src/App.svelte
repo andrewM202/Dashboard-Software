@@ -15,13 +15,13 @@
   export let url = "";
 </script>
 
-<Router url="{url}">
+<Router {url}>
   <!-- admin layout -->
-  <Route path="admin/*admin" component="{Admin}" />
+  <Route path="admin/*admin" component={Admin} />
   <!-- auth layout -->
-  <Route path="auth/*auth" component="{Auth}" />
+  <Route path="auth/*auth" component={Auth} />
   <!-- no layout pages -->
-  <Route path="landing" component="{Landing}" />
-  <Route path="profile" component="{Profile}" />
-  <Route path="/" component="{Index}" />
+  <Route path="landing" component={Landing} />
+  <Route path="profile" component={Profile} />
+  <Route path="/" component={Index} />
 </Router>

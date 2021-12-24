@@ -1,6 +1,7 @@
 <script>
   // core components
   import UserDropdown from "components/Dropdowns/UserDropdown.svelte";
+  export let navItems = null;
 </script>
 
 <!-- Navbar -->
@@ -13,10 +14,16 @@
     <!-- Brand -->
     <a
       class="text-white text-sm uppercase hidden lg:inline-block font-semibold"
-      href="#pablo" on:click={(e) => e.preventDefault()}
+      href="#pablo"
+      on:click={(e) => e.preventDefault()}
     >
-      Dashboard
+      {location.href.indexOf("/admin/raw-archive") !== -1
+        ? "Raw Archive"
+        : "Dashboard"}
     </a>
+    {#each navItems as navItem}
+      <a href={navItem} class="pl-4 text-white text-sm uppercase">{navItem}</a>
+    {/each}
     <!-- Form -->
     <form
       class="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3"
@@ -25,7 +32,7 @@
         <span
           class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3"
         >
-          <i class="fas fa-search"></i>
+          <i class="fas fa-search" />
         </span>
         <input
           type="text"
@@ -34,10 +41,6 @@
         />
       </div>
     </form>
-    <!-- User -->
-    <ul class="flex-col md:flex-row list-none items-center hidden md:flex">
-      <UserDropdown />
-    </ul>
   </div>
 </nav>
 <!-- End Navbar -->
