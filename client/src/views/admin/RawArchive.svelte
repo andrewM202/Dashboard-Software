@@ -8,46 +8,75 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
 
-    // Payload
-    const payload = [
-        {
-            subtitle: "People",
-            amount: 500,
-            increase: 4.5,
-            description: "Last Week",
-            id: "People",
+    // Defines input buttons for HeaderStats
+    const HeaderSettings = {
+        // People Start
+        People: {
+            // People Inputs
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "First Name",
+                    name: "FirstName",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Last Name",
+                    name: "LastName",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Organizations",
+                    name: "Organizations",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Titles",
+                    name: "Titles",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Opinions",
+                    name: "Opinion",
+                },
+                {
+                    type: "Submit",
+                    placeholder: "Submit",
+                    name: "",
+                },
+            ],
+            // People Inputs End
+            // People Cards
+            Cards: [
+                {
+                    subtitle: "First Name",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+                {
+                    subtitle: "Last Name",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Organizations",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+                {
+                    subtitle: "Titles",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+            ],
+            // People Cards End
         },
-        {
-            subtitle: "Organizations",
-            amount: 1235,
-            increase: -523,
-            description: "Never",
-        },
-        {
-            subtitle: "People",
-            amount: 500,
-            increase: 4.5,
-            description: "Last Week",
-        },
-        {
-            subtitle: "Organizations",
-            amount: 1235,
-            increase: -523,
-            description: "Never",
-        },
-        {
-            subtitle: "People",
-            amount: 500,
-            increase: 4.5,
-            description: "Last Week",
-        },
-        {
-            subtitle: "Organizations",
-            amount: 1235,
-            increase: -523,
-            description: "Never",
-        },
-    ];
+        // People End
+    };
 
     const navItems = ["People", "Countries", "Organizations", "Maps"];
 
@@ -55,7 +84,12 @@
 </script>
 
 <AdminNavbar {navItems} />
-<HeaderStats id={"People"} {payload} title={"People"} />
+<HeaderStats
+    id={"People"}
+    cards={HeaderSettings.People.Cards}
+    title={"People"}
+    inputs={HeaderSettings.People.Inputs}
+/>
 <div class="px-4 md:px-10 mx-auto w-full m-24">
     <div class="flex flex-wrap ml-8">
         <div class="w-full h-500-px bg-blueGray-700 mt-24 mb-24">

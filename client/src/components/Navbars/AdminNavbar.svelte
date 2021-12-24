@@ -1,7 +1,7 @@
 <script>
   // core components
   import UserDropdown from "components/Dropdowns/UserDropdown.svelte";
-  export let navItems = null;
+  export let navItems;
 </script>
 
 <!-- Navbar -->
@@ -21,9 +21,12 @@
         ? "Raw Archive"
         : "Dashboard"}
     </a>
-    {#each navItems as navItem}
-      <a href={navItem} class="pl-4 text-white text-sm uppercase">{navItem}</a>
-    {/each}
+    {#if navItems !== undefined}
+      {#each navItems as navItem}
+        <a href={navItem} class="pl-4 text-white text-sm uppercase">{navItem}</a
+        >
+      {/each}
+    {/if}
     <!-- Form -->
     <form
       class="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3"
