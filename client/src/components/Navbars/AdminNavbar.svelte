@@ -1,12 +1,19 @@
 <script>
   // core components
-  import UserDropdown from "components/Dropdowns/UserDropdown.svelte";
   export let navItems;
+  export let openTab;
+
+  $: console.log(openTab);
+
+  function toggleTabs(tabNumber) {
+    openTab = tabNumber;
+    console.log(openTab);
+  }
 </script>
 
 <!-- Navbar -->
 <nav
-  class="sticky bg-red-500 top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4"
+  class="absolute bg-red-500 top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4"
 >
   <div
     class="w-full mx-autp items-center flex justify-between md:flex-nowrap flex-wrap md:px-10 px-4"
@@ -22,10 +29,16 @@
         : "Dashboard"}
     </a>
     {#if navItems !== undefined}
-      {#each navItems as navItem}
-        <a href="#{navItem}" class="pl-4 text-white text-sm uppercase"
+      {#each navItems as navItem, i}
+        <!-- <a href="#{navItem}" class="pl-4 text-white text-sm uppercase"
           >{navItem}</a
+        > -->
+        <p
+          on:click={() => (openTab = i)}
+          class="cursor-pointer pl-4 text-white text-sm uppercase"
         >
+          {navItem}
+        </p>
       {/each}
     {/if}
     <!-- Form -->

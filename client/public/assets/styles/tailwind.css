@@ -3495,6 +3495,14 @@ select {
   width: 50%;
 }
 
+.w-2\/5 {
+  width: 40%;
+}
+
+.w-4\/5 {
+  width: 80%;
+}
+
 .w-6\/12 {
   width: 50%;
 }
@@ -3525,6 +3533,14 @@ select {
 
 .z-50 {
   z-index: 50;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
 }
 
 .gap-6 {
