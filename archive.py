@@ -1,5 +1,5 @@
 from flask import render_template, Blueprint, send_from_directory, request, redirect
-from models import PeopleWatch, Countries
+from models import PeopleWatch, Countries, Organizations
 
 bp = Blueprint("archive", __name__)
 
@@ -33,5 +33,17 @@ def raw_countries():
 
 @bp.route("/admin/organizations")
 def raw_organizations():
-    people = PeopleWatch.objects()
-    return people.to_json()
+    organizations = Organizations.objects()
+    return organizations.to_json()
+
+@bp.route("/admin/create-organization", methods=['POST'])
+def create_organization():
+    name = request.form['Name']
+    opinions = list(request.form['LastName'])
+    affiliations = list(request.form['Organizations'])
+    Organizations(
+        name         = name,
+        opinions     = opinions,
+        affiliations = affiliations
+    ).save()
+    return redirect('/admin/raw-archive')

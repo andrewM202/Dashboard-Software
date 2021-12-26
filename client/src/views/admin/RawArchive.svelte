@@ -11,20 +11,21 @@
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
-    async function getPeople() {
-        const response = await fetch(`${location.origin}/admin/people`);
-        let people = await response.json();
+    async function getResource(pathname) {
+        const response = await fetch(`${location.origin}${pathname}`);
+        let payload = await response.json();
 
         if (response.ok) {
-            return people;
+            return payload;
         } else {
-            throw new error(people);
+            throw new error(payload);
         }
     }
 
-    let people;
+    let people, organizations;
     j$(document).ready(function () {
-        people = getPeople();
+        people = getResource("/admin/people");
+        organizations = getResource("/admin/organizations");
     });
 
     // Defines input buttons for HeaderStats
@@ -93,10 +94,19 @@
                 },
             ],
             // People Cards End
+            // People Table Begin
             Table: {
                 Headers: ["First Name", "Last Name", "Organizations", "Titles"],
                 Title: "People",
+                DBFieldNames: [
+                    "first_name",
+                    "last_name",
+                    "organizations",
+                    "titles",
+                ],
             },
+            // People Table End
+            // People CreationCard Begin
             CreationCard: {
                 URL: "/admin/create-person",
                 Title: "Create Person",
@@ -105,36 +115,127 @@
                         type: "Text",
                         placeholder: "First Name",
                         name: "FirstName",
+                        required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Last Name",
                         name: "LastName",
+                        required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Organizations",
                         name: "Organizations",
+                        required: false,
                     },
                     {
                         type: "Text",
                         placeholder: "Titles",
                         name: "Titles",
+                        required: false,
                     },
                     {
                         type: "Text",
                         placeholder: "Opinions",
                         name: "Opinion",
+                        required: false,
                     },
                     {
                         type: "Submit",
-                        placeholder: "Search",
+                        placeholder: "Submit",
                         name: "",
                     },
                 ],
             },
+            // People CreationCard End
         },
         // People End
+        // Organizations Start
+        Organizations: {
+            // Organizations Inputs
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Name",
+                    name: "FirstName",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Opinions",
+                    name: "Opinions",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Affiliations",
+                    name: "Affiliations",
+                },
+                {
+                    type: "Submit",
+                    placeholder: "Search",
+                    name: "",
+                },
+            ],
+            // Organizations Inputs End
+            // Organizations Cards
+            Cards: [
+                {
+                    subtitle: "Name",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+                {
+                    subtitle: "Opinions",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Affiliatons",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+            ],
+            // Organizations Cards End
+            // Organizations Table Begin
+            Table: {
+                Headers: ["Name", "Opinions", "Affiliations"],
+                DBFieldNames: ["name", "opinions", "affiliations"],
+                Title: "Organizations",
+            },
+            // Organizations Table End
+            // Organizations CreationCard Begin
+            CreationCard: {
+                URL: "/admin/create-organization",
+                Title: "Create Organization",
+                Inputs: [
+                    {
+                        type: "Text",
+                        placeholder: "Name",
+                        name: "Name",
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Opinions",
+                        name: "Opinions",
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Affiliatons",
+                        name: "Affiliatons",
+                    },
+                    {
+                        type: "Submit",
+                        placeholder: "Submit",
+                        name: "",
+                    },
+                ],
+            },
+            // Organizations CreationCard End
+        },
+        // Organizations End
     };
 
     const navItems = ["People", "Countries", "Organizations", "Maps"];
@@ -167,6 +268,7 @@
                         color="dark"
                         data={people}
                         headers={DataSettings.People.Table.Headers}
+                        DBFieldNames={DataSettings.People.Table.DBFieldNames}
                         title={DataSettings.People.Table.Title}
                     />
                 {:catch error}
@@ -175,7 +277,6 @@
             </div>
         </div>
     </div>
-
     <DataCreationCard
         url={DataSettings.People.CreationCard.URL}
         title={DataSettings.People.CreationCard.Title}
@@ -186,29 +287,56 @@
 <!-- Countries -->
 <div class={navItems[openTab] === "Countries" ? "block" : "hidden"}>
     <HeaderStats id={"Countries"} title={"Countries"} />
-    <div class="px-4 md:px-10 mx-auto w-full m-24">
+    <div class="px-4 md:px-10 mx-auto w-full m-12">
         <div class="flex flex-wrap">
-            <div class="w-full h-500-px bg-blueGray-700 mt-24 mb-24" />
+            <div class="w-full h-500-px bg-blueGray-700 mt-12 mb-12" />
         </div>
     </div>
 </div>
 
 <!-- Organizations -->
 <div class={navItems[openTab] === "Organizations" ? "block" : "hidden"}>
-    <HeaderStats id={"Organizations"} title={"Organizations"} />
-    <div class="px-4 md:px-10 mx-auto w-full m-24">
-        <div class="flex flex-wrap">
-            <div class="w-full h-500-px bg-blueGray-700 mt-24 mb-24" />
+    <HeaderStats
+        id={"Organizations"}
+        title={"Organizations"}
+        cards={DataSettings.Organizations.Cards}
+        inputs={DataSettings.Organizations.Inputs}
+    />
+    <div class="block px-4 md:px-10 mx-auto w-full m-12">
+        <div class="flex flex-wrap ml-8">
+            <div
+                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
+            >
+                {#await organizations}
+                    <p>Loading...</p>
+                {:then organizations}
+                    <CardTable
+                        color="dark"
+                        data={organizations}
+                        DBFieldNames={DataSettings.Organizations.Table
+                            .DBFieldNames}
+                        headers={DataSettings.Organizations.Table.Headers}
+                        title={DataSettings.Organizations.Table.Title}
+                    />
+                {:catch error}
+                    <p style="color: red">{error.message}</p>
+                {/await}
+            </div>
         </div>
     </div>
+    <DataCreationCard
+        url={DataSettings.Organizations.CreationCard.URL}
+        title={DataSettings.Organizations.CreationCard.Title}
+        inputs={DataSettings.Organizations.CreationCard.Inputs}
+    />
 </div>
 
 <!-- Maps, Graphs, Charts -->
 <div class={navItems[openTab] === "Maps" ? "block" : "hidden"}>
     <HeaderStats id={"Maps"} title={"Maps"} />
-    <div class="px-4 md:px-10 mx-auto w-full m-24">
+    <div class="px-4 md:px-10 mx-auto w-full m-12">
         <div class="flex flex-wrap">
-            <div class="w-full h-500-px bg-blueGray-700 mt-24 mb-24">
+            <div class="w-full h-500-px bg-blueGray-700 mt-12 mb-12">
                 <h2
                     class="text-5xl font-normal leading-normal mt-0 mb-2 text-white"
                 >

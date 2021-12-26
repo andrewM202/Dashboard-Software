@@ -10,6 +10,7 @@ class PeopleWatch(Document):
     last_name = StringField(required=True)
     organizations = ListField()
     titles = ListField()
+    opinions = ListField()
 
 class Countries(Document):
     """ Countries """
@@ -22,3 +23,9 @@ class Countries(Document):
     landlocked = BooleanField(required=True)
     area = IntField(required=True)
     population = IntField(required=True)
+
+class Organizations(Document):
+    """ Organizations """
+    name = StringField(required=True)
+    opinions = ListField()
+    affiliations = ListField()

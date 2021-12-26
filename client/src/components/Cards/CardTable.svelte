@@ -18,6 +18,7 @@
   export let data;
   export let headers;
   export let title;
+  export let DBFieldNames;
 </script>
 
 <div
@@ -120,33 +121,20 @@
         {#if data !== undefined}
           {#each data as row}
             <tr>
-              {#if title === "People"}
-                <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-s whitespace-nowrap p-4"
-                >
-                  {row.first_name}
-                </td>
-                <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-s whitespace-nowrap p-4"
-                >
-                  {row.last_name}
-                </td>
-                <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-s whitespace-nowrap p-4"
-                >
-                  {row.organizations}
-                </td>
-                <td
-                  class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-s whitespace-nowrap p-4"
-                >
-                  {row.titles}
-                </td>
-                <td
-                  class="flex justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                >
-                  <TableDropdown />
-                </td>
-              {/if}
+              {#each Object.entries(row) as entry}
+                {#if DBFieldNames.includes(entry[0])}
+                  <td
+                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-s whitespace-nowrap p-4"
+                  >
+                    {entry[1]}
+                  </td>
+                {/if}
+              {/each}
+              <td
+                class="flex justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+              >
+                <TableDropdown />
+              </td>
             </tr>
           {/each}
         {:else}
