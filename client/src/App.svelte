@@ -1,5 +1,7 @@
 <!-- App.svelte -->
 <script>
+  // jQuery
+  import jQuery from "jquery";
   import { Router, Route } from "svelte-routing";
 
   // Admin Layout
