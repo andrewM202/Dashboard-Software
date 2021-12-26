@@ -11,10 +11,9 @@
   <link rel="stylesheet" href="/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" />
   <link rel="stylesheet" href="/assets/styles/tailwind.css" />
   <title>Notus Svelte</title>
-  <!-- Import jQuery very crappily by cping from node_modules to build folder -->
   <script src="/build/jquery.min.js"></script>
   <script>
-    const j$ = window.$; // Redefine jquery's $
+    const j$ = window.$;
     if (process === undefined) {
       var process = { env: {} };
     }
