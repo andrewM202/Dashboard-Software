@@ -26,6 +26,6 @@ class Countries(Document):
 
 class Organizations(Document):
     """ Organizations """
-    name = StringField(required=True)
+    name = StringField(required=True, unique=True)
     opinions = ListField()
     affiliations = ListField()

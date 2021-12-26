@@ -11,8 +11,8 @@ def raw_archive():
 def create_person():
     first_name = request.form['FirstName']
     last_name = request.form['LastName']
-    organization = list(request.form['Organizations'])
-    title = list(request.form['Titles'])
+    organization = request.form['Organizations'].split(",")
+    title = request.form['Titles'].split(",")
     PeopleWatch(
         first_name    = first_name,
         last_name     = last_name,
@@ -39,8 +39,8 @@ def raw_organizations():
 @bp.route("/admin/create-organization", methods=['POST'])
 def create_organization():
     name = request.form['Name']
-    opinions = list(request.form['LastName'])
-    affiliations = list(request.form['Organizations'])
+    opinions = request.form['LastName'].split(",")
+    affiliations = request.form['Organizations'].split(",")
     Organizations(
         name         = name,
         opinions     = opinions,

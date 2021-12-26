@@ -34,7 +34,7 @@
       class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
       href="/"
     >
-      Notus Svelte
+      Scientia Est Potentia
     </a>
     <!-- User -->
     <ul class="md:hidden items-center flex flex-wrap list-none">
