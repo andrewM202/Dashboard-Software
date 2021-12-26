@@ -21,7 +21,7 @@
                 </h3>
             {/if}
             <!-- Card stats -->
-            <div class="flex flex-wrap py-4">
+            <div class="flex flex-wrap justify-center py-4">
                 {#if cards !== undefined}
                     {#each cards as card}
                         <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
