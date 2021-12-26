@@ -97,6 +97,42 @@
                 Headers: ["First Name", "Last Name", "Organizations", "Titles"],
                 Title: "People",
             },
+            CreationCard: {
+                URL: "/admin/create-person",
+                Title: "Create Person",
+                Inputs: [
+                    {
+                        type: "Text",
+                        placeholder: "First Name",
+                        name: "FirstName",
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Last Name",
+                        name: "LastName",
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Organizations",
+                        name: "Organizations",
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Titles",
+                        name: "Titles",
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Opinions",
+                        name: "Opinion",
+                    },
+                    {
+                        type: "Submit",
+                        placeholder: "Search",
+                        name: "",
+                    },
+                ],
+            },
         },
         // People End
     };
@@ -140,7 +176,11 @@
         </div>
     </div>
 
-    <DataCreationCard />
+    <DataCreationCard
+        url={DataSettings.People.CreationCard.URL}
+        title={DataSettings.People.CreationCard.Title}
+        inputs={DataSettings.People.CreationCard.Inputs}
+    />
 </div>
 
 <!-- Countries -->

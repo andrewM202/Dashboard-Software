@@ -1,9 +1,8 @@
 <script>
     // Optional Arguments
-    export let cards;
-    export let id = "";
     export let title;
     export let inputs;
+    export let url;
 
     function submit(e) {
         e.preventDefault();
@@ -11,7 +10,7 @@
         j$("form").trigger("reset");
         j$.ajax({
             type: "POST",
-            url: `${location.origin}/admin/create-person`,
+            url: `${location.origin}${url}`,
             data: data,
             success: function () {
                 // Add person to JS if successful
@@ -30,56 +29,34 @@
                 <h3
                     class="text-4xl text-center font-normal leading-normal mt-0 mb-2"
                 >
-                    Create Person
+                    {title}
                 </h3>
                 <form method="POST" action="/admin/create-person">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
-                        <div class="mb-3 py-0 mx-4">
-                            <input
-                                type="text"
-                                placeholder="First Name"
-                                name="first_name"
-                                value=""
-                                class="py-3 my-2 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
-                        </div>
-                        <div class="mb-3 py-0 mx-4">
-                            <input
-                                type="text"
-                                placeholder="Last Name"
-                                name="last_name"
-                                value=""
-                                class="py-3 my-2 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
-                        </div>
-                        <div class="mb-3 py-0 mx-4">
-                            <input
-                                type="text"
-                                placeholder="Organization"
-                                name="organization"
-                                value=""
-                                class="py-3 my-2 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
-                        </div>
-                        <div class="mb-3 py-0 mx-4">
-                            <input
-                                type="text"
-                                placeholder="Title"
-                                name="title"
-                                value=""
-                                class="py-3 my-2 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
-                        </div>
-                        <div class="mb-3 py-0 mx-4">
-                            <input
-                                on:click={submit}
-                                type="submit"
-                                placeholder="test"
-                                name="test"
-                                value="Submit"
-                                class="py-3 mx-3 my-2 cursor-pointer placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
-                        </div>
+                        {#if inputs !== undefined}
+                            {#each inputs as input}
+                                <div class="mb-3 py-0 mx-4">
+                                    {#if input.type !== "Submit"}
+                                        <input
+                                            type={input.type}
+                                            placeholder={input.placeholder}
+                                            name={input.name}
+                                            value=""
+                                            class="py-3 my-2 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                        />
+                                    {:else}
+                                        <input
+                                            on:click={submit}
+                                            type="Submit"
+                                            placeholder={input.placeholder}
+                                            name={input.name}
+                                            value={input.placeholder}
+                                            class="py-3 mx-3 my-2 cursor-pointer placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                        />
+                                    {/if}
+                                </div>
+                            {/each}
+                        {/if}
                     </div>
                 </form>
             </div>

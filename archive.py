@@ -9,10 +9,10 @@ def raw_archive():
 
 @bp.route("/admin/create-person", methods=['POST'])
 def create_person():
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    organization = list(request.form['organization'])
-    title = list(request.form['title'])
+    first_name = request.form['FirstName']
+    last_name = request.form['LastName']
+    organization = list(request.form['Organizations'])
+    title = list(request.form['Titles'])
     PeopleWatch(
         first_name    = first_name,
         last_name     = last_name,
