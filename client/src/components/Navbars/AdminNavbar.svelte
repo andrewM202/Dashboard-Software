@@ -2,13 +2,6 @@
   // core components
   export let navItems;
   export let openTab;
-
-  $: console.log(openTab);
-
-  function toggleTabs(tabNumber) {
-    openTab = tabNumber;
-    console.log(openTab);
-  }
 </script>
 
 <!-- Navbar -->

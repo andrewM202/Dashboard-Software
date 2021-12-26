@@ -13,8 +13,7 @@
 
     async function getPeople() {
         const response = await fetch(
-            // `${location.origin}/admin/raw-archive/people`
-            `http://127.0.0.1:5000/admin/raw-archive/people`
+            `${location.origin}/admin/raw-archive/people`
         );
         let people = await response.json();
 
@@ -25,7 +24,12 @@
         }
     }
 
-    const people = getPeople();
+    let people;
+    j$(document).ready(function () {
+        people = getPeople();
+    });
+
+    $: console.log(people);
 
     // Defines input buttons for HeaderStats
     const DataSettings = {
@@ -105,7 +109,6 @@
 
     // Bind openTab to AdminNavbar component
     let openTab = 0;
-    $: console.log(openTab);
 
     export let location;
 </script>
