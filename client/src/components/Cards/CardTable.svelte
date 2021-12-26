@@ -50,8 +50,9 @@
         <tr>
           {#if headers !== undefined}
             {#each headers as header}
+              <!-- top-0 required for sticky table headers -->
               <th
-                class="px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+                class="sticky top-0 px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
                 'light'
                   ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                   : 'bg-red-500 text-red-200 border-red-600'}"

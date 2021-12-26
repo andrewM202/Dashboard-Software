@@ -4,6 +4,8 @@
     export let id = "";
     export let title;
     export let inputs;
+
+    j$.ajax({});
 </script>
 
 <div class="px-4 md:px-10 mx-auto w-full">

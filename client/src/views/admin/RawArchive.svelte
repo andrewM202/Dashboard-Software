@@ -29,8 +29,6 @@
         people = getPeople();
     });
 
-    $: console.log(people);
-
     // Defines input buttons for HeaderStats
     const DataSettings = {
         // People Start
