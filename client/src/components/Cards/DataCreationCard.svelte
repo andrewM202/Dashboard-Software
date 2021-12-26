@@ -5,7 +5,22 @@
     export let title;
     export let inputs;
 
-    j$.ajax({});
+    function submit(e) {
+        e.preventDefault();
+        let data = j$("form").serialize();
+        j$("form").trigger("reset");
+        j$.ajax({
+            type: "POST",
+            url: `${location.origin}/admin/create-person`,
+            data: data,
+            success: function () {
+                // Add person to JS if successful
+            },
+            error: function () {
+                alert("Error Creating");
+            },
+        });
+    }
 </script>
 
 <div class="px-4 md:px-10 mx-auto w-full">
@@ -57,6 +72,7 @@
                         </div>
                         <div class="mb-3 py-0 mx-4">
                             <input
+                                on:click={submit}
                                 type="submit"
                                 placeholder="test"
                                 name="test"

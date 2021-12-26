@@ -12,9 +12,7 @@
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
     async function getPeople() {
-        const response = await fetch(
-            `${location.origin}/admin/raw-archive/people`
-        );
+        const response = await fetch(`${location.origin}/admin/people`);
         let people = await response.json();
 
         if (response.ok) {
