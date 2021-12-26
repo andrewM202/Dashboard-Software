@@ -11,8 +11,6 @@
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
-    console.log(j$(".block"));
-
     async function getPeople() {
         const response = await fetch(
             // `${location.origin}/admin/raw-archive/people`

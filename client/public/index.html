@@ -10,12 +10,11 @@
   <link rel="stylesheet" href="/build/bundle.css" />
   <link rel="stylesheet" href="/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" />
   <link rel="stylesheet" href="/assets/styles/tailwind.css" />
+  <title>Notus Svelte</title>
   <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
     integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
-  <title>Notus Svelte</title>
-
   <script>
-    const j$ = window.$;
+    const j$ = window.$; // Redefine jquery's $
     if (process === undefined) {
       var process = { env: {} };
     }
