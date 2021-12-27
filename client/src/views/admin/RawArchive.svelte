@@ -82,7 +82,7 @@
                 Headers: ["First Name", "Last Name", "Organizations", "Titles"],
                 Title: "People",
                 DeletionURL: "/admin/delete-person",
-                RefreshURL: "admin/people",
+                RefreshURL: "/admin/people",
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -191,7 +191,7 @@
                 Headers: ["Name", "Opinions", "Affiliations"],
                 DBFieldNames: ["name", "opinions", "affiliations"],
                 DeletionURL: "/admin/delete-organization",
-                RefreshURL: "admin/organizations",
+                RefreshURL: "/admin/organizations",
                 Title: "Organizations",
             },
             // Organizations Table End

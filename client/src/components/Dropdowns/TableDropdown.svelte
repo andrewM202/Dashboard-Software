@@ -2,11 +2,7 @@
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
 
-  import {
-    peopleStore,
-    organizationsStore,
-    getDBResource,
-  } from "../../stores.js";
+  import { refreshData } from "../../stores.js";
 
   export let DeletionURL;
   export let RefreshURL;
@@ -37,7 +33,10 @@
       type: "POST",
       url: `${location.origin}${DeletionURL}`,
       data: data,
-      success: function () {},
+      success: function () {
+        console.log(RefreshURL);
+        refreshData(RefreshURL);
+      },
       error: function (e) {
         // Error Logging
         console.log(e.statusText);
