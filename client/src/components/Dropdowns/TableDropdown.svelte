@@ -2,7 +2,14 @@
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
 
+  import {
+    peopleStore,
+    organizationsStore,
+    getDBResource,
+  } from "../../stores.js";
+
   export let DeletionURL;
+  export let RefreshURL;
   export let DeleteID;
   DeleteID = DeleteID[0].$oid;
 

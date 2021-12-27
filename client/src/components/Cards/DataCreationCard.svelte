@@ -1,8 +1,11 @@
 <script>
+    import { refreshData } from "../../stores.js";
+
     // Optional Arguments
     export let title;
     export let inputs;
     export let url;
+    export let refreshURL;
     // Error for if form data is not valid
     let error = false;
 
@@ -45,6 +48,7 @@
                         }
                     }
                     j$("form").trigger("reset");
+                    refreshData(refreshURL);
                 },
                 error: function (e) {
                     error = "Server Error During Creation.";

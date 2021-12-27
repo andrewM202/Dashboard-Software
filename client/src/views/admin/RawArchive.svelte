@@ -82,6 +82,7 @@
                 Headers: ["First Name", "Last Name", "Organizations", "Titles"],
                 Title: "People",
                 DeletionURL: "/admin/delete-person",
+                RefreshURL: "admin/people",
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -93,6 +94,7 @@
             // People CreationCard Begin
             CreationCard: {
                 URL: "/admin/create-person",
+                RefreshURL: "/admin/people",
                 Title: "Create Person",
                 Inputs: [
                     {
@@ -189,12 +191,14 @@
                 Headers: ["Name", "Opinions", "Affiliations"],
                 DBFieldNames: ["name", "opinions", "affiliations"],
                 DeletionURL: "/admin/delete-organization",
+                RefreshURL: "admin/organizations",
                 Title: "Organizations",
             },
             // Organizations Table End
             // Organizations CreationCard Begin
             CreationCard: {
                 URL: "/admin/create-organization",
+                RefreshURL: "/admin/organizations",
                 Title: "Create Organization",
                 Inputs: [
                     {
@@ -261,6 +265,7 @@
                         DBFieldNames={DataSettings.People.Table.DBFieldNames}
                         title={DataSettings.People.Table.Title}
                         DeletionURL={DataSettings.People.Table.DeletionURL}
+                        RefreshURL={DataSettings.People.Table.RefreshURL}
                     />
                 {:catch error}
                     <p style="color: red">{error.message}</p>
@@ -272,6 +277,7 @@
         url={DataSettings.People.CreationCard.URL}
         title={DataSettings.People.CreationCard.Title}
         inputs={DataSettings.People.CreationCard.Inputs}
+        refreshURL={DataSettings.People.CreationCard.RefreshURL}
     />
 </div>
 
@@ -310,6 +316,7 @@
                         title={DataSettings.Organizations.Table.Title}
                         DeletionURL={DataSettings.Organizations.Table
                             .DeletionURL}
+                        RefreshURL={DataSettings.Organizations.Table.RefreshURL}
                     />
                 {:catch error}
                     <p style="color: red">{error.message}</p>
@@ -321,6 +328,7 @@
         url={DataSettings.Organizations.CreationCard.URL}
         title={DataSettings.Organizations.CreationCard.Title}
         inputs={DataSettings.Organizations.CreationCard.Inputs}
+        refreshURL={DataSettings.Organizations.CreationCard.RefreshURL}
     />
 </div>
 

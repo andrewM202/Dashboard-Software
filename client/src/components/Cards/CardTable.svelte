@@ -20,6 +20,7 @@
   export let title;
   export let DBFieldNames;
   export let DeletionURL;
+  export let RefreshURL;
 </script>
 
 <div
@@ -134,7 +135,11 @@
               <td
                 class="flex justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
               >
-                <TableDropdown {DeletionURL} DeleteID={Object.values(row)} />
+                <TableDropdown
+                  {RefreshURL}
+                  {DeletionURL}
+                  DeleteID={Object.values(row)}
+                />
               </td>
             </tr>
           {/each}
