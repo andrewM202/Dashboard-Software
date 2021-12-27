@@ -2,6 +2,10 @@
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
 
+  export let DeletionURL;
+  export let DeleteID;
+  DeleteID = DeleteID[0].$oid;
+
   let dropdownPopoverShow = false;
 
   let btnDropdownRef;
@@ -18,6 +22,22 @@
       });
     }
   };
+
+  function deleteRow(e) {
+    e.preventDefault();
+    let data = j$("#" + DeleteID).serialize();
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}${DeletionURL}`,
+      data: data,
+      success: function () {},
+      error: function (e) {
+        // Error Logging
+        console.log(e.statusText);
+        console.log(e.responseText);
+      },
+    });
+  }
 </script>
 
 <div>
@@ -36,18 +56,20 @@
       : 'hidden'}"
   >
     <a
-      href="#pablo"
+      href=""
       on:click={(e) => e.preventDefault()}
       class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
     >
       Update
     </a>
-    <a
-      href="#pablo"
-      on:click={(e) => e.preventDefault()}
-      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-    >
-      Delete
-    </a>
+    <form id={DeleteID}>
+      <input type="hidden" value={DeleteID} name="DeletionID" />
+      <input
+        type="submit"
+        value="Delete"
+        on:click={deleteRow}
+        class="text-sm cursor-pointer text-left bg-white py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+      />
+    </form>
   </div>
 </div>

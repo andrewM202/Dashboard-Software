@@ -35,6 +35,7 @@
                 url: `${location.origin}${url}`,
                 data: data,
                 success: function () {
+                    // Reset placeholder values on success
                     for (let input of inputs) {
                         if (input.type !== "Submit") {
                             j$("#" + input.name).attr(
@@ -45,8 +46,11 @@
                     }
                     j$("form").trigger("reset");
                 },
-                error: function () {
+                error: function (e) {
                     error = "Server Error During Creation.";
+                    // Error logging
+                    console.log(e.statusText);
+                    console.log(e.responseText);
                 },
             });
         }

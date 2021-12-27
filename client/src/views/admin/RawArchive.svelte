@@ -98,6 +98,7 @@
             Table: {
                 Headers: ["First Name", "Last Name", "Organizations", "Titles"],
                 Title: "People",
+                DeletionURL: "/admin/delete-person",
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -193,7 +194,7 @@
                     description: "Never",
                 },
                 {
-                    subtitle: "Affiliatons",
+                    subtitle: "Affiliations",
                     amount: 500,
                     increase: 4.5,
                     description: "Last Week",
@@ -204,6 +205,7 @@
             Table: {
                 Headers: ["Name", "Opinions", "Affiliations"],
                 DBFieldNames: ["name", "opinions", "affiliations"],
+                DeletionURL: "/admin/delete-organization",
                 Title: "Organizations",
             },
             // Organizations Table End
@@ -226,8 +228,8 @@
                     },
                     {
                         type: "Text",
-                        placeholder: "Affiliatons",
-                        name: "Affiliatons",
+                        placeholder: "Affiliations",
+                        name: "Affiliations",
                         required: false,
                     },
                     {
@@ -275,6 +277,7 @@
                         headers={DataSettings.People.Table.Headers}
                         DBFieldNames={DataSettings.People.Table.DBFieldNames}
                         title={DataSettings.People.Table.Title}
+                        DeletionURL={DataSettings.People.Table.DeletionURL}
                     />
                 {:catch error}
                     <p style="color: red">{error.message}</p>
@@ -322,6 +325,8 @@
                             .DBFieldNames}
                         headers={DataSettings.Organizations.Table.Headers}
                         title={DataSettings.Organizations.Table.Title}
+                        DeletionURL={DataSettings.Organizations.Table
+                            .DeletionURL}
                     />
                 {:catch error}
                     <p style="color: red">{error.message}</p>
