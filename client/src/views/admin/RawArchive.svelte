@@ -11,22 +11,11 @@
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
-    async function getResource(pathname) {
-        const response = await fetch(`${location.origin}${pathname}`);
-        let payload = await response.json();
+    import { peopleStore, organizationsStore } from "../../stores.js";
 
-        if (response.ok) {
-            return payload;
-        } else {
-            throw new error(payload);
-        }
-    }
-
-    let people, organizations;
-    j$(document).ready(function () {
-        people = getResource("/admin/people");
-        organizations = getResource("/admin/organizations");
-    });
+    let organizations, people;
+    $: organizations = $organizationsStore;
+    $: people = $peopleStore;
 
     // Defines input buttons for HeaderStats
     const DataSettings = {
