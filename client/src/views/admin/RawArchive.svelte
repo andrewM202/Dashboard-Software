@@ -1,11 +1,5 @@
 <script>
-    import { onMount } from "svelte";
     // core components
-    import CardLineChart from "components/Cards/CardLineChart.svelte";
-    import CardBarChart from "components/Cards/CardBarChart.svelte";
-    import CardPageVisits from "components/Cards/CardPageVisits.svelte";
-    import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
-
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardTable from "components/Cards/CardTable.svelte";
