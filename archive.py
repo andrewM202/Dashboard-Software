@@ -45,7 +45,7 @@ def raw_countries():
         country_currencies = []
         for currency in country_currencies_list:
             country_currencies.append(currency['name'])
-        new_country["currencies"] = country_currencies 
+        new_country["country_currencies"] = country_currencies 
         # Country Capital
         country_capitals = ""
         for capital in country.capital:
@@ -63,7 +63,7 @@ def raw_countries():
         # Country Latitude, Longitude
         new_country["country_latlng"] = country.latlng
         # Country Landlocked
-        new_country["country_landlocked"] = country.landlocked
+        new_country["country_landlocked"] = "Yes" if country.landlocked else "No"
         # Country Area
         new_country["country_area"] = country.area
         # Country Population

@@ -21,6 +21,7 @@
   export let DBFieldNames;
   export let DeletionURL;
   export let RefreshURL;
+  export let Modification;
 </script>
 
 <div
@@ -48,14 +49,16 @@
   </div>
   <div class="block w-full overflow-x-auto">
     <!-- Projects table -->
-    <table class="items-center w-full bg-transparent border-collapse">
+    <table
+      class="table-fixed items-center w-full bg-transparent border-collapse"
+    >
       <thead>
         <tr>
           {#if headers !== undefined}
             {#each headers as header}
               <!-- top-0 required for sticky table headers -->
               <th
-                class="sticky top-0 px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
+                class="w-56 sticky top-0 px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 font-semibold text-left {color ===
                 'light'
                   ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
                   : 'bg-red-500 text-red-200 border-red-600'}"
@@ -63,59 +66,14 @@
                 {header}
               </th>
             {/each}
-            <th
-              class="px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}">Modify</th
-            >
-          {:else}
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}"
-            >
-              Project
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}"
-            >
-              Budget
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}"
-            >
-              Status
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}"
-            >
-              Users
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}"
-            >
-              Completion
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color ===
-              'light'
-                ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                : 'bg-red-500 text-red-200 border-red-600'}"
-            />
+            {#if Modification !== false}
+              <th
+                class="w-28 px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 font-semibold text-center {color ===
+                'light'
+                  ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
+                  : 'bg-red-500 text-red-200 border-red-600'}">Modify</th
+              >
+            {/if}
           {/if}
         </tr>
       </thead>
@@ -126,21 +84,23 @@
               {#each Object.entries(row) as entry}
                 {#if DBFieldNames.includes(entry[0])}
                   <td
-                    class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-s whitespace-nowrap p-4"
+                    class="break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                   >
                     {entry[1]}
                   </td>
                 {/if}
               {/each}
-              <td
-                class="flex justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-              >
-                <TableDropdown
-                  {RefreshURL}
-                  {DeletionURL}
-                  DeleteID={Object.values(row)}
-                />
-              </td>
+              {#if Modification !== false}
+                <td
+                  class="w-28 flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs p-4"
+                >
+                  <TableDropdown
+                    {RefreshURL}
+                    {DeletionURL}
+                    DeleteID={Object.values(row)}
+                  />
+                </td>
+              {/if}
             </tr>
           {/each}
         {/if}

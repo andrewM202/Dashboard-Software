@@ -16,8 +16,6 @@
     $: people = $peopleStore;
     $: countries = $countriesStore;
 
-    $: console.log(countries);
-
     // Defines input buttons for HeaderStats
     const DataSettings = {
         // People Start
@@ -237,6 +235,122 @@
             // Organizations CreationCard End
         },
         // Organizations End
+        // Countries Start
+        Countries: {
+            // Countries Inputs
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Name",
+                    name: "Name",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Landlocked",
+                    name: "Landlocked",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Capital",
+                    name: "Capital",
+                },
+                {
+                    type: "Submit",
+                    placeholder: "Search",
+                    name: "",
+                },
+            ],
+            // Countries Inputs End
+            // Countries Cards
+            Cards: [
+                {
+                    subtitle: "Area",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+                {
+                    subtitle: "Capital",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Landlocked",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+                {
+                    subtitle: "Languages",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Lat Longitude",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Name",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Population",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Subregion",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+                {
+                    subtitle: "Currencies",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+            ],
+            // Countries Cards End
+            // Countries Table Begin
+            Table: {
+                Headers: [
+                    "Area",
+                    "Capital",
+                    "Currencies",
+                    "Landlocked",
+                    "Languages",
+                    "Lat Long",
+                    "Name",
+                    "Population",
+                    "Subregion",
+                ],
+                Title: "Countries",
+                DeletionURL: "",
+                RefreshURL: "",
+                Modification: false,
+                DBFieldNames: [
+                    "country_area",
+                    "country_capital",
+                    "country_currencies",
+                    "country_landlocked",
+                    "country_languages",
+                    "country_latlng",
+                    "country_name",
+                    "country_population",
+                    "country_subregion",
+                ],
+            },
+            // Countries Table End
+        },
+        // Countries End
     };
 
     const navItems = ["People", "Countries", "Organizations", "Maps"];
@@ -290,10 +404,34 @@
 
 <!-- Countries -->
 <div class={navItems[openTab] === "Countries" ? "block" : "hidden"}>
-    <HeaderStats id={"Countries"} title={"Countries"} />
-    <div class="px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap">
-            <div class="w-full h-500-px bg-blueGray-700 mt-12 mb-12" />
+    <HeaderStats
+        id={"Countries"}
+        title={"Countries"}
+        cards={DataSettings.Countries.Cards}
+        inputs={DataSettings.Countries.Inputs}
+    />
+    <div class="block px-4 md:px-10 mx-auto w-full m-12">
+        <div class="flex flex-wrap ml-8">
+            <div
+                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
+            >
+                {#await countries}
+                    <p>Loading...</p>
+                {:then countries}
+                    <CardTable
+                        color="dark"
+                        data={countries}
+                        headers={DataSettings.Countries.Table.Headers}
+                        DBFieldNames={DataSettings.Countries.Table.DBFieldNames}
+                        title={DataSettings.Countries.Table.Title}
+                        DeletionURL={DataSettings.Countries.Table.DeletionURL}
+                        RefreshURL={DataSettings.Countries.Table.RefreshURL}
+                        Modification={DataSettings.Countries.Table.Modification}
+                    />
+                {:catch error}
+                    <p style="color: red">{error.message}</p>
+                {/await}
+            </div>
         </div>
     </div>
 </div>

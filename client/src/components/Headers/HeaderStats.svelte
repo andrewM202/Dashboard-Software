@@ -24,7 +24,7 @@
             <div class="flex flex-wrap justify-center py-4">
                 {#if cards !== undefined}
                     {#each cards as card}
-                        <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
+                        <div class="w-full lg:w-6/12 xl:w-3/12 px-4 py-2">
                             <CardStats
                                 statSubtitle={card.subtitle}
                                 statTitle={card.amount}
