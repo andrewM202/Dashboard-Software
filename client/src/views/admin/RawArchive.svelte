@@ -5,11 +5,18 @@
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
-    import { peopleStore, organizationsStore } from "../../stores.js";
+    import {
+        peopleStore,
+        organizationsStore,
+        countriesStore,
+    } from "../../stores.js";
 
-    let organizations, people;
+    let organizations, people, countries;
     $: organizations = $organizationsStore;
     $: people = $peopleStore;
+    $: countries = $countriesStore;
+
+    $: console.log(countries);
 
     // Defines input buttons for HeaderStats
     const DataSettings = {

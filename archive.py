@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, send_from_directory, request, redirect
+from flask import render_template, Blueprint, send_from_directory, request, redirect, jsonify
 from models import PeopleWatch, Countries, Organizations
 
 bp = Blueprint("archive", __name__)
@@ -35,7 +35,42 @@ def raw_people():
 @bp.route("/admin/countries")
 def raw_countries():
     countries = Countries.objects()
-    return countries.to_json()
+    parsed_countries = []
+    for country in countries:
+        new_country = {}
+        # Country Name
+        new_country["country_name"] = country.name['official']
+        # Country Currencies
+        country_currencies_list = list(country.currencies.values())
+        country_currencies = []
+        for currency in country_currencies_list:
+            country_currencies.append(currency['name'])
+        new_country["currencies"] = country_currencies 
+        # Country Capital
+        country_capitals = ""
+        for capital in country.capital:
+            country_capitals += " " + capital
+        country_capitals = country_capitals.strip()
+        new_country["country_capital"] = country_capitals
+        # Country Subregion
+        new_country["country_subregion"] = country.subregion
+        # Country Languages
+        country_languages = ""
+        for language in country.languages.values():
+            country_languages += " " + language
+        country_languages = country_languages.strip().replace(" ", ", ")
+        new_country["country_languages"] = country_languages
+        # Country Latitude, Longitude
+        new_country["country_latlng"] = country.latlng
+        # Country Landlocked
+        new_country["country_landlocked"] = country.landlocked
+        # Country Area
+        new_country["country_area"] = country.area
+        # Country Population
+        new_country["country_population"] = country.population
+        # Append completed object to list
+        parsed_countries.append(new_country)
+    return jsonify(parsed_countries)
 
 @bp.route("/admin/organizations")
 def raw_organizations():

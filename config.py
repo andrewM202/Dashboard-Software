@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Below I create a classes with the configuration settings for all the stages of my product. Config is the default config, ProductionConfig for production, etc.
 class Config(object):
-    DEBUG = True
+    FLASK_DEBUG = True
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'this-really-needs-to-be-changed'
@@ -12,12 +12,12 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = 0
 
 class ProductionConfig(Config):
-    DEBUG = False
+    FLASK_DEBUG = False
 
 class StagingConfig(Config):
     DEVELOPMENT = True
-    DEBUG = True
+    FLASK_DEBUG = True
 
 class DevelopmentConfig(Config):
-    DEVELOPMENT = True
-    DEBUG = True
+    TESTING = True
+    FLASK_DEBUG = True
