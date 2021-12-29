@@ -119,6 +119,9 @@
                         placeholder: "Organizations",
                         name: "Organizations",
                         required: false,
+                        flexdatalist: true,
+                        flexdatafield: "name",
+                        flexdataid: "people_organizations",
                     },
                     {
                         type: "Text",
@@ -311,12 +314,6 @@
                     increase: -523,
                     description: "Never",
                 },
-                {
-                    subtitle: "Currencies",
-                    amount: 1235,
-                    increase: -523,
-                    description: "Never",
-                },
             ],
             // Countries Cards End
             // Countries Table Begin
@@ -394,12 +391,15 @@
             </div>
         </div>
     </div>
-    <DataCreationCard
-        url={DataSettings.People.CreationCard.URL}
-        title={DataSettings.People.CreationCard.Title}
-        inputs={DataSettings.People.CreationCard.Inputs}
-        refreshURL={DataSettings.People.CreationCard.RefreshURL}
-    />
+    {#if organizations !== undefined}
+        <DataCreationCard
+            flexdata={organizations}
+            url={DataSettings.People.CreationCard.URL}
+            title={DataSettings.People.CreationCard.Title}
+            inputs={DataSettings.People.CreationCard.Inputs}
+            refreshURL={DataSettings.People.CreationCard.RefreshURL}
+        />
+    {/if}
 </div>
 
 <!-- Countries -->

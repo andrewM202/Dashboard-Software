@@ -1,11 +1,20 @@
 <script>
     import { refreshData } from "../../stores.js";
+    import Flexdata from "../Flexdatalist/Flexdata.svelte";
 
     // Optional Arguments
     export let title;
     export let inputs;
     export let url;
     export let refreshURL;
+    export let flexdata;
+
+    if (flexdata !== undefined) {
+        for (let data of flexdata) {
+            console.log(data);
+        }
+    }
+
     // Error for if form data is not valid
     let error = false;
 
@@ -49,6 +58,8 @@
                     }
                     j$("form").trigger("reset");
                     refreshData(refreshURL);
+                    // Remove flexdatalist values
+                    j$("li.value").remove();
                 },
                 error: function (e) {
                     error = "Server Error During Creation.";
@@ -60,6 +71,8 @@
         }
     }
 </script>
+
+<Flexdata />
 
 <div class="px-4 md:px-10 mx-auto w-full">
     <div class="flex flex-wrap ml-8">
@@ -86,13 +99,28 @@
                                 <div class="mb-3 py-0 mx-4">
                                     {#if input.type !== "Submit"}
                                         <input
-                                            id={input.name}
+                                            list="languages"
+                                            data-min-length="1"
+                                            multiple
+                                            id={input.flexdataid !== undefined
+                                                ? input.flexdataid
+                                                : input.name}
                                             type={input.type}
                                             placeholder={input.placeholder}
                                             name={input.name}
                                             value=""
-                                            class="py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                            class="{input.flexdatalist === true
+                                                ? 'flexdatalist'
+                                                : ''} py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                                         />
+                                        {#if input.flexdatalist === true && flexdata !== undefined}
+                                            <datalist id="languages">
+                                                {#each flexdata as value}
+                                                    <option>{value.name}</option
+                                                    >
+                                                {/each}
+                                            </datalist>
+                                        {/if}
                                     {:else}
                                         <input
                                             on:click={submit}
