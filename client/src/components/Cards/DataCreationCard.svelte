@@ -9,16 +9,16 @@
     export let refreshURL;
     export let flexdata;
 
-    let flex_test = "RandomID";
-
-    if (flexdata !== undefined) {
-        for (let data of flexdata) {
-            console.log(data);
-        }
-    }
-
     // Error for if form data is not valid
     let error = false;
+
+    // Setting min-width of multiple flexdatalist input
+    setInterval(function () {
+        j$("li.input-container.flexdatalist-multiple-value input").css(
+            "min-width",
+            "100px"
+        );
+    }, 100);
 
     function validateData() {
         // Check each input
@@ -104,7 +104,7 @@
                                             list={input.flexdataid !== undefined
                                                 ? input.flexdataid
                                                 : input.name}
-                                            data-min-length="1"
+                                            data-min-length="0"
                                             multiple
                                             type={input.type}
                                             placeholder={input.placeholder}
