@@ -9,16 +9,16 @@
 
   // pages for this layout
   import RawArchive from "views/admin/RawArchive.svelte";
+  import Notes from "views/admin/Notes.svelte";
   import Dashboard from "views/admin/Dashboard.svelte";
   import Settings from "views/admin/Settings.svelte";
   import Tables from "views/admin/Tables.svelte";
   import Maps from "views/admin/Maps.svelte";
 
   export let location;
-  export let admin = "";
 </script>
 
-{#if ["/admin/dashboard", "/admin/tables", "/admin/maps"].includes(location.pathname)}
+{#if ["/admin/dashboard", "/admin/tables", "/admin/maps", "/admin/notes"].includes(location.pathname)}
   <div>
     <Sidebar {location} />
     <div class="relative md:ml-64 bg-blueGray-100">
@@ -31,6 +31,7 @@
           <Route path="tables" component={Tables} />
           <Route path="maps" component={Maps} />
           <Route path="raw-archive" component={RawArchive} />
+          <Route path="notes" component={Notes} />
         </Router>
         <FooterAdmin />
       </div>
@@ -47,6 +48,7 @@
           <Route path="tables" component={Tables} />
           <Route path="maps" component={Maps} />
           <Route path="raw-archive" component={RawArchive} />
+          <Route path="notes" component={Notes} />
         </Router>
         <FooterAdmin />
       </div>

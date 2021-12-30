@@ -12,7 +12,8 @@
     // Error for if form data is not valid
     let error = false;
 
-    // Setting min-width of multiple flexdatalist input
+    // Setting min-width of multiple flexdatalist input,
+    // otherwise its super small like 40px
     setInterval(function () {
         j$("li.input-container.flexdatalist-multiple-value input").css(
             "min-width",

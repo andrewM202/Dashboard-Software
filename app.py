@@ -14,8 +14,13 @@ app.register_blueprint(archive_bp)
 from dashboard import bp as dashboard_bp
 app.register_blueprint(dashboard_bp)
 
+# Not yet organized
 from misc import bp as misc_bp
 app.register_blueprint(misc_bp)
+
+# Notes page
+from notes import bp as notes_bp
+app.register_blueprint(notes_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)

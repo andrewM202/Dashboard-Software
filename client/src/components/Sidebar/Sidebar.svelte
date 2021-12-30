@@ -107,7 +107,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-tv mr-2 text-sm {location.href.indexOf(
+              class="fas fa-chart-line mr-2 text-sm {location.href.indexOf(
                 '/admin/dashboard'
               ) !== -1
                 ? 'opacity-75'
@@ -128,7 +128,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-tv mr-2 text-sm {location.href.indexOf(
+              class="fas fa-user-tie mr-2 text-sm {location.href.indexOf(
                 '/admin/people'
               ) !== -1
                 ? 'opacity-75'
@@ -149,7 +149,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-tv mr-2 text-sm {location.href.indexOf(
+              class="fas fa-globe mr-2 text-sm {location.href.indexOf(
                 '/admin/countries'
               ) !== -1
                 ? 'opacity-75'
@@ -170,13 +170,34 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-tools mr-2 text-sm {location.href.indexOf(
+              class="fas fa-sitemap mr-2 text-sm {location.href.indexOf(
                 '/admin/organizations'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
             Organizations
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/resources"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/resources'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-gem mr-2 text-sm {location.href.indexOf(
+                '/admin/resources'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Resources
           </a>
         </li>
 
@@ -212,7 +233,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf(
+              class="fas fa-map mr-2 text-sm {location.href.indexOf(
                 '/admin/maps'
               ) !== -1
                 ? 'opacity-75'
@@ -233,7 +254,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf(
+              class="fas fa-arrows-alt-h mr-2 text-sm {location.href.indexOf(
                 '/admin/timeline'
               ) !== -1
                 ? 'opacity-75'
@@ -254,7 +275,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf(
+              class="fas fa-cloud mr-2 text-sm {location.href.indexOf(
                 '/admin/networks'
               ) !== -1
                 ? 'opacity-75'
@@ -281,7 +302,7 @@
             class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
             href="/news/archive/new-york-times"
           >
-            <i class="fas fa-fingerprint text-blueGray-300 mr-2 text-sm" />
+            <i class="fab fa-chrome text-blueGray-300 mr-2 text-sm" />
             Scrape Content
           </a>
         </li>
@@ -296,7 +317,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-tv mr-2 text-sm {location.href.indexOf(
+              class="fas fa-file-archive mr-2 text-sm {location.href.indexOf(
                 '/admin/raw-archive'
               ) !== -1
                 ? 'opacity-75'
@@ -317,7 +338,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf(
+              class="fas fa-sticky-note mr-2 text-sm {location.href.indexOf(
                 '/admin/notes'
               ) !== -1
                 ? 'opacity-75'
