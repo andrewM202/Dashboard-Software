@@ -9,6 +9,8 @@
     export let refreshURL;
     export let flexdata;
 
+    let flex_test = "RandomID";
+
     if (flexdata !== undefined) {
         for (let data of flexdata) {
             console.log(data);
@@ -97,14 +99,13 @@
                         {#if inputs !== undefined}
                             {#each inputs as input}
                                 <div class="mb-3 py-0 mx-4">
-                                    {#if input.type !== "Submit"}
+                                    {#if input.flexdatalist !== undefined}
                                         <input
-                                            list="languages"
-                                            data-min-length="1"
-                                            multiple
-                                            id={input.flexdataid !== undefined
+                                            list={input.flexdataid !== undefined
                                                 ? input.flexdataid
                                                 : input.name}
+                                            data-min-length="1"
+                                            multiple
                                             type={input.type}
                                             placeholder={input.placeholder}
                                             name={input.name}
@@ -114,13 +115,27 @@
                                                 : ''} py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                                         />
                                         {#if input.flexdatalist === true && flexdata !== undefined}
-                                            <datalist id="languages">
+                                            <datalist
+                                                id={input.flexdataid !==
+                                                undefined
+                                                    ? input.flexdataid
+                                                    : input.name}
+                                            >
                                                 {#each flexdata as value}
                                                     <option>{value.name}</option
                                                     >
                                                 {/each}
                                             </datalist>
                                         {/if}
+                                    {:else if input.type !== "Submit"}
+                                        <input
+                                            id={input.name}
+                                            type={input.type}
+                                            placeholder={input.placeholder}
+                                            name={input.name}
+                                            value=""
+                                            class="py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                        />
                                     {:else}
                                         <input
                                             on:click={submit}

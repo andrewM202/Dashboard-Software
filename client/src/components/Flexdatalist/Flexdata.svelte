@@ -110,19 +110,29 @@
                                 o && o.addClass("focus");
                         })
                         .on("input keydown", function (e) {
-                            9 === i.keyNum(e) && i.results.remove(),
+                            if (
+                                (9 === i.keyNum(e) && i.results.remove(),
                                 i.action.keypressValue(e, 188),
-                                i.action.backSpaceKeyRemove(e);
+                                i.action.backSpaceKeyRemove(e),
+                                13 === i.keyNum(e) &&
+                                    0 === j$(".flexdatalist-results li").length)
+                            )
+                                return !1;
                         })
                         .on("input keyup", function (e) {
-                            i.action.keypressValue(e, 13),
+                            var t = !1;
+                            if (
+                                (i.action.keypressValue(e, 13) && (t = !0),
                                 i.action.keypressSearch(e),
                                 i.action.copyValue(e),
                                 i.action.backSpaceKeyRemove(e),
                                 i.action.showAllResults(e),
                                 i.action.clearValue(e),
                                 i.action.removeResults(e),
-                                i.action.inputWidth(e);
+                                i.action.inputWidth(e),
+                                t)
+                            )
+                                return !1;
                         })
                         .on("focusout", function (e) {
                             o && o.removeClass("focus"),
@@ -154,11 +164,9 @@
                             !s.selectionRequired &&
                             s.multiple
                         ) {
+                            e.preventDefault(), e.stopPropagation();
                             r = l[0].value;
-                            e.preventDefault(),
-                                e.stopPropagation(),
-                                i.fvalue.extract(r),
-                                i.results.remove();
+                            return i.fvalue.extract(r), i.results.remove(), !0;
                         }
                     },
                     keypressSearch: function (e) {
@@ -493,11 +501,11 @@
                         },
                         push: function (e, t) {
                             var a = i.fvalue.get();
-                            a.includes(e) ||
-                                ((e = i.fvalue.toObj(e)),
+                            if (a.includes(e)) return !1;
+                            (e = i.fvalue.toObj(e)),
                                 a.push(e),
                                 (e = i.fvalue.toStr(a)),
-                                (i.value = e));
+                                (i.value = e);
                         },
                         toggle: function (e) {
                             var a = i.options.get();
@@ -722,10 +730,10 @@
                                   ) {
                                       return e.trim();
                                   }))
-                                : (this.isMixed() || this.isJSON()) &&
-                                  this.isJSON(e)
-                                ? (e = JSON.parse(e))
-                                : "number" == typeof e && (e = e.toString());
+                                : (!this.isMixed() && !this.isJSON()) ||
+                                  (0 !== e.indexOf("[") && !this.isJSON(e))
+                                ? "number" == typeof e && (e = e.toString())
+                                : (e = JSON.parse(e));
                         }
                         return e;
                     },
@@ -758,7 +766,11 @@
                     },
                     isMixed: function () {
                         var e = i.options.get();
-                        return !e.selectionRequired && "*" === e.valueProperty;
+                        return (
+                            !e.selectionRequired &&
+                            ("*" === e.valueProperty ||
+                                i.isObject(e.valueProperty))
+                        );
                     },
                     isCSV: function () {
                         return !this.isJSON() && i.options.get("multiple");
@@ -943,7 +955,7 @@
                                             .join("-")
                                             .split("[")
                                             .join("-")
-                                            .replace(/^\|+|\-+j$/g, "");
+                                            .replace(/^\|+|\-+$/g, "");
                                     t.relatives[i] = e.val();
                                 })),
                             t
@@ -1475,9 +1487,6 @@
                             (0 === this.length(e) || "" === j$.trim(e)))
                     );
                 }),
-                (this.isObject = function (e) {
-                    return e && "object" == typeof e;
-                }),
                 (this.length = function (e) {
                     return this.isObject(e)
                         ? Object.keys(e).length
@@ -1490,6 +1499,9 @@
                     return i && void 0 !== t
                         ? void 0 !== this.getPropertyValue(e, t)
                         : i;
+                }),
+                (this.isObject = function (e) {
+                    return e && "object" == typeof e;
                 }),
                 (this.isArray = function (e) {
                     return (
