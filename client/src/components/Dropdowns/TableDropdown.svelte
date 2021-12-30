@@ -59,6 +59,7 @@
 
     let parent = j$(e.path[4]);
     let children = j$(e.path[4]).children(".datacell");
+    // let closeButton = j$(`${e.path[4]}:last-child i`);
     // Event listener for saving changes
     j$(modifyButtonContainer.children()[0]).click(function (e) {
       e.preventDefault();
@@ -66,7 +67,6 @@
       // Make AJAX Request
       j$(parent).wrap("<form id='saveForm'></form>");
       const data = j$("#saveForm").serialize();
-      console.log(data);
       j$.ajax({
         type: "POST",
         url: `${location.origin}${UpdateURL}`,
@@ -89,11 +89,8 @@
         let value = j$(child).children().val();
         j$(child).html(value);
       }
-
-      // Make AJAX Request
-      // console.log(UpdateID);
-      // console.log(UpdateURL);
-      console.log(UpdateFormNames);
+      // Close the modify menu after all done
+      j$(parent).find("i").click();
     });
 
     // Hopefully can serialize without form element...
