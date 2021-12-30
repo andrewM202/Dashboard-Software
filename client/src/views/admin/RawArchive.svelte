@@ -88,6 +88,13 @@
                 Title: "People",
                 DeletionURL: "/admin/delete-person",
                 RefreshURL: "/admin/people",
+                UpdateURL: "/admin/update-person",
+                UpdateFormNames: [
+                    "FirstName",
+                    "LastName",
+                    "Organizations",
+                    "Titles",
+                ],
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -200,6 +207,8 @@
                 DBFieldNames: ["name", "opinions", "affiliations"],
                 DeletionURL: "/admin/delete-organization",
                 RefreshURL: "/admin/organizations",
+                UpdateURL: "/admin/update-organization",
+                UpdateFormNames: ["Name", "Opinions", "Affiliations"],
                 Title: "Organizations",
             },
             // Organizations Table End
@@ -354,8 +363,6 @@
 
     // Bind openTab to AdminNavbar component
     let openTab = 0;
-
-    export let location;
 </script>
 
 <AdminNavbar bind:openTab {navItems} />
@@ -384,6 +391,9 @@
                         title={DataSettings.People.Table.Title}
                         DeletionURL={DataSettings.People.Table.DeletionURL}
                         RefreshURL={DataSettings.People.Table.RefreshURL}
+                        UpdateURL={DataSettings.People.Table.UpdateURL}
+                        UpdateFormNames={DataSettings.People.Table
+                            .UpdateFormNames}
                     />
                 {:catch error}
                     <p style="color: red">{error.message}</p>
@@ -462,6 +472,9 @@
                         DeletionURL={DataSettings.Organizations.Table
                             .DeletionURL}
                         RefreshURL={DataSettings.Organizations.Table.RefreshURL}
+                        UpdateURL={DataSettings.Organizations.Table.UpdateURL}
+                        UpdateFormNames={DataSettings.Organizations.Table
+                            .UpdateFormNames}
                     />
                 {:catch error}
                     <p style="color: red">{error.message}</p>

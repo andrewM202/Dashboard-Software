@@ -6,8 +6,11 @@
 
   export let DeletionURL;
   export let RefreshURL;
+  export let UpdateURL;
+  export let UpdateFormNames;
   export let DeleteID;
   DeleteID = DeleteID[0].$oid;
+  let UpdateID = DeleteID;
 
   let dropdownPopoverShow = false;
 
@@ -44,6 +47,75 @@
       },
     });
   }
+
+  function updateRow(e) {
+    e.preventDefault();
+    let modifyButtonContainer = j$(e.path[1]);
+    const modifyButtons = j$(e.path[1]).children().remove();
+    // Change the buttons from delete and update to save changes
+    j$(e.path[1]).append(
+      "<a href='' id='saveRow' class='text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700'>Save Changes</a>"
+    );
+
+    let parent = j$(e.path[4]);
+    let children = j$(e.path[4]).children(".datacell");
+    // Event listener for saving changes
+    j$(modifyButtonContainer.children()[0]).click(function (e) {
+      e.preventDefault();
+
+      // Make AJAX Request
+      j$(parent).wrap("<form id='saveForm'></form>");
+      const data = j$("#saveForm").serialize();
+      console.log(data);
+      j$.ajax({
+        type: "POST",
+        url: `${location.origin}${UpdateURL}`,
+        data: data,
+        success: function () {
+          console.log("yay");
+        },
+        error: function () {
+          console.log("rip");
+        },
+      });
+      j$(parent).unwrap();
+
+      // Add original modify buttons back
+      j$(modifyButtonContainer).children().remove();
+      j$(modifyButtonContainer).append(modifyButtons);
+      // Change the inputs back to regular text
+      // with values from changed inputs
+      for (let child of children) {
+        let value = j$(child).children().val();
+        j$(child).html(value);
+      }
+
+      // Make AJAX Request
+      // console.log(UpdateID);
+      // console.log(UpdateURL);
+      console.log(UpdateFormNames);
+    });
+
+    // Hopefully can serialize without form element...
+    // j$(e.path[4]).wrap("<form></form>");
+
+    // Change the text to input fields
+    // Append hidden input with the update id for the DB
+    j$(parent).append(
+      `<input type='hidden' name='UpdateID' value='${UpdateID}' />`
+    );
+    // Index for setting the form names from settings JSON
+    let index = 0;
+    for (let child of children) {
+      j$(child).html(
+        `<input name='${UpdateFormNames[index]}'
+        value='${j$(
+          child
+        ).text()}' class='childcell p-2 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full'/>`
+      );
+      index++;
+    }
+  }
 </script>
 
 <div>
@@ -56,6 +128,7 @@
     <i class="fas fa-ellipsis-v" />
   </a>
   <div
+    id="modifyContainer"
     bind:this={popoverDropdownRef}
     class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow
       ? 'block'
@@ -63,7 +136,7 @@
   >
     <a
       href=""
-      on:click={(e) => e.preventDefault()}
+      on:click={updateRow}
       class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
     >
       Update

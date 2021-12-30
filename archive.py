@@ -27,6 +27,17 @@ def delete_person():
     PeopleWatch(id=delete_id).delete()
     return redirect('/admin/raw-archive')
 
+@bp.route("/admin/update-person", methods=['POST'])
+def update_person():
+    update_id = request.form['UpdateID']
+    PeopleWatch(id=update_id).update(
+        first_name    = request.form['FirstName'], 
+        last_name     = request.form['LastName'],
+        organizations = request.form['Organizations'].split(","),
+        titles        = request.form['Titles'].split(",")
+    )
+    return redirect('/admin/raw-archive')
+
 @bp.route("/admin/people")
 def raw_people():
     people = PeopleWatch.objects()
@@ -92,6 +103,15 @@ def create_organization():
 @bp.route("/admin/delete-organization", methods=['POST'])
 def delete_organization():
     delete_id = request.form['DeletionID']
-    print(delete_id)
     Organizations(id=delete_id).delete()
+    return redirect('/admin/raw-archive')
+
+@bp.route("/admin/update-organization", methods=['POST'])
+def update_organization():
+    update_id = request.form['UpdateID']
+    Organizations(id=update_id).update(
+        name = request.form['Name'], 
+        opinions = request.form['Opinions'].split(","),
+        affiliations = request.form['Affiliations'].split(",")
+    )
     return redirect('/admin/raw-archive')

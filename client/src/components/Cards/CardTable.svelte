@@ -21,6 +21,8 @@
   export let DBFieldNames;
   export let DeletionURL;
   export let RefreshURL;
+  export let UpdateURL;
+  export let UpdateFormNames;
   export let Modification;
 </script>
 
@@ -84,7 +86,7 @@
               {#each Object.entries(row) as entry}
                 {#if DBFieldNames.includes(entry[0])}
                   <td
-                    class="break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                    class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                   >
                     {entry[1]}
                   </td>
@@ -97,6 +99,8 @@
                   <TableDropdown
                     {RefreshURL}
                     {DeletionURL}
+                    {UpdateURL}
+                    {UpdateFormNames}
                     DeleteID={Object.values(row)}
                   />
                 </td>
