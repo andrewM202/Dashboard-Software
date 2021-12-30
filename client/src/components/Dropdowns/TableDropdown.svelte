@@ -37,7 +37,6 @@
       url: `${location.origin}${DeletionURL}`,
       data: data,
       success: function () {
-        console.log(RefreshURL);
         refreshData(RefreshURL);
       },
       error: function (e) {

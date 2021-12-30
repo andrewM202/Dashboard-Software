@@ -126,9 +126,8 @@
                         placeholder: "Organizations",
                         name: "Organizations",
                         required: false,
-                        flexdatalist: true,
-                        flexdatafield: "name",
-                        flexdataid: "people_organizations",
+                        flexdatalist: true, // Is the flexdatalist enabled
+                        flexdataid: "people_organizations", // The input id for the datalist
                     },
                     {
                         type: "Text",
@@ -235,6 +234,8 @@
                         placeholder: "Affiliations",
                         name: "Affiliations",
                         required: false,
+                        flexdatalist: true,
+                        flexdataid: "organization_affiliations",
                     },
                     {
                         type: "Submit",
@@ -482,12 +483,19 @@
             </div>
         </div>
     </div>
-    <DataCreationCard
-        url={DataSettings.Organizations.CreationCard.URL}
-        title={DataSettings.Organizations.CreationCard.Title}
-        inputs={DataSettings.Organizations.CreationCard.Inputs}
-        refreshURL={DataSettings.Organizations.CreationCard.RefreshURL}
-    />
+    {#await organizations}
+        <p>Loading...</p>
+    {:then organizations}
+        <DataCreationCard
+            flexdata={organizations}
+            url={DataSettings.Organizations.CreationCard.URL}
+            title={DataSettings.Organizations.CreationCard.Title}
+            inputs={DataSettings.Organizations.CreationCard.Inputs}
+            refreshURL={DataSettings.Organizations.CreationCard.RefreshURL}
+        />
+    {:catch error}
+        <p style="color: red">{error.message}</p>
+    {/await}
 </div>
 
 <!-- Maps, Graphs, Charts -->

@@ -121,10 +121,13 @@
                                                     ? input.flexdataid
                                                     : input.name}
                                             >
-                                                {#each flexdata as value}
-                                                    <option>{value.name}</option
-                                                    >
-                                                {/each}
+                                                {#await flexdata then flexdata}
+                                                    {#each flexdata as value}
+                                                        <option
+                                                            >{value.name}</option
+                                                        >
+                                                    {/each}
+                                                {/await}
                                             </datalist>
                                         {/if}
                                     {:else if input.type !== "Submit"}
