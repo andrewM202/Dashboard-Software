@@ -12,12 +12,14 @@ def create_person():
     first_name = request.form['FirstName']
     last_name = request.form['LastName']
     organization = request.form['Organizations'].split(",")
-    title = request.form['Titles'].split(",")
+    titles = request.form['Titles'].split(",")
+    opinions = request.form['Opinions'].split(",")
     PeopleWatch(
         first_name    = first_name,
         last_name     = last_name,
         organizations = organization,
-        titles        = title
+        titles        = titles,
+        opinions      = opinions
     ).save()
     return redirect('/admin/raw-archive')
 
@@ -34,7 +36,8 @@ def update_person():
         first_name    = request.form['FirstName'], 
         last_name     = request.form['LastName'],
         organizations = request.form['Organizations'].split(","),
-        titles        = request.form['Titles'].split(",")
+        titles        = request.form['Titles'].split(","),
+        opinions      = request.form['Opinions'].split(",")
     )
     return redirect('/admin/raw-archive')
 

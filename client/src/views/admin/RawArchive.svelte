@@ -84,7 +84,13 @@
             // People Cards End
             // People Table Begin
             Table: {
-                Headers: ["First Name", "Last Name", "Organizations", "Titles"],
+                Headers: [
+                    "First Name",
+                    "Last Name",
+                    "Organizations",
+                    "Titles",
+                    "Opinions",
+                ],
                 Title: "People",
                 DeletionURL: "/admin/delete-person",
                 RefreshURL: "/admin/people",
@@ -94,12 +100,14 @@
                     "LastName",
                     "Organizations",
                     "Titles",
+                    "Opinions",
                 ],
                 DBFieldNames: [
                     "first_name",
                     "last_name",
                     "organizations",
                     "titles",
+                    "opinions",
                 ],
             },
             // People Table End
@@ -138,7 +146,7 @@
                     {
                         type: "Text",
                         placeholder: "Opinions",
-                        name: "Opinion",
+                        name: "Opinions",
                         required: false,
                     },
                     {
