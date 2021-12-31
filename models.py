@@ -8,9 +8,14 @@ class PeopleWatch(Document):
     """ People """
     first_name = StringField(required=True)
     last_name = StringField(required=True)
+    person_type = ListField(required=True)
     organizations = ListField()
     titles = ListField()
     opinions = ListField()
+
+class PersonType(Document):
+    """ Types of People """
+    pass
 
 class Countries(Document):
     """ Countries """
@@ -27,5 +32,10 @@ class Countries(Document):
 class Organizations(Document):
     """ Organizations """
     name = StringField(required=True, unique=True)
+    organ_type = StringField(required=True)
     opinions = ListField()
     affiliations = ListField()
+
+class OrganizationType(Document):
+    """ Types of organizations """
+    pass

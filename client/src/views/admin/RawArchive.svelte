@@ -87,6 +87,7 @@
                 Headers: [
                     "First Name",
                     "Last Name",
+                    "Person Type",
                     "Organizations",
                     "Titles",
                     "Opinions",
@@ -98,6 +99,7 @@
                 UpdateFormNames: [
                     "FirstName",
                     "LastName",
+                    "PersonType",
                     "Organizations",
                     "Titles",
                     "Opinions",
@@ -105,6 +107,7 @@
                 DBFieldNames: [
                     "first_name",
                     "last_name",
+                    "person_type",
                     "organizations",
                     "titles",
                     "opinions",
@@ -127,6 +130,12 @@
                         type: "Text",
                         placeholder: "Last Name",
                         name: "LastName",
+                        required: true,
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Person Type",
+                        name: "PersonType",
                         required: true,
                     },
                     {
@@ -210,12 +219,27 @@
             // Organizations Cards End
             // Organizations Table Begin
             Table: {
-                Headers: ["Name", "Opinions", "Affiliations"],
-                DBFieldNames: ["name", "opinions", "affiliations"],
+                Headers: [
+                    "Name",
+                    "Organization Type",
+                    "Opinions",
+                    "Affiliations",
+                ],
+                DBFieldNames: [
+                    "name",
+                    "organ_type",
+                    "opinions",
+                    "affiliations",
+                ],
                 DeletionURL: "/admin/delete-organization",
                 RefreshURL: "/admin/organizations",
                 UpdateURL: "/admin/update-organization",
-                UpdateFormNames: ["Name", "Opinions", "Affiliations"],
+                UpdateFormNames: [
+                    "Name",
+                    "OrganizationType",
+                    "Opinions",
+                    "Affiliations",
+                ],
                 Title: "Organizations",
             },
             // Organizations Table End
@@ -229,6 +253,12 @@
                         type: "Text",
                         placeholder: "Name",
                         name: "Name",
+                        required: true,
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Organization Type",
+                        name: "OrganizationType",
                         required: true,
                     },
                     {

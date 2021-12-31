@@ -11,12 +11,14 @@ def raw_archive():
 def create_person():
     first_name = request.form['FirstName']
     last_name = request.form['LastName']
+    person_type = request.form['PersonType'].split(",")
     organization = request.form['Organizations'].split(",")
     titles = request.form['Titles'].split(",")
     opinions = request.form['Opinions'].split(",")
     PeopleWatch(
         first_name    = first_name,
         last_name     = last_name,
+        person_type   = person_type,
         organizations = organization,
         titles        = titles,
         opinions      = opinions
@@ -35,6 +37,7 @@ def update_person():
     PeopleWatch(id=update_id).update(
         first_name    = request.form['FirstName'], 
         last_name     = request.form['LastName'],
+        person_type   = request.form['PersonType'].split(","),
         organizations = request.form['Organizations'].split(","),
         titles        = request.form['Titles'].split(","),
         opinions      = request.form['Opinions'].split(",")
@@ -94,10 +97,12 @@ def raw_organizations():
 @bp.route("/admin/create-organization", methods=['POST'])
 def create_organization():
     name = request.form['Name']
+    organization_type = request.form['OrganizationType']
     opinions = request.form['Opinions'].split(",")
     affiliations = request.form['Affiliations'].split(",")
     Organizations(
         name         = name,
+        organ_type   = organization_type,
         opinions     = opinions,
         affiliations = affiliations
     ).save()
@@ -113,8 +118,9 @@ def delete_organization():
 def update_organization():
     update_id = request.form['UpdateID']
     Organizations(id=update_id).update(
-        name = request.form['Name'], 
-        opinions = request.form['Opinions'].split(","),
+        name         = request.form['Name'], 
+        organ_type   = request.form['OrganizationType'],
+        opinions     = request.form['Opinions'].split(","),
         affiliations = request.form['Affiliations'].split(",")
     )
     return redirect('/admin/raw-archive')
