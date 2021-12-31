@@ -320,8 +320,8 @@ fieldset {
   padding: 0;
 }
 
-ol,
-ul {
+
+.sidebar-list {
   list-style: none;
   margin: 0;
   padding: 0;

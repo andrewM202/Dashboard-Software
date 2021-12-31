@@ -1,5 +1,8 @@
 <script>
     // core components
+    import Tree from "../../components/Plugin/Tree.svelte";
 </script>
 
-<div class="flex flex-wrap mt-4 w-full h-500-px">test</div>
+<Tree />
+
+<div class="mt-4 w-full h-500-px" />

@@ -1,6 +1,6 @@
 <script>
     import { refreshData } from "../../stores.js";
-    import Flexdata from "../Flexdatalist/Flexdata.svelte";
+    import Flexdata from "../Plugin/Flexdata.svelte";
 
     // Optional Arguments
     export let title;

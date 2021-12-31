@@ -37,7 +37,7 @@
       Scientia Est Potentia
     </a>
     <!-- User -->
-    <ul class="md:hidden items-center flex flex-wrap list-none">
+    <ul class="md:hidden sidebar-list items-center flex flex-wrap list-none">
       <li class="inline-block relative">
         <NotificationDropdown />
       </li>
@@ -95,7 +95,9 @@
       </h6>
       <!-- Navigation -->
 
-      <ul class="md:flex-col md:min-w-full flex flex-col list-none">
+      <ul
+        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none"
+      >
         <li class="items-center">
           <a
             use:link
@@ -295,7 +297,9 @@
         Archive
       </h6>
       <!-- Navigation -->
-      <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+      <ul
+        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
+      >
         <li class="items-center">
           <a
             use:link
@@ -359,7 +363,9 @@
       </h6>
       <!-- Navigation -->
 
-      <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+      <ul
+        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
+      >
         <li class="items-center">
           <a
             use:link
@@ -393,7 +399,9 @@
       </h6>
       <!-- Navigation -->
 
-      <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+      <ul
+        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
+      >
         <li class="items-center">
           <a
             use:link
