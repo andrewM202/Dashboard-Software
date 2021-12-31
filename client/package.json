@@ -33,6 +33,7 @@
     "@tailwindcss/forms": "0.2.1",
     "chart.js": "2.9.4",
     "jquery": "^3.6.0",
+    "jquery.fancytree": "^2.38.0",
     "sirv-cli": "1.0.11",
     "svelte-routing": "1.5.0"
   }
