@@ -402,6 +402,86 @@
             // Organizations CreationCard End
         },
         // Organizations End
+        // Organization Types Start
+        OrganizationTypes: {
+            // Organization Types Inputs
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Organization Type Name",
+                    name: "OrganizationTypeName",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Acronyms",
+                    name: "OrganizationTypeAcronyms",
+                },
+                {
+                    type: "Submit",
+                    placeholder: "Search",
+                    name: "",
+                },
+            ],
+            // Organization Types Inputs End
+            // Organization Types Cards
+            Cards: [
+                {
+                    subtitle: "Organization Type Name",
+                    amount: 500,
+                    increase: 4.5,
+                    description: "Last Week",
+                },
+                {
+                    subtitle: "Acronyms",
+                    amount: 1235,
+                    increase: -523,
+                    description: "Never",
+                },
+            ],
+            // Organization Types Cards End
+            // Organization Types Table Begin
+            Table: {
+                Headers: ["Organization Type Name", "Acronyms"],
+                DBFieldNames: ["organ_type_name", "organ_type_acronyms"],
+                DeletionURL: "/admin/delete-organization-type",
+                RefreshURL: "/admin/organization-types",
+                UpdateURL: "/admin/update-organization-types",
+                UpdateFormNames: [
+                    "OrganizationTypeName",
+                    "OrganizationTypeAcronyms",
+                ],
+                Title: "OrganizationTypes",
+            },
+            // Organization Types Table End
+            // Organization Types CreationCard Begin
+            CreationCard: {
+                URL: "/admin/create-organization-type",
+                RefreshURL: "/admin/organization-types",
+                Title: "Create Person Type",
+                Inputs: [
+                    {
+                        type: "Text",
+                        placeholder: "Organization Type Name",
+                        name: "OrganizationTypeName",
+                        required: true,
+                    },
+                    {
+                        type: "Text",
+                        placeholder: "Acronyms",
+                        name: "OrganizationTypeAcronyms",
+                        required: true,
+                    },
+                    {
+                        type: "Submit",
+                        placeholder: "Submit",
+                        name: "",
+                        required: false,
+                    },
+                ],
+            },
+            // Organization Types CreationCard End
+        },
+        // Organization Types End
         // Countries Start
         Countries: {
             // Countries Inputs
@@ -706,29 +786,31 @@
     <HeaderStats
         id={"Organizations"}
         title={"Organizations"}
-        cards={DataSettings.Organizations.Cards}
-        inputs={DataSettings.Organizations.Inputs}
+        cards={DataSettings.OrganizationTypes.Cards}
+        inputs={DataSettings.OrganizationTypes.Inputs}
     />
     <div class="block px-4 md:px-10 mx-auto w-full m-12">
         <div class="flex flex-wrap ml-8">
             <div
                 class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
             >
-                {#await organizations}
+                {#await organizationTypes}
                     <p>Loading...</p>
-                {:then organizations}
+                {:then organizationTypes}
                     <CardTable
                         color="dark"
-                        data={organizations}
-                        DBFieldNames={DataSettings.Organizations.Table
+                        data={organizationTypes}
+                        DBFieldNames={DataSettings.OrganizationTypes.Table
                             .DBFieldNames}
-                        headers={DataSettings.Organizations.Table.Headers}
-                        title={DataSettings.Organizations.Table.Title}
-                        DeletionURL={DataSettings.Organizations.Table
+                        headers={DataSettings.OrganizationTypes.Table.Headers}
+                        title={DataSettings.OrganizationTypes.Table.Title}
+                        DeletionURL={DataSettings.OrganizationTypes.Table
                             .DeletionURL}
-                        RefreshURL={DataSettings.Organizations.Table.RefreshURL}
-                        UpdateURL={DataSettings.Organizations.Table.UpdateURL}
-                        UpdateFormNames={DataSettings.Organizations.Table
+                        RefreshURL={DataSettings.OrganizationTypes.Table
+                            .RefreshURL}
+                        UpdateURL={DataSettings.OrganizationTypes.Table
+                            .UpdateURL}
+                        UpdateFormNames={DataSettings.OrganizationTypes.Table
                             .UpdateFormNames}
                     />
                 {:catch error}
@@ -737,13 +819,14 @@
             </div>
         </div>
     </div>
-    {#if organizations !== undefined}
+    {#if organizationTypes !== undefined}
         <DataCreationCard
-            flexdata={DataSettings.Organizations.CreationCard.Flexdatalistdata}
-            url={DataSettings.Organizations.CreationCard.URL}
-            title={DataSettings.Organizations.CreationCard.Title}
-            inputs={DataSettings.Organizations.CreationCard.Inputs}
-            refreshURL={DataSettings.Organizations.CreationCard.RefreshURL}
+            flexdata={DataSettings.OrganizationTypes.CreationCard
+                .Flexdatalistdata}
+            url={DataSettings.OrganizationTypes.CreationCard.URL}
+            title={DataSettings.OrganizationTypes.CreationCard.Title}
+            inputs={DataSettings.OrganizationTypes.CreationCard.Inputs}
+            refreshURL={DataSettings.OrganizationTypes.CreationCard.RefreshURL}
         />
     {/if}
 </div>
