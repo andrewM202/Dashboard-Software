@@ -24,6 +24,10 @@
   export let UpdateURL;
   export let UpdateFormNames;
   export let Modification;
+
+  function toggleFullscreen(e) {
+    j$(e.path[6]).fullScreen(true);
+  }
 </script>
 
 <div
@@ -40,6 +44,10 @@
             ? 'text-blueGray-700'
             : 'text-white'}"
         >
+          <i
+            on:click={toggleFullscreen}
+            class="fas fa-arrows-alt cursor-pointer pr-4"
+          />
           {#if title !== undefined}
             {title}
           {:else}

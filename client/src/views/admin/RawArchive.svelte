@@ -258,7 +258,7 @@
                         type: "Text",
                         placeholder: "Acronyms",
                         name: "PersonTypeAcronyms",
-                        required: true,
+                        required: false,
                     },
                     {
                         type: "Submit",
@@ -457,7 +457,7 @@
             CreationCard: {
                 URL: "/admin/create-organization-type",
                 RefreshURL: "/admin/organization-types",
-                Title: "Create Person Type",
+                Title: "Create Organization Type",
                 Inputs: [
                     {
                         type: "Text",
@@ -469,7 +469,7 @@
                         type: "Text",
                         placeholder: "Acronyms",
                         name: "OrganizationTypeAcronyms",
-                        required: true,
+                        required: false,
                     },
                     {
                         type: "Submit",
