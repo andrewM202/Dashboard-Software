@@ -1313,6 +1313,10 @@ select {
   background-color: rgba(249, 115, 22, var(--tw-bg-opacity));
 }
 
+.bg-amber-500 {
+  background-color: rgb(245 158 11);
+}
+
 .bg-red-200 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 202, 202, var(--tw-bg-opacity));
@@ -3505,6 +3509,10 @@ select {
 
 .w-2\/5 {
   width: 40%;
+}
+
+.w-3\/4 {
+  width: 75%
 }
 
 .w-4\/5 {

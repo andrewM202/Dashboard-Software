@@ -121,7 +121,7 @@
     bind:this={btnDropdownRef}
     on:click={toggleDropdown}
   >
-    <i class="fas fa-ellipsis-v" />
+    <i class="fas fa-cog" />
   </a>
   <div
     id="modifyContainer"

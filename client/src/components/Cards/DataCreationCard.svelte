@@ -9,15 +9,48 @@
     export let refreshURL;
     export let flexdata;
 
+    for (let input of inputs) {
+        if (input.flexdatalist === true) {
+            // console.log(input.name);
+        }
+    }
+
+    let flexdatalist = [];
+
+    // Simplify flexdata data so looping does not
+    // Have to occur in the HTML with templating engine
+    for (let index in flexdata) {
+        flexdatalist.push({
+            Fieldname: flexdata[index].Field,
+            FieldValues: [],
+        });
+        for (let datafield of flexdata[index].Data) {
+            for (let obj of datafield) {
+                for (let entry of Object.entries(obj)) {
+                    for (let field of flexdata[index].DBFieldNames) {
+                        if (entry[0] === field) {
+                            flexdatalist[index].FieldValues.push(entry[1]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Error for if form data is not valid
     let error = false;
+
+    // If close button clicked reset error
+    function closeAlert() {
+        error = false;
+    }
 
     // Setting min-width of multiple flexdatalist input,
     // otherwise its super small like 40px
     setInterval(function () {
         j$("li.input-container.flexdatalist-multiple-value input").css(
             "min-width",
-            "100px"
+            "150px"
         );
     }, 100);
 
@@ -30,7 +63,7 @@
                     error = "Please Fill All Required Fields.";
                     j$("#" + input.name).attr(
                         "placeholder",
-                        `${input.name} Is Required!`
+                        `${input.placeholder} Is Required!`
                     );
                 }
             }
@@ -81,25 +114,43 @@
     <div class="flex flex-wrap ml-8">
         <div class="w-full h-auto bg-blueGray-700 mb-12 p-8">
             <div class="w-full h-full bg-red-500">
-                <div class="flex flex-col">
+                <div class="flex flex-col items-center w-full">
                     <h3
                         class="text-4xl text-center font-normal leading-normal mt-0 mb-2"
                     >
                         {title}
                     </h3>
                     {#if error !== false}
-                        <h4
-                            class="text-3xl text-center font-normal leading-normal mt-0 mb-2"
+                        <div
+                            class="text-white w-3/4 px-6 py-4 border-0 rounded relative mb-4 bg-blueGray-700"
                         >
-                            {error}
-                        </h4>
+                            <span
+                                class="text-xl inline-block mr-5 align-middle"
+                            >
+                                <i class="fas fa-bell" />
+                            </span>
+                            <span class="inline-block align-middle mr-8">
+                                <b class="capitalize">Error! </b>{error}
+                            </span>
+                            <button
+                                on:click={closeAlert}
+                                class="absolute pr-4 bg-transparent text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none"
+                            >
+                                <span>×</span>
+                            </button>
+                        </div>
                     {/if}
                 </div>
                 <form>
+                    <!-- <div
+                        style="display: flex; flex-wrap: wrap; padding: 5px;"
+                        class="w-full"
+                    > -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                         {#if inputs !== undefined}
                             {#each inputs as input}
                                 <div class="mb-3 py-0 mx-4">
+                                    <!-- Flexdatalist Inputs -->
                                     {#if input.flexdatalist !== undefined}
                                         <input
                                             list={input.flexdataid !== undefined
@@ -122,15 +173,18 @@
                                                     ? input.flexdataid
                                                     : input.name}
                                             >
-                                                {#await flexdata then flexdata}
-                                                    {#each flexdata as value}
-                                                        <option
-                                                            >{value.name}</option
-                                                        >
-                                                    {/each}
-                                                {/await}
+                                                {#each flexdatalist as datafield}
+                                                    {#if datafield.Fieldname === input.name}
+                                                        {#each datafield.FieldValues as value}
+                                                            <option
+                                                                >{value}</option
+                                                            >
+                                                        {/each}
+                                                    {/if}
+                                                {/each}
                                             </datalist>
                                         {/if}
+                                        <!-- Any Input Not A Submit Or Flexdatalist -->
                                     {:else if input.type !== "Submit"}
                                         <input
                                             id={input.name}
@@ -140,6 +194,7 @@
                                             value=""
                                             class="py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                                         />
+                                        <!-- Submit Inputs -->
                                     {:else}
                                         <input
                                             on:click={submit}

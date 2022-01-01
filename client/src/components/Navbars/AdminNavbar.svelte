@@ -9,7 +9,7 @@
   class="absolute bg-red-500 top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4"
 >
   <div
-    class="w-full mx-autp items-center flex justify-between md:flex-nowrap flex-wrap md:px-10 px-4"
+    class="w-full mx-autp items-center flex justify-between flex-wrap md:flex-wrap md:px-10 px-4"
   >
     <!-- Brand -->
     <a
@@ -35,7 +35,7 @@
       {/each}
     {/if}
     <!-- Form -->
-    <form
+    <!-- <form
       class="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3"
     >
       <div class="relative flex w-full flex-wrap items-stretch">
@@ -50,7 +50,7 @@
           class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pl-10"
         />
       </div>
-    </form>
+    </form> -->
   </div>
 </nav>
 <!-- End Navbar -->

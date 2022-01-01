@@ -15,7 +15,8 @@ class PeopleWatch(Document):
 
 class PersonType(Document):
     """ Types of People """
-    pass
+    person_type_name = StringField(required=True)
+    person_type_acronyms = ListField()
 
 class Countries(Document):
     """ Countries """
@@ -38,4 +39,5 @@ class Organizations(Document):
 
 class OrganizationType(Document):
     """ Types of organizations """
-    pass
+    organ_type_name = StringField(required=True)
+    organ_type_acronyms = ListField()

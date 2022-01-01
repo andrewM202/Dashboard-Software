@@ -7,19 +7,19 @@ app.config.from_object('config.DevelopmentConfig')
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
-from archive import bp as archive_bp
+from blueprints.archive import bp as archive_bp
 app.register_blueprint(archive_bp)
 
 # Dashboard routes
-from dashboard import bp as dashboard_bp
+from blueprints.dashboard import bp as dashboard_bp
 app.register_blueprint(dashboard_bp)
 
 # Not yet organized
-from misc import bp as misc_bp
+from blueprints.misc import bp as misc_bp
 app.register_blueprint(misc_bp)
 
 # Notes page
-from notes import bp as notes_bp
+from blueprints.notes import bp as notes_bp
 app.register_blueprint(notes_bp)
 
 if __name__ == "__main__":
