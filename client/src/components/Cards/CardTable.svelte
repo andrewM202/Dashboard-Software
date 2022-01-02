@@ -82,10 +82,10 @@
             {/each}
             {#if Modification !== false}
               <th
-                class="w-28 px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 font-semibold text-center {color ===
+                class="w-28 sticky top-0 px-6 align-middle order-solid py-3 text-s uppercase border-l border-r font-semibold text-center {color ===
                 'light'
                   ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                  : 'bg-red-500 text-red-200 border-red-600'}">Modify</th
+                  : 'bg-rose-700 text-red-200 border-red-600'}">Modify</th
               >
             {/if}
           {/if}
