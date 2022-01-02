@@ -28,6 +28,10 @@
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
   }
+
+  setInterval(function () {
+    j$("table > tbody > tr:odd").addClass("bg-red-600");
+  }, 100);
 </script>
 
 <div
@@ -68,10 +72,10 @@
             {#each headers as header}
               <!-- top-0 required for sticky table headers -->
               <th
-                class="w-56 sticky top-0 px-6 align-middle border border-solid py-3 text-s uppercase border-l-0 border-r-0 font-semibold text-left {color ===
+                class="w-56 sticky top-0 px-6 align-middle border-solid py-3 text-s uppercase border-l border-r font-semibold text-left {color ===
                 'light'
                   ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                  : 'bg-red-500 text-red-200 border-red-600'}"
+                  : 'bg-rose-700 text-red-200 border-red-600'}"
               >
                 {header}
               </th>

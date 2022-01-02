@@ -1352,6 +1352,11 @@ select {
   background-color: rgba(153, 27, 27, var(--tw-bg-opacity));
 }
 
+.bg-rose-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(190 18 60);
+}
+
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(244, 244, 245, var(--tw-bg-opacity));

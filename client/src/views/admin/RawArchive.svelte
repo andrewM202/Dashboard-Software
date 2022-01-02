@@ -529,31 +529,7 @@
                     description: "Last Week",
                 },
                 {
-                    subtitle: "Languages",
-                    amount: 1235,
-                    increase: -523,
-                    description: "Never",
-                },
-                {
-                    subtitle: "Lat Longitude",
-                    amount: 1235,
-                    increase: -523,
-                    description: "Never",
-                },
-                {
-                    subtitle: "Name",
-                    amount: 1235,
-                    increase: -523,
-                    description: "Never",
-                },
-                {
-                    subtitle: "Population",
-                    amount: 1235,
-                    increase: -523,
-                    description: "Never",
-                },
-                {
-                    subtitle: "Subregion",
+                    subtitle: "Currencies",
                     amount: 1235,
                     increase: -523,
                     description: "Never",
