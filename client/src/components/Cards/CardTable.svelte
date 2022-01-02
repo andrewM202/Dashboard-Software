@@ -1,17 +1,26 @@
 <script>
   // core components
   import TableDropdown from "components/Dropdowns/TableDropdown.svelte";
+  // Popover Stuff Start
+  import { createPopper } from "@popperjs/core";
 
-  const bootstrap = "../assets/img/bootstrap.jpg";
-  const angular = "../assets/img/angular.jpg";
-  const sketch = "../assets/img/sketch.jpg";
-  const react = "../assets/img/react.jpg";
-  const vue = "../assets/img/react.jpg";
+  let popoverShow = false;
 
-  const team1 = "../assets/img/team-1-800x800.jpg";
-  const team2 = "../assets/img/team-2-800x800.jpg";
-  const team3 = "../assets/img/team-3-800x800.jpg";
-  const team4 = "../assets/img/team-4-470x470.png";
+  let btnRef;
+
+  let popoverRef;
+
+  function toggleTooltip() {
+    if (popoverShow) {
+      popoverShow = false;
+    } else {
+      popoverShow = true;
+      createPopper(btnRef, popoverRef, {
+        placement: "left",
+      });
+    }
+  }
+  // Popover Stuff End
 
   // can be one of light or dark
   export let color = "light";
@@ -50,8 +59,27 @@
         >
           <i
             on:click={toggleFullscreen}
+            bind:this={btnRef}
+            on:mouseenter={toggleTooltip}
+            on:mouseleave={toggleTooltip}
             class="fas fa-arrows-alt cursor-pointer pr-4"
           />
+          <!-- Tooltip Start -->
+          <div
+            bind:this={popoverRef}
+            class="bg-orange-500 border-0 mr-3 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg {popoverShow
+              ? 'block'
+              : 'hidden'}"
+          >
+            <div>
+              <div
+                class="bg-rose-400 text-white opacity-75 font-semibold p-3 mb-0 border-b border-solid border-blueGray-100 uppercase rounded-t-lg"
+              >
+                Click For Fullscreen
+              </div>
+            </div>
+          </div>
+          <!-- Tooltip End -->
           {#if title !== undefined}
             {title}
           {:else}
