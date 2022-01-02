@@ -38,6 +38,7 @@
     j$(e.path[6]).fullScreen(true);
   }
 
+  // Make every other row a darker red
   setInterval(function () {
     j$("table > tbody > tr:odd").addClass("bg-red-600");
   }, 100);
@@ -67,13 +68,13 @@
           <!-- Tooltip Start -->
           <div
             bind:this={popoverRef}
-            class="bg-orange-500 border-0 mr-3 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg {popoverShow
+            class="bg-orange-500 border-0 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg {popoverShow
               ? 'block'
               : 'hidden'}"
           >
             <div>
               <div
-                class="bg-rose-400 text-white opacity-75 font-semibold p-3 mb-0 border-b border-solid border-blueGray-100 uppercase rounded-t-lg"
+                class="bg-rose-400 text-white opacity-75 font-semibold p-3 uppercase rounded-t-lg"
               >
                 Click For Fullscreen
               </div>

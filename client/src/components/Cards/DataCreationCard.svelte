@@ -52,6 +52,13 @@
             "min-width",
             "150px"
         );
+        // Make the last input (the submit button) expand both rows if its last element
+        if (inputs.length % 2 === 1) {
+            j$("div#rawArchiveTableContainer.grid div:last-child").css({
+                "grid-column-start": 1,
+                "grid-column-end": 3,
+            });
+        }
     }, 100);
 
     function validateData() {
@@ -142,11 +149,10 @@
                     {/if}
                 </div>
                 <form>
-                    <!-- <div
-                        style="display: flex; flex-wrap: wrap; padding: 5px;"
-                        class="w-full"
-                    > -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+                    <div
+                        id="rawArchiveTableContainer"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
+                    >
                         {#if inputs !== undefined}
                             {#each inputs as input}
                                 <div class="mb-3 py-0 mx-4">
