@@ -134,7 +134,7 @@
               {/each}
               {#if Modification !== false}
                 <td
-                  class="w-28 flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs p-4"
+                  class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs p-4"
                 >
                   <TableDropdown
                     {RefreshURL}

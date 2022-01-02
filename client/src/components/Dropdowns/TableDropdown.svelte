@@ -114,7 +114,7 @@
   }
 </script>
 
-<div>
+<div class="flex w-full justify-center">
   <a
     class="text-white-500 py-1 px-3"
     href="#pablo"
