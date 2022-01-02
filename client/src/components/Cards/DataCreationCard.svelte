@@ -47,19 +47,18 @@
 
     // Setting min-width of multiple flexdatalist input,
     // otherwise its super small like 40px
-    setInterval(function () {
-        j$("li.input-container.flexdatalist-multiple-value input").css(
-            "min-width",
-            "150px"
-        );
-        // Make the last input (the submit button) expand both rows if its last element
+    function runPreJS() {
         if (inputs.length % 2 === 1) {
             j$("div#rawArchiveTableContainer.grid div:last-child").css({
                 "grid-column-start": 1,
                 "grid-column-end": 3,
             });
         }
-    }, 100);
+        j$("li.input-container.flexdatalist-multiple-value input").css(
+            "min-width",
+            "150px"
+        );
+    }
 
     function validateData() {
         // Check each input
@@ -115,8 +114,7 @@
     }
 </script>
 
-<Flexdata />
-
+<div use:runPreJS />
 <div class="px-4 md:px-10 mx-auto w-full">
     <div class="flex flex-wrap ml-8">
         <div class="w-full h-auto bg-blueGray-700 mb-12 p-8">
@@ -162,7 +160,6 @@
                                             list={input.flexdataid !== undefined
                                                 ? input.flexdataid
                                                 : input.name}
-                                            data-min-length="0"
                                             multiple
                                             type={input.type}
                                             placeholder={input.placeholder}
@@ -171,6 +168,7 @@
                                             class="{input.flexdatalist === true
                                                 ? 'flexdatalist'
                                                 : ''} py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                            data-min-length="0"
                                         />
                                         {#if input.flexdatalist === true && flexdata !== undefined}
                                             <datalist
@@ -220,3 +218,5 @@
         </div>
     </div>
 </div>
+
+<Flexdata />

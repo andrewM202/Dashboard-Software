@@ -39,9 +39,13 @@
   }
 
   // Make every other row a darker red
-  setInterval(function () {
-    j$("table > tbody > tr:odd").addClass("bg-red-600");
-  }, 100);
+  for (let i = 0; i < 1000; i++) {
+    if (!j$("table > tbody > tr:even").hasClass("bg-red-600")) {
+      setTimeout(function () {
+        j$("table > tbody > tr:even").addClass("bg-red-600");
+      }, 10);
+    }
+  }
 </script>
 
 <div

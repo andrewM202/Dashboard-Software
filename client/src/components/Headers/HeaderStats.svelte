@@ -7,6 +7,22 @@
     export let id = "";
     export let title;
     export let inputs;
+
+    // console.log(j$("div#HeaderStatsGrid.grid").children());
+
+    // for (let i = 0; i < 10; i++) {
+    //     setTimeout(function () {
+    //         if (cards !== undefined) {
+    //             if (cards.length % 2 === 1) {
+    //                 console.log(cards);
+    //                 j$("div#HeaderStatsGrid.grid div:last-child").css({
+    //                     "grid-column-start": 1,
+    //                     "grid-column-end": 3,
+    //                 });
+    //             }
+    //         }
+    //     }, 1);
+    // }
 </script>
 
 <!-- Header -->
@@ -91,7 +107,10 @@
                 {/if}
             </div>
             {#if inputs !== undefined}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div
+                    id="HeaderStatsGrid"
+                    class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
+                >
                     {#each inputs as input}
                         <div class="mb-3 py-0 mx-4">
                             <input
