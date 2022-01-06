@@ -22,11 +22,8 @@
         right: "0",
         width: "100vw",
       });
-      j$("#AdminMainContentContainer").append(`<i
-      id="ReOpenSideBarIcon"
-      on:click={closeSideBar}
-      class="fas fa-plus-square sticky left-10 cursor-pointer"
-      />`);
+      j$("#AdminMainContentContainer").append(j$("#ReOpenSideBarIcon"));
+      j$("#ReOpenSideBarIcon").toggle();
       // Make second button visible
       j$("#ReOpenSideBarIcon").css({
         "z-index": 500000,
@@ -45,19 +42,20 @@
         "z-index": 0,
       });
       j$("#ReOpenSideBarIcon").toggle();
+      j$("#app > div").append(j$("#ReOpenSideBarIcon"));
       navBarCollapseShow = true;
     }
   }
 </script>
 
-<!-- <i
+<i
   id="ReOpenSideBarIcon"
   on:click={closeSideBar}
-  class="fas fa-plus-square sticky hidden left-10 cursor-pointer"
-/> -->
+  class="fas fa-plus-square hidden sticky left-10 cursor-pointer"
+/>
 <nav
   id="SideBarNav"
-  class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
+  class="z-50 md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
 >
   <div
     class="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto"

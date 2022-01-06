@@ -1,4 +1,6 @@
 <script>
+    import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
+    import HeaderStats from "components/Headers/HeaderStats.svelte";
     // core components
     // import Tree from "../../components/Plugin/Tree.svelte";
     j$(function () {
@@ -46,6 +48,8 @@
 
 <!-- <Tree /> -->
 
+<AdminNavbar />
+<HeaderStats />
 <div class="mt-4 w-full h-500-px">
     <div id="tree">
         <ul id="treeData" style="display: none;">

@@ -18,7 +18,7 @@
   export let location;
 </script>
 
-{#if ["/admin/dashboard", "/admin/tables", "/admin/maps", "/admin/notes"].includes(location.pathname)}
+{#if ["/admin/dashboard", "/admin/tables", "/admin/maps"].includes(location.pathname)}
   <div>
     <Sidebar {location} />
     <div class="relative md:ml-64 bg-blueGray-100">
