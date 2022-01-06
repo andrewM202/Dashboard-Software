@@ -41,7 +41,7 @@
   <div>
     <Sidebar {location} />
     <div class="relative md:ml-64 bg-blueGray-100">
-      <div class="mx-auto w-full">
+      <div id="AdminMainContentContainer" class="mx-auto w-full">
         <Router url="admin">
           <Route path="dashboard" component={Dashboard} />
           <Route path="settings" component={Settings} />

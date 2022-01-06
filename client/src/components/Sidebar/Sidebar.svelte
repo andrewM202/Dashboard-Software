@@ -11,15 +11,61 @@
     collapseShow = classes;
   }
 
-  export let location;
+  let navBarCollapseShow = true;
+  function closeSideBar(e) {
+    if (navBarCollapseShow) {
+      // Hide side bar
+      j$("#SideBarNav").toggle();
+      // Make main content whole width
+      j$("#AdminMainContentContainer").css({
+        position: "absolute",
+        right: "0",
+        width: "100vw",
+      });
+      j$("#AdminMainContentContainer").append(`<i
+      id="ReOpenSideBarIcon"
+      on:click={closeSideBar}
+      class="fas fa-plus-square sticky left-10 cursor-pointer"
+      />`);
+      // Make second button visible
+      j$("#ReOpenSideBarIcon").css({
+        "z-index": 500000,
+        bottom: "97.5vh",
+        position: "-webkit-sticky",
+      });
+      navBarCollapseShow = false;
+    } else {
+      j$("#SideBarNav").toggle();
+      j$("#AdminMainContentContainer").css({
+        position: "inherit",
+        right: "0",
+        width: "auto",
+      });
+      j$("#ReOpenSideBarIcon").css({
+        "z-index": 0,
+      });
+      j$("#ReOpenSideBarIcon").toggle();
+      navBarCollapseShow = true;
+    }
+  }
 </script>
 
+<!-- <i
+  id="ReOpenSideBarIcon"
+  on:click={closeSideBar}
+  class="fas fa-plus-square sticky hidden left-10 cursor-pointer"
+/> -->
 <nav
+  id="SideBarNav"
   class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
 >
   <div
     class="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto"
   >
+    <i
+      on:click={closeSideBar}
+      class="fas fa-times hidden md:block absolute top-10 right-10 cursor-pointer"
+    />
     <!-- Toggler -->
     <button
       class="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
@@ -60,7 +106,7 @@
               class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
               href="/"
             >
-              Notus Svelte
+              Scientia Est Potentia
             </a>
           </div>
           <div class="w-6/12 flex justify-end">
@@ -286,6 +332,48 @@
             Networks
           </a>
         </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/dictionary"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/dictionary'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-book-open mr-2 text-sm {location.href.indexOf(
+                '/admin/dictionary'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Dictionary
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/dashboard-designer"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/dashboard-designer'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-book-open mr-2 text-sm {location.href.indexOf(
+                '/admin/dashboard-designer'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Dashboard Designer
+          </a>
+        </li>
       </ul>
 
       <!-- Divider -->
@@ -303,13 +391,24 @@
         <li class="items-center">
           <a
             use:link
-            class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/news/archive/new-york-times"
+            href="/admin/refresh-archive"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/refresh-archive'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
-            <i class="fab fa-chrome text-blueGray-300 mr-2 text-sm" />
-            Scrape Content
+            <i
+              class="fas fa-database mr-2 text-sm {location.href.indexOf(
+                '/admin/refresh-archive'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Refresh Data
           </a>
         </li>
+
         <li class="items-center">
           <a
             use:link
@@ -328,6 +427,27 @@
                 : 'text-blueGray-300'}"
             />
             Raw Archive
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/archive-designer"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/archive-designer'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-file-archive mr-2 text-sm {location.href.indexOf(
+                '/admin/archive-designer'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Archive Designer
           </a>
         </li>
 

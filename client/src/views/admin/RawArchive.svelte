@@ -450,7 +450,7 @@
                     "OrganizationTypeName",
                     "OrganizationTypeAcronyms",
                 ],
-                Title: "OrganizationTypes",
+                Title: "Organization Types",
             },
             // Organization Types Table End
             // Organization Types CreationCard Begin
@@ -760,8 +760,8 @@
 <!-- Organization Types -->
 <div class={navItems[openTab] === "Organization Types" ? "block" : "hidden"}>
     <HeaderStats
-        id={"Organizations"}
-        title={"Organizations"}
+        id={"OrganizationTypes"}
+        title={"Organization Types"}
         cards={DataSettings.OrganizationTypes.Cards}
         inputs={DataSettings.OrganizationTypes.Inputs}
     />
