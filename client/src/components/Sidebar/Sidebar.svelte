@@ -16,18 +16,19 @@
     if (navBarCollapseShow) {
       // Hide side bar
       j$("#SideBarNav").toggle();
+      // j$("#SideBarNav").animate({ width: "toggle" }, 300);
       // Make main content whole width
       j$("#AdminMainContentContainer").css({
         position: "absolute",
         right: "0",
         width: "100vw",
       });
-      j$("#AdminMainContentContainer").append(j$("#ReOpenSideBarIcon"));
+      j$("#AdminMainContentContainer").prepend(j$("#ReOpenSideBarIcon"));
       j$("#ReOpenSideBarIcon").toggle();
       // Make second button visible
       j$("#ReOpenSideBarIcon").css({
         "z-index": 500000,
-        bottom: "97.5vh",
+        top: "10px",
         position: "-webkit-sticky",
       });
       navBarCollapseShow = false;
