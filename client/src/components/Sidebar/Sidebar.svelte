@@ -16,13 +16,13 @@
     if (navBarCollapseShow) {
       // Hide side bar
       j$("#SideBarNav").toggle();
-      // j$("#SideBarNav").animate({ width: "toggle" }, 300);
       // Make main content whole width
       j$("#AdminMainContentContainer").css({
         position: "absolute",
         right: "0",
         width: "100vw",
       });
+      j$("#AdminMainContentContainer").addClass("bg-blueGray-100");
       j$("#AdminMainContentContainer").prepend(j$("#ReOpenSideBarIcon"));
       j$("#ReOpenSideBarIcon").toggle();
       // Make second button visible
@@ -39,6 +39,7 @@
         right: "0",
         width: "auto",
       });
+      j$("#AdminMainContentContainer").removeClass("bg-blueGray-100");
       j$("#ReOpenSideBarIcon").css({
         "z-index": 0,
       });
@@ -74,13 +75,13 @@
       <i class="fas fa-bars" />
     </button>
     <!-- Brand -->
-    <a
+    <p
       use:link
       class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
       href="/"
     >
       Scientia Est Potentia
-    </a>
+    </p>
     <!-- User -->
     <ul class="md:hidden sidebar-list items-center flex flex-wrap list-none">
       <li class="inline-block relative">

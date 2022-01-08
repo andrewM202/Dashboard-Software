@@ -194,3 +194,9 @@ def update_organization_type():
         organ_type_acronyms = request.form['OrganizationTypeAcronyms'].split(","),
     )
     return redirect('/admin/raw-archive')
+
+########################### Archive Designer #####################################
+
+@bp.route("/admin/archive-designer")
+def archive_designer_home():
+    return send_from_directory('client/public', 'index.html')
