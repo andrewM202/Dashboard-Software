@@ -2,6 +2,7 @@
   // core components
   export let navItems;
   export let openTab;
+  export let title;
 </script>
 
 <!-- Navbar -->
@@ -17,9 +18,7 @@
       href="#pablo"
       on:click={(e) => e.preventDefault()}
     >
-      {location.href.indexOf("/admin/raw-archive") !== -1
-        ? "Raw Archive"
-        : "Dashboard"}
+      {title}
     </a>
     {#if navItems !== undefined}
       {#each navItems as navItem, i}

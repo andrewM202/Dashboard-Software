@@ -583,7 +583,7 @@
     let openTab = 0;
 </script>
 
-<AdminNavbar bind:openTab {navItems} />
+<AdminNavbar bind:openTab {navItems} title={"Raw Archive"} />
 
 <!-- People -->
 <div class={navItems[openTab] === "People" ? "block" : "hidden"}>
@@ -591,6 +591,7 @@
         id={"People"}
         cards={DataSettings.People.Cards}
         title={"People"}
+        titleFontSize={"text-4xl"}
         inputs={DataSettings.People.Inputs}
     />
     <div class="block px-4 md:px-10 mx-auto w-full m-12">
@@ -635,6 +636,7 @@
     <HeaderStats
         id={"PeopleTypes"}
         title={"People Types"}
+        titleFontSize={"text-4xl"}
         cards={DataSettings.PeopleTypes.Cards}
         inputs={DataSettings.PeopleTypes.Inputs}
     />
@@ -681,6 +683,7 @@
     <HeaderStats
         id={"Countries"}
         title={"Countries"}
+        titleFontSize={"text-4xl"}
         cards={DataSettings.Countries.Cards}
         inputs={DataSettings.Countries.Inputs}
     />
@@ -715,6 +718,7 @@
     <HeaderStats
         id={"Organizations"}
         title={"Organizations"}
+        titleFontSize={"text-4xl"}
         cards={DataSettings.Organizations.Cards}
         inputs={DataSettings.Organizations.Inputs}
     />
@@ -762,6 +766,7 @@
     <HeaderStats
         id={"OrganizationTypes"}
         title={"Organization Types"}
+        titleFontSize={"text-4xl"}
         cards={DataSettings.OrganizationTypes.Cards}
         inputs={DataSettings.OrganizationTypes.Inputs}
     />
@@ -809,7 +814,7 @@
 
 <!-- Maps, Graphs, Charts -->
 <div class={navItems[openTab] === "Maps" ? "block" : "hidden"}>
-    <HeaderStats id={"Maps"} title={"Maps"} />
+    <HeaderStats id={"Maps"} title={"Maps"} titleFontSize={"text-4xl"} />
     <div class="px-4 md:px-10 mx-auto w-full m-12">
         <div class="flex flex-wrap">
             <div class="w-full h-500-px bg-blueGray-700 mt-12 mb-12">
