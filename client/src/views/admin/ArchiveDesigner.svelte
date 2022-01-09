@@ -15,21 +15,6 @@
             name: "LastName",
         },
         {
-            type: "Text",
-            placeholder: "Organizations",
-            name: "Organizations",
-        },
-        {
-            type: "Text",
-            placeholder: "Titles",
-            name: "Titles",
-        },
-        {
-            type: "Text",
-            placeholder: "Opinions",
-            name: "Opinion",
-        },
-        {
             type: "Submit",
             placeholder: "Search",
             name: "",

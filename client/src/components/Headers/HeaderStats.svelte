@@ -4,31 +4,32 @@
 
     // Optional Arguments
     export let cards;
-    export let id = "";
     export let title;
     export let titleColor; // Pass in class for text color
     export let titleFontSize; // Pass in class for font size
     export let inputs;
 
-    // console.log(j$("div#HeaderStatsGrid.grid").children());
+    let id = Math.random().toString(36).substr(2, 8); // Generate random string
 
-    // for (let i = 0; i < 10; i++) {
-    //     setTimeout(function () {
-    //         if (cards !== undefined) {
-    //             if (cards.length % 2 === 1) {
-    //                 console.log(cards);
-    //                 j$("div#HeaderStatsGrid.grid div:last-child").css({
-    //                     "grid-column-start": 1,
-    //                     "grid-column-end": 3,
-    //                 });
-    //             }
-    //         }
-    //     }, 1);
-    // }
+    function positionSearchBar(node) {
+        console.log(node);
+        for (let i = 0; i < 100; i++) {
+            setTimeout(function () {
+                if (inputs !== undefined) {
+                    if (inputs.length % 2 === 1) {
+                        j$(node).children().last().css({
+                            "grid-column-start": 1,
+                            "grid-column-end": 3,
+                        });
+                    }
+                }
+            }, 100);
+        }
+    }
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-24 pb-16 pt-16" {id}>
+<div class="relative bg-red-500 md:pt-24 pb-16 pt-16">
     <div class="px-4 py-2 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
@@ -61,7 +62,8 @@
             </div>
             {#if inputs !== undefined}
                 <div
-                    id="HeaderStatsGrid"
+                    use:positionSearchBar
+                    {id}
                     class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
                 >
                     {#each inputs as input}
