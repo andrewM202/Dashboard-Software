@@ -12,7 +12,6 @@
     let id = Math.random().toString(36).substr(2, 8); // Generate random string
 
     function positionSearchBar(node) {
-        console.log(node);
         for (let i = 0; i < 100; i++) {
             setTimeout(function () {
                 if (inputs !== undefined) {

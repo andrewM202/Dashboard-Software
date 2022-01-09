@@ -4,6 +4,7 @@
   // core components
   import NotificationDropdown from "components/Dropdowns/NotificationDropdown.svelte";
   import UserDropdown from "components/Dropdowns/UserDropdown.svelte";
+  export let location; // Needs to be here for location to be dynamically updated
 
   let collapseShow = "hidden";
 
