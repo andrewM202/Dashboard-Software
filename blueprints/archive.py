@@ -1,8 +1,7 @@
 from flask import jsonify, render_template, Blueprint, send_from_directory, request, redirect, jsonify
-from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, db
-from mongoengine import *
+from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, ArchiveCollections, db
+# from mongoengine import *
 from bson import json_util
-import json
 from os import environ
 
 ########################### Global Variables #####################################
@@ -215,10 +214,38 @@ def archive_designer_home():
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/archive-data/<collection>")
-def retrieve_archive_data(collection):
+def retrieve_specific_archive_data(collection):
+    """ Retrieve specific archive data"""
     print(collections)
     if(collection in collections):
         test_col = db.get_database(db_name).get_collection(collection)
-        return json.loads(json_util.dumps(test_col.find_one()))
+        # return json.loads(json_util.dumps(test_col.find_one()))
+        return json_util.dumps(test_col.find())
     else: 
         return "Invalid Collection"
+
+@bp.route("/admin/archive-data/collections")
+def retrieve_all_archive_data():
+    """ Returns all of the collections for the archive """
+    archive_collections = ArchiveCollections.objects()
+    return archive_collections.to_json()
+
+@bp.route("/admin/archive-data/")
+def retrieve_archive_collections():
+    """ Retrieve all archive data """
+    pass
+
+@bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
+def update_specific_archive_data(collection, id):
+    """ Update a specific archive data 
+    Takes the collection and id data is in
+    """
+    pass
+
+@bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
+def delete_specific_archive_data(collection, id):
+    """ Delete a specific archive data 
+    Takes the collection and id data is in
+    """
+    pass
+    

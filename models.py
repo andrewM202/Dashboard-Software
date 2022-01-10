@@ -41,3 +41,9 @@ class OrganizationType(Document):
     """ Types of organizations """
     organ_type_name = StringField(required=True)
     organ_type_acronyms = ListField()
+
+class ArchiveCollections(Document):
+    """ Holds all of the collections created for the archive """
+    collection_name = StringField(required=True)
+    uploaded_data = BooleanField(required=True)
+    base_collection = BooleanField(required=True)
