@@ -1,13 +1,24 @@
-from flask import render_template, Blueprint, send_from_directory, request, redirect, jsonify
-from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType
+from flask import jsonify, render_template, Blueprint, send_from_directory, request, redirect, jsonify
+from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, db
+from mongoengine import *
+from bson import json_util
+import json
+from os import environ
+
+########################### Global Variables #####################################
 
 bp = Blueprint("archive", __name__)
+
+db_name = environ['MONGODB_DB']
+collections = db.get_database(db_name).list_collection_names()
+
+########################### Base Route #####################################
 
 @bp.route("/admin/raw-archive")
 def raw_archive():
     return send_from_directory('client/public', 'index.html')
 
-###########################  People #####################################
+########################### People #####################################
 
 @bp.route("/admin/create-person", methods=['POST'])
 def create_person():
@@ -137,6 +148,8 @@ def create_organization():
     name = request.form['Name']
     organization_type = request.form['OrganizationType']
     opinions = request.form['Opinions'].split(",")
+    print(opinions)
+    print('test print')
     affiliations = request.form['Affiliations'].split(",")
     Organizations(
         name         = name,
@@ -200,3 +213,12 @@ def update_organization_type():
 @bp.route("/admin/archive-designer")
 def archive_designer_home():
     return send_from_directory('client/public', 'index.html')
+
+@bp.route("/admin/archive-data/<collection>")
+def retrieve_archive_data(collection):
+    print(collections)
+    if(collection in collections):
+        test_col = db.get_database(db_name).get_collection(collection)
+        return json.loads(json_util.dumps(test_col.find_one()))
+    else: 
+        return "Invalid Collection"

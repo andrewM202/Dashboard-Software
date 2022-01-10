@@ -9,13 +9,9 @@
     export let refreshURL;
     export let flexdata;
 
-    for (let input of inputs) {
-        if (input.flexdatalist === true) {
-            // console.log(input.name);
-        }
-    }
-
     let flexdatalist = [];
+
+    let formID = Math.random().toString(36).substr(2, 8); // Generate random string
 
     // Simplify flexdata data so looping does not
     // Have to occur in the HTML with templating engine
@@ -78,7 +74,7 @@
 
     function submit(e) {
         e.preventDefault();
-        let data = j$("form").serialize();
+        let data = j$(`#${formID}`).serialize();
         // Reset error value
         error = false;
         validateData();
@@ -98,7 +94,7 @@
                             );
                         }
                     }
-                    j$("form").trigger("reset");
+                    j$(`#${formID}`).trigger("reset");
                     refreshData(refreshURL);
                     // Remove flexdatalist values
                     j$("li.value").remove();
@@ -146,7 +142,7 @@
                         </div>
                     {/if}
                 </div>
-                <form>
+                <form id={formID}>
                     <div
                         id="rawArchiveTableContainer"
                         class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"

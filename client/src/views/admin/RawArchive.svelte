@@ -29,8 +29,6 @@
         countries,
     ];
 
-    $: console.log(tableData);
-
     // Defines input buttons for HeaderStats
     let DataSettings;
     $: DataSettings = {
