@@ -1,5 +1,5 @@
 from flask import jsonify, render_template, Blueprint, send_from_directory, request, redirect, jsonify
-from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, ArchiveCollections, db
+from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, ArchiveCollections, ArchiveCollectionSettings, db
 # from mongoengine import *
 from bson import json_util
 from os import environ
@@ -224,28 +224,54 @@ def retrieve_specific_archive_data(collection):
     else: 
         return "Invalid Collection"
 
+@bp.route("/admin/archive-data/create-collection", methods=['POST'])
+def create_archive_collection():
+    """ Returns all of the collections for the archive """
+    ArchiveCollectionSettings(
+        collection_name = request.form['CollectionName'],
+        header_search_inputs = request.form['HeaderSearchInputs'].split(","),
+        cards = request.form['Cards'].split(","),
+
+        table_awaitdata = request.form['TableAwaitData'],
+        table_headers = request.form['TableHeaders'].split(","),
+        table_title = request.form['TableTitle'],
+        table_deletion_url = request.form['TableDeletionURL'],
+        table_refresh_url = request.form['TableRefreshURL'],
+        table_updated_url = request.form['TableUpdatedURL'],
+        table_update_form_names = request.form['TableDBFormNames'].split(","),
+        table_db_field_names = "Placeholder".split(","),
+
+        creationcard_awaitdata = request.form['CreationCardAwaitData'],
+        creationcard_url = request.form['CreationCardURL'],
+        creationcard_refreshurl = request.form['CreationCardRefreshURL'],
+        creationcard_title = request.form['CreationCardTitle'],
+        creationcard_flexdatalistdata = request.form['CreationCardFlexdatalistData'].split(","),
+        creationcard_inputs = request.form['CreationCardInputs'].split(",")
+    ).save()
+    return redirect('/admin/archive-designer')
+
 @bp.route("/admin/archive-data/collections")
 def retrieve_all_archive_data():
     """ Returns all of the collections for the archive """
-    archive_collections = ArchiveCollections.objects()
+    archive_collections = ArchiveCollections.objects().only('collection_name')
     return archive_collections.to_json()
 
-@bp.route("/admin/archive-data/")
-def retrieve_archive_collections():
-    """ Retrieve all archive data """
-    pass
+# @bp.route("/admin/archive-data/")
+# def retrieve_archive_collections():
+#     """ Retrieve all archive data """
+#     pass
 
-@bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
-def update_specific_archive_data(collection, id):
-    """ Update a specific archive data 
-    Takes the collection and id data is in
-    """
-    pass
+# @bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
+# def update_specific_archive_data(collection, id):
+#     """ Update a specific archive data 
+#     Takes the collection and id data is in
+#     """
+#     pass
 
-@bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
-def delete_specific_archive_data(collection, id):
-    """ Delete a specific archive data 
-    Takes the collection and id data is in
-    """
-    pass
+# @bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
+# def delete_specific_archive_data(collection, id):
+#     """ Delete a specific archive data 
+#     Takes the collection and id data is in
+#     """
+#     pass
     

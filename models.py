@@ -47,3 +47,26 @@ class ArchiveCollections(Document):
     collection_name = StringField(required=True)
     uploaded_data = BooleanField(required=True)
     base_collection = BooleanField(required=True)
+
+class ArchiveCollectionSettings(Document):
+    """ Configuration settings for archive collections """
+    # References ArchiveCollections.collection_name
+    collection_name = StringField(required=True) 
+    header_search_inputs = ListField()
+    cards = ListField()
+    # Table fields
+    table_awaitdata = StringField()
+    table_headers = ListField()
+    table_title = StringField()
+    table_deletion_url = StringField()
+    table_refresh_url = StringField()
+    table_updated_url = StringField()
+    table_update_form_names = ListField()
+    table_db_field_names = ListField()
+    # Creation card fields
+    creationcard_awaitdata = StringField()
+    creationcard_url = StringField()
+    creationcard_refreshurl = StringField()
+    creationcard_title = StringField()
+    creationcard_flexdatalistdata = ListField()
+    creationcard_inputs = ListField()

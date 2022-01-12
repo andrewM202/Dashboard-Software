@@ -1,6 +1,7 @@
 <script>
     // core components
     import CardStats from "components/Cards/CardStats.svelte";
+    import { tick } from "svelte";
 
     // Optional Arguments
     export let cards;
@@ -11,18 +12,15 @@
 
     let id = Math.random().toString(36).substr(2, 8); // Generate random string
 
-    function positionSearchBar(node) {
-        for (let i = 0; i < 100; i++) {
-            setTimeout(function () {
-                if (inputs !== undefined) {
-                    if (inputs.length % 2 === 1) {
-                        j$(node).children().last().css({
-                            "grid-column-start": 1,
-                            "grid-column-end": 3,
-                        });
-                    }
-                }
-            }, 100);
+    async function positionSearchBar(node) {
+        await tick();
+        if (inputs !== undefined) {
+            if (inputs.length % 2 === 1) {
+                j$(node).children().last().css({
+                    "grid-column-start": 1,
+                    "grid-column-end": 3,
+                });
+            }
         }
     }
 </script>

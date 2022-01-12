@@ -54,6 +54,16 @@
             "min-width",
             "150px"
         );
+        // let loaded = false;
+        // $: if (j$(`#${formID} ul.flexdatalist-results li.item`).length === 0) {
+        // } else {
+        //     loaded = true;
+        //     console.log("Loaded");
+        //     console.log(j$(`#${formID} ul.flexdatalist-results li.item`));
+        //     j$(`#${formID} ul.flexdatalist-results li.item`).addClass(
+        //         "cursor-pointer"
+        //     );
+        // }
     }
 
     function validateData() {
