@@ -4,11 +4,11 @@
 
   import { refreshData } from "../../stores.js";
 
-  export let DeletionURL;
   export let RefreshURL;
   export let UpdateURL;
   export let UpdateFormNames;
   export let DeleteID;
+  export let CollectionName;
   DeleteID = DeleteID[0].$oid;
   let UpdateID = DeleteID;
 
@@ -34,7 +34,8 @@
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",
-      url: `${location.origin}${DeletionURL}`,
+      // url: `${location.origin}${DeletionURL}`,
+      url: `${location.origin}/admin/archive-data/delete`,
       data: data,
       success: function () {
         refreshData(RefreshURL);
@@ -138,6 +139,7 @@
       Update
     </a>
     <form id={DeleteID}>
+      <input type="hidden" value={CollectionName} name="CollectionName" />
       <input type="hidden" value={DeleteID} name="DeletionID" />
       <input
         type="submit"

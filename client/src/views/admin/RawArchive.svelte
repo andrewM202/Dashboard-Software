@@ -34,6 +34,7 @@
     $: DataSettings = {
         // People Start
         People: {
+            CollectionName: "people_watch",
             // People Inputs
             HeaderSearchInputs: [
                 {
@@ -108,7 +109,6 @@
                     "Opinions",
                 ],
                 Title: "People",
-                DeletionURL: "/admin/delete-person",
                 RefreshURL: "/admin/people",
                 UpdateURL: "/admin/update-person",
                 UpdateFormNames: [
@@ -201,6 +201,7 @@
         // People End
         // People Types Start
         PeopleTypes: {
+            CollectionName: "person_type",
             // People Types Inputs
             HeaderSearchInputs: [
                 {
@@ -247,7 +248,6 @@
                 AwaitData: [peopleTypes],
                 Headers: ["Person Type Name", "Acronyms"],
                 DBFieldNames: ["person_type_name", "person_type_acronyms"],
-                DeletionURL: "/admin/delete-person-type",
                 RefreshURL: "/admin/person-types",
                 UpdateURL: "/admin/update-person-types",
                 UpdateFormNames: ["PersonTypeName", "PersonTypeAcronyms"],
@@ -286,6 +286,7 @@
         // People Types End
         // Organizations Start
         Organizations: {
+            CollectionName: "organizations",
             // Organizations Inputs
             HeaderSearchInputs: [
                 {
@@ -347,7 +348,6 @@
                     "opinions",
                     "affiliations",
                 ],
-                DeletionURL: "/admin/delete-organization",
                 RefreshURL: "/admin/organizations",
                 UpdateURL: "/admin/update-organization",
                 UpdateFormNames: [
@@ -419,6 +419,7 @@
         // Organizations End
         // Organization Types Start
         OrganizationTypes: {
+            CollectionName: "organization_type",
             // Organization Types Inputs
             HeaderSearchInputs: [
                 {
@@ -459,7 +460,6 @@
                 AwaitData: [organizationTypes],
                 Headers: ["Organization Type Name", "Acronyms"],
                 DBFieldNames: ["organ_type_name", "organ_type_acronyms"],
-                DeletionURL: "/admin/delete-organization-type",
                 RefreshURL: "/admin/organization-types",
                 UpdateURL: "/admin/update-organization-types",
                 UpdateFormNames: [
@@ -501,6 +501,7 @@
         // Organization Types End
         // Countries Start
         Countries: {
+            CollectionName: "countries",
             // Countries Inputs
             HeaderSearchInputs: [
                 {
@@ -568,7 +569,6 @@
                     "Subregion",
                 ],
                 Title: "Countries",
-                DeletionURL: "",
                 RefreshURL: "",
                 Modification: false,
                 DBFieldNames: [
@@ -626,10 +626,10 @@
                             <CardTable
                                 color="dark"
                                 {data}
+                                CollectionName={section[1].CollectionName}
                                 headers={section[1].Table.Headers}
                                 DBFieldNames={section[1].Table.DBFieldNames}
                                 title={section[1].Table.Title}
-                                DeletionURL={section[1].Table.DeletionURL}
                                 RefreshURL={section[1].Table.RefreshURL}
                                 UpdateURL={section[1].Table.UpdateURL}
                                 UpdateFormNames={section[1].Table

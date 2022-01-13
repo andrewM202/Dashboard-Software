@@ -1,7 +1,7 @@
 from flask import jsonify, render_template, Blueprint, send_from_directory, request, redirect, jsonify
 from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, ArchiveCollections, ArchiveCollectionSettings, db
 # from mongoengine import *
-from bson import json_util
+from bson import json_util, objectid
 from os import environ
 
 ########################### Global Variables #####################################
@@ -216,7 +216,6 @@ def archive_designer_home():
 @bp.route("/admin/archive-data/<collection>")
 def retrieve_specific_archive_data(collection):
     """ Retrieve specific archive data"""
-    print(collections)
     if(collection in collections):
         test_col = db.get_database(db_name).get_collection(collection)
         # return json.loads(json_util.dumps(test_col.find_one()))
@@ -276,7 +275,7 @@ def retrieve_archive_configuration():
     for collection in archive_settings:
         dict_collection = dict(collection.to_mongo())
         dict_collection_keys = dict_collection.keys()
-        return_settings[collection["collection_name"]] = {"HeaderSearchInputs": [], "Cards": [], "Table": {}, "CreationCard": {}}
+        return_settings[collection["collection_name"]] = {"CollectionName": collection["collection_name"],"HeaderSearchInputs": [], "Cards": [], "Table": {}, "CreationCard": {}}
         # All header search input fields should be same length
         for i in range(0, len(collection.header_search_input_types)):
             return_settings[collection["collection_name"]]["HeaderSearchInputs"].append({ "type": collection.header_search_input_types[i], "placeholder": collection.header_search_input_placeholders[i], "name": collection.header_search_input_names[i] })
@@ -314,10 +313,14 @@ def retrieve_all_archive_data():
 #     """
 #     pass
 
-# @bp.route("/admin/archive-data/update/<collection>/<id>", methods=["GET", "POST"])
-# def delete_specific_archive_data(collection, id):
-#     """ Delete a specific archive data 
-#     Takes the collection and id data is in
-#     """
-#     pass
+@bp.route("/admin/archive-data/delete", methods=["POST"])
+def delete_specific_archive_data():
+    """ Delete a specific archive data 
+    Takes the collection and id data is in
+    """
+    collection = request.form['CollectionName']
+    id = request.form['DeletionID']
+    col = db.get_database(db_name).get_collection(collection)
+    col.delete_one({'_id': objectid.ObjectId(id)})
+    return redirect('/admin/raw-archive')
     

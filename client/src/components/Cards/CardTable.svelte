@@ -29,11 +29,11 @@
   export let headers;
   export let title;
   export let DBFieldNames;
-  export let DeletionURL;
   export let RefreshURL;
   export let UpdateURL;
   export let UpdateFormNames;
   export let Modification;
+  export let CollectionName;
 
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
@@ -141,9 +141,9 @@
                 >
                   <TableDropdown
                     {RefreshURL}
-                    {DeletionURL}
                     {UpdateURL}
                     {UpdateFormNames}
+                    {CollectionName}
                     DeleteID={Object.values(row)}
                   />
                 </td>
