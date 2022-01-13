@@ -8,6 +8,7 @@
     export let url;
     export let refreshURL;
     export let flexdata;
+    export let CollectionName;
 
     let flexdatalist = [];
 
@@ -54,16 +55,6 @@
             "min-width",
             "150px"
         );
-        // let loaded = false;
-        // $: if (j$(`#${formID} ul.flexdatalist-results li.item`).length === 0) {
-        // } else {
-        //     loaded = true;
-        //     console.log("Loaded");
-        //     console.log(j$(`#${formID} ul.flexdatalist-results li.item`));
-        //     j$(`#${formID} ul.flexdatalist-results li.item`).addClass(
-        //         "cursor-pointer"
-        //     );
-        // }
     }
 
     function validateData() {
@@ -93,6 +84,7 @@
             j$.ajax({
                 type: "POST",
                 url: `${location.origin}${url}`,
+                // url: `${location.origin}/admin/archive-data/${CollectionName}`,
                 data: data,
                 success: function () {
                     // Reset placeholder values on success
@@ -105,7 +97,8 @@
                         }
                     }
                     j$(`#${formID}`).trigger("reset");
-                    refreshData(refreshURL);
+                    // refreshData(refreshURL);
+                    refreshData(`/admin/archive-data/${CollectionName}`);
                     // Remove flexdatalist values
                     j$("li.value").remove();
                 },

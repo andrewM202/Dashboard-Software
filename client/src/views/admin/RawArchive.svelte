@@ -109,8 +109,6 @@
                     "Opinions",
                 ],
                 Title: "People",
-                RefreshURL: "/admin/people",
-                UpdateURL: "/admin/update-person",
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -125,7 +123,6 @@
             CreationCard: {
                 AwaitData: [organizations, peopleTypes],
                 URL: "/admin/create-person",
-                RefreshURL: "/admin/people",
                 Title: "Create Person",
                 Flexdatalistdata: [
                     {
@@ -240,8 +237,6 @@
                 AwaitData: [peopleTypes],
                 Headers: ["Person Type Name", "Acronyms"],
                 DBFieldNames: ["person_type_name", "person_type_acronyms"],
-                RefreshURL: "/admin/person-types",
-                UpdateURL: "/admin/update-person-types",
                 Title: "People Types",
             },
             // People Types Table End
@@ -249,7 +244,6 @@
             CreationCard: {
                 AwaitData: [peopleTypes],
                 URL: "/admin/create-person-type",
-                RefreshURL: "/admin/person-types",
                 Title: "Create Person Type",
                 Inputs: [
                     {
@@ -339,8 +333,6 @@
                     "opinions",
                     "affiliations",
                 ],
-                RefreshURL: "/admin/organizations",
-                UpdateURL: "/admin/update-organization",
                 Title: "Organizations",
             },
             // Organizations Table End
@@ -348,7 +340,6 @@
             CreationCard: {
                 AwaitData: [organizations],
                 URL: "/admin/create-organization",
-                RefreshURL: "/admin/organizations",
                 Title: "Create Organization",
                 Flexdatalistdata: [
                     {
@@ -445,8 +436,6 @@
                 AwaitData: [organizationTypes],
                 Headers: ["Organization Type Name", "Acronyms"],
                 DBFieldNames: ["organ_type_name", "organ_type_acronyms"],
-                RefreshURL: "/admin/organization-types",
-                UpdateURL: "/admin/update-organization-types",
                 Title: "Organization Types",
             },
             // Organization Types Table End
@@ -454,7 +443,6 @@
             CreationCard: {
                 AwaitData: [organizationTypes],
                 URL: "/admin/create-organization-type",
-                RefreshURL: "/admin/organization-types",
                 Title: "Create Organization Type",
                 Inputs: [
                     {
@@ -550,7 +538,6 @@
                     "Subregion",
                 ],
                 Title: "Countries",
-                RefreshURL: "",
                 Modification: false,
                 DBFieldNames: [
                     "country_area",
@@ -611,8 +598,6 @@
                                 headers={section[1].Table.Headers}
                                 DBFieldNames={section[1].Table.DBFieldNames}
                                 title={section[1].Table.Title}
-                                RefreshURL={section[1].Table.RefreshURL}
-                                UpdateURL={section[1].Table.UpdateURL}
                             />
                         {:catch error}
                             <p style="color: red">{error.message}</p>
@@ -623,11 +608,11 @@
             {#if section[1].CreationCard !== undefined}
                 {#if section[1].CreationCard.AwaitData.includes(undefined) !== true}
                     <DataCreationCard
+                        CollectionName={section[1].CollectionName}
                         flexdata={section[1].CreationCard.Flexdatalistdata}
                         url={section[1].CreationCard.URL}
                         title={section[1].CreationCard.Title}
                         inputs={section[1].CreationCard.Inputs}
-                        refreshURL={section[1].CreationCard.RefreshURL}
                     />
                 {/if}
             {/if}

@@ -35,10 +35,12 @@
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",
-      url: `${location.origin}${DeletionURL}`,
+      // url: `${location.origin}${DeletionURL}`,
+      url: `${location.origin}/admin/archive-data/delete`,
       data: data,
       success: function () {
-        refreshData(RefreshURL);
+        // refreshData(RefreshURL);
+        refreshData(`/admin/archive-data/${CollectionName}`);
       },
       error: function (e) {
         // Error Logging
@@ -144,6 +146,7 @@
     </a>
     <form id={DeleteID}>
       <input type="hidden" value={DeleteID} name="DeletionID" />
+      <input type="hidden" value={CollectionName} name="CollectionName" />
       <input
         type="submit"
         value="Delete"
