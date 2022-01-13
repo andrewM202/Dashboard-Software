@@ -6,8 +6,8 @@
     let titleSearchInputs = [
         {
             type: "Text",
-            placeholder: "First Name",
-            name: "FirstName",
+            placeholder: "Collection Name",
+            name: "CollectionName",
         },
         {
             type: "Text",
@@ -32,16 +32,56 @@
                     name: "CollectionName",
                     value: "",
                 },
+            ],
+        },
+        {
+            Subtitle: "Header Search Inputs",
+            Inputs: [
                 {
                     type: "Text",
-                    placeholder: "Header Search Inputs",
-                    name: "HeaderSearchInputs",
+                    placeholder: "Header Search Input Types",
+                    name: "HeaderSearchInputTypes",
                     value: "",
                 },
                 {
                     type: "Text",
-                    placeholder: "Cards",
-                    name: "Cards",
+                    placeholder: "Header Search Input Placeholders",
+                    name: "HeaderSearchInputPlaceholders",
+                    value: "",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Search Input Names",
+                    name: "HeaderSearchInputNames",
+                    value: "",
+                },
+            ],
+        },
+        {
+            Subtitle: "Header Cards",
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Header Card Subtitles",
+                    name: "HeaderCardSubtitles",
+                    value: "",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Card Amounts",
+                    name: "HeaderCardAmounts",
+                    value: "",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Card Increases",
+                    name: "HeaderCardIncreases",
+                    value: "",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Card Descriptions",
+                    name: "HeaderCardDescriptions",
                     value: "",
                 },
             ],

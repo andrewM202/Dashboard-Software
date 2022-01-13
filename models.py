@@ -52,8 +52,16 @@ class ArchiveCollectionSettings(Document):
     """ Configuration settings for archive collections """
     # References ArchiveCollections.collection_name
     collection_name = StringField(required=True) 
-    header_search_inputs = ListField()
-    cards = ListField()
+
+    header_search_input_types = ListField()
+    header_search_input_placeholders = ListField()
+    header_search_input_names = ListField()
+
+    header_card_subtitles = ListField()
+    header_card_amounts = ListField()
+    header_card_increases = ListField()
+    header_card_descriptions = ListField()
+
     # Table fields
     table_awaitdata = StringField()
     table_headers = ListField()

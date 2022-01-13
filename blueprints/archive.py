@@ -226,11 +226,28 @@ def retrieve_specific_archive_data(collection):
 
 @bp.route("/admin/archive-data/create-collection", methods=['POST'])
 def create_archive_collection():
-    """ Returns all of the collections for the archive """
+    """ Returns all of the collections for the archive 
+    Goals:
+    - Make it so input "set" lists should all be same length. For instance, 
+    all the header_search_input lists should have same length, otherwise return error
+    """
+    # Add collection name to archive_collections collection
+    ArchiveCollections(
+        collection_name = request.form['CollectionName'],
+        uploaded_data = False,
+        base_collection = False
+    ).save()
+
     ArchiveCollectionSettings(
         collection_name = request.form['CollectionName'],
-        header_search_inputs = request.form['HeaderSearchInputs'].split(","),
-        cards = request.form['Cards'].split(","),
+        header_search_input_types = request.form['HeaderSearchInputTypes'].split(","),
+        header_search_input_placeholders = request.form['HeaderSearchInputPlaceholders'].split(","),
+        header_search_input_names = request.form['HeaderSearchInputNames'].split(","),
+
+        header_card_subtitles = request.form['HeaderCardSubtitles'].split(","),
+        header_card_amounts = request.form['HeaderCardAmounts'].split(","),
+        header_card_increases = request.form['HeaderCardIncreases'].split(","),
+        header_card_descriptions = request.form['HeaderCardDescriptions'].split(","),
 
         table_awaitdata = request.form['TableAwaitData'],
         table_headers = request.form['TableHeaders'].split(","),
@@ -249,6 +266,35 @@ def create_archive_collection():
         creationcard_inputs = request.form['CreationCardInputs'].split(",")
     ).save()
     return redirect('/admin/archive-designer')
+
+@bp.route("/admin/archive-configuration")
+def retrieve_archive_configuration():
+    """ Returns configuration JSON for the archive """
+    archive_settings = ArchiveCollectionSettings.objects()
+
+    return_settings = {}
+    for collection in archive_settings:
+        dict_collection = dict(collection.to_mongo())
+        dict_collection_keys = dict_collection.keys()
+        return_settings[collection["collection_name"]] = {"HeaderSearchInputs": [], "Cards": [], "Table": {}, "CreationCard": {}}
+        # All header search input fields should be same length
+        for i in range(0, len(collection.header_search_input_types)):
+            return_settings[collection["collection_name"]]["HeaderSearchInputs"].append({ "type": collection.header_search_input_types[i], "placeholder": collection.header_search_input_placeholders[i], "name": collection.header_search_input_names[i] })
+        # All card input fields should be same length
+        for i in range(0, len(collection.header_card_subtitles)):
+            return_settings[collection["collection_name"]]["Cards"].append({ "subtitle": collection.header_card_subtitles[i], "amount": collection.header_card_subtitles[i], "increase": collection.header_card_increases[i], "description": collection.header_card_descriptions[i] })
+        for key in dict_collection_keys:
+            if key != "_id":
+                print(f"Key: {key}")
+                print(f"Value: {collection[key]}")
+    return return_settings
+
+# Temp route to return archive_settings, will delete after testing finished
+@bp.route("/admin/archive-config-collection")
+def testing_route():
+    """ Will delete this route later """
+    archive_settings = ArchiveCollectionSettings.objects()
+    return archive_settings.to_json()
 
 @bp.route("/admin/archive-data/collections")
 def retrieve_all_archive_data():
