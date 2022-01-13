@@ -40,27 +40,27 @@
                 {
                     type: "Text",
                     placeholder: "First Name",
-                    name: "FirstName",
+                    name: "first_name",
                 },
                 {
                     type: "Text",
                     placeholder: "Last Name",
-                    name: "LastName",
+                    name: "last_name",
                 },
                 {
                     type: "Text",
                     placeholder: "Organizations",
-                    name: "Organizations",
+                    name: "organizations",
                 },
                 {
                     type: "Text",
                     placeholder: "Titles",
-                    name: "Titles",
+                    name: "titles",
                 },
                 {
                     type: "Text",
                     placeholder: "Opinions",
-                    name: "Opinion",
+                    name: "opinions",
                 },
                 {
                     type: "Submit",
@@ -111,14 +111,6 @@
                 Title: "People",
                 RefreshURL: "/admin/people",
                 UpdateURL: "/admin/update-person",
-                UpdateFormNames: [
-                    "FirstName",
-                    "LastName",
-                    "PersonType",
-                    "Organizations",
-                    "Titles",
-                    "Opinions",
-                ],
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -250,7 +242,6 @@
                 DBFieldNames: ["person_type_name", "person_type_acronyms"],
                 RefreshURL: "/admin/person-types",
                 UpdateURL: "/admin/update-person-types",
-                UpdateFormNames: ["PersonTypeName", "PersonTypeAcronyms"],
                 Title: "People Types",
             },
             // People Types Table End
@@ -350,12 +341,6 @@
                 ],
                 RefreshURL: "/admin/organizations",
                 UpdateURL: "/admin/update-organization",
-                UpdateFormNames: [
-                    "Name",
-                    "OrganizationType",
-                    "Opinions",
-                    "Affiliations",
-                ],
                 Title: "Organizations",
             },
             // Organizations Table End
@@ -462,10 +447,6 @@
                 DBFieldNames: ["organ_type_name", "organ_type_acronyms"],
                 RefreshURL: "/admin/organization-types",
                 UpdateURL: "/admin/update-organization-types",
-                UpdateFormNames: [
-                    "OrganizationTypeName",
-                    "OrganizationTypeAcronyms",
-                ],
                 Title: "Organization Types",
             },
             // Organization Types Table End
@@ -632,8 +613,6 @@
                                 title={section[1].Table.Title}
                                 RefreshURL={section[1].Table.RefreshURL}
                                 UpdateURL={section[1].Table.UpdateURL}
-                                UpdateFormNames={section[1].Table
-                                    .UpdateFormNames}
                             />
                         {:catch error}
                             <p style="color: red">{error.message}</p>

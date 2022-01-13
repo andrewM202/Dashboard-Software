@@ -4,6 +4,7 @@
 
   import { refreshData } from "../../stores.js";
 
+  export let DeletionURL;
   export let RefreshURL;
   export let UpdateURL;
   export let UpdateFormNames;
@@ -34,8 +35,7 @@
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",
-      // url: `${location.origin}${DeletionURL}`,
-      url: `${location.origin}/admin/archive-data/delete`,
+      url: `${location.origin}${DeletionURL}`,
       data: data,
       success: function () {
         refreshData(RefreshURL);
@@ -66,10 +66,11 @@
 
       // Make AJAX Request
       j$(parent).wrap("<form id='saveForm'></form>");
-      const data = j$("#saveForm").serialize();
+      const data = j$("#saveForm").serializeArray();
       j$.ajax({
         type: "POST",
-        url: `${location.origin}${UpdateURL}`,
+        // url: `${location.origin}${UpdateURL}`,
+        url: `${location.origin}/admin/archive-data/update`,
         data: data,
         success: function () {
           console.log("yay");
@@ -100,6 +101,9 @@
     // Append hidden input with the update id for the DB
     j$(parent).append(
       `<input type='hidden' name='UpdateID' value='${UpdateID}' />`
+    );
+    j$(parent).append(
+      `<input type='hidden' name='CollectionName' value='${CollectionName}' />`
     );
     // Index for setting the form names from settings JSON
     let index = 0;
@@ -139,7 +143,6 @@
       Update
     </a>
     <form id={DeleteID}>
-      <input type="hidden" value={CollectionName} name="CollectionName" />
       <input type="hidden" value={DeleteID} name="DeletionID" />
       <input
         type="submit"
