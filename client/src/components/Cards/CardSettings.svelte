@@ -21,6 +21,15 @@
         this.popoverShow = true;
         createPopper(this.btnRef, this.popoverRef, {
           placement: "top",
+          // Modifer to give padding to popover
+          modifiers: [
+            {
+              name: "preventOverflow",
+              options: {
+                padding: 50,
+              },
+            },
+          ],
         });
       }
     }
@@ -43,7 +52,6 @@
         j$(divs[i]).removeClass("block");
         j$(divs[i]).addClass("hidden");
       });
-      console.log(pop.btnRef);
     }
   }
   registerToolTips();
