@@ -142,43 +142,38 @@ def create_archive_collection():
     - Make it so input "set" lists should all be same length. For instance, 
     all the header_search_input lists should have same length, otherwise return error
     """
-    try:
-        # Add collection name to archive_collections collection
-        ArchiveCollections(
-            collection_name = request.form['CollectionName'],
-            uploaded_data = False,
-            base_collection = False
-        ).save()
+    # Add collection name to archive_collections collection
+    ArchiveCollections(
+        collection_name = request.form['CollectionName'],
+        uploaded_data = False,
+        base_collection = False
+    ).save()
 
-        ArchiveCollectionSettings(
-            collection_name = request.form['CollectionName'],
-            header_search_input_types = request.form['HeaderSearchInputTypes'].split(","),
-            header_search_input_placeholders = request.form['HeaderSearchInputPlaceholders'].split(","),
-            header_search_input_names = request.form['HeaderSearchInputNames'].split(","),
+    ArchiveCollectionSettings(
+        collection_name = request.form['CollectionName'],
+        header_search_input_types = request.form['HeaderSearchInputTypes'].split(","),
+        header_search_input_placeholders = request.form['HeaderSearchInputPlaceholders'].split(","),
+        header_search_input_names = request.form['HeaderSearchInputNames'].split(","),
 
-            header_card_subtitles = request.form['HeaderCardSubtitles'].split(","),
-            header_card_amounts = request.form['HeaderCardAmounts'].split(","),
-            header_card_increases = request.form['HeaderCardIncreases'].split(","),
-            header_card_descriptions = request.form['HeaderCardDescriptions'].split(","),
+        header_card_subtitles = request.form['HeaderCardSubtitles'].split(","),
+        header_card_amounts = request.form['HeaderCardAmounts'].split(","),
+        header_card_increases = request.form['HeaderCardIncreases'].split(","),
+        header_card_descriptions = request.form['HeaderCardDescriptions'].split(","),
 
-            table_awaitdata = request.form['TableAwaitData'],
-            table_headers = request.form['TableHeaders'].split(","),
-            table_title = request.form['TableTitle'],
-            table_deletion_url = request.form['TableDeletionURL'],
-            table_refresh_url = request.form['TableRefreshURL'],
-            table_updated_url = request.form['TableUpdatedURL'],
-            table_update_form_names = request.form['TableDBFormNames'].split(","),
-            table_db_field_names = "Placeholder".split(","),
+        # The await data is just the data from the collection. For now it should be blank
+        # because when a collection is created it should be empty
+        table_awaitdata = '',
+        table_headers = [i.strip(' ') for i in request.form['TableHeaders'].split(",")],
+        table_title = request.form['TableTitle'],
+        table_update_form_names = list(),
+        table_db_field_names = "Placeholder".split(","),
 
-            creationcard_awaitdata = request.form['CreationCardAwaitData'],
-            creationcard_url = request.form['CreationCardURL'],
-            creationcard_refreshurl = request.form['CreationCardRefreshURL'],
-            creationcard_title = request.form['CreationCardTitle'],
-            creationcard_flexdatalistdata = request.form['CreationCardFlexdatalistData'].split(","),
-            creationcard_inputs = request.form['CreationCardInputs'].split(",")
-        ).save()
-    except Exception as e:
-        return e
+        creationcard_awaitdata = request.form['CreationCardAwaitData'],
+        creationcard_title = request.form['CreationCardTitle'],
+        creationcard_flexdatalistdata = request.form['CreationCardFlexdatalistData'].split(","),
+        creationcard_inputs = request.form['CreationCardInputs'].split(","),
+        creationcard_required_field = request.form['CreationCardRequiredField'].split(",")
+    ).save()
     return redirect('/admin/archive-designer')
 
 @bp.route("/admin/archive-configuration")

@@ -31,52 +31,68 @@
                     placeholder: "Collection Name",
                     name: "CollectionName",
                     value: "",
+                    popoverMessage:
+                        "Name of the collection. This will show in the top navigation of the raw archive",
                 },
             ],
         },
         {
             Subtitle: "Header Search Inputs",
+            SubtitlePopoverMessage:
+                "Value set must be equal in length to other header search input fields. Values separated by commas, no spaces.",
             Inputs: [
                 {
                     type: "Text",
                     placeholder: "Header Search Input Types",
                     name: "HeaderSearchInputTypes",
                     value: "",
+                    popoverMessage: "Value may be: 'text'",
                 },
                 {
                     type: "Text",
                     placeholder: "Header Search Input Placeholders",
                     name: "HeaderSearchInputPlaceholders",
                     value: "",
+                    popoverMessage:
+                        "Individual value may be any string, no commas",
                 },
                 {
                     type: "Text",
                     placeholder: "Header Search Input Names",
                     name: "HeaderSearchInputNames",
                     value: "",
+                    popoverMessage:
+                        "Individual value may be any string, no commas",
                 },
             ],
         },
         {
             Subtitle: "Header Cards",
+            SubtitlePopoverMessage:
+                "Each field represents a component of the cards in the raw archive. Value set must be equal in length to other header search input fields. Separate values separated by commas",
             Inputs: [
                 {
                     type: "Text",
                     placeholder: "Header Card Subtitles",
                     name: "HeaderCardSubtitles",
                     value: "",
+                    popoverMessage:
+                        "The subtitle of each header card in the raw archive for this collection.",
                 },
                 {
                     type: "Text",
                     placeholder: "Header Card Amounts",
                     name: "HeaderCardAmounts",
                     value: "",
+                    popoverMessage: "Value is a number",
                 },
                 {
                     type: "Text",
                     placeholder: "Header Card Increases",
                     name: "HeaderCardIncreases",
                     value: "",
+                    popoverMessage:
+                        "Value is a number that represents a percentage",
                 },
                 {
                     type: "Text",
@@ -88,13 +104,9 @@
         },
         {
             Subtitle: "Table",
+            SubtitlePopoverMessage:
+                "Each field represents a component of the table that holds the data",
             Inputs: [
-                {
-                    type: "Text",
-                    placeholder: "Table Await Data",
-                    name: "TableAwaitData",
-                    value: "",
-                },
                 {
                     type: "Text",
                     placeholder: "Table Headers",
@@ -105,30 +117,6 @@
                     type: "Text",
                     placeholder: "Table Title",
                     name: "TableTitle",
-                    value: "",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Table Deletion URL",
-                    name: "TableDeletionURL",
-                    value: "",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Table Refresh URL",
-                    name: "TableRefreshURL",
-                    value: "",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Table Updated URL",
-                    name: "TableUpdatedURL",
-                    value: "",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Table Update Form Names",
-                    name: "TableDBFormNames",
                     value: "",
                 },
             ],
@@ -144,18 +132,6 @@
                 },
                 {
                     type: "Text",
-                    placeholder: "Creation Card URL",
-                    name: "CreationCardURL",
-                    value: "",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Refresh URL",
-                    name: "CreationCardRefreshURL",
-                    value: "",
-                },
-                {
-                    type: "Text",
                     placeholder: "Creation Card Title",
                     name: "CreationCardTitle",
                     value: "",
@@ -165,12 +141,22 @@
                     placeholder: "Creation Card Flexdatalist Data",
                     name: "CreationCardFlexdatalistData",
                     value: "",
+                    popoverMessage:
+                        "Type the name of the collection this field will have flexdata from",
                 },
                 {
                     type: "Text",
                     placeholder: "Creation Card Inputs",
                     name: "CreationCardInputs",
                     value: "",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Required Field",
+                    name: "CreationCardRequiredField",
+                    value: "",
+                    popoverMessage:
+                        "true indicates that the field is required, false indicates it is not",
                 },
             ],
         },

@@ -66,15 +66,12 @@ class ArchiveCollectionSettings(Document):
     table_awaitdata = StringField()
     table_headers = ListField()
     table_title = StringField()
-    table_deletion_url = StringField()
-    table_refresh_url = StringField()
-    table_updated_url = StringField()
     table_update_form_names = ListField()
     table_db_field_names = ListField()
+    
     # Creation card fields
     creationcard_awaitdata = StringField()
-    creationcard_url = StringField()
-    creationcard_refreshurl = StringField()
     creationcard_title = StringField()
     creationcard_flexdatalistdata = ListField()
     creationcard_inputs = ListField()
+    creationcard_required_field = ListField()

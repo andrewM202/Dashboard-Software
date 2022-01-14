@@ -84,7 +84,6 @@
             j$.ajax({
                 type: "POST",
                 url: `${location.origin}${url}`,
-                // url: `${location.origin}/admin/archive-data/${CollectionName}`,
                 data: data,
                 success: function () {
                     // Reset placeholder values on success

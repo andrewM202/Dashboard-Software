@@ -1,7 +1,75 @@
 <script>
+  import { createPopper } from "@popperjs/core";
+  import { tick } from "svelte";
+
   export let settings;
   export let title;
   export let postURL;
+
+  let formID = Math.random().toString(36).substr(2, 8); // Generate random string
+
+  class popover {
+    constructor(btnRef, popoverRef) {
+      this.popoverShow = false;
+      this.btnRef = btnRef;
+      this.popoverRef = popoverRef;
+    }
+    toggleTooltip() {
+      if (this.popoverShow) {
+        this.popoverShow = false;
+      } else {
+        this.popoverShow = true;
+        createPopper(this.btnRef, this.popoverRef, {
+          placement: "top",
+        });
+      }
+    }
+  }
+
+  async function registerToolTips() {
+    await tick();
+    // Math.random().toString(36).substr(2, 8)
+    let infos = j$(".archive-creation-info-i");
+    let divs = j$(".archive-creation-info-div");
+    for (let i = 0; i < infos.length; i++) {
+      let pop = new popover(infos[i], divs[i]);
+      j$(infos[i]).mouseenter(function () {
+        pop.toggleTooltip();
+        j$(divs[i]).removeClass("hidden");
+        j$(divs[i]).addClass("block");
+      });
+      j$(infos[i]).mouseleave(function () {
+        pop.toggleTooltip();
+        j$(divs[i]).removeClass("block");
+        j$(divs[i]).addClass("hidden");
+      });
+      console.log(pop.btnRef);
+    }
+  }
+  registerToolTips();
+
+  function submit(e) {
+    e.preventDefault();
+    let data = j$(`#${formID}`).serialize();
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}${postURL}`,
+      data: data,
+      success: function () {
+        // Reset form
+        j$(`#${formID}`).trigger("reset");
+        // Scroll to top of window
+        j$("html, body").animate({ scrollTop: "0px" }, 500);
+      },
+      error: function (e) {
+        // Error logging
+        console.log(e.statusText);
+        console.log(e.responseText);
+        // Scroll to top of window
+        j$("html, body").animate({ scrollTop: "0px" }, 500);
+      },
+    });
+  }
 </script>
 
 {#if settings !== undefined}
@@ -23,9 +91,27 @@
       </div>
     </div>
     <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
-      <form method="POST" action={postURL}>
+      <form method="POST" id={formID}>
         {#each settings as inputSection}
           <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+            <!-- Tooltip Start -->
+            {#if inputSection.SubtitlePopoverMessage !== undefined}
+              <i
+                class="archive-creation-info-i fas fa-info-circle cursor-pointer pl-12"
+              />
+              <div
+                class="hidden archive-creation-info-div bg-orange-500 border-0 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg"
+              >
+                <div>
+                  <div
+                    class="bg-rose-400 text-white opacity-75 font-semibold p-3 uppercase rounded-t-lg"
+                  >
+                    {inputSection.SubtitlePopoverMessage}
+                  </div>
+                </div>
+              </div>
+            {/if}
+            <!-- Tooltip End -->
             {inputSection.Subtitle}
           </h6>
           <div class="flex flex-wrap">
@@ -36,6 +122,24 @@
                     class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     for="grid-username"
                   >
+                    <!-- Tooltip Start -->
+                    {#if input.popoverMessage !== undefined}
+                      <i
+                        class="archive-creation-info-i fas fa-info-circle cursor-pointer pl-12"
+                      />
+                      <div
+                        class="hidden archive-creation-info-div bg-orange-500 border-0 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg"
+                      >
+                        <div>
+                          <div
+                            class="bg-rose-400 text-white opacity-75 font-semibold p-3 uppercase rounded-t-lg"
+                          >
+                            {input.popoverMessage}
+                          </div>
+                        </div>
+                      </div>
+                    {/if}
+                    <!-- Tooltip End -->
                     {input.placeholder}
                   </label>
                   <input
@@ -54,6 +158,7 @@
           <hr class="mt-6 border-b-1 border-blueGray-300" />
         {/each}
         <input
+          on:click={submit}
           type="submit"
           value="Submit"
           class="py-3 mx-3 my-6 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"

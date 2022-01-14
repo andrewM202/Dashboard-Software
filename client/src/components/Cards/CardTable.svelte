@@ -34,8 +34,6 @@
   export let Modification;
   export let CollectionName;
 
-  // DBFieldNames = UpdateFormNames;
-
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
   }
