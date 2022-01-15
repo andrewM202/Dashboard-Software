@@ -126,12 +126,12 @@
                 Title: "Create Person",
                 Flexdatalistdata: [
                     {
-                        Field: "Organizations", // Corresponds to Inputs.name (form name)
+                        Field: "organizations", // Corresponds to Inputs.name (form name)
                         Data: [organizations],
                         DBFieldNames: ["name"],
                     },
                     {
-                        Field: "PersonType",
+                        Field: "person_type",
                         Data: [peopleTypes],
                         DBFieldNames: ["person_type_name"],
                     },
@@ -140,27 +140,27 @@
                     {
                         type: "Text",
                         placeholder: "First Name",
-                        name: "FirstName",
+                        name: "first_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Last Name",
-                        name: "LastName",
+                        name: "last_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Person Type",
-                        name: "PersonType",
-                        required: true,
+                        name: "person_type",
+                        required: false,
                         flexdatalist: true,
                         flexdataid: "person_type",
                     },
                     {
                         type: "Text",
                         placeholder: "Organizations",
-                        name: "Organizations",
+                        name: "organizations",
                         required: false,
                         flexdatalist: true, // Is the flexdatalist enabled
                         flexdataid: "people_organizations", // The input id for the datalist
@@ -168,13 +168,13 @@
                     {
                         type: "Text",
                         placeholder: "Titles",
-                        name: "Titles",
+                        name: "titles",
                         required: false,
                     },
                     {
                         type: "Text",
                         placeholder: "Opinions",
-                        name: "Opinions",
+                        name: "opinions",
                         required: false,
                     },
                     {
@@ -249,13 +249,13 @@
                     {
                         type: "Text",
                         placeholder: "Person Type Name",
-                        name: "PersonTypeName",
+                        name: "person_type_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Acronyms",
-                        name: "PersonTypeAcronyms",
+                        name: "person_type_acronyms",
                         required: false,
                     },
                     {
@@ -343,12 +343,12 @@
                 Title: "Create Organization",
                 Flexdatalistdata: [
                     {
-                        Field: "Affiliations", // Corresponds to Inputs.name (form name)
+                        Field: "affiliations", // Corresponds to Inputs.name (form name)
                         Data: [organizations],
                         DBFieldNames: ["name"],
                     },
                     {
-                        Field: "OrganizationType", // Corresponds to Inputs.name (form name)
+                        Field: "organ_type", // Corresponds to Inputs.name (form name)
                         Data: [organizationTypes],
                         DBFieldNames: ["organ_type_name"],
                     },
@@ -357,13 +357,13 @@
                     {
                         type: "Text",
                         placeholder: "Name",
-                        name: "Name",
+                        name: "name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Organization Type",
-                        name: "OrganizationType",
+                        name: "organ_type",
                         required: true,
                         flexdatalist: true,
                         flexdataid: "organization_types",
@@ -371,13 +371,13 @@
                     {
                         type: "Text",
                         placeholder: "Opinions",
-                        name: "Opinions",
+                        name: "opinions",
                         required: false,
                     },
                     {
                         type: "Text",
                         placeholder: "Affiliations",
-                        name: "Affiliations",
+                        name: "affiliations",
                         required: false,
                         flexdatalist: true,
                         flexdataid: "organization_affiliations",
@@ -448,13 +448,13 @@
                     {
                         type: "Text",
                         placeholder: "Organization Type Name",
-                        name: "OrganizationTypeName",
+                        name: "organ_type_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Acronyms",
-                        name: "OrganizationTypeAcronyms",
+                        name: "organ_type_acronyms",
                         required: false,
                     },
                     {

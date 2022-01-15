@@ -73,5 +73,9 @@ class ArchiveCollectionSettings(Document):
     creationcard_awaitdata = StringField()
     creationcard_title = StringField()
     creationcard_flexdatalistdata = ListField()
-    creationcard_inputs = ListField()
     creationcard_required_field = ListField()
+
+    # Creation card inputs
+    creationcard_input_types = ListField()
+    creationcard_input_names = ListField()
+    creationcard_input_placeholders = ListField()

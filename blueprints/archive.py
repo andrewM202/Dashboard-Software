@@ -146,7 +146,7 @@ def create_archive_collection():
     ArchiveCollections(
         collection_name = request.form['CollectionName'],
         uploaded_data = False,
-        base_collection = False
+        base_collection = False,
     ).save()
 
     ArchiveCollectionSettings(
@@ -168,11 +168,15 @@ def create_archive_collection():
         table_update_form_names = list(),
         table_db_field_names = "Placeholder".split(","),
 
-        creationcard_awaitdata = request.form['CreationCardAwaitData'],
+        # Awaitdata is the data required for flexdatalist
+        creationcard_awaitdata = '',
         creationcard_title = request.form['CreationCardTitle'],
-        creationcard_flexdatalistdata = request.form['CreationCardFlexdatalistData'].split(","),
-        creationcard_inputs = request.form['CreationCardInputs'].split(","),
-        creationcard_required_field = request.form['CreationCardRequiredField'].split(",")
+        creationcard_flexdatalistdata = list(), #request.form['CreationCardFlexdatalistData'].split(","),
+        creationcard_required_field = request.form['CreationCardRequiredField'].split(","),
+
+        creationcard_input_types = request.form['CreationCardInputTypes'].split(","),
+        creationcard_input_names = request.form['CreationCardInputNames'].split(","),
+        creationcard_input_placeholders = request.form['CreationCardInputPlaceholders'].split(","),
     ).save()
     return redirect('/admin/archive-designer')
 
@@ -247,4 +251,23 @@ def delete_specific_archive_data():
     col = db.get_database(db_name).get_collection(collection)
     col.delete_one({'_id': objectid.ObjectId(id)})
     return redirect('/admin/raw-archive')
+
+@bp.route("/admin/archive-data/create", methods=["POST"])
+def create_specific_archive_data():
+    """ Creates a specific archive data point
+    Takes the collection and id data is in
+    """
+    request_dict = request.form.to_dict()
+    request_keys = request_dict.keys()
+    collection = request.form['CollectionName']
+    col = db.get_database(db_name).get_collection(collection)
+
+    creation_dict = {}
+
+    for key in request_keys:
+        if key != "CollectionName":
+            creation_dict[key] = request_dict[key]
+    col.insert_one(creation_dict)
+    return redirect('/admin/raw-archive')
+    
     

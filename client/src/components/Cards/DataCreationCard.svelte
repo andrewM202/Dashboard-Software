@@ -83,7 +83,8 @@
         if (error === false) {
             j$.ajax({
                 type: "POST",
-                url: `${location.origin}${url}`,
+                // url: `${location.origin}${url}`,
+                url: `${location.origin}/admin/archive-data/create`,
                 data: data,
                 success: function () {
                     // Reset placeholder values on success
@@ -145,6 +146,11 @@
                     {/if}
                 </div>
                 <form id={formID}>
+                    <input
+                        type="hidden"
+                        name="CollectionName"
+                        value={CollectionName}
+                    />
                     <div
                         id="rawArchiveTableContainer"
                         class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"

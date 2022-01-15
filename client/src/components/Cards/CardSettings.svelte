@@ -1,6 +1,7 @@
 <script>
   import { createPopper } from "@popperjs/core";
   import { tick } from "svelte";
+  import Flexdata from "../Plugin/Flexdata.svelte";
 
   export let settings;
   export let title;
@@ -56,6 +57,21 @@
   }
   registerToolTips();
 
+  async function styleFlexData(e) {
+    await tick();
+    console.log(e);
+    let interval = setInterval(function () {
+      if (
+        j$("#CardSettingsOriginParent ul.flexdatalist-multiple").length !== 0
+      ) {
+        clearInterval(interval);
+        j$("#CardSettingsOriginParent ul.flexdatalist-multiple").css({
+          "border-width": "0",
+        });
+      }
+    }, 10);
+  }
+
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
@@ -83,6 +99,7 @@
 {#if settings !== undefined}
   <!-- Header Start -->
   <div
+    id="CardSettingsOriginParent"
     class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0"
   >
     <div class="rounded-t bg-white mb-0 px-6 py-6">
@@ -150,14 +167,34 @@
                     <!-- Tooltip End -->
                     {input.placeholder}
                   </label>
-                  <input
-                    id="grid-username"
-                    name={input.name}
-                    type={input.type}
-                    class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value={input.value}
-                    placeholder={input.placeholder}
-                  />
+                  {#if input.flexdatalistdata === undefined}
+                    <input
+                      id="grid-username"
+                      name={input.name}
+                      type={input.type}
+                      class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value={input.value}
+                      placeholder={input.placeholder}
+                    />
+                    <!-- class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" -->
+                  {:else}
+                    <input
+                      use:styleFlexData
+                      type="text"
+                      placeholder=""
+                      class="flexdatalist border-0 py-3 px-3 my-2 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
+                      data-min-length="0"
+                      multiple="multiple"
+                      allowDuplicateValues="true"
+                      list={input.flexdataid}
+                      name={input.name}
+                    />
+                    <datalist id={input.flexdataid}>
+                      {#each input.flexdatalistdata as data}
+                        <option value={data}>{data}</option>
+                      {/each}
+                    </datalist>
+                  {/if}
                 </div>
               </div>
             {/each}
@@ -363,3 +400,5 @@
     </div>
   </div>
 {/if}
+
+<Flexdata />

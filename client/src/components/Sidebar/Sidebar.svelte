@@ -392,21 +392,21 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/refresh-archive"
+            href="/admin/archive-upload"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/refresh-archive'
+              '/admin/archive-upload'
             ) !== -1
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
               class="fas fa-database mr-2 text-sm {location.href.indexOf(
-                '/admin/refresh-archive'
+                '/admin/archive-upload'
               ) !== -1
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
-            Refresh Data
+            Upload Data
           </a>
         </li>
 

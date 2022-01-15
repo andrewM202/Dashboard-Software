@@ -47,6 +47,8 @@
                     name: "HeaderSearchInputTypes",
                     value: "",
                     popoverMessage: "Value may be: 'text'",
+                    flexdatalistdata: ["text"],
+                    flexdataid: Math.random().toString(36).substr(2, 8),
                 },
                 {
                     type: "Text",
@@ -124,32 +126,34 @@
         {
             Subtitle: "Creation Card",
             Inputs: [
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Await Data",
-                    name: "CreationCardAwaitData",
-                    value: "",
-                },
+                // {
+                //     type: "Text",
+                //     placeholder: "Creation Card Await Data",
+                //     name: "CreationCardAwaitData",
+                //     value: "",
+                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Title",
                     name: "CreationCardTitle",
                     value: "",
                 },
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Flexdatalist Data",
-                    name: "CreationCardFlexdatalistData",
-                    value: "",
-                    popoverMessage:
-                        "Type the name of the collection this field will have flexdata from",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Inputs",
-                    name: "CreationCardInputs",
-                    value: "",
-                },
+                // {
+                //     type: "Text",
+                //     placeholder: "Creation Card Flexdatalist Data",
+                //     name: "CreationCardFlexdatalistData",
+                //     value: "",
+                //     popoverMessage:
+                //         "Type the name of the collection this field will have flexdata from",
+                // },
+                // {
+                //     type: "Text",
+                //     placeholder: "Creation Card Flexdatalist Data",
+                //     name: "CreationCardFlexdatalistData",
+                //     value: "",
+                //     popoverMessage:
+                //         "Type the name of the collection this field will have flexdata from",
+                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Required Field",
@@ -157,6 +161,40 @@
                     value: "",
                     popoverMessage:
                         "true indicates that the field is required, false indicates it is not",
+                },
+            ],
+        },
+        {
+            Subtitle: "Creation Card Inputs",
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Input Types",
+                    name: "CreationCardInputTypes",
+                    value: "",
+                },
+            ],
+            Subtitle: "Creation Card Inputs",
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Input Types",
+                    name: "CreationCardInputTypes",
+                    value: "",
+                    flexdatalistdata: ["text"],
+                    flexdataid: Math.random().toString(36).substr(2, 8),
+                },
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Input Names",
+                    name: "CreationCardInputNames",
+                    value: "",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Input Placeholders",
+                    name: "CreationCardInputPlaceholders",
+                    value: "",
                 },
             ],
         },
