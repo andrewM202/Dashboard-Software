@@ -33,6 +33,7 @@
                     value: "",
                     popoverMessage:
                         "Name of the collection. This will show in the top navigation of the raw archive",
+                    flexdatalistdisabled: true,
                 },
             ],
         },
@@ -120,11 +121,13 @@
                     placeholder: "Table Title",
                     name: "TableTitle",
                     value: "",
+                    flexdatalistdisabled: true,
                 },
             ],
         },
         {
             Subtitle: "Creation Card",
+            SubtitlePopoverMessage: "The misc parts of the creation card",
             Inputs: [
                 // {
                 //     type: "Text",
@@ -137,6 +140,7 @@
                     placeholder: "Creation Card Title",
                     name: "CreationCardTitle",
                     value: "",
+                    flexdatalistdisabled: true,
                 },
                 // {
                 //     type: "Text",
@@ -161,6 +165,8 @@
                     value: "",
                     popoverMessage:
                         "true indicates that the field is required, false indicates it is not",
+                    flexdatalistdata: ["true", "false"],
+                    flexdataid: Math.random().toString(36).substr(2, 8),
                 },
             ],
         },

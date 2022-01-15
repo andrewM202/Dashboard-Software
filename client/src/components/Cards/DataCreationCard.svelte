@@ -1,6 +1,7 @@
 <script>
     import { refreshData } from "../../stores.js";
     import Flexdata from "../Plugin/Flexdata.svelte";
+    import { tick } from "svelte";
 
     // Optional Arguments
     export let title;
@@ -44,7 +45,8 @@
 
     // Setting min-width of multiple flexdatalist input,
     // otherwise its super small like 40px
-    function runPreJS() {
+    async function runPreJS() {
+        await tick();
         if (inputs.length % 2 === 1) {
             j$("div#rawArchiveTableContainer.grid div:last-child").css({
                 "grid-column-start": 1,
@@ -56,6 +58,7 @@
             "150px"
         );
     }
+    runPreJS();
 
     function validateData() {
         // Check each input
@@ -113,7 +116,6 @@
     }
 </script>
 
-<div use:runPreJS />
 <div class="px-4 md:px-10 mx-auto w-full">
     <div class="flex flex-wrap ml-8">
         <div class="w-full h-auto bg-blueGray-700 mb-12 p-8">

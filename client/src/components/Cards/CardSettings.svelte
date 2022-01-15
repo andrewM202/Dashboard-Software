@@ -58,8 +58,27 @@
   registerToolTips();
 
   async function styleFlexData(e) {
+    // Allow duplicate values
+    j$(e).flexdatalist({ allowDuplicateValues: true });
+
     await tick();
-    console.log(e);
+    let interval = setInterval(function () {
+      if (
+        j$("#CardSettingsOriginParent ul.flexdatalist-multiple").length !== 0
+      ) {
+        clearInterval(interval);
+        j$("#CardSettingsOriginParent ul.flexdatalist-multiple").css({
+          "border-width": "0",
+        });
+      }
+    }, 10);
+  }
+
+  async function styleFlexDataRegular(e) {
+    // Allow duplicate values
+    j$(e).flexdatalist({ noResultsText: "" });
+
+    await tick();
     let interval = setInterval(function () {
       if (
         j$("#CardSettingsOriginParent ul.flexdatalist-multiple").length !== 0
@@ -167,16 +186,28 @@
                     <!-- Tooltip End -->
                     {input.placeholder}
                   </label>
-                  {#if input.flexdatalistdata === undefined}
+                  {#if input.flexdatalistdisabled === true}
                     <input
                       id="grid-username"
                       name={input.name}
                       type={input.type}
+                      placeholder={input.placeholder}
                       class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       value={input.value}
-                      placeholder={input.placeholder}
                     />
-                    <!-- class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" -->
+                  {:else if input.flexdatalistdata === undefined}
+                    <input
+                      use:styleFlexDataRegular
+                      id="grid-username"
+                      name={input.name}
+                      type={input.type}
+                      class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value={input.value}
+                      list="flexList"
+                      data-min-length="0"
+                      multiple="multiple"
+                    />
+                    <datalist id="flexList" />
                   {:else}
                     <input
                       use:styleFlexData
@@ -185,7 +216,6 @@
                       class="flexdatalist border-0 py-3 px-3 my-2 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
                       data-min-length="0"
                       multiple="multiple"
-                      allowDuplicateValues="true"
                       list={input.flexdataid}
                       name={input.name}
                     />

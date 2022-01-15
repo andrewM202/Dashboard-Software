@@ -122,7 +122,6 @@
             // People CreationCard Begin
             CreationCard: {
                 AwaitData: [organizations, peopleTypes],
-                URL: "/admin/create-person",
                 Title: "Create Person",
                 Flexdatalistdata: [
                     {
@@ -243,7 +242,6 @@
             // People Types CreationCard Begin
             CreationCard: {
                 AwaitData: [peopleTypes],
-                URL: "/admin/create-person-type",
                 Title: "Create Person Type",
                 Inputs: [
                     {
@@ -339,7 +337,6 @@
             // Organizations CreationCard Begin
             CreationCard: {
                 AwaitData: [organizations],
-                URL: "/admin/create-organization",
                 Title: "Create Organization",
                 Flexdatalistdata: [
                     {
@@ -442,7 +439,6 @@
             // Organization Types CreationCard Begin
             CreationCard: {
                 AwaitData: [organizationTypes],
-                URL: "/admin/create-organization-type",
                 Title: "Create Organization Type",
                 Inputs: [
                     {
@@ -610,7 +606,6 @@
                     <DataCreationCard
                         CollectionName={section[1].CollectionName}
                         flexdata={section[1].CreationCard.Flexdatalistdata}
-                        url={section[1].CreationCard.URL}
                         title={section[1].CreationCard.Title}
                         inputs={section[1].CreationCard.Inputs}
                     />

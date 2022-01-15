@@ -17,38 +17,6 @@ collections = db.get_database(db_name).list_collection_names()
 def raw_archive():
     return send_from_directory('client/public', 'index.html')
 
-########################### People #####################################
-
-@bp.route("/admin/create-person", methods=['POST'])
-def create_person():
-    first_name = request.form['FirstName']
-    last_name = request.form['LastName']
-    person_type = request.form['PersonType'].split(",")
-    organization = request.form['Organizations'].split(",")
-    titles = request.form['Titles'].split(",")
-    opinions = request.form['Opinions'].split(",")
-    PeopleWatch(
-        first_name    = first_name,
-        last_name     = last_name,
-        person_type   = person_type,
-        organizations = organization,
-        titles        = titles,
-        opinions      = opinions
-    ).save()
-    return redirect('/admin/raw-archive')
-
-###########################  People Types #####################################
-
-@bp.route("/admin/create-person-type", methods=['POST'])
-def create_person_type():
-    person_type_name = request.form['PersonTypeName']
-    person_type_acronyms = request.form['PersonTypeAcronyms'].split(",")
-    PersonType(
-        person_type_name     = person_type_name,
-        person_type_acronyms = person_type_acronyms,
-    ).save()
-    return redirect('/admin/raw-archive')
-
 ###########################  Countries #####################################
 
 @bp.route("/admin/countries")
@@ -90,34 +58,6 @@ def raw_countries():
         # Append completed object to list
         parsed_countries.append(new_country)
     return jsonify(parsed_countries)
-
-###########################  Organizations #####################################
-
-@bp.route("/admin/create-organization", methods=['POST'])
-def create_organization():
-    name = request.form['Name']
-    organization_type = request.form['OrganizationType']
-    opinions = request.form['Opinions'].split(",")
-    affiliations = request.form['Affiliations'].split(",")
-    Organizations(
-        name         = name,
-        organ_type   = organization_type,
-        opinions     = opinions,
-        affiliations = affiliations
-    ).save()
-    return redirect('/admin/raw-archive')
-
-###########################  Organization Types #####################################
-
-@bp.route("/admin/create-organization-type", methods=['POST'])
-def create_organization_type():
-    organization_type_name = request.form['OrganizationTypeName']
-    organization_type_acronyms = request.form['OrganizationTypeAcronyms'].split(",")
-    OrganizationType(
-        organ_type_name     = organization_type_name,
-        organ_type_acronyms = organization_type_acronyms,
-    ).save()
-    return redirect('/admin/raw-archive')
 
 ########################### Archive Designer #####################################
 
