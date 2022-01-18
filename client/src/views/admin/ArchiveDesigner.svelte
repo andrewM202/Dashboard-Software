@@ -2,6 +2,14 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
+    import { getDBResource, collectionsStore } from "../../stores.js";
+
+    // The collections in the database
+    let collections;
+    $: collections = $collectionsStore;
+
+    let tableData = [];
+    $: tableData = [collections];
 
     let titleSearchInputs = [
         {
@@ -22,7 +30,8 @@
     ];
 
     // Each object inside is a section
-    let cardSettings = [
+    let cardSettings;
+    $: cardSettings = [
         {
             Subtitle: "Misc",
             Inputs: [
@@ -47,22 +56,15 @@
                     placeholder: "Header Search Input Types",
                     name: "HeaderSearchInputTypes",
                     value: "",
-                    popoverMessage: "Value may be: 'text'",
+                    popoverMessage:
+                        "What type of input is allowed for this component of the search form?",
                     flexdatalistdata: ["text"],
-                    flexdataid: Math.random().toString(36).substr(2, 8),
+                    flexdataid: Math.random().toString(36).substring(2, 8),
                 },
                 {
                     type: "Text",
                     placeholder: "Header Search Input Placeholders",
                     name: "HeaderSearchInputPlaceholders",
-                    value: "",
-                    popoverMessage:
-                        "Individual value may be any string, no commas",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Header Search Input Names",
-                    name: "HeaderSearchInputNames",
                     value: "",
                     popoverMessage:
                         "Individual value may be any string, no commas",
@@ -110,12 +112,6 @@
             SubtitlePopoverMessage:
                 "Each field represents a component of the table that holds the data",
             Inputs: [
-                {
-                    type: "Text",
-                    placeholder: "Table Headers",
-                    name: "TableHeaders",
-                    value: "",
-                },
                 {
                     type: "Text",
                     placeholder: "Table Title",
@@ -166,21 +162,13 @@
                     popoverMessage:
                         "true indicates that the field is required, false indicates it is not",
                     flexdatalistdata: ["true", "false"],
-                    flexdataid: Math.random().toString(36).substr(2, 8),
+                    flexdataid: Math.random().toString(36).substring(2, 8),
                 },
             ],
         },
         {
             Subtitle: "Creation Card Inputs",
-            Inputs: [
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Input Types",
-                    name: "CreationCardInputTypes",
-                    value: "",
-                },
-            ],
-            Subtitle: "Creation Card Inputs",
+            SubtitlePopoverMessage: "Define the inputs for creating a document",
             Inputs: [
                 {
                     type: "Text",
@@ -188,19 +176,42 @@
                     name: "CreationCardInputTypes",
                     value: "",
                     flexdatalistdata: ["text"],
-                    flexdataid: Math.random().toString(36).substr(2, 8),
+                    flexdataid: Math.random().toString(36).substring(2, 8),
                 },
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Names",
                     name: "CreationCardInputNames",
                     value: "",
+                    popoverMessage:
+                        "This defines the actual name of the field. Choose it wisely!",
                 },
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Placeholders",
                     name: "CreationCardInputPlaceholders",
                     value: "",
+                },
+                // {
+                //     type: "Text",
+                //     placeholder: "Creation Card Input Flexdatalist",
+                //     name: "CreationCardInputPlaceholders",
+                //     value: "",
+                //     flexdatalistdata: ["true", "false"],
+                //     flexdataid: Math.random().toString(36).substring(2, 8),
+                //     popoverMessage: "Should this field be a flexdatalist?",
+                // },
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Input Flexdatalist data",
+                    name: "CreationCardFlexdatalistData",
+                    value: "",
+                    dbFieldNames: ["collection_name"],
+                    flexdatalistdata: collections,
+                    flexdatanonedata: true, // Adds a "None value"
+                    flexdataid: Math.random().toString(36).substring(2, 8),
+                    popoverMessage:
+                        "If this is a flexdatalist, which collection should the data be from? Fill out 'None' if not a flexdatalist.",
                 },
             ],
         },
@@ -216,10 +227,12 @@
 />
 
 <div class="mt-4 w-full md:w-11/12 h-auto px-4">
-    <CardSettings
-        title={"Archive Creation"}
-        postURL={"/admin/archive-data/create-collection"}
-        settings={cardSettings}
-    />
+    {#if tableData.includes(undefined) !== true}
+        <CardSettings
+            title={"Archive Creation"}
+            postURL={"/admin/archive-data/create-collection"}
+            settings={cardSettings}
+        />
+    {/if}
     <!-- <CardSettings /> -->
 </div>

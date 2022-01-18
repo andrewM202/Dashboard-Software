@@ -81,7 +81,10 @@ def create_archive_collection():
     Goals:
     - Make it so input "set" lists should all be same length. For instance, 
     all the header_search_input lists should have same length, otherwise return error
-    """
+    """ 
+    
+    print(request.form['HeaderSearchInputTypes'])
+    
     # Add collection name to archive_collections collection
     ArchiveCollections(
         collection_name = request.form['CollectionName'],
@@ -89,29 +92,36 @@ def create_archive_collection():
         base_collection = False,
     ).save()
 
+    # Create collection
+    newcol = db.get_database(db_name)[request.form['CollectionName']]
+    col = db.get_database(db_name).get_collection(request.form['CollectionName'])
+    insert_json = {}
+    for field in request.form['CreationCardInputNames'].split(","):
+        insert_json[field] = "Sample Value"
+    col.insert_one(insert_json)
+
     ArchiveCollectionSettings(
         collection_name = request.form['CollectionName'],
-        header_search_input_types = request.form['HeaderSearchInputTypes'].split(","),
+        header_search_input_types = [i.partition(" ")[2] for i in request.form['HeaderSearchInputTypes'].split(",")],
         header_search_input_placeholders = request.form['HeaderSearchInputPlaceholders'].split(","),
-        header_search_input_names = request.form['HeaderSearchInputNames'].split(","),
+        # Header search input names are just the creation card ones
+        header_search_input_names = request.form['CreationCardInputNames'].split(","),
 
         header_card_subtitles = request.form['HeaderCardSubtitles'].split(","),
-        header_card_amounts = request.form['HeaderCardAmounts'].split(","),
-        header_card_increases = request.form['HeaderCardIncreases'].split(","),
+        header_card_amounts = [int(i) for i in request.form['HeaderCardAmounts'].split(",")],
+        header_card_increases = [int(i) for i in request.form['HeaderCardIncreases'].split(",")],
         header_card_descriptions = request.form['HeaderCardDescriptions'].split(","),
 
         # The await data is just the data from the collection. For now it should be blank
         # because when a collection is created it should be empty
-        table_awaitdata = '',
-        table_headers = [i.strip(' ') for i in request.form['TableHeaders'].split(",")],
         table_title = request.form['TableTitle'],
         table_update_form_names = list(),
-        table_db_field_names = "Placeholder".split(","),
+        # The table field names are also just the creation card names
+        table_db_field_names = request.form['CreationCardInputNames'].split(","),
 
         # Awaitdata is the data required for flexdatalist
-        creationcard_awaitdata = '',
         creationcard_title = request.form['CreationCardTitle'],
-        creationcard_flexdatalistdata = list(), #request.form['CreationCardFlexdatalistData'].split(","),
+        creationcard_flexdatalistdata = request.form['CreationCardFlexdatalistData'].split(","),
         creationcard_required_field = request.form['CreationCardRequiredField'].split(","),
 
         creationcard_input_types = request.form['CreationCardInputTypes'].split(","),
@@ -128,19 +138,31 @@ def retrieve_archive_configuration():
 
         return_settings = {}
         for collection in archive_settings:
+            print(collection.header_search_input_types)
             dict_collection = dict(collection.to_mongo())
             dict_collection_keys = dict_collection.keys()
+            ######### Collection Name #########
             return_settings[collection["collection_name"]] = {"CollectionName": collection["collection_name"],"HeaderSearchInputs": [], "Cards": [], "Table": {}, "CreationCard": {}}
+            ######### Header #########
             # All header search input fields should be same length
             for i in range(0, len(collection.header_search_input_types)):
                 return_settings[collection["collection_name"]]["HeaderSearchInputs"].append({ "type": collection.header_search_input_types[i], "placeholder": collection.header_search_input_placeholders[i], "name": collection.header_search_input_names[i] })
             # All card input fields should be same length
             for i in range(0, len(collection.header_card_subtitles)):
-                return_settings[collection["collection_name"]]["Cards"].append({ "subtitle": collection.header_card_subtitles[i], "amount": collection.header_card_subtitles[i], "increase": collection.header_card_increases[i], "description": collection.header_card_descriptions[i] })
-            for key in dict_collection_keys:
-                if key != "_id":
-                    print(f"Key: {key}")
-                    print(f"Value: {collection[key]}")
+                return_settings[collection["collection_name"]]["Cards"].append({ "subtitle": collection.header_card_subtitles[i], "amount": collection.header_card_amounts[i], "increase": collection.header_card_increases[i], "description": collection.header_card_descriptions[i] })
+            ######### Table #########
+            return_settings[collection["collection_name"]]["Table"]["AwaitData"] = [retrieve_specific_archive_data(f"/admin/archive-data/{collection.collection_name}")]
+            for i in range(0, len(collection.table_db_field_names)):
+                return_settings[collection["collection_name"]]["Table"]["Headers"] = collection.table_db_field_names
+                return_settings[collection["collection_name"]]["Table"]["DBFieldNames"] = [i.lower().replace(' ', '_') for i in collection.table_db_field_names] 
+                return_settings[collection["collection_name"]]["Table"]["Title"] = collection.table_title
+            ######### Creation Card #########
+            return_settings[collection["collection_name"]]["CreationCard"]["Title"] = f"Create {collection.collection_name}"
+            return_settings[collection["collection_name"]]["CreationCard"]["Inputs"] = []
+            for i in range(0, len(collection.creationcard_input_types)):
+                return_settings[collection["collection_name"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
+            # for i in range(0, len(collection.creationcard_flexdatalistdata)):
+            #     return_settings[collection["collection_name"]]["CreationCard"]["Flexdatalistdata"].append({ "Field": collection.table_db_field_names[i].lower().replace(' ', '_'), "Data": 'placeholder', "DBFieldNames": [] })
         return return_settings
     except Exception as e:
         return e

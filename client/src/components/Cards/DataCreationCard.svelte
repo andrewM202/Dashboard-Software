@@ -6,14 +6,12 @@
     // Optional Arguments
     export let title;
     export let inputs;
-    export let url;
-    export let refreshURL;
     export let flexdata;
     export let CollectionName;
 
     let flexdatalist = [];
 
-    let formID = Math.random().toString(36).substr(2, 8); // Generate random string
+    let formID = Math.random().toString(36).substring(2, 8); // Generate random string
 
     // Simplify flexdata data so looping does not
     // Have to occur in the HTML with templating engine
@@ -53,10 +51,21 @@
                 "grid-column-end": 3,
             });
         }
-        j$("li.input-container.flexdatalist-multiple-value input").css(
-            "min-width",
-            "150px"
-        );
+        // Run interval until flexdatalist loads,
+        // and then clear interval when its loaded
+        let interval = setInterval(function () {
+            if (j$("ul.flexdatalist-multiple").length !== 0) {
+                clearInterval(interval);
+                j$("li.input-container.flexdatalist-multiple-value input").css(
+                    "min-width",
+                    "150px"
+                );
+                // Make the items in flexlist have cursor pointers
+                j$("ul.flexdatalist-multiple").click(function () {
+                    j$(".item").css({ cursor: "pointer" });
+                });
+            }
+        }, 10);
     }
     runPreJS();
 

@@ -7,7 +7,8 @@
   export let title;
   export let postURL;
 
-  let formID = Math.random().toString(36).substr(2, 8); // Generate random string
+  let formID = Math.random().toString(36).substring(2, 8); // Generate random string
+  let error = false; // Error for if field is required
 
   class popover {
     constructor(btnRef, popoverRef) {
@@ -38,7 +39,6 @@
 
   async function registerToolTips() {
     await tick();
-    // Math.random().toString(36).substr(2, 8)
     let infos = j$(".archive-creation-info-i");
     let divs = j$(".archive-creation-info-div");
     for (let i = 0; i < infos.length; i++) {
@@ -57,9 +57,10 @@
   }
   registerToolTips();
 
+  let z = 1;
   async function styleFlexData(e) {
     // Allow duplicate values
-    j$(e).flexdatalist({ allowDuplicateValues: true });
+    j$(e).flexdatalist({ allowDuplicateValues: true, multiple: true });
 
     await tick();
     let interval = setInterval(function () {
@@ -70,6 +71,14 @@
         j$("#CardSettingsOriginParent ul.flexdatalist-multiple").css({
           "border-width": "0",
         });
+        j$("#CardSettingsOriginParent ul.flexdatalist-multiple").click(
+          function () {
+            j$(".item").css({ cursor: "pointer" });
+            j$("ul.flexdatalist-results > li").click(function (e) {
+              z++;
+            });
+          }
+        );
       }
     }, 10);
   }
@@ -91,6 +100,22 @@
     }, 10);
   }
 
+  function validateData() {
+    // Check each input
+    for (let input of inputs) {
+      if (input.type !== "Submit") {
+        let value = j$("#" + input.name).val();
+        if (value === "" && input.required === true) {
+          error = "Please Fill All Required Fields.";
+          j$("#" + input.name).attr(
+            "placeholder",
+            `${input.placeholder} Is Required!`
+          );
+        }
+      }
+    }
+  }
+
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
@@ -103,6 +128,8 @@
         j$(`#${formID}`).trigger("reset");
         // Scroll to top of window
         j$("html, body").animate({ scrollTop: "0px" }, 500);
+        // Remove flexdatalist values
+        j$("li.value").remove();
       },
       error: function (e) {
         // Error logging
@@ -195,10 +222,12 @@
                       class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       value={input.value}
                     />
+                    <!-- Generic flexlist with no predefined values -->
                   {:else if input.flexdatalistdata === undefined}
                     <input
                       use:styleFlexDataRegular
                       id="grid-username"
+                      placeholder="....."
                       name={input.name}
                       type={input.type}
                       class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -208,6 +237,31 @@
                       multiple="multiple"
                     />
                     <datalist id="flexList" />
+                    <!-- Data imported from store -->
+                  {:else if input.flexdatalistdata[0] !== undefined && typeof input.flexdatalistdata[0] !== "string"}
+                    <input
+                      use:styleFlexData
+                      type="text"
+                      placeholder=""
+                      class="flexdatalist border-0 py-3 px-3 my-2 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
+                      data-min-length="0"
+                      multiple="multiple"
+                      list={input.flexdataid}
+                      name={input.name}
+                    />
+                    <datalist id={input.flexdataid}>
+                      {#if input.flexdatanonedata}
+                        <option value="None">None</option>
+                      {/if}
+                      {#each input.flexdatalistdata as datarow}
+                        {#each Object.entries(datarow) as datapoint}
+                          {#if datapoint[0] !== "_id"}
+                            <option value={datapoint[1]}>{datapoint[1]}</option>
+                          {/if}
+                        {/each}
+                      {/each}
+                    </datalist>
+                    <!-- Values loaded for flexlist from array of strings -->
                   {:else}
                     <input
                       use:styleFlexData
@@ -221,8 +275,9 @@
                     />
                     <datalist id={input.flexdataid}>
                       {#each input.flexdatalistdata as data}
-                        <option value={data}>{data}</option>
-                      {/each}
+                        <option value="{z}. {data}">
+                          <!-- {data}</option> -->
+                        </option>{/each}
                     </datalist>
                   {/if}
                 </div>
