@@ -3,6 +3,7 @@ from models import PeopleWatch, PersonType, Countries, Organizations, Organizati
 # from mongoengine import *
 from bson import json_util, objectid
 from os import environ
+from uuid import uuid1
 
 ########################### Global Variables #####################################
 
@@ -122,9 +123,10 @@ def create_archive_collection():
         # Awaitdata is the data required for flexdatalist
         creationcard_title = request.form['CreationCardTitle'],
         creationcard_flexdatalistdata = request.form['CreationCardFlexdatalistData'].split(","),
-        creationcard_required_field = request.form['CreationCardRequiredField'].split(","),
+        creationcard_flexdatalistfield = [i.partition(" ")[2].partition(" ")[2] for i in request.form['CreationCardFlexdatalistField'].split(",")],
+        creationcard_required_field = [i.partition(" ")[2] for i in request.form['CreationCardRequiredField'].split(",")],
 
-        creationcard_input_types = request.form['CreationCardInputTypes'].split(","),
+        creationcard_input_types = [i.partition(" ")[2] for i in request.form['CreationCardInputTypes'].split(",")],
         creationcard_input_names = request.form['CreationCardInputNames'].split(","),
         creationcard_input_placeholders = request.form['CreationCardInputPlaceholders'].split(","),
     ).save()
@@ -138,7 +140,6 @@ def retrieve_archive_configuration():
 
         return_settings = {}
         for collection in archive_settings:
-            print(collection.header_search_input_types)
             dict_collection = dict(collection.to_mongo())
             dict_collection_keys = dict_collection.keys()
             ######### Collection Name #########
@@ -151,7 +152,8 @@ def retrieve_archive_configuration():
             for i in range(0, len(collection.header_card_subtitles)):
                 return_settings[collection["collection_name"]]["Cards"].append({ "subtitle": collection.header_card_subtitles[i], "amount": collection.header_card_amounts[i], "increase": collection.header_card_increases[i], "description": collection.header_card_descriptions[i] })
             ######### Table #########
-            return_settings[collection["collection_name"]]["Table"]["AwaitData"] = [retrieve_specific_archive_data(f"/admin/archive-data/{collection.collection_name}")]
+            # return_settings[collection["collection_name"]]["Table"]["Data"] = [json_util.dumps(db.get_database(db_name).get_collection(collection["collection_name"]).find())]
+            return_settings[collection["collection_name"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
             for i in range(0, len(collection.table_db_field_names)):
                 return_settings[collection["collection_name"]]["Table"]["Headers"] = collection.table_db_field_names
                 return_settings[collection["collection_name"]]["Table"]["DBFieldNames"] = [i.lower().replace(' ', '_') for i in collection.table_db_field_names] 
@@ -160,10 +162,12 @@ def retrieve_archive_configuration():
             return_settings[collection["collection_name"]]["CreationCard"]["Title"] = f"Create {collection.collection_name}"
             return_settings[collection["collection_name"]]["CreationCard"]["Inputs"] = []
             for i in range(0, len(collection.creationcard_input_types)):
-                return_settings[collection["collection_name"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
-            # for i in range(0, len(collection.creationcard_flexdatalistdata)):
-            #     return_settings[collection["collection_name"]]["CreationCard"]["Flexdatalistdata"].append({ "Field": collection.table_db_field_names[i].lower().replace(' ', '_'), "Data": 'placeholder', "DBFieldNames": [] })
-        return return_settings
+                if len(collection.creationcard_flexdatalistdata) == 0:
+                    return_settings[collection["collection_name"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
+                else:
+                    print(collection.creationcard_flexdatalistfield[i])
+                    return_settings[collection["collection_name"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true", "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield}": 1}) ), "flexdatafields": collection.creationcard_flexdatalistfield[i], "flexdataid": str(uuid1()) })
+        return json_util.dumps(return_settings, indent=4, sort_keys=True)
     except Exception as e:
         return e
 
@@ -174,16 +178,28 @@ def testing_route():
     archive_settings = ArchiveCollectionSettings.objects()
     return archive_settings.to_json()
 
+@bp.route("/admin/archive-collection-key-pairs")
+def archive_collection_keys():
+    """ Will delete this route later """
+    key_pairs = {}
+    key_pairs["KeyPairs"] = []
+    collections = ArchiveCollections.objects().only('collection_name')
+    for collection in collections:
+        col = db.get_database(db_name).get_collection(collection.collection_name)
+        doc = col.find_one()
+        # key_pairs[collection.collection_name] = []
+        doc_key_values = doc.items()
+        for key_value_pair in doc_key_values:
+            if key_value_pair[0] != "_id":
+                # key_pairs[collection.collection_name].append(f"{collection.collection_name}: {key_value_pair[0]}")
+                key_pairs["KeyPairs"].append(f"{collection.collection_name}: {key_value_pair[0]}")
+    return key_pairs
+
 @bp.route("/admin/archive-data/collections")
 def retrieve_all_archive_data():
     """ Returns all of the collections for the archive """
     archive_collections = ArchiveCollections.objects().only('collection_name')
     return archive_collections.to_json()
-
-# @bp.route("/admin/archive-data/")
-# def retrieve_archive_collections():
-#     """ Retrieve all archive data """
-#     pass
 
 @bp.route("/admin/archive-data/update", methods=["POST"])
 def update_specific_archive_data():

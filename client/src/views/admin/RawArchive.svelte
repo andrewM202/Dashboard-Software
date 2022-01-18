@@ -11,6 +11,7 @@
         organizationsStore,
         organizationTypesStore,
         countriesStore,
+        getDBResource,
     } from "../../stores.js";
 
     let organizations, organizationTypes, people, peopleTypes, countries;
@@ -99,7 +100,7 @@
             // People Cards End
             // People Table Begin
             Table: {
-                AwaitData: [people],
+                Data: [people],
                 Headers: [
                     "First Name",
                     "Last Name",
@@ -121,7 +122,7 @@
             // People Table End
             // People CreationCard Begin
             CreationCard: {
-                AwaitData: [organizations, peopleTypes],
+                Data: [organizations, peopleTypes],
                 Title: "Create Person",
                 Inputs: [
                     {
@@ -223,7 +224,7 @@
             // People Types Cards End
             // People Types Table Begin
             Table: {
-                AwaitData: [peopleTypes],
+                Data: [peopleTypes],
                 Headers: ["Person Type Name", "Acronyms"],
                 DBFieldNames: ["person_type_name", "person_type_acronyms"],
                 Title: "People Types",
@@ -231,7 +232,7 @@
             // People Types Table End
             // People Types CreationCard Begin
             CreationCard: {
-                AwaitData: [peopleTypes],
+                Data: [peopleTypes],
                 Title: "Create Person Type",
                 Inputs: [
                     {
@@ -308,7 +309,7 @@
             // Organizations Cards End
             // Organizations Table Begin
             Table: {
-                AwaitData: [organizations],
+                Data: [organizations],
                 Headers: [
                     "Name",
                     "Organization Type",
@@ -326,7 +327,7 @@
             // Organizations Table End
             // Organizations CreationCard Begin
             CreationCard: {
-                AwaitData: [organizations],
+                Data: [organizations],
                 Title: "Create Organization",
                 Inputs: [
                     {
@@ -410,7 +411,7 @@
             // Organization Types Cards End
             // Organization Types Table Begin
             Table: {
-                AwaitData: [organizationTypes],
+                Data: [organizationTypes],
                 Headers: ["Organization Type Name", "Acronyms"],
                 DBFieldNames: ["organ_type_name", "organ_type_acronyms"],
                 Title: "Organization Types",
@@ -418,7 +419,7 @@
             // Organization Types Table End
             // Organization Types CreationCard Begin
             CreationCard: {
-                AwaitData: [organizationTypes],
+                Data: [organizationTypes],
                 Title: "Create Organization Type",
                 Inputs: [
                     {
@@ -501,7 +502,7 @@
             // Countries Cards End
             // Countries Table Begin
             Table: {
-                AwaitData: [countries],
+                Data: [countries],
                 Headers: [
                     "Area",
                     "Capital",
@@ -532,6 +533,10 @@
         // Countries End
     };
 
+    let test = getDBResource("/admin/archive-configuration");
+    // $: DataSettings = getDBResource("/admin/archive-configuration");
+    $: console.log(DataSettings);
+
     const navItems = [
         "People",
         "Countries",
@@ -539,6 +544,7 @@
         "People Types",
         "Organization Types",
     ];
+    // const navItems = ["test"];
 
     // Bind openTab to AdminNavbar component
     let openTab = 0;
@@ -564,7 +570,7 @@
                     <div
                         class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
                     >
-                        {#await section[1].Table.AwaitData[0]}
+                        {#await section[1].Table.Data[0]}
                             <p>Loading...</p>
                         {:then data}
                             <CardTable
@@ -582,7 +588,7 @@
                 </div>
             </div>
             {#if section[1].CreationCard !== undefined}
-                {#if section[1].CreationCard.AwaitData.includes(undefined) !== true}
+                {#if section[1].CreationCard.Data.includes(undefined) !== true}
                     <DataCreationCard
                         CollectionName={section[1].CollectionName}
                         flexdata={section[1].CreationCard.Flexdatalistdata}

@@ -2,14 +2,18 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
-    import { getDBResource, collectionsStore } from "../../stores.js";
+    import { collectionKeysStore, collectionsStore } from "../../stores.js";
 
     // The collections in the database
-    let collections;
+    let collections, collectionKeys;
     $: collections = $collectionsStore;
+    $: collectionKeys = $collectionKeysStore;
+    $: if (collectionKeys !== undefined) {
+        collectionKeys = collectionKeys.KeyPairs;
+    }
 
     let tableData = [];
-    $: tableData = [collections];
+    $: tableData = [collections, collectionKeys];
 
     let titleSearchInputs = [
         {
@@ -125,12 +129,6 @@
             Subtitle: "Creation Card",
             SubtitlePopoverMessage: "The misc parts of the creation card",
             Inputs: [
-                // {
-                //     type: "Text",
-                //     placeholder: "Creation Card Await Data",
-                //     name: "CreationCardAwaitData",
-                //     value: "",
-                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Title",
@@ -138,22 +136,6 @@
                     value: "",
                     flexdatalistdisabled: true,
                 },
-                // {
-                //     type: "Text",
-                //     placeholder: "Creation Card Flexdatalist Data",
-                //     name: "CreationCardFlexdatalistData",
-                //     value: "",
-                //     popoverMessage:
-                //         "Type the name of the collection this field will have flexdata from",
-                // },
-                // {
-                //     type: "Text",
-                //     placeholder: "Creation Card Flexdatalist Data",
-                //     name: "CreationCardFlexdatalistData",
-                //     value: "",
-                //     popoverMessage:
-                //         "Type the name of the collection this field will have flexdata from",
-                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Required Field",
@@ -192,15 +174,6 @@
                     name: "CreationCardInputPlaceholders",
                     value: "",
                 },
-                // {
-                //     type: "Text",
-                //     placeholder: "Creation Card Input Flexdatalist",
-                //     name: "CreationCardInputPlaceholders",
-                //     value: "",
-                //     flexdatalistdata: ["true", "false"],
-                //     flexdataid: Math.random().toString(36).substring(2, 8),
-                //     popoverMessage: "Should this field be a flexdatalist?",
-                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Flexdatalist data",
@@ -212,6 +185,18 @@
                     flexdataid: Math.random().toString(36).substring(2, 8),
                     popoverMessage:
                         "If this is a flexdatalist, which collection should the data be from? Fill out 'None' if not a flexdatalist.",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Input Flexdatalist Field",
+                    name: "CreationCardFlexdatalistField",
+                    value: "",
+                    // dbFieldNames: ["collection_name"],
+                    flexdatalistdata: collectionKeys,
+                    flexdatanonedata: true, // Adds a "None value"
+                    flexdataid: Math.random().toString(36).substring(2, 8),
+                    popoverMessage:
+                        "If this is a flexdatalist and the collection is chosen, which field from the collection should be used? Values in 'Collection Name': 'Field' pairs",
                 },
             ],
         },
@@ -234,5 +219,4 @@
             settings={cardSettings}
         />
     {/if}
-    <!-- <CardSettings /> -->
 </div>

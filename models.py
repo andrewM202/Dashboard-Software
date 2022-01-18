@@ -70,6 +70,7 @@ class ArchiveCollectionSettings(Document):
     # Creation card fields
     creationcard_title = StringField()
     creationcard_flexdatalistdata = ListField()
+    creationcard_flexdatalistfield = ListField()
     creationcard_required_field = ListField()
 
     # Creation card inputs

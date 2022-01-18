@@ -60,7 +60,11 @@
   let z = 1;
   async function styleFlexData(e) {
     // Allow duplicate values
-    j$(e).flexdatalist({ allowDuplicateValues: true, multiple: true });
+    j$(e).flexdatalist({
+      allowDuplicateValues: true,
+      multiple: true,
+      searchContain: true,
+    });
 
     await tick();
     let interval = setInterval(function () {
@@ -274,6 +278,9 @@
                       name={input.name}
                     />
                     <datalist id={input.flexdataid}>
+                      {#if input.flexdatanonedata}
+                        <option value="None">None</option>
+                      {/if}
                       {#each input.flexdatalistdata as data}
                         <option value="{z}. {data}">
                           <!-- {data}</option> -->
