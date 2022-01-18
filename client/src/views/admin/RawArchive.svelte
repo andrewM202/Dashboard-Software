@@ -123,18 +123,6 @@
             CreationCard: {
                 AwaitData: [organizations, peopleTypes],
                 Title: "Create Person",
-                Flexdatalistdata: [
-                    {
-                        Field: "organizations", // Corresponds to Inputs.name (form name)
-                        Data: [organizations],
-                        DBFieldNames: ["name"],
-                    },
-                    {
-                        Field: "person_type",
-                        Data: [peopleTypes],
-                        DBFieldNames: ["person_type_name"],
-                    },
-                ],
                 Inputs: [
                     {
                         type: "Text",
@@ -153,16 +141,18 @@
                         placeholder: "Person Type",
                         name: "person_type",
                         required: false,
-                        flexdatalist: true,
-                        flexdataid: "person_type",
+                        flexdatalistdata: peopleTypes,
+                        flexdatafields: ["person_type_name"],
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Text",
                         placeholder: "Organizations",
                         name: "organizations",
                         required: false,
-                        flexdatalist: true, // Is the flexdatalist enabled
-                        flexdataid: "people_organizations", // The input id for the datalist
+                        flexdatalistdata: organizations, // Which collection to use?
+                        flexdatafields: ["name"], // Which field from collection?
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Text",
@@ -338,18 +328,6 @@
             CreationCard: {
                 AwaitData: [organizations],
                 Title: "Create Organization",
-                Flexdatalistdata: [
-                    {
-                        Field: "affiliations", // Corresponds to Inputs.name (form name)
-                        Data: [organizations],
-                        DBFieldNames: ["name"],
-                    },
-                    {
-                        Field: "organ_type", // Corresponds to Inputs.name (form name)
-                        Data: [organizationTypes],
-                        DBFieldNames: ["organ_type_name"],
-                    },
-                ],
                 Inputs: [
                     {
                         type: "Text",
@@ -362,8 +340,9 @@
                         placeholder: "Organization Type",
                         name: "organ_type",
                         required: true,
-                        flexdatalist: true,
-                        flexdataid: "organization_types",
+                        flexdatalistdata: organizationTypes, // Which collection to use?
+                        flexdatafields: ["organ_type_name"], // Which field from collection?
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Text",
@@ -376,8 +355,9 @@
                         placeholder: "Affiliations",
                         name: "affiliations",
                         required: false,
-                        flexdatalist: true,
-                        flexdataid: "organization_affiliations",
+                        flexdatalistdata: organizations, // Which collection to use?
+                        flexdatafields: ["name"], // Which field from collection?
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Submit",

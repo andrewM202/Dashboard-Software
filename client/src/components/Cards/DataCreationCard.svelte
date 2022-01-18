@@ -170,39 +170,29 @@
                             {#each inputs as input}
                                 <div class="mb-3 py-0 mx-4">
                                     <!-- Flexdatalist Inputs -->
-                                    {#if input.flexdatalist !== undefined}
+                                    {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
                                         <input
-                                            list={input.flexdataid !== undefined
-                                                ? input.flexdataid
-                                                : input.name}
+                                            list={input.flexdataid}
                                             multiple
                                             type={input.type}
                                             placeholder={input.placeholder}
                                             name={input.name}
                                             value=""
-                                            class="{input.flexdatalist === true
-                                                ? 'flexdatalist'
-                                                : ''} py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                            class="flexdatalist py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                                             data-min-length="0"
                                         />
-                                        {#if input.flexdatalist === true && flexdata !== undefined}
-                                            <datalist
-                                                id={input.flexdataid !==
-                                                undefined
-                                                    ? input.flexdataid
-                                                    : input.name}
-                                            >
-                                                {#each flexdatalist as datafield}
-                                                    {#if datafield.Fieldname === input.name}
-                                                        {#each datafield.FieldValues as value}
-                                                            <option
-                                                                >{value}</option
-                                                            >
-                                                        {/each}
+                                        <datalist id={input.flexdataid}>
+                                            {#each input.flexdatalistdata as datarow}
+                                                {#each Object.entries(datarow) as datapoint}
+                                                    {#if input.flexdatafields.includes(datapoint[0])}
+                                                        <option
+                                                            value={datapoint[1]}
+                                                            >{datapoint[1]}</option
+                                                        >
                                                     {/if}
                                                 {/each}
-                                            </datalist>
-                                        {/if}
+                                            {/each}
+                                        </datalist>
                                         <!-- Any Input Not A Submit Or Flexdatalist -->
                                     {:else if input.type !== "Submit"}
                                         <input
