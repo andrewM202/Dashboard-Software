@@ -506,10 +506,10 @@
         }
     }
 
-    $: console.log(navItems);
-    $: if (DataSettings !== undefined) {
-        console.log(Object.entries(DataSettings));
-    }
+    // $: console.log(navItems);
+    // $: if (DataSettings !== undefined) {
+    //     console.log(Object.entries(DataSettings));
+    // }
 
     // Bind openTab to AdminNavbar component
     let openTab = 0;

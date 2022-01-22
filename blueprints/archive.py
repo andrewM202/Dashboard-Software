@@ -4,6 +4,8 @@ from models import PeopleWatch, PersonType, Countries, Organizations, Organizati
 from bson import json_util, objectid
 from os import environ
 from uuid import uuid1
+# regex
+from re import search
 
 ########################### Global Variables #####################################
 
@@ -160,7 +162,7 @@ def retrieve_archive_configuration():
         ######### Table #########
         return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
         for i in range(0, len(collection.table_db_field_names)):
-            return_settings[collection["collection_title"]]["Table"]["Headers"] = [i.title().replace("_", " ") for i in collection.table_db_field_names]
+            return_settings[collection["collection_title"]]["Table"]["Headers"] = sorted([i.title().replace("_", " ") for i in collection.table_db_field_names])
             return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = [i.lower().replace(' ', '_') for i in collection.table_db_field_names] 
             return_settings[collection["collection_title"]]["Table"]["Title"] = collection.table_title
         ######### Creation Card #########
@@ -250,7 +252,8 @@ def create_specific_archive_data():
     creation_dict = {}
 
     for key in request_keys:
-        if key != "CollectionName":
+        # Make sure no flexdatalist- fields get added with regex
+        if key != "CollectionName" and (bool(search(r'\bflexdatalist-\b', key)) != True):
             creation_dict[key] = request_dict[key]
     col.insert_one(creation_dict)
     return redirect('/admin/raw-archive')
