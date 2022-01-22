@@ -64,12 +64,12 @@ class ArchiveCollectionSettings(Document):
     header_card_descriptions = ListField()
 
     # Table fields
-    table_title = StringField()
+    table_title = StringField(required=True)
     table_update_form_names = ListField()
-    table_db_field_names = ListField()
+    table_db_field_names = ListField(required=True)
     
     # Creation card fields
-    creationcard_title = StringField()
+    creationcard_title = StringField(required=True)
     creationcard_flexdatalistdata = ListField()
     creationcard_flexdatalistfield = ListField()
     creationcard_required_field = ListField()

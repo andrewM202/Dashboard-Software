@@ -109,7 +109,7 @@ def create_archive_collection():
         table_title = request.form['TableTitle'],
         table_update_form_names = list(),
         # The table field names are also just the creation card names
-        table_db_field_names = [i for i in request.form['CreationCardInputNames'].split(",")],
+        table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
 
         # Awaitdata is the data required for flexdatalist
         creationcard_title = request.form['CreationCardTitle'],
@@ -134,7 +134,8 @@ def create_archive_collection():
     newcol = db.get_database(db_name)[collection_name]
     col = db.get_database(db_name).get_collection(collection_name)
     insert_json = {}
-    for field in request.form['CreationCardInputNames'].split(","):
+    # for field in request.form['CreationCardInputNames'].split(","):
+    for field in [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")]:
         insert_json[field] = "Sample Value"
     col.insert_one(insert_json)
 
@@ -217,6 +218,7 @@ def update_specific_archive_data():
     """
     collection_name = request.form['CollectionName']
     updateid = request.form['UpdateID']
+    print(updateid)
     col = db.get_database(db_name).get_collection(collection_name)
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()

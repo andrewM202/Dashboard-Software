@@ -7,7 +7,7 @@
   export let DeleteID;
   export let CollectionName;
   $: DeleteID = DeleteID[0].$oid;
-  let UpdateID = DeleteID;
+  $: UpdateID = DeleteID[0].$oid;
 
   let dropdownPopoverShow = false;
 
