@@ -19,8 +19,4 @@ def profile():
 # Path for all the static files (compiled JS/CSS, etc.)
 @bp.route("/<path:path>")
 def home(path):
-    return send_from_directory('client/public', path)
-
-@bp.route("/rand")
-def hello():
-    return str(random.randint(0, 100))
+  return send_from_directory('client/public', path)# 

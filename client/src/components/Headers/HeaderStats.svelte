@@ -1,37 +1,37 @@
 <script>
     // core components
     import CardStats from "components/Cards/CardStats.svelte";
+    import { tick } from "svelte";
 
     // Optional Arguments
     export let cards;
-    export let id = "";
     export let title;
+    export let titleColor; // Pass in class for text color
+    export let titleFontSize; // Pass in class for font size
     export let inputs;
 
-    // console.log(j$("div#HeaderStatsGrid.grid").children());
+    let id = Math.random().toString(36).substr(2, 8); // Generate random string
 
-    // for (let i = 0; i < 10; i++) {
-    //     setTimeout(function () {
-    //         if (cards !== undefined) {
-    //             if (cards.length % 2 === 1) {
-    //                 console.log(cards);
-    //                 j$("div#HeaderStatsGrid.grid div:last-child").css({
-    //                     "grid-column-start": 1,
-    //                     "grid-column-end": 3,
-    //                 });
-    //             }
-    //         }
-    //     }, 1);
-    // }
+    async function positionSearchBar(node) {
+        await tick();
+        if (inputs !== undefined) {
+            if (inputs.length % 2 === 0) {
+                j$(node).children().last().css({
+                    "grid-column-start": 1,
+                    "grid-column-end": 3,
+                });
+            }
+        }
+    }
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-24 pb-16 pt-16" {id}>
+<div class="relative bg-red-500 md:pt-24 pb-16 pt-16">
     <div class="px-4 py-2 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
                 <h3
-                    class="text-4xl text-center font-normal leading-normal mt-0 mb-2 text-orange-800"
+                    class="{titleColor} {titleFontSize} text-center font-normal leading-normal mt-0 mb-2"
                 >
                     {title}
                 </h3>
@@ -55,60 +55,12 @@
                             />
                         </div>
                     {/each}
-                {:else}
-                    <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
-                        <CardStats
-                            statSubtitle="TRAFFIC"
-                            statTitle="350,897"
-                            statArrow="up"
-                            statPercent="3.48"
-                            statPercentColor="text-emerald-500"
-                            statDescripiron="Since last month"
-                            statIconName="far fa-chart-bar"
-                            statIconColor="bg-red-500"
-                        />
-                    </div>
-                    <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
-                        <CardStats
-                            statSubtitle="NEW USERS"
-                            statTitle="2,356"
-                            statArrow="down"
-                            statPercent="3.48"
-                            statPercentColor="text-red-500"
-                            statDescripiron="Since last week"
-                            statIconName="fas fa-chart-pie"
-                            statIconColor="bg-orange-500"
-                        />
-                    </div>
-                    <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
-                        <CardStats
-                            statSubtitle="SALES"
-                            statTitle="924"
-                            statArrow="down"
-                            statPercent="1.10"
-                            statPercentColor="text-orange-500"
-                            statDescripiron="Since yesterday"
-                            statIconName="fas fa-users"
-                            statIconColor="bg-pink-500"
-                        />
-                    </div>
-                    <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
-                        <CardStats
-                            statSubtitle="PERFORMANCE"
-                            statTitle="49,65%"
-                            statArrow="up"
-                            statPercent="12"
-                            statPercentColor="text-emerald-500"
-                            statDescripiron="Since last month"
-                            statIconName="fas fa-percent"
-                            statIconColor="bg-emerald-500"
-                        />
-                    </div>
                 {/if}
             </div>
             {#if inputs !== undefined}
                 <div
-                    id="HeaderStatsGrid"
+                    use:positionSearchBar
+                    {id}
                     class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
                 >
                     {#each inputs as input}
@@ -126,6 +78,15 @@
                             />
                         </div>
                     {/each}
+                    <div class="mb-3 py-0 mx-4">
+                        <input
+                            type="Submit"
+                            placeholder="Submit"
+                            name="Submit"
+                            value="Submit"
+                            class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                        />
+                    </div>
                 </div>
             {/if}
         </div>

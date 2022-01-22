@@ -11,6 +11,8 @@
         organizationsStore,
         organizationTypesStore,
         countriesStore,
+        getDBResource,
+        dataSettingsStore,
     } from "../../stores.js";
 
     let organizations, organizationTypes, people, peopleTypes, countries;
@@ -20,42 +22,49 @@
     $: peopleTypes = $peopleTypesStore;
     $: countries = $countriesStore;
 
+    let tableData = [];
+    $: tableData = [
+        organizations,
+        organizationTypes,
+        people,
+        peopleTypes,
+        countries,
+    ];
+
     // Defines input buttons for HeaderStats
     let DataSettings;
+
+    /*
     $: DataSettings = {
         // People Start
         People: {
+            CollectionName: "people_watch",
             // People Inputs
-            Inputs: [
+            HeaderSearchInputs: [
                 {
                     type: "Text",
                     placeholder: "First Name",
-                    name: "FirstName",
+                    name: "first_name",
                 },
                 {
                     type: "Text",
                     placeholder: "Last Name",
-                    name: "LastName",
+                    name: "last_name",
                 },
                 {
                     type: "Text",
                     placeholder: "Organizations",
-                    name: "Organizations",
+                    name: "organizations",
                 },
                 {
                     type: "Text",
                     placeholder: "Titles",
-                    name: "Titles",
+                    name: "titles",
                 },
                 {
                     type: "Text",
                     placeholder: "Opinions",
-                    name: "Opinion",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
+                    name: "opinions",
                 },
             ],
             // People Inputs End
@@ -89,6 +98,7 @@
             // People Cards End
             // People Table Begin
             Table: {
+                Data: [people],
                 Headers: [
                     "First Name",
                     "Last Name",
@@ -98,17 +108,6 @@
                     "Opinions",
                 ],
                 Title: "People",
-                DeletionURL: "/admin/delete-person",
-                RefreshURL: "/admin/people",
-                UpdateURL: "/admin/update-person",
-                UpdateFormNames: [
-                    "FirstName",
-                    "LastName",
-                    "PersonType",
-                    "Organizations",
-                    "Titles",
-                    "Opinions",
-                ],
                 DBFieldNames: [
                     "first_name",
                     "last_name",
@@ -121,66 +120,49 @@
             // People Table End
             // People CreationCard Begin
             CreationCard: {
-                URL: "/admin/create-person",
-                RefreshURL: "/admin/people",
+                Data: [organizations, peopleTypes],
                 Title: "Create Person",
-                Flexdatalistdata: [
-                    {
-                        Field: "Organizations", // Corresponds to Inputs.name (form name)
-                        Data: [organizations],
-                        DBFieldNames: ["name"],
-                    },
-                    {
-                        Field: "PersonType",
-                        Data: [peopleTypes],
-                        DBFieldNames: ["person_type_name"],
-                    },
-                ],
                 Inputs: [
                     {
                         type: "Text",
                         placeholder: "First Name",
-                        name: "FirstName",
+                        name: "first_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Last Name",
-                        name: "LastName",
+                        name: "last_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Person Type",
-                        name: "PersonType",
-                        required: true,
-                        flexdatalist: true,
-                        flexdataid: "person_type",
+                        name: "person_type",
+                        required: false,
+                        flexdatalistdata: peopleTypes,
+                        flexdatafields: ["person_type_name"],
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Text",
                         placeholder: "Organizations",
-                        name: "Organizations",
+                        name: "organizations",
                         required: false,
-                        flexdatalist: true, // Is the flexdatalist enabled
-                        flexdataid: "people_organizations", // The input id for the datalist
+                        flexdatalistdata: organizations, // Which collection to use?
+                        flexdatafields: ["name"], // Which field from collection?
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Text",
                         placeholder: "Titles",
-                        name: "Titles",
+                        name: "titles",
                         required: false,
                     },
                     {
                         type: "Text",
                         placeholder: "Opinions",
-                        name: "Opinions",
-                        required: false,
-                    },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
+                        name: "opinions",
                         required: false,
                     },
                 ],
@@ -190,8 +172,9 @@
         // People End
         // People Types Start
         PeopleTypes: {
+            CollectionName: "person_type",
             // People Types Inputs
-            Inputs: [
+            HeaderSearchInputs: [
                 {
                     type: "Text",
                     placeholder: "Person Type Name",
@@ -201,11 +184,6 @@
                     type: "Text",
                     placeholder: "Acronyms",
                     name: "PersonTypeAcronyms",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // People Types Inputs End
@@ -233,37 +211,27 @@
             // People Types Cards End
             // People Types Table Begin
             Table: {
+                Data: [peopleTypes],
                 Headers: ["Person Type Name", "Acronyms"],
                 DBFieldNames: ["person_type_name", "person_type_acronyms"],
-                DeletionURL: "/admin/delete-person-type",
-                RefreshURL: "/admin/person-types",
-                UpdateURL: "/admin/update-person-types",
-                UpdateFormNames: ["PersonTypeName", "PersonTypeAcronyms"],
                 Title: "People Types",
             },
             // People Types Table End
             // People Types CreationCard Begin
             CreationCard: {
-                URL: "/admin/create-person-type",
-                RefreshURL: "/admin/person-types",
+                Data: [peopleTypes],
                 Title: "Create Person Type",
                 Inputs: [
                     {
                         type: "Text",
                         placeholder: "Person Type Name",
-                        name: "PersonTypeName",
+                        name: "person_type_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Acronyms",
-                        name: "PersonTypeAcronyms",
-                        required: false,
-                    },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
+                        name: "person_type_acronyms",
                         required: false,
                     },
                 ],
@@ -273,8 +241,9 @@
         // People Types End
         // Organizations Start
         Organizations: {
+            CollectionName: "organizations",
             // Organizations Inputs
-            Inputs: [
+            HeaderSearchInputs: [
                 {
                     type: "Text",
                     placeholder: "Name",
@@ -289,11 +258,6 @@
                     type: "Text",
                     placeholder: "Affiliations",
                     name: "Affiliations",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // Organizations Inputs End
@@ -321,6 +285,7 @@
             // Organizations Cards End
             // Organizations Table Begin
             Table: {
+                Data: [organizations],
                 Headers: [
                     "Name",
                     "Organization Type",
@@ -333,69 +298,43 @@
                     "opinions",
                     "affiliations",
                 ],
-                DeletionURL: "/admin/delete-organization",
-                RefreshURL: "/admin/organizations",
-                UpdateURL: "/admin/update-organization",
-                UpdateFormNames: [
-                    "Name",
-                    "OrganizationType",
-                    "Opinions",
-                    "Affiliations",
-                ],
                 Title: "Organizations",
             },
             // Organizations Table End
             // Organizations CreationCard Begin
             CreationCard: {
-                URL: "/admin/create-organization",
-                RefreshURL: "/admin/organizations",
+                Data: [organizations],
                 Title: "Create Organization",
-                Flexdatalistdata: [
-                    {
-                        Field: "Affiliations", // Corresponds to Inputs.name (form name)
-                        Data: [organizations],
-                        DBFieldNames: ["name"],
-                    },
-                    {
-                        Field: "OrganizationType", // Corresponds to Inputs.name (form name)
-                        Data: [organizationTypes],
-                        DBFieldNames: ["organ_type_name"],
-                    },
-                ],
                 Inputs: [
                     {
                         type: "Text",
                         placeholder: "Name",
-                        name: "Name",
+                        name: "name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Organization Type",
-                        name: "OrganizationType",
+                        name: "organ_type",
                         required: true,
-                        flexdatalist: true,
-                        flexdataid: "organization_types",
+                        flexdatalistdata: organizationTypes, // Which collection to use?
+                        flexdatafields: ["organ_type_name"], // Which field from collection?
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                     {
                         type: "Text",
                         placeholder: "Opinions",
-                        name: "Opinions",
+                        name: "opinions",
                         required: false,
                     },
                     {
                         type: "Text",
                         placeholder: "Affiliations",
-                        name: "Affiliations",
+                        name: "affiliations",
                         required: false,
-                        flexdatalist: true,
-                        flexdataid: "organization_affiliations",
-                    },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
-                        required: false,
+                        flexdatalistdata: organizations, // Which collection to use?
+                        flexdatafields: ["name"], // Which field from collection?
+                        flexdataid: Math.random().toString(36).substring(2, 8),
                     },
                 ],
             },
@@ -404,8 +343,9 @@
         // Organizations End
         // Organization Types Start
         OrganizationTypes: {
+            CollectionName: "organization_type",
             // Organization Types Inputs
-            Inputs: [
+            HeaderSearchInputs: [
                 {
                     type: "Text",
                     placeholder: "Organization Type Name",
@@ -415,11 +355,6 @@
                     type: "Text",
                     placeholder: "Acronyms",
                     name: "OrganizationTypeAcronyms",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // Organization Types Inputs End
@@ -441,40 +376,27 @@
             // Organization Types Cards End
             // Organization Types Table Begin
             Table: {
+                Data: [organizationTypes],
                 Headers: ["Organization Type Name", "Acronyms"],
                 DBFieldNames: ["organ_type_name", "organ_type_acronyms"],
-                DeletionURL: "/admin/delete-organization-type",
-                RefreshURL: "/admin/organization-types",
-                UpdateURL: "/admin/update-organization-types",
-                UpdateFormNames: [
-                    "OrganizationTypeName",
-                    "OrganizationTypeAcronyms",
-                ],
                 Title: "Organization Types",
             },
             // Organization Types Table End
             // Organization Types CreationCard Begin
             CreationCard: {
-                URL: "/admin/create-organization-type",
-                RefreshURL: "/admin/organization-types",
+                Data: [organizationTypes],
                 Title: "Create Organization Type",
                 Inputs: [
                     {
                         type: "Text",
                         placeholder: "Organization Type Name",
-                        name: "OrganizationTypeName",
+                        name: "organ_type_name",
                         required: true,
                     },
                     {
                         type: "Text",
                         placeholder: "Acronyms",
-                        name: "OrganizationTypeAcronyms",
-                        required: false,
-                    },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
+                        name: "organ_type_acronyms",
                         required: false,
                     },
                 ],
@@ -484,8 +406,9 @@
         // Organization Types End
         // Countries Start
         Countries: {
+            CollectionName: "countries",
             // Countries Inputs
-            Inputs: [
+            HeaderSearchInputs: [
                 {
                     type: "Text",
                     placeholder: "Name",
@@ -500,11 +423,6 @@
                     type: "Text",
                     placeholder: "Capital",
                     name: "Capital",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // Countries Inputs End
@@ -538,6 +456,7 @@
             // Countries Cards End
             // Countries Table Begin
             Table: {
+                Data: [countries],
                 Headers: [
                     "Area",
                     "Capital",
@@ -550,8 +469,6 @@
                     "Subregion",
                 ],
                 Title: "Countries",
-                DeletionURL: "",
-                RefreshURL: "",
                 Modification: false,
                 DBFieldNames: [
                     "country_area",
@@ -569,256 +486,78 @@
         },
         // Countries End
     };
+    */
 
-    const navItems = [
-        "People",
-        "Countries",
-        "Organizations",
-        "Maps",
-        "People Types",
-        "Organization Types",
-    ];
+    $: DataSettings = $dataSettingsStore;
+
+    // const navItems = [
+    //     "People",
+    //     "Countries",
+    //     "Organizations",
+    //     "People Types",
+    //     "Organization Types",
+    // ];
+
+    let navItems = [];
+    $: if (DataSettings !== undefined) {
+        let entries = Object.entries(DataSettings);
+        for (let entry of entries) {
+            navItems.push(entry[0]);
+        }
+    }
+
+    // $: console.log(navItems);
+    // $: if (DataSettings !== undefined) {
+    //     console.log(Object.entries(DataSettings));
+    // }
 
     // Bind openTab to AdminNavbar component
     let openTab = 0;
 </script>
 
-<AdminNavbar bind:openTab {navItems} />
-
-<!-- People -->
-<div class={navItems[openTab] === "People" ? "block" : "hidden"}>
-    <HeaderStats
-        id={"People"}
-        cards={DataSettings.People.Cards}
-        title={"People"}
-        inputs={DataSettings.People.Inputs}
-    />
-    <div class="block px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap ml-8">
-            <div
-                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
-            >
-                {#await people}
-                    <p>Loading...</p>
-                {:then people}
-                    <CardTable
-                        color="dark"
-                        data={people}
-                        headers={DataSettings.People.Table.Headers}
-                        DBFieldNames={DataSettings.People.Table.DBFieldNames}
-                        title={DataSettings.People.Table.Title}
-                        DeletionURL={DataSettings.People.Table.DeletionURL}
-                        RefreshURL={DataSettings.People.Table.RefreshURL}
-                        UpdateURL={DataSettings.People.Table.UpdateURL}
-                        UpdateFormNames={DataSettings.People.Table
-                            .UpdateFormNames}
-                    />
-                {:catch error}
-                    <p style="color: red">{error.message}</p>
-                {/await}
+{#if tableData.includes(undefined) !== true && DataSettings !== undefined}
+    <AdminNavbar bind:openTab {navItems} title={"Raw Archive"} />
+    {#each Object.entries(DataSettings) as section}
+        <div class={navItems[openTab] === section[0] ? "block" : "hidden"}>
+            <HeaderStats
+                id={section[0]}
+                cards={section[1].Cards}
+                title={navItems[openTab]}
+                titleFontSize={"text-4xl"}
+                inputs={section[1].HeaderSearchInputs}
+            />
+            <div class="block px-4 md:px-10 mx-auto w-full m-12">
+                <div class="flex flex-wrap ml-8">
+                    <div
+                        class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
+                    >
+                        {#await section[1].Table.Data[0]}
+                            <p>Loading...</p>
+                        {:then data}
+                            <CardTable
+                                color="dark"
+                                {data}
+                                CollectionName={section[1].CollectionName}
+                                headers={section[1].Table.Headers}
+                                DBFieldNames={section[1].Table.DBFieldNames}
+                                title={section[1].Table.Title}
+                            />
+                        {:catch error}
+                            <p style="color: red">{error.message}</p>
+                        {/await}
+                    </div>
+                </div>
             </div>
+            {#if section[1].CreationCard !== undefined}
+                <!-- {#if section[1].CreationCard.Data.includes(undefined) !== true} -->
+                <DataCreationCard
+                    CollectionName={section[1].CollectionName}
+                    flexdata={section[1].CreationCard.Flexdatalistdata}
+                    title={section[1].CreationCard.Title}
+                    inputs={section[1].CreationCard.Inputs}
+                />
+                <!-- {/if} -->
+            {/if}
         </div>
-    </div>
-    {#if organizations !== undefined && peopleTypes !== undefined}
-        <DataCreationCard
-            flexdata={DataSettings.People.CreationCard.Flexdatalistdata}
-            url={DataSettings.People.CreationCard.URL}
-            title={DataSettings.People.CreationCard.Title}
-            inputs={DataSettings.People.CreationCard.Inputs}
-            refreshURL={DataSettings.People.CreationCard.RefreshURL}
-        />
-    {/if}
-</div>
-
-<!-- People Types -->
-<div class={navItems[openTab] === "People Types" ? "block" : "hidden"}>
-    <HeaderStats
-        id={"PeopleTypes"}
-        title={"People Types"}
-        cards={DataSettings.PeopleTypes.Cards}
-        inputs={DataSettings.PeopleTypes.Inputs}
-    />
-    <div class="block px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap ml-8">
-            <div
-                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
-            >
-                {#await peopleTypes}
-                    <p>Loading...</p>
-                {:then peopleTypes}
-                    <CardTable
-                        color="dark"
-                        data={peopleTypes}
-                        DBFieldNames={DataSettings.PeopleTypes.Table
-                            .DBFieldNames}
-                        headers={DataSettings.PeopleTypes.Table.Headers}
-                        title={DataSettings.PeopleTypes.Table.Title}
-                        DeletionURL={DataSettings.PeopleTypes.Table.DeletionURL}
-                        RefreshURL={DataSettings.PeopleTypes.Table.RefreshURL}
-                        UpdateURL={DataSettings.PeopleTypes.Table.UpdateURL}
-                        UpdateFormNames={DataSettings.PeopleTypes.Table
-                            .UpdateFormNames}
-                    />
-                {:catch error}
-                    <p style="color: red">{error.message}</p>
-                {/await}
-            </div>
-        </div>
-    </div>
-    {#if peopleTypes !== undefined}
-        <DataCreationCard
-            flexdata={DataSettings.PeopleTypes.CreationCard.Flexdatalistdata}
-            url={DataSettings.PeopleTypes.CreationCard.URL}
-            title={DataSettings.PeopleTypes.CreationCard.Title}
-            inputs={DataSettings.PeopleTypes.CreationCard.Inputs}
-            refreshURL={DataSettings.PeopleTypes.CreationCard.RefreshURL}
-        />
-    {/if}
-</div>
-
-<!-- Countries -->
-<div class={navItems[openTab] === "Countries" ? "block" : "hidden"}>
-    <HeaderStats
-        id={"Countries"}
-        title={"Countries"}
-        cards={DataSettings.Countries.Cards}
-        inputs={DataSettings.Countries.Inputs}
-    />
-    <div class="block px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap ml-8">
-            <div
-                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
-            >
-                {#await countries}
-                    <p>Loading...</p>
-                {:then countries}
-                    <CardTable
-                        color="dark"
-                        data={countries}
-                        headers={DataSettings.Countries.Table.Headers}
-                        DBFieldNames={DataSettings.Countries.Table.DBFieldNames}
-                        title={DataSettings.Countries.Table.Title}
-                        DeletionURL={DataSettings.Countries.Table.DeletionURL}
-                        RefreshURL={DataSettings.Countries.Table.RefreshURL}
-                        Modification={DataSettings.Countries.Table.Modification}
-                    />
-                {:catch error}
-                    <p style="color: red">{error.message}</p>
-                {/await}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Organizations -->
-<div class={navItems[openTab] === "Organizations" ? "block" : "hidden"}>
-    <HeaderStats
-        id={"Organizations"}
-        title={"Organizations"}
-        cards={DataSettings.Organizations.Cards}
-        inputs={DataSettings.Organizations.Inputs}
-    />
-    <div class="block px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap ml-8">
-            <div
-                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
-            >
-                {#await organizations}
-                    <p>Loading...</p>
-                {:then organizations}
-                    <CardTable
-                        color="dark"
-                        data={organizations}
-                        DBFieldNames={DataSettings.Organizations.Table
-                            .DBFieldNames}
-                        headers={DataSettings.Organizations.Table.Headers}
-                        title={DataSettings.Organizations.Table.Title}
-                        DeletionURL={DataSettings.Organizations.Table
-                            .DeletionURL}
-                        RefreshURL={DataSettings.Organizations.Table.RefreshURL}
-                        UpdateURL={DataSettings.Organizations.Table.UpdateURL}
-                        UpdateFormNames={DataSettings.Organizations.Table
-                            .UpdateFormNames}
-                    />
-                {:catch error}
-                    <p style="color: red">{error.message}</p>
-                {/await}
-            </div>
-        </div>
-    </div>
-    {#if organizations !== undefined}
-        <DataCreationCard
-            flexdata={DataSettings.Organizations.CreationCard.Flexdatalistdata}
-            url={DataSettings.Organizations.CreationCard.URL}
-            title={DataSettings.Organizations.CreationCard.Title}
-            inputs={DataSettings.Organizations.CreationCard.Inputs}
-            refreshURL={DataSettings.Organizations.CreationCard.RefreshURL}
-        />
-    {/if}
-</div>
-
-<!-- Organization Types -->
-<div class={navItems[openTab] === "Organization Types" ? "block" : "hidden"}>
-    <HeaderStats
-        id={"OrganizationTypes"}
-        title={"Organization Types"}
-        cards={DataSettings.OrganizationTypes.Cards}
-        inputs={DataSettings.OrganizationTypes.Inputs}
-    />
-    <div class="block px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap ml-8">
-            <div
-                class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
-            >
-                {#await organizationTypes}
-                    <p>Loading...</p>
-                {:then organizationTypes}
-                    <CardTable
-                        color="dark"
-                        data={organizationTypes}
-                        DBFieldNames={DataSettings.OrganizationTypes.Table
-                            .DBFieldNames}
-                        headers={DataSettings.OrganizationTypes.Table.Headers}
-                        title={DataSettings.OrganizationTypes.Table.Title}
-                        DeletionURL={DataSettings.OrganizationTypes.Table
-                            .DeletionURL}
-                        RefreshURL={DataSettings.OrganizationTypes.Table
-                            .RefreshURL}
-                        UpdateURL={DataSettings.OrganizationTypes.Table
-                            .UpdateURL}
-                        UpdateFormNames={DataSettings.OrganizationTypes.Table
-                            .UpdateFormNames}
-                    />
-                {:catch error}
-                    <p style="color: red">{error.message}</p>
-                {/await}
-            </div>
-        </div>
-    </div>
-    {#if organizationTypes !== undefined}
-        <DataCreationCard
-            flexdata={DataSettings.OrganizationTypes.CreationCard
-                .Flexdatalistdata}
-            url={DataSettings.OrganizationTypes.CreationCard.URL}
-            title={DataSettings.OrganizationTypes.CreationCard.Title}
-            inputs={DataSettings.OrganizationTypes.CreationCard.Inputs}
-            refreshURL={DataSettings.OrganizationTypes.CreationCard.RefreshURL}
-        />
-    {/if}
-</div>
-
-<!-- Maps, Graphs, Charts -->
-<div class={navItems[openTab] === "Maps" ? "block" : "hidden"}>
-    <HeaderStats id={"Maps"} title={"Maps"} />
-    <div class="px-4 md:px-10 mx-auto w-full m-12">
-        <div class="flex flex-wrap">
-            <div class="w-full h-500-px bg-blueGray-700 mt-12 mb-12">
-                <h2
-                    class="text-5xl font-normal leading-normal mt-0 mb-2 text-white"
-                >
-                    Test
-                </h2>
-            </div>
-        </div>
-    </div>
-</div>
+    {/each}
+{/if}

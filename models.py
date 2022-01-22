@@ -41,3 +41,43 @@ class OrganizationType(Document):
     """ Types of organizations """
     organ_type_name = StringField(required=True)
     organ_type_acronyms = ListField()
+
+class ArchiveCollections(Document):
+    """ Holds all of the collections created for the archive """
+    collection_name = StringField(required=True)
+    uploaded_data = BooleanField(required=True)
+    base_collection = BooleanField(required=True)
+
+class ArchiveCollectionSettings(Document):
+    """ Configuration settings for archive collections """
+    # References ArchiveCollections.collection_name
+    collection_name = StringField(required=True) 
+    collection_title = StringField(required=True)
+
+    header_search_input_types = ListField()
+    header_search_input_placeholders = ListField()
+    header_search_input_names = ListField()
+
+    header_card_subtitles = ListField()
+    header_card_amounts = ListField()
+    header_card_increases = ListField()
+    header_card_descriptions = ListField()
+
+    # Table fields
+    table_title = StringField(required=True)
+    table_update_form_names = ListField()
+    table_db_field_names = ListField(required=True)
+    
+    # Creation card fields
+    creationcard_title = StringField(required=True)
+    creationcard_flexdatalistdata = ListField()
+    creationcard_flexdatalistfield = ListField()
+    creationcard_required_field = ListField()
+
+    # Creation card inputs
+    creationcard_input_types = ListField()
+    # These are the actual names in the database
+    creationcard_input_names = ListField()
+    # These are the names that appear as the title of the creation card
+    creationcard_input_title_names = ListField()
+    creationcard_input_placeholders = ListField()

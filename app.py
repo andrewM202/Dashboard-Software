@@ -22,5 +22,8 @@ app.register_blueprint(misc_bp)
 from blueprints.notes import bp as notes_bp
 app.register_blueprint(notes_bp)
 
+from blueprints.auth import bp as auth_bp
+app.register_blueprint(auth_bp)
+
 if __name__ == "__main__":
     app.run(debug=True)
