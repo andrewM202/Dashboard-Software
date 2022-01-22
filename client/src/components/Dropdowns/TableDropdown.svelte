@@ -1,16 +1,12 @@
 <script>
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
-
   import { refreshData } from "../../stores.js";
 
-  export let DeletionURL;
-  export let RefreshURL;
-  export let UpdateURL;
   export let UpdateFormNames;
   export let DeleteID;
   export let CollectionName;
-  DeleteID = DeleteID[0].$oid;
+  $: DeleteID = DeleteID[0].$oid;
   let UpdateID = DeleteID;
 
   let dropdownPopoverShow = false;
@@ -32,6 +28,7 @@
 
   function deleteRow(e) {
     e.preventDefault();
+    console.log(DeleteID);
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",

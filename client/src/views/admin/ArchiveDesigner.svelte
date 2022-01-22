@@ -26,11 +26,6 @@
             placeholder: "Last Name",
             name: "LastName",
         },
-        {
-            type: "Submit",
-            placeholder: "Search",
-            name: "",
-        },
     ];
 
     // Each object inside is a section

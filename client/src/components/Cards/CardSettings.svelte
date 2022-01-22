@@ -57,7 +57,6 @@
   }
   registerToolTips();
 
-  let z = 1;
   async function styleFlexData(e) {
     // Allow duplicate values
     j$(e).flexdatalist({
@@ -78,14 +77,41 @@
         j$("#CardSettingsOriginParent ul.flexdatalist-multiple").click(
           function () {
             j$(".item").css({ cursor: "pointer" });
-            j$("ul.flexdatalist-results > li").click(function (e) {
-              z++;
-            });
           }
         );
       }
     }, 10);
   }
+
+  // Have it recalculate numbers on any document change, so if you
+  // press enter when focused on form it still runs
+  j$(document).on("change", function () {
+    let lists = j$("ul.flexdatalist-multiple");
+    for (let list of lists) {
+      let listValuesCount = j$(list).find("li.value").length;
+      let count = 0;
+      j$(list)
+        .find("li.value span.text")
+        .each(function () {
+          let currentText = j$(this).text();
+          count++;
+          if (j$(this).attr("Numbered") !== "true") {
+            j$(this).text(`${count}. ${currentText}`);
+            j$(this).attr("Numbered", "true");
+          } else {
+            // Renumber if it its already numbered, without duplications
+            let baseText = j$(this)
+              .text()
+              .substring(
+                j$(this).text().indexOf(" ") + 1,
+                j$(this).text().length
+              );
+            j$(this).text(`${count}. ${baseText}`);
+          }
+        });
+    }
+  });
+  // Number each value in the flexdatalists End
 
   async function styleFlexDataRegular(e) {
     // Allow duplicate values
@@ -282,7 +308,8 @@
                         <option value="None">None</option>
                       {/if}
                       {#each input.flexdatalistdata as data}
-                        <option value="{z}. {data}">
+                        <!-- <option value="{z}. {data}"> -->
+                        <option value={data}>
                           <!-- {data}</option> -->
                         </option>{/each}
                     </datalist>
@@ -297,7 +324,8 @@
         <input
           on:click={submit}
           type="submit"
-          value="Submit"
+          value="Search"
+          placeholder="Search"
           class="py-3 mx-3 my-6 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
         />
       </form>

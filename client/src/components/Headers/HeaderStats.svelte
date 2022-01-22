@@ -15,7 +15,7 @@
     async function positionSearchBar(node) {
         await tick();
         if (inputs !== undefined) {
-            if (inputs.length % 2 === 1) {
+            if (inputs.length % 2 === 0) {
                 j$(node).children().last().css({
                     "grid-column-start": 1,
                     "grid-column-end": 3,
@@ -78,6 +78,15 @@
                             />
                         </div>
                     {/each}
+                    <div class="mb-3 py-0 mx-4">
+                        <input
+                            type="Submit"
+                            placeholder="Submit"
+                            name="Submit"
+                            value="Submit"
+                            class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                        />
+                    </div>
                 </div>
             {/if}
         </div>

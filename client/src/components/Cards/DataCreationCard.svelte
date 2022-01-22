@@ -45,7 +45,7 @@
     // otherwise its super small like 40px
     async function runPreJS() {
         await tick();
-        if (inputs.length % 2 === 1) {
+        if (inputs.length % 2 === 0) {
             j$("div#rawArchiveTableContainer.grid div:last-child").css({
                 "grid-column-start": 1,
                 "grid-column-end": 3,
@@ -109,7 +109,6 @@
                         }
                     }
                     j$(`#${formID}`).trigger("reset");
-                    // refreshData(refreshURL);
                     refreshData(`/admin/archive-data/${CollectionName}`);
                     // Remove flexdatalist values
                     j$("li.value").remove();
@@ -167,7 +166,7 @@
                         class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
                     >
                         {#if inputs !== undefined}
-                            {#each inputs as input}
+                            {#each inputs as input, i}
                                 <div class="mb-3 py-0 mx-4">
                                     <!-- Flexdatalist Inputs -->
                                     {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
@@ -215,6 +214,18 @@
                                         />
                                     {/if}
                                 </div>
+                                {#if i + 1 === inputs.length}
+                                    <div class="mb-3 py-0 mx-4">
+                                        <input
+                                            on:click={submit}
+                                            type="Submit"
+                                            placeholder="Submit"
+                                            name="SubmitButton"
+                                            value="Submit"
+                                            class="py-3 mx-3 my-2 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                        />
+                                    </div>
+                                {/if}
                             {/each}
                         {/if}
                     </div>

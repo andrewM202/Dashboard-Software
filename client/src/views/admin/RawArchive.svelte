@@ -12,6 +12,7 @@
         organizationTypesStore,
         countriesStore,
         getDBResource,
+        dataSettingsStore,
     } from "../../stores.js";
 
     let organizations, organizationTypes, people, peopleTypes, countries;
@@ -32,6 +33,8 @@
 
     // Defines input buttons for HeaderStats
     let DataSettings;
+
+    /*
     $: DataSettings = {
         // People Start
         People: {
@@ -62,11 +65,6 @@
                     type: "Text",
                     placeholder: "Opinions",
                     name: "opinions",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // People Inputs End
@@ -167,12 +165,6 @@
                         name: "opinions",
                         required: false,
                     },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
-                        required: false,
-                    },
                 ],
             },
             // People CreationCard End
@@ -192,11 +184,6 @@
                     type: "Text",
                     placeholder: "Acronyms",
                     name: "PersonTypeAcronyms",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // People Types Inputs End
@@ -247,12 +234,6 @@
                         name: "person_type_acronyms",
                         required: false,
                     },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
-                        required: false,
-                    },
                 ],
             },
             // People Types CreationCard End
@@ -277,11 +258,6 @@
                     type: "Text",
                     placeholder: "Affiliations",
                     name: "Affiliations",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // Organizations Inputs End
@@ -360,12 +336,6 @@
                         flexdatafields: ["name"], // Which field from collection?
                         flexdataid: Math.random().toString(36).substring(2, 8),
                     },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
-                        required: false,
-                    },
                 ],
             },
             // Organizations CreationCard End
@@ -385,11 +355,6 @@
                     type: "Text",
                     placeholder: "Acronyms",
                     name: "OrganizationTypeAcronyms",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // Organization Types Inputs End
@@ -434,12 +399,6 @@
                         name: "organ_type_acronyms",
                         required: false,
                     },
-                    {
-                        type: "Submit",
-                        placeholder: "Submit",
-                        name: "",
-                        required: false,
-                    },
                 ],
             },
             // Organization Types CreationCard End
@@ -464,11 +423,6 @@
                     type: "Text",
                     placeholder: "Capital",
                     name: "Capital",
-                },
-                {
-                    type: "Submit",
-                    placeholder: "Search",
-                    name: "",
                 },
             ],
             // Countries Inputs End
@@ -532,26 +486,32 @@
         },
         // Countries End
     };
+    */
 
-    let test = getDBResource("/admin/archive-configuration");
-    // $: DataSettings = getDBResource("/admin/archive-configuration");
-    $: console.log(DataSettings);
+    $: DataSettings = $dataSettingsStore;
 
-    const navItems = [
-        "People",
-        "Countries",
-        "Organizations",
-        "People Types",
-        "Organization Types",
-    ];
-    // const navItems = ["test"];
+    // const navItems = [
+    //     "People",
+    //     "Countries",
+    //     "Organizations",
+    //     "People Types",
+    //     "Organization Types",
+    // ];
+
+    let navItems = [];
+    $: if (DataSettings !== undefined) {
+        let entries = Object.entries(DataSettings);
+        for (let entry of entries) {
+            navItems.push(entry[0]);
+        }
+    }
 
     // Bind openTab to AdminNavbar component
     let openTab = 0;
 </script>
 
-<AdminNavbar bind:openTab {navItems} title={"Raw Archive"} />
-{#if tableData.includes(undefined) !== true}
+{#if tableData.includes(undefined) !== true && DataSettings !== undefined}
+    <AdminNavbar bind:openTab {navItems} title={"Raw Archive"} />
     {#each Object.entries(DataSettings) as section}
         <div
             class={navItems[openTab].replace(" ", "") === section[0]
@@ -588,14 +548,14 @@
                 </div>
             </div>
             {#if section[1].CreationCard !== undefined}
-                {#if section[1].CreationCard.Data.includes(undefined) !== true}
-                    <DataCreationCard
-                        CollectionName={section[1].CollectionName}
-                        flexdata={section[1].CreationCard.Flexdatalistdata}
-                        title={section[1].CreationCard.Title}
-                        inputs={section[1].CreationCard.Inputs}
-                    />
-                {/if}
+                <!-- {#if section[1].CreationCard.Data.includes(undefined) !== true} -->
+                <DataCreationCard
+                    CollectionName={section[1].CollectionName}
+                    flexdata={section[1].CreationCard.Flexdatalistdata}
+                    title={section[1].CreationCard.Title}
+                    inputs={section[1].CreationCard.Inputs}
+                />
+                <!-- {/if} -->
             {/if}
         </div>
     {/each}
