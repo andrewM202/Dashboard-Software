@@ -12,7 +12,7 @@ bp = Blueprint("auth", __name__)
 def register_page():
     return send_from_directory('client/public', 'index.html')
 
-@bp.route('/auth/login', methods=['POST'])
+@bp.route('/auth/login', methods=['GET', 'POST'])
 def login():
     """ Login as owner """
     if current_user.is_authenticated:
