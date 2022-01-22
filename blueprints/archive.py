@@ -160,7 +160,7 @@ def retrieve_archive_configuration():
         ######### Table #########
         return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
         for i in range(0, len(collection.table_db_field_names)):
-            return_settings[collection["collection_title"]]["Table"]["Headers"] = collection.table_db_field_names
+            return_settings[collection["collection_title"]]["Table"]["Headers"] = [i.title().replace("_", " ") for i in collection.table_db_field_names]
             return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = [i.lower().replace(' ', '_') for i in collection.table_db_field_names] 
             return_settings[collection["collection_title"]]["Table"]["Title"] = collection.table_title
         ######### Creation Card #########
@@ -168,9 +168,9 @@ def retrieve_archive_configuration():
         return_settings[collection["collection_title"]]["CreationCard"]["Inputs"] = []
         for i in range(0, len(collection.creationcard_input_types)):
             if collection.creationcard_flexdatalistdata[i] == "None":
-                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
+                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
             else:
-                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true", "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield[i]}": 1}) ), "flexdatafields": collection.creationcard_flexdatalistfield[i], "flexdataid": str(uuid1()) })
+                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true", "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield[i]}": 1}) ), "flexdatafields": collection.creationcard_flexdatalistfield[i], "flexdataid": str(uuid1()) })
     return json_util.dumps(return_settings, indent=4, sort_keys=True)
     # except Exception as e:
     #     return e
