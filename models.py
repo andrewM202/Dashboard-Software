@@ -52,6 +52,7 @@ class ArchiveCollectionSettings(Document):
     """ Configuration settings for archive collections """
     # References ArchiveCollections.collection_name
     collection_name = StringField(required=True) 
+    collection_title = StringField(required=True)
 
     header_search_input_types = ListField()
     header_search_input_placeholders = ListField()
@@ -75,5 +76,8 @@ class ArchiveCollectionSettings(Document):
 
     # Creation card inputs
     creationcard_input_types = ListField()
+    # These are the actual names in the database
     creationcard_input_names = ListField()
+    # These are the names that appear as the title of the creation card
+    creationcard_input_title_names = ListField()
     creationcard_input_placeholders = ListField()

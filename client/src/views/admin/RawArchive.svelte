@@ -506,6 +506,11 @@
         }
     }
 
+    $: console.log(navItems);
+    $: if (DataSettings !== undefined) {
+        console.log(Object.entries(DataSettings));
+    }
+
     // Bind openTab to AdminNavbar component
     let openTab = 0;
 </script>
@@ -513,11 +518,7 @@
 {#if tableData.includes(undefined) !== true && DataSettings !== undefined}
     <AdminNavbar bind:openTab {navItems} title={"Raw Archive"} />
     {#each Object.entries(DataSettings) as section}
-        <div
-            class={navItems[openTab].replace(" ", "") === section[0]
-                ? "block"
-                : "hidden"}
-        >
+        <div class={navItems[openTab] === section[0] ? "block" : "hidden"}>
             <HeaderStats
                 id={section[0]}
                 cards={section[1].Cards}

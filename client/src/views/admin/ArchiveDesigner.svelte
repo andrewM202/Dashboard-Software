@@ -163,12 +163,12 @@
                     popoverMessage:
                         "This defines the actual name of the field. Choose it wisely!",
                 },
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Input Placeholders",
-                    name: "CreationCardInputPlaceholders",
-                    value: "",
-                },
+                // {
+                //     type: "Text",
+                //     placeholder: "Creation Card Input Placeholders",
+                //     name: "CreationCardInputPlaceholders",
+                //     value: "",
+                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Flexdatalist data",
