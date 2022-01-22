@@ -9,6 +9,7 @@
 
   // pages for this layout
   import RawArchive from "views/admin/RawArchive.svelte";
+  import ArchiveDesigner from "views/admin/ArchiveDesigner.svelte";
   import Notes from "views/admin/Notes.svelte";
   import Dashboard from "views/admin/Dashboard.svelte";
   import Settings from "views/admin/Settings.svelte";
@@ -32,6 +33,7 @@
           <Route path="maps" component={Maps} />
           <Route path="raw-archive" component={RawArchive} />
           <Route path="notes" component={Notes} />
+          <Route path="archive-designer" component={ArchiveDesigner} />
         </Router>
         <FooterAdmin />
       </div>
@@ -49,6 +51,7 @@
           <Route path="maps" component={Maps} />
           <Route path="raw-archive" component={RawArchive} />
           <Route path="notes" component={Notes} />
+          <Route path="archive-designer" component={ArchiveDesigner} />
         </Router>
         <FooterAdmin />
       </div>

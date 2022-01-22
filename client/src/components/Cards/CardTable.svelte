@@ -3,6 +3,7 @@
   import TableDropdown from "components/Dropdowns/TableDropdown.svelte";
   // Popover Stuff Start
   import { createPopper } from "@popperjs/core";
+  import { tick } from "svelte";
 
   let popoverShow = false;
 
@@ -28,23 +29,18 @@
   export let headers;
   export let title;
   export let DBFieldNames;
-  export let DeletionURL;
   export let RefreshURL;
   export let UpdateURL;
-  export let UpdateFormNames;
   export let Modification;
+  export let CollectionName;
 
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
   }
 
-  // Make every other row a darker red
-  for (let i = 0; i < 1000; i++) {
-    if (!j$("table > tbody > tr:even").hasClass("bg-red-600")) {
-      setTimeout(function () {
-        j$("table > tbody > tr:even").addClass("bg-red-600");
-      }, 10);
-    }
+  async function makeOddRowsRed() {
+    await tick();
+    j$("table > tbody > tr:even").addClass("bg-red-600");
   }
 </script>
 
@@ -97,6 +93,7 @@
   <div class="block w-full overflow-x-auto">
     <!-- Projects table -->
     <table
+      use:makeOddRowsRed
       class="table-fixed items-center w-full bg-transparent border-collapse"
     >
       <thead>
@@ -143,9 +140,9 @@
                 >
                   <TableDropdown
                     {RefreshURL}
-                    {DeletionURL}
                     {UpdateURL}
-                    {UpdateFormNames}
+                    UpdateFormNames={DBFieldNames}
+                    {CollectionName}
                     DeleteID={Object.values(row)}
                   />
                 </td>

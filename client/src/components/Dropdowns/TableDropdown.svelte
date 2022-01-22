@@ -1,16 +1,13 @@
 <script>
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
-
   import { refreshData } from "../../stores.js";
 
-  export let DeletionURL;
-  export let RefreshURL;
-  export let UpdateURL;
   export let UpdateFormNames;
   export let DeleteID;
-  DeleteID = DeleteID[0].$oid;
-  let UpdateID = DeleteID;
+  export let CollectionName;
+  $: DeleteID = DeleteID[0].$oid;
+  $: UpdateID = DeleteID;
 
   let dropdownPopoverShow = false;
 
@@ -31,13 +28,16 @@
 
   function deleteRow(e) {
     e.preventDefault();
+    console.log(DeleteID);
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",
-      url: `${location.origin}${DeletionURL}`,
+      // url: `${location.origin}${DeletionURL}`,
+      url: `${location.origin}/admin/archive-data/delete`,
       data: data,
       success: function () {
-        refreshData(RefreshURL);
+        // refreshData(RefreshURL);
+        refreshData(`/admin/archive-data/${CollectionName}`);
       },
       error: function (e) {
         // Error Logging
@@ -65,10 +65,11 @@
 
       // Make AJAX Request
       j$(parent).wrap("<form id='saveForm'></form>");
-      const data = j$("#saveForm").serialize();
+      const data = j$("#saveForm").serializeArray();
       j$.ajax({
         type: "POST",
-        url: `${location.origin}${UpdateURL}`,
+        // url: `${location.origin}${UpdateURL}`,
+        url: `${location.origin}/admin/archive-data/update`,
         data: data,
         success: function () {
           console.log("yay");
@@ -99,6 +100,9 @@
     // Append hidden input with the update id for the DB
     j$(parent).append(
       `<input type='hidden' name='UpdateID' value='${UpdateID}' />`
+    );
+    j$(parent).append(
+      `<input type='hidden' name='CollectionName' value='${CollectionName}' />`
     );
     // Index for setting the form names from settings JSON
     let index = 0;
@@ -139,6 +143,7 @@
     </a>
     <form id={DeleteID}>
       <input type="hidden" value={DeleteID} name="DeletionID" />
+      <input type="hidden" value={CollectionName} name="CollectionName" />
       <input
         type="submit"
         value="Delete"
