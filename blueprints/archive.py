@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, Blueprint, send_from_directory, request, redirect, jsonify
+from flask import jsonify, abort, Response, render_template, Blueprint, send_from_directory, request, redirect, jsonify
 from models import PeopleWatch, PersonType, Countries, Organizations, OrganizationType, ArchiveCollections, ArchiveCollectionSettings, db
 # from mongoengine import *
 from bson import json_util, objectid
@@ -69,7 +69,6 @@ def archive_designer_home():
 @bp.route("/admin/archive-data/<collection>")
 def retrieve_specific_archive_data(collection):
     """ Retrieve specific archive data """
-    print(collections)
     if(collection in collections):
         test_col = db.get_database(db_name).get_collection(collection)
         # return json.loads(json_util.dumps(test_col.find_one()))
@@ -84,8 +83,6 @@ def create_archive_collection():
     - Make it so input "set" lists should all be same length. For instance, 
     all the header_search_input lists should have same length, otherwise return error
     """ 
-
-    # print([i.partition(" ")[2] for i in request.form['CreationCardFlexdatalistField'].split(",")])
 
     collection_name = request.form['CollectionName'].lower().replace(" ", "_")
 
@@ -156,7 +153,6 @@ def retrieve_archive_configuration():
         ######### Header #########
         # All header search input fields should be same length
         for i in range(0, len(collection.header_search_input_types)):
-            print(collection.header_search_input_names[i])
             return_settings[collection["collection_title"]]["HeaderSearchInputs"].append({ "type": collection.header_search_input_types[i], "placeholder": collection.header_search_input_placeholders[i], "name": collection.header_search_input_names[i] })
         # All card input fields should be same length
         for i in range(0, len(collection.header_card_subtitles)):
@@ -174,7 +170,6 @@ def retrieve_archive_configuration():
             if collection.creationcard_flexdatalistdata[i] == "None":
                 return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
             else:
-                # print(collection.creationcard_flexdatalistfield[i])
                 return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i], "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true", "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield[i]}": 1}) ), "flexdatafields": collection.creationcard_flexdatalistfield[i], "flexdataid": str(uuid1()) })
     return json_util.dumps(return_settings, indent=4, sort_keys=True)
     # except Exception as e:
@@ -218,7 +213,6 @@ def update_specific_archive_data():
     """
     collection_name = request.form['CollectionName']
     updateid = request.form['UpdateID']
-    print(updateid)
     col = db.get_database(db_name).get_collection(collection_name)
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
@@ -237,7 +231,10 @@ def delete_specific_archive_data():
     collection = request.form['CollectionName']
     id = request.form['DeletionID']
     col = db.get_database(db_name).get_collection(collection)
-    col.delete_one({'_id': objectid.ObjectId(id)})
+    if col.count() > 1:
+        col.delete_one({'_id': objectid.ObjectId(id)})
+    else: 
+        return abort(Response("Cannot delete last value in collection"))
     return redirect('/admin/raw-archive')
 
 @bp.route("/admin/archive-data/create", methods=["POST"])
