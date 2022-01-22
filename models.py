@@ -96,7 +96,7 @@ class User(Document):
         return True
 
     def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
+        """Return the username to satisfy Flask-Login's requirements."""
         return User.objects().first().to_json()
 
     def is_authenticated(self):

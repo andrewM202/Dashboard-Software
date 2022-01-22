@@ -13,23 +13,21 @@
       >
         <div class="rounded-t mb-0 px-6 py-6">
           <div class="text-center mb-3">
-            <h6 class="text-blueGray-500 text-sm font-bold">
-              Sign up with
-            </h6>
+            <h6 class="text-blueGray-500 text-sm font-bold">Sign up with</h6>
           </div>
           <div class="btn-wrapper text-center">
             <button
               class="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
               type="button"
             >
-              <img alt="..." class="w-5 mr-1" src="{github}" />
+              <img alt="..." class="w-5 mr-1" src={github} />
               Github
             </button>
             <button
               class="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
               type="button"
             >
-              <img alt="..." class="w-5 mr-1" src="{google}" />
+              <img alt="..." class="w-5 mr-1" src={google} />
               Google
             </button>
           </div>
@@ -39,23 +37,24 @@
           <div class="text-blueGray-400 text-center mb-3 font-bold">
             <small>Or sign up with credentials</small>
           </div>
-          <form>
+          <form action="/auth/register-user" method="post">
             <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                 for="grid-name"
               >
-                Name
+                Username
               </label>
               <input
                 id="grid-name"
-                type="email"
+                type="text"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 placeholder="Name"
+                name="username"
               />
             </div>
 
-            <div class="relative w-full mb-3">
+            <!-- <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                 for="grid-email"
@@ -68,7 +67,7 @@
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 placeholder="Email"
               />
-            </div>
+            </div> -->
 
             <div class="relative w-full mb-3">
               <label
@@ -82,6 +81,7 @@
                 type="password"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 placeholder="Password"
+                name="password"
               />
             </div>
 
@@ -94,7 +94,11 @@
                 />
                 <span class="ml-2 text-sm font-semibold text-blueGray-600">
                   I agree with the
-                  <a href="#pablo" on:click={(e) => e.preventDefault()} class="text-red-500">
+                  <a
+                    href="#pablo"
+                    on:click={(e) => e.preventDefault()}
+                    class="text-red-500"
+                  >
                     Privacy Policy
                   </a>
                 </span>
@@ -104,7 +108,7 @@
             <div class="text-center mt-6">
               <button
                 class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                type="button"
+                type="submit"
               >
                 Create Account
               </button>
