@@ -57,37 +57,40 @@
                     {/each}
                 {/if}
             </div>
+            <!-- Inputs -->
             {#if inputs !== undefined}
-                <div
-                    use:positionSearchBar
-                    {id}
-                    class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
-                >
-                    {#each inputs as input}
+                <form>
+                    <div
+                        use:positionSearchBar
+                        {id}
+                        class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
+                    >
+                        {#each inputs as input}
+                            <div class="mb-3 py-0 mx-4">
+                                <input
+                                    type={input.type}
+                                    placeholder={input.placeholder}
+                                    name={input.name}
+                                    value={input.type === "Submit"
+                                        ? input.placeholder
+                                        : ""}
+                                    class="{input.type === 'Submit'
+                                        ? 'cursor-pointer'
+                                        : ''} px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                />
+                            </div>
+                        {/each}
                         <div class="mb-3 py-0 mx-4">
                             <input
-                                type={input.type}
-                                placeholder={input.placeholder}
-                                name={input.name}
-                                value={input.type === "Submit"
-                                    ? input.placeholder
-                                    : ""}
-                                class="{input.type === 'Submit'
-                                    ? 'cursor-pointer'
-                                    : ''} px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                type="Submit"
+                                placeholder="Submit"
+                                name="Submit"
+                                value="Submit"
+                                class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                             />
                         </div>
-                    {/each}
-                    <div class="mb-3 py-0 mx-4">
-                        <input
-                            type="Submit"
-                            placeholder="Submit"
-                            name="Submit"
-                            value="Submit"
-                            class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                        />
                     </div>
-                </div>
+                </form>
             {/if}
         </div>
     </div>

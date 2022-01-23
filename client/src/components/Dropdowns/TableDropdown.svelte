@@ -32,11 +32,9 @@
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",
-      // url: `${location.origin}${DeletionURL}`,
       url: `${location.origin}/admin/archive-data/delete`,
       data: data,
       success: function () {
-        // refreshData(RefreshURL);
         refreshData(`/admin/archive-data/${CollectionName}`);
       },
       error: function (e) {

@@ -171,7 +171,7 @@ def retrieve_archive_configuration():
         return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
         for i in range(0, len(collection.table_db_field_names)):
             return_settings[collection["collection_title"]]["Table"]["Headers"] = sorted([i.title().replace("_", " ") for i in collection.table_db_field_names])
-            return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = [i.lower().replace(' ', '_') for i in collection.table_db_field_names] 
+            return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = sorted([i.lower().replace(' ', '_') for i in collection.table_db_field_names]) 
             return_settings[collection["collection_title"]]["Table"]["Title"] = collection.table_title
         ######### Creation Card #########
         return_settings[collection["collection_title"]]["CreationCard"]["Title"] = f"Create {collection.collection_title}"
@@ -230,11 +230,12 @@ def update_specific_archive_data():
     col = db.get_database(db_name).get_collection(collection_name)
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
+    print(request.form)
     update_json = {"$set": {} }
-    for field in request_keys:
-        if field != "CollectionName" and field != "UpdateID":
-            update_json["$set"][field] = request_dict[field]
-    col.update_one({"_id": objectid.ObjectId(updateid)}, update_json)
+    # for field in request_keys:
+    #     if field != "CollectionName" and field != "UpdateID":
+    #         update_json["$set"][field] = request_dict[field]
+    # col.update_one({"_id": objectid.ObjectId(updateid)}, update_json)
     return redirect('/admin/raw-archive')
 
 @bp.route("/admin/archive-data/delete", methods=["POST"])
