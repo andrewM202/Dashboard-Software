@@ -6,19 +6,30 @@
   import { tick } from "svelte";
 
   let popoverShow = false;
-
   let btnRef;
-
   let popoverRef;
 
-  function toggleTooltip() {
-    if (popoverShow) {
+  let btnRef2;
+  let popoverRef2;
+  let popoverShow2 = false;
+
+  function toggleTooltip(btnref, popref, popShow) {
+    if (popShow === "popoverShow" && popoverShow === true) {
       popoverShow = false;
+    } else if (popShow === "popoverShow2" && popoverShow2 === true) {
+      popoverShow2 = false;
     } else {
-      popoverShow = true;
-      createPopper(btnRef, popoverRef, {
-        placement: "left",
-      });
+      if (popShow === "popoverShow") {
+        popoverShow = true;
+        createPopper(btnRef, popoverRef, {
+          placement: "left",
+        });
+      } else if (popShow === "popoverShow2") {
+        popoverShow2 = true;
+        createPopper(btnRef2, popoverRef2, {
+          placement: "left",
+        });
+      }
     }
   }
   // Popover Stuff End
@@ -41,9 +52,31 @@
     j$(e.path[6]).fullScreen(true);
   }
 
-  async function makeOddRowsRed() {
-    await tick();
-    j$("table > tbody > tr:even").addClass("bg-red-600");
+  // Reactive so it recolors the rows whenever
+  // data is changed
+  $: if (data) {
+    async function makeOddRowsRed() {
+      await tick();
+      j$("table > tbody > tr").removeClass("bg-red-600");
+      j$("table > tbody > tr:even").addClass("bg-red-600");
+    }
+    makeOddRowsRed();
+  }
+
+  function downloadData() {
+    const name = `${CollectionName}.json`;
+    const saveData = JSON.stringify(data);
+
+    const a = document.createElement("a");
+    const type = name.split(".").pop();
+    a.href = URL.createObjectURL(
+      new Blob([saveData], {
+        // type: `text/${type === "txt" ? "plain" : type}`,
+        type: "json",
+      })
+    );
+    a.download = name;
+    a.click();
   }
 </script>
 
@@ -55,17 +88,17 @@
 >
   <div class="rounded-t mb-0 px-4 py-3 border-0">
     <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+      <div class="relative w-full px-4 max-w-full flex flex-grow flex-1">
         <h3
-          class="font-semibold text-lg {color === 'light'
+          class="font-semibold text-lg w-full {color === 'light'
             ? 'text-blueGray-700'
             : 'text-white'}"
         >
           <i
             on:click={toggleFullscreen}
             bind:this={btnRef}
-            on:mouseenter={toggleTooltip}
-            on:mouseleave={toggleTooltip}
+            on:mouseenter={toggleTooltip(btnRef, popoverRef, "popoverShow")}
+            on:mouseleave={toggleTooltip(btnRef, popoverRef, "popoverShow")}
             class="fas fa-arrows-alt cursor-pointer pr-4"
           />
           <!-- Tooltip Start -->
@@ -90,13 +123,40 @@
             Card Tables
           {/if}
         </h3>
+        <h3
+          class="font-semibold text-lg text-right w-full {color === 'light'
+            ? 'text-blueGray-700'
+            : 'text-white'}"
+        >
+          <i
+            on:click={downloadData}
+            bind:this={btnRef2}
+            on:mouseenter={toggleTooltip(btnRef2, popoverRef2, "popoverShow2")}
+            on:mouseleave={toggleTooltip(btnRef2, popoverRef2, "popoverShow2")}
+            class="fas fa-download self-end cursor-pointer "
+          />
+          <!-- Tooltip Start -->
+          <div
+            bind:this={popoverRef2}
+            class="bg-orange-500 border-0 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg {popoverShow2
+              ? 'block'
+              : 'hidden'}"
+          >
+            <div>
+              <div
+                class="bg-rose-400 text-white opacity-75 font-semibold p-3 uppercase rounded-t-lg"
+              >
+                Click To Download Data (JSON)
+              </div>
+            </div>
+          </div>
+        </h3>
       </div>
     </div>
   </div>
   <div class="block w-full overflow-x-auto">
     <!-- Projects table -->
     <table
-      use:makeOddRowsRed
       class="table-fixed items-center w-full bg-transparent border-collapse"
     >
       <thead>
