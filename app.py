@@ -1,9 +1,14 @@
 from flask import Flask, send_from_directory, redirect, Blueprint
 from config import Config
 import random
+from models import login
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
+
+# Create Flask-Login instance
+login.init_app(app)
+login.login_view = 'auth.login'
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
