@@ -10,7 +10,7 @@
       >
         <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
           <div class="py-4 text-blueGray-400 text-center mb-3 font-bold">
-            <small>Sign up with credentials</small>
+            <small>Sign up</small>
           </div>
           <form action="/auth/register-user" method="post">
             <div class="relative w-full mb-3">
