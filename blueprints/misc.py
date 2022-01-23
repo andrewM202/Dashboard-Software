@@ -1,8 +1,6 @@
 from flask import render_template, Blueprint, send_from_directory
 from flask_login import  current_user
-from sys import path
-path.append('../')
-from app import app
+from flask_security import login_required
 
 bp = Blueprint("misc", __name__)
 
@@ -17,9 +15,8 @@ def landing():
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/profile")
+@login_required
 def profile():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 # Path for all the static files (compiled JS/CSS, etc.)

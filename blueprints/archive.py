@@ -6,10 +6,8 @@ from os import environ
 from uuid import uuid1
 # regex
 from re import search
-from flask_login import  current_user
-from sys import path
-path.append('../')
-from app import app
+from flask_login import current_user
+from flask_security import login_required
 
 ########################### Global Variables #####################################
 
@@ -21,17 +19,15 @@ collections = db.get_database(db_name).list_collection_names()
 ########################### Base Route #####################################
 
 @bp.route("/admin/raw-archive")
+@login_required
 def raw_archive():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 ###########################  Countries #####################################
 
 @bp.route("/admin/countries")
+@login_required
 def raw_countries():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     countries = Countries.objects()
     parsed_countries = []
     for country in countries:
@@ -73,16 +69,14 @@ def raw_countries():
 ########################### Archive Designer #####################################
 
 @bp.route("/admin/archive-designer")
+@login_required
 def archive_designer_home():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/archive-data/<collection>")
+@login_required
 def retrieve_specific_archive_data(collection):
     """ Retrieve specific archive data """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     if(collection in collections):
         test_col = db.get_database(db_name).get_collection(collection)
         # return json.loads(json_util.dumps(test_col.find_one()))
@@ -91,14 +85,13 @@ def retrieve_specific_archive_data(collection):
         return "Invalid Collection"
 
 @bp.route("/admin/archive-data/create-collection", methods=['POST'])
+@login_required
 def create_archive_collection():
     """ Returns all of the collections for the archive 
     Goals:
     - Make it so input "set" lists should all be same length. For instance, 
     all the header_search_input lists should have same length, otherwise return error
     """ 
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
 
     collection_name = request.form['CollectionName'].lower().replace(" ", "_")
 
@@ -155,10 +148,9 @@ def create_archive_collection():
     return redirect('/admin/archive-designer')
 
 @bp.route("/admin/archive-configuration")
+@login_required
 def retrieve_archive_configuration():
     """ Returns configuration JSON for the archive """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     # try:
     archive_settings = ArchiveCollectionSettings.objects()
 
@@ -195,18 +187,16 @@ def retrieve_archive_configuration():
 
 # Temp route to return archive_settings, will delete after testing finished
 @bp.route("/admin/archive-config-collection")
+@login_required
 def testing_route():
     """ Will delete this route later """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     archive_settings = ArchiveCollectionSettings.objects()
     return archive_settings.to_json()
 
 @bp.route("/admin/archive-collection-key-pairs")
+@login_required
 def archive_collection_keys():
     """ Will delete this route later """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     key_pairs = {}
     key_pairs["KeyPairs"] = []
     collections = ArchiveCollections.objects().only('collection_name')
@@ -222,21 +212,19 @@ def archive_collection_keys():
     return key_pairs
 
 @bp.route("/admin/archive-data/collections")
+@login_required
 def retrieve_all_archive_data():
     """ Returns all of the collections for the archive """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     archive_collections = ArchiveCollections.objects().only('collection_name')
     return archive_collections.to_json()
 
 @bp.route("/admin/archive-data/update", methods=["POST"])
+@login_required
 def update_specific_archive_data():
     """ Update a specific archive data 
     Takes the collection and id data is in, as well as data
     in the form of a serialized array
     """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     collection_name = request.form['CollectionName']
     updateid = request.form['UpdateID']
     col = db.get_database(db_name).get_collection(collection_name)
@@ -250,12 +238,11 @@ def update_specific_archive_data():
     return redirect('/admin/raw-archive')
 
 @bp.route("/admin/archive-data/delete", methods=["POST"])
+@login_required
 def delete_specific_archive_data():
     """ Delete a specific archive data 
     Takes the collection and id data is in
     """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     collection = request.form['CollectionName']
     id = request.form['DeletionID']
     col = db.get_database(db_name).get_collection(collection)
@@ -266,12 +253,11 @@ def delete_specific_archive_data():
     return redirect('/admin/raw-archive')
 
 @bp.route("/admin/archive-data/create", methods=["POST"])
+@login_required
 def create_specific_archive_data():
     """ Creates a specific archive data point
     Takes the collection and id data is in
     """
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
     collection = request.form['CollectionName']

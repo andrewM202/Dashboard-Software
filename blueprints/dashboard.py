@@ -1,37 +1,30 @@
 from flask import render_template, Blueprint, send_from_directory
 from flask_login import  current_user
-from sys import path
-path.append('../')
-from app import app
+from flask_security import login_required
 
 bp = Blueprint("dashboard", __name__)
 
 @bp.route("/admin/dashboard")
+@login_required
 def dashboard():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/settings")
+@login_required
 def settings():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/maps")
+@login_required
 def maps():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/dashboard/people")
+@login_required
 def people_dashboard():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/tables")
+@login_required
 def tables():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')

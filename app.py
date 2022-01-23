@@ -9,6 +9,8 @@ app.config.from_object('config.DevelopmentConfig')
 # Create Flask-Login instance
 login.init_app(app)
 login.login_view = 'auth.login'
+login.refresh_view = "auth.login"
+login.session_protection = "strong"
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
