@@ -49,6 +49,18 @@
       navBarCollapseShow = true;
     }
   }
+
+  function logoutUser(e) {
+    e.preventDefault();
+    // Send an ajax request to the logout route, as Svelte
+    // will not call it otherwise if route is clicked
+    j$.ajax({
+      type: "GET",
+      url: `${location.origin}/auth/logout`,
+    });
+    // Change the location back to the logout screen
+    window.location.href = `${location.origin}/auth/logout`;
+  }
 </script>
 
 <i
@@ -511,9 +523,10 @@
 
         <li class="items-center">
           <a
+            on:click={logoutUser}
             use:link
             class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/auth/logout"
+            href="/auth/login"
           >
             <i class="fas fa-clipboard-list text-blueGray-300 mr-2 text-sm" />
             Logout
