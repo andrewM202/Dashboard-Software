@@ -34,6 +34,9 @@
   export let Modification;
   export let CollectionName;
 
+  // $: data = data;
+  // $: console.log(data);
+
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
   }

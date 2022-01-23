@@ -159,14 +159,29 @@ def retrieve_archive_configuration():
         dict_collection = dict(collection.to_mongo())
         dict_collection_keys = dict_collection.keys()
         ######### Collection Name #########
-        return_settings[collection["collection_title"]] = {"CollectionName": collection["collection_name"],"HeaderSearchInputs": [], "Cards": [], "Table": {}, "CreationCard": {}}
+        return_settings[collection["collection_title"]] = {
+            "CollectionName": collection["collection_name"],
+            "HeaderSearchInputs": [], 
+            "Cards": [], 
+            "Table": {}, 
+            "CreationCard": {}
+        }
         ######### Header #########
         # All header search input fields should be same length
         for i in range(0, len(collection.header_search_input_types)):
-            return_settings[collection["collection_title"]]["HeaderSearchInputs"].append({ "type": collection.header_search_input_types[i], "placeholder": collection.header_search_input_placeholders[i], "name": collection.header_search_input_names[i] })
+            return_settings[collection["collection_title"]]["HeaderSearchInputs"].append({ 
+                "type": collection.header_search_input_types[i], 
+                "placeholder": collection.header_search_input_placeholders[i], 
+                "name": collection.header_search_input_names[i] 
+            })
         # All card input fields should be same length
         for i in range(0, len(collection.header_card_subtitles)):
-            return_settings[collection["collection_title"]]["Cards"].append({ "subtitle": collection.header_card_subtitles[i], "amount": collection.header_card_amounts[i], "increase": collection.header_card_increases[i], "description": collection.header_card_descriptions[i] })
+            return_settings[collection["collection_title"]]["Cards"].append({ 
+                "subtitle": collection.header_card_subtitles[i], 
+                "amount": collection.header_card_amounts[i], 
+                "increase": collection.header_card_increases[i], 
+                "description": collection.header_card_descriptions[i] 
+            })
         ######### Table #########
         return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
         for i in range(0, len(collection.table_db_field_names)):
@@ -178,9 +193,22 @@ def retrieve_archive_configuration():
         return_settings[collection["collection_title"]]["CreationCard"]["Inputs"] = []
         for i in range(0, len(collection.creationcard_input_types)):
             if collection.creationcard_flexdatalistdata[i] == "None":
-                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true" })
+                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ 
+                    "type": collection.creationcard_input_types[i], 
+                    "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), 
+                    "name": collection.table_db_field_names[i].lower().replace(' ', '_'), 
+                    "required": collection.creationcard_required_field[i] == "true" 
+                })
             else:
-                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ "type": collection.creationcard_input_types[i], "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), "name": collection.table_db_field_names[i].lower().replace(' ', '_'), "required": collection.creationcard_required_field[i] == "true", "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield[i]}": 1}) ), "flexdatafields": collection.creationcard_flexdatalistfield[i], "flexdataid": str(uuid1()) })
+                return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ 
+                    "type": collection.creationcard_input_types[i], 
+                    "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), 
+                    "name": collection.table_db_field_names[i].lower().replace(' ', '_'), 
+                    "required": collection.creationcard_required_field[i] == "true", 
+                    "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield[i]}": 1}) ), 
+                    "flexdatafields": collection.creationcard_flexdatalistfield[i], 
+                    "flexdataid": str(uuid1()) 
+                })
     return json_util.dumps(return_settings, indent=4, sort_keys=True)
     # except Exception as e:
     #     return e
@@ -230,12 +258,11 @@ def update_specific_archive_data():
     col = db.get_database(db_name).get_collection(collection_name)
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
-    print(request.form)
     update_json = {"$set": {} }
-    # for field in request_keys:
-    #     if field != "CollectionName" and field != "UpdateID":
-    #         update_json["$set"][field] = request_dict[field]
-    # col.update_one({"_id": objectid.ObjectId(updateid)}, update_json)
+    for field in request_keys:
+        if field != "CollectionName" and field != "UpdateID":
+            update_json["$set"][field] = request_dict[field]
+    col.update_one({"_id": objectid.ObjectId(updateid)}, update_json)
     return redirect('/admin/raw-archive')
 
 @bp.route("/admin/archive-data/delete", methods=["POST"])
@@ -272,5 +299,47 @@ def create_specific_archive_data():
             creation_dict[key] = request_dict[key]
     col.insert_one(creation_dict)
     return redirect('/admin/raw-archive')
-    
+
+@bp.route("/admin/archive-data/search-data/", methods=["POST"])
+@login_required
+def search_archive():
+    """ Retrieves search results for given collection """
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+    collection = request.form['CollectionName']
+    # print(data)
+    col = db.get_database(db_name).get_collection(collection)
+
+    # Build filter JSON
+    # filter_json = {
+    #     "$match": {
+    #         "$and": [
+
+    #         ]
+    #     }
+    # }
+    filter_json = {
+        "$and": [
+
+        ]
+    }
+
+    for field in data_keys:
+        if field != "CollectionName":# and data[field] != "":
+            filter_json["$and"].append({
+                field: {
+                    "$regex": data[field], "$options": 'i'
+                }
+            })
+
+    filtered_data = col.find(filter_json)
+
+    # Can't return plain list as it will return empty list (glitch?)
+    return_obj = {"data": [], "CollectionName": request.form['CollectionName']}
+    for data in filtered_data:
+        # Sort the results alphabetically so they match table headers
+        data = {key: val for key, val in sorted(data.items(), key = lambda ele: ele[0])}
+        return_obj["data"].append(data)
+
+    return json_util.dumps(return_obj)
     

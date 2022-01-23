@@ -525,26 +525,27 @@
                 title={navItems[openTab]}
                 titleFontSize={"text-4xl"}
                 inputs={section[1].HeaderSearchInputs}
+                CollectionName={section[1].CollectionName}
             />
             <div class="block px-4 md:px-10 mx-auto w-full m-12">
                 <div class="flex flex-wrap ml-8">
                     <div
                         class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
                     >
-                        {#await section[1].Table.Data[0]}
+                        <!-- {#await section[1].Table.Data[0]}
                             <p>Loading...</p>
-                        {:then data}
-                            <CardTable
-                                color="dark"
-                                {data}
-                                CollectionName={section[1].CollectionName}
-                                headers={section[1].Table.Headers}
-                                DBFieldNames={section[1].Table.DBFieldNames}
-                                title={section[1].Table.Title}
-                            />
-                        {:catch error}
+                        {:then data} -->
+                        <CardTable
+                            color="dark"
+                            data={section[1].Table.Data[0]}
+                            CollectionName={section[1].CollectionName}
+                            headers={section[1].Table.Headers}
+                            DBFieldNames={section[1].Table.DBFieldNames}
+                            title={section[1].Table.Title}
+                        />
+                        <!-- {:catch error}
                             <p style="color: red">{error.message}</p>
-                        {/await}
+                        {/await} -->
                     </div>
                 </div>
             </div>

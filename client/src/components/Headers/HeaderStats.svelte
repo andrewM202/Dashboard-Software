@@ -2,6 +2,7 @@
     // core components
     import CardStats from "components/Cards/CardStats.svelte";
     import { tick } from "svelte";
+    import { dataSettingsStore, getDBResource } from "../../stores.js";
 
     // Optional Arguments
     export let cards;
@@ -9,8 +10,10 @@
     export let titleColor; // Pass in class for text color
     export let titleFontSize; // Pass in class for font size
     export let inputs;
+    export let CollectionName;
 
     let id = Math.random().toString(36).substr(2, 8); // Generate random string
+    let formID = Math.random().toString(36).substr(2, 8);
 
     async function positionSearchBar(node) {
         await tick();
@@ -22,6 +25,36 @@
                 });
             }
         }
+    }
+
+    function SearchResults(e) {
+        e.preventDefault();
+        // Get data from form
+        let data = j$(`form#${formID}`).serialize();
+        // Clear form
+        j$(`form#${formID}`).trigger("reset");
+        // Get search results for collection
+        j$.ajax({
+            type: "POST",
+            url: "/admin/archive-data/search-data/",
+            data: data,
+            success: function (data) {
+                // Data returns as string, turn into JSON
+                data = JSON.parse(data);
+                // On success, replace the correlating collection
+                // data in the dataSettingsStore to the updated,
+                // filtered data
+                for (let entry of Object.entries($dataSettingsStore)) {
+                    if (entry[1].CollectionName === data.CollectionName) {
+                        $dataSettingsStore[entry[0]].Table.Data = [data.data];
+                    }
+                }
+            },
+            error: function (error) {
+                console.log("Error");
+                console.log(error);
+            },
+        });
     }
 </script>
 
@@ -59,7 +92,12 @@
             </div>
             <!-- Inputs -->
             {#if inputs !== undefined}
-                <form>
+                <form id={formID}>
+                    <input
+                        type="hidden"
+                        name="CollectionName"
+                        value={CollectionName}
+                    />
                     <div
                         use:positionSearchBar
                         {id}
@@ -82,6 +120,7 @@
                         {/each}
                         <div class="mb-3 py-0 mx-4">
                             <input
+                                on:click={SearchResults}
                                 type="Submit"
                                 placeholder="Submit"
                                 name="Submit"
