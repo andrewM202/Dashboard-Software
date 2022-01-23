@@ -1,8 +1,12 @@
 from mongoengine import *
 from os import environ
+from flask_login import UserMixin, LoginManager
 
 # Connect to MongoDB
 db = connect(host = environ['MONGODB_HOST'])   
+
+# flask-login initialization
+login = LoginManager()
 
 class PeopleWatch(Document):
     """ People """
@@ -81,3 +85,28 @@ class ArchiveCollectionSettings(Document):
     # These are the names that appear as the title of the creation card
     creationcard_input_title_names = ListField()
     creationcard_input_placeholders = ListField()
+
+class User(Document):
+    """ Login Information """
+    username = StringField(required=True)
+    password = StringField(required=True)
+
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+
+    def get_id(self):
+        """Return the username to satisfy Flask-Login's requirements."""
+        return User.objects().first().to_json()
+
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False
+
+@login.user_loader
+def load_user(user_id):
+    return User.objects().first()

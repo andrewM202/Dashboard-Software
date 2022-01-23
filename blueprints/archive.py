@@ -6,6 +6,10 @@ from os import environ
 from uuid import uuid1
 # regex
 from re import search
+from flask_login import  current_user
+from sys import path
+path.append('../')
+from app import app
 
 ########################### Global Variables #####################################
 
@@ -18,12 +22,16 @@ collections = db.get_database(db_name).list_collection_names()
 
 @bp.route("/admin/raw-archive")
 def raw_archive():
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 ###########################  Countries #####################################
 
 @bp.route("/admin/countries")
 def raw_countries():
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     countries = Countries.objects()
     parsed_countries = []
     for country in countries:
@@ -66,11 +74,15 @@ def raw_countries():
 
 @bp.route("/admin/archive-designer")
 def archive_designer_home():
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     return send_from_directory('client/public', 'index.html')
 
 @bp.route("/admin/archive-data/<collection>")
 def retrieve_specific_archive_data(collection):
     """ Retrieve specific archive data """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     if(collection in collections):
         test_col = db.get_database(db_name).get_collection(collection)
         # return json.loads(json_util.dumps(test_col.find_one()))
@@ -85,6 +97,8 @@ def create_archive_collection():
     - Make it so input "set" lists should all be same length. For instance, 
     all the header_search_input lists should have same length, otherwise return error
     """ 
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
 
     collection_name = request.form['CollectionName'].lower().replace(" ", "_")
 
@@ -143,6 +157,8 @@ def create_archive_collection():
 @bp.route("/admin/archive-configuration")
 def retrieve_archive_configuration():
     """ Returns configuration JSON for the archive """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     # try:
     archive_settings = ArchiveCollectionSettings.objects()
 
@@ -181,12 +197,16 @@ def retrieve_archive_configuration():
 @bp.route("/admin/archive-config-collection")
 def testing_route():
     """ Will delete this route later """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     archive_settings = ArchiveCollectionSettings.objects()
     return archive_settings.to_json()
 
 @bp.route("/admin/archive-collection-key-pairs")
 def archive_collection_keys():
     """ Will delete this route later """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     key_pairs = {}
     key_pairs["KeyPairs"] = []
     collections = ArchiveCollections.objects().only('collection_name')
@@ -204,6 +224,8 @@ def archive_collection_keys():
 @bp.route("/admin/archive-data/collections")
 def retrieve_all_archive_data():
     """ Returns all of the collections for the archive """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     archive_collections = ArchiveCollections.objects().only('collection_name')
     return archive_collections.to_json()
 
@@ -213,6 +235,8 @@ def update_specific_archive_data():
     Takes the collection and id data is in, as well as data
     in the form of a serialized array
     """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     collection_name = request.form['CollectionName']
     updateid = request.form['UpdateID']
     col = db.get_database(db_name).get_collection(collection_name)
@@ -230,6 +254,8 @@ def delete_specific_archive_data():
     """ Delete a specific archive data 
     Takes the collection and id data is in
     """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     collection = request.form['CollectionName']
     id = request.form['DeletionID']
     col = db.get_database(db_name).get_collection(collection)
@@ -244,6 +270,8 @@ def create_specific_archive_data():
     """ Creates a specific archive data point
     Takes the collection and id data is in
     """
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
     collection = request.form['CollectionName']
