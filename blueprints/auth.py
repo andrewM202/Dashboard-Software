@@ -12,6 +12,10 @@ bp = Blueprint("auth", __name__)
 def register_page():
     return send_from_directory('client/public', 'index.html')
 
+@bp.route("/login")
+def redirect_security_login():
+    return redirect('/auth/login')
+
 @bp.route('/auth/login', methods=['GET', 'POST'])
 def login():
     """ Login as owner """

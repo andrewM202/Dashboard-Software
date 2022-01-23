@@ -1,12 +1,15 @@
 from mongoengine import *
 from os import environ
 from flask_login import UserMixin, LoginManager
+from flask_security import RoleMixin, MongoEngineUserDatastore
 
 # Connect to MongoDB
 db = connect(host = environ['MONGODB_HOST'])   
 
 # flask-login initialization
 login = LoginManager()
+
+########################### Raw Archive #####################################
 
 class PeopleWatch(Document):
     """ People """
@@ -86,10 +89,19 @@ class ArchiveCollectionSettings(Document):
     creationcard_input_title_names = ListField()
     creationcard_input_placeholders = ListField()
 
-class User(Document):
+########################### Authentication #####################################
+
+class Role(Document, RoleMixin):
+    name = StringField(max_length=80, unique=True)
+    description = StringField(max_length=255)
+
+class User(Document, UserMixin):
     """ Login Information """
     username = StringField(required=True)
     password = StringField(required=True)
+    active = BooleanField(default=True)
+    confirmed_at = DateTimeField()
+    roles = ListField(ReferenceField(Role), default=[])
 
     def is_active(self):
         """True, as all users are active."""
@@ -106,6 +118,9 @@ class User(Document):
     def is_anonymous(self):
         """False, as anonymous users aren't supported."""
         return False
+
+# Setup Flask-Security
+user_datastore = MongoEngineUserDatastore(db, User, Role)
 
 @login.user_loader
 def load_user(user_id):

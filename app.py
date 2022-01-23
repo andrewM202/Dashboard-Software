@@ -1,16 +1,12 @@
 from flask import Flask, send_from_directory, redirect, Blueprint
 from config import Config
 import random
-from models import login
+from models import login, user_datastore
+from flask_security import Security
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
-
-# Create Flask-Login instance
-login.init_app(app)
-login.login_view = 'auth.login'
-login.refresh_view = "auth.login"
-login.session_protection = "strong"
+# app.config['SECURITY_LOGIN_URL'] = ''
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
@@ -29,8 +25,18 @@ app.register_blueprint(misc_bp)
 from blueprints.notes import bp as notes_bp
 app.register_blueprint(notes_bp)
 
+# Authentication routes
 from blueprints.auth import bp as auth_bp
 app.register_blueprint(auth_bp)
+
+# Create Flask-Login instance
+login.init_app(app)
+login.login_view = 'auth.login'
+login.refresh_view = "auth.login"
+login.session_protection = "strong"
+
+# Flask Security
+security = Security(app, user_datastore)
 
 if __name__ == "__main__":
     app.run(debug=True)

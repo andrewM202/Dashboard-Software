@@ -10,6 +10,8 @@ class Config(object):
     SECRET_KEY = 'wegwerg^#$T34y^#_#$534;^_#$asf63ASF'
     # SEND_FILE_MAX_AGE_DEFAULT makes it so the browser doesn't store any of the CSS or HTML in a cache. It makes for easier development
     SEND_FILE_MAX_AGE_DEFAULT = 0
+    # SECURITY_LOGIN_URL = ''
+
 
 class ProductionConfig(Config):
     FLASK_DEBUG = False
