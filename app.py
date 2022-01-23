@@ -3,6 +3,7 @@ from config import Config
 import random
 from models import login, user_datastore
 from flask_security import Security
+from flask_paranoid import Paranoid
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
@@ -32,10 +33,14 @@ app.register_blueprint(auth_bp)
 login.init_app(app)
 login.login_view = 'auth.login'
 login.refresh_view = "auth.login"
-login.session_protection = "strong"
+login.session_protection = None
 
 # Flask Security
 security = Security(app, user_datastore)
+
+# Flask Paranoid
+paranoid = Paranoid(app)
+paranoid.redirect_view = 'auth.login'
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,4 +1,5 @@
-from flask import render_template, redirect, Blueprint, send_from_directory, request
+from flask import render_template, redirect, Blueprint, \
+    send_from_directory, request
 from models import User, db
 from flask_security import login_user, current_user, logout_user
 
