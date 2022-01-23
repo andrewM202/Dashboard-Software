@@ -6,8 +6,8 @@ from os import environ
 from uuid import uuid1
 # regex
 from re import search
-from flask_login import current_user
-from flask_security import login_required
+# from flask_login import current_user
+from flask_security import login_required, current_user
 
 ########################### Global Variables #####################################
 

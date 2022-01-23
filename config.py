@@ -7,11 +7,10 @@ class Config(object):
     FLASK_DEBUG = True
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = 'wegwerg^#$T34y^#_#$534;^_#$asf63ASF'
+    SECRET_KEY = '123'
     # SEND_FILE_MAX_AGE_DEFAULT makes it so the browser doesn't store any of the CSS or HTML in a cache. It makes for easier development
     SEND_FILE_MAX_AGE_DEFAULT = 0
-    # SECURITY_LOGIN_URL = ''
-
+    SECURITY_LOGIN_URL = '/auth/login'
 
 class ProductionConfig(Config):
     FLASK_DEBUG = False

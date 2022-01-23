@@ -1,6 +1,6 @@
 from flask import render_template, redirect, Blueprint, send_from_directory, request
 from models import User, db
-from flask_login import current_user, login_user, logout_user
+from flask_security import login_user, current_user, logout_user
 
 ########################### Global Variables #####################################
 
@@ -26,16 +26,17 @@ def login():
         password = request.form['password']
         if username is not None and password is not None:
             try:
-                db_user = User.objects().first().username
+                db_user = User.objects().first().email
                 db_pass = User.objects().first().password
                 if username == db_user and password == db_pass:
                     loggedin_user = User.objects().first()
+                    print()
                     login_user(loggedin_user)
                     return redirect('/admin/dashboard')
                 else:
                     return redirect('/auth/login')
             except Exception as e:
-                return 'Error'
+                return e
         else:
             return redirect('/auth/login')
     else:
@@ -68,14 +69,14 @@ def register():
             return send_from_directory('client/public', 'index.html')
         else:
             user = User(
-                username=username,
+                email=username,
                 password=password,
             ).save()
 
             login_user(user)
 
-            # db.session.add(user)
-            # db.session.commit()
+            db.session.add(user)
+            db.session.commit()
 
             return redirect('/admin/dashboard')
     else:

@@ -6,7 +6,6 @@ from flask_security import Security
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
-# app.config['SECURITY_LOGIN_URL'] = ''
 
 # Register Routes / Import Blueprints
 # Raw Archive routes

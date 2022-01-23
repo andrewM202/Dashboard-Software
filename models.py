@@ -94,34 +94,36 @@ class ArchiveCollectionSettings(Document):
 class Role(Document, RoleMixin):
     name = StringField(max_length=80, unique=True)
     description = StringField(max_length=255)
+    permissions = StringField(max_length=255)
 
 class User(Document, UserMixin):
     """ Login Information """
-    username = StringField(required=True)
-    password = StringField(required=True)
+    email = StringField(max_length=255, unique=True)
+    password = StringField(max_length=255)
     active = BooleanField(default=True)
+    fs_uniquifier = StringField(max_length=64, unique=True)
     confirmed_at = DateTimeField()
     roles = ListField(ReferenceField(Role), default=[])
 
-    def is_active(self):
-        """True, as all users are active."""
-        return True
+    # def is_active(self):
+    #     """True, as all users are active."""
+    #     return True
 
-    def get_id(self):
-        """Return the username to satisfy Flask-Login's requirements."""
-        return User.objects().first().to_json()
+    # def get_id(self):
+    #     """Return the username to satisfy Flask-Login's requirements."""
+    #     return User.objects().first().to_json()
 
-    def is_authenticated(self):
-        """Return True if the user is authenticated."""
-        return self.authenticated
+    # def is_authenticated(self):
+    #     """Return True if the user is authenticated."""
+    #     return self.authenticated
 
-    def is_anonymous(self):
-        """False, as anonymous users aren't supported."""
-        return False
+    # def is_anonymous(self):
+    #     """False, as anonymous users aren't supported."""
+    #     return False
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 
-@login.user_loader
-def load_user(user_id):
-    return User.objects().first()
+# @login.user_loader
+# def load_user(user_id):
+#     return User.objects().first()
