@@ -7,7 +7,7 @@ class Config(object):
     FLASK_DEBUG = True
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = '123'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     # SEND_FILE_MAX_AGE_DEFAULT makes it so the browser doesn't store any of the CSS or HTML in a cache. It makes for easier development
     SEND_FILE_MAX_AGE_DEFAULT = 0
     SECURITY_LOGIN_URL = '/auth/login'
