@@ -501,28 +501,6 @@
       >
         <li class="items-center">
           <a
-            use:link
-            class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/auth/login"
-          >
-            <i class="fas fa-fingerprint text-blueGray-300 mr-2 text-sm" />
-            Login
-          </a>
-        </li>
-
-        <li class="items-center">
-          <a
-            use:link
-            class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/auth/register"
-          >
-            <i class="fas fa-clipboard-list text-blueGray-300 mr-2 text-sm" />
-            Register
-          </a>
-        </li>
-
-        <li class="items-center">
-          <a
             on:click={logoutUser}
             use:link
             class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
