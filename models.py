@@ -2,12 +2,16 @@ from mongoengine import *
 from os import environ
 from flask_login import UserMixin, LoginManager
 from flask_security import RoleMixin, MongoEngineUserDatastore
+from passlib.context import CryptContext # Password hashing
 
 # Connect to MongoDB
 db = connect(host = environ['MONGODB_HOST'])   
 
 # flask-login initialization
 login = LoginManager()
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt", "pbkdf2_sha256"], deprecated="auto")
 
 ########################### Raw Archive #####################################
 
@@ -101,29 +105,8 @@ class User(Document, UserMixin):
     email = StringField(max_length=255, unique=True)
     password = StringField(max_length=255)
     active = BooleanField(default=True)
-    fs_uniquifier = StringField(max_length=64, unique=True)
     confirmed_at = DateTimeField()
     roles = ListField(ReferenceField(Role), default=[])
 
-    # def is_active(self):
-    #     """True, as all users are active."""
-    #     return True
-
-    # def get_id(self):
-    #     """Return the username to satisfy Flask-Login's requirements."""
-    #     return User.objects().first().to_json()
-
-    # def is_authenticated(self):
-    #     """Return True if the user is authenticated."""
-    #     return self.authenticated
-
-    # def is_anonymous(self):
-    #     """False, as anonymous users aren't supported."""
-    #     return False
-
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
-
-# @login.user_loader
-# def load_user(user_id):
-#     return User.objects().first()

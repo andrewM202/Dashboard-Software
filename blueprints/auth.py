@@ -1,7 +1,8 @@
 from flask import render_template, redirect, Blueprint, \
     send_from_directory, request
-from models import User, db
+from models import User, db, pwd_context
 from flask_security import login_user, current_user, logout_user
+from passlib.context import CryptContext # Password hashing
 
 ########################### Global Variables #####################################
 
@@ -29,7 +30,8 @@ def login():
             try:
                 db_user = User.objects().first().email
                 db_pass = User.objects().first().password
-                if username == db_user and password == db_pass:
+                # Verify password with hashing
+                if username == db_user and pwd_context.verify(password, db_pass):
                     loggedin_user = User.objects().first()
                     print()
                     login_user(loggedin_user)
@@ -71,13 +73,13 @@ def register():
         else:
             user = User(
                 email=username,
-                password=password,
+                password=pwd_context.hash(password), # Hash password
             ).save()
 
             login_user(user)
 
-            db.session.add(user)
-            db.session.commit()
+            # db.session.add(user)
+            # db.session.commit()
 
             return redirect('/admin/dashboard')
     else:
