@@ -378,7 +378,7 @@
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-book-open mr-2 text-sm {location.href.indexOf(
+              class="fas fa-edit mr-2 text-sm {location.href.indexOf(
                 '/admin/dashboard-designer'
               ) !== -1
                 ? 'opacity-75'
