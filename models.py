@@ -68,6 +68,7 @@ class ArchiveCollectionSettings(Document):
     header_search_input_types = ListField()
     header_search_input_placeholders = ListField()
     header_search_input_names = ListField()
+    header_search_enabled = BooleanField(required=True)
 
     header_card_subtitles = ListField()
     header_card_amounts = ListField()
@@ -90,7 +91,6 @@ class ArchiveCollectionSettings(Document):
     # These are the actual names in the database
     creationcard_input_names = ListField()
     # These are the names that appear as the title of the creation card
-    creationcard_input_title_names = ListField()
     creationcard_input_placeholders = ListField()
 
 ########################### Authentication #####################################

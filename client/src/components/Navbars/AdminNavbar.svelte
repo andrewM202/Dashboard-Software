@@ -9,21 +9,26 @@
 <nav
   class="absolute bg-red-500 top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4"
 >
+  {#if title !== undefined}
+    <div class="md:block hidden md:pr-10 px-4 w-40">
+      <a
+        class="text-white min-w-full text-sm uppercase align-self-start hidden lg:inline-block font-semibold"
+        href="#pablo"
+        on:click={(e) => e.preventDefault()}
+      >
+        {title}
+      </a>
+    </div>
+  {/if}
   <div
-    class="w-full mx-autp items-center flex justify-between flex-wrap md:flex-wrap md:px-10 px-4"
+    class="w-full mx-autp items-center flex justify-around flex-wrap md:flex-wrap md:px-10 px-4"
   >
     <!-- Brand -->
-    <a
-      class="text-white text-sm uppercase hidden lg:inline-block font-semibold"
-      href="#pablo"
-      on:click={(e) => e.preventDefault()}
-    >
-      {title}
-    </a>
+
     {#if navItems !== undefined}
       {#each navItems as navItem, i}
         <!-- <a href="#{navItem}" class="pl-4 text-white text-sm uppercase"
-          >{navItem}</a
+          >{navItem}</a>
         > -->
         <p
           on:click={() => (openTab = i)}

@@ -65,7 +65,7 @@ def register():
         try:
             usernamealready = User.objects.get(username=username)
         except Exception as e:
-            pass
+            return send_from_directory('client/public', 'index.html')
 
         if usernamealready:
             error = "Sorry, that username is already present."

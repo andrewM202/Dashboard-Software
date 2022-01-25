@@ -43,74 +43,6 @@
                         "Name of the collection. This will show in the top navigation of the raw archive",
                     flexdatalistdisabled: true,
                 },
-            ],
-        },
-        {
-            Subtitle: "Header Search Inputs",
-            SubtitlePopoverMessage:
-                "Value set must be equal in length to other header search input fields. Values separated by commas, no spaces.",
-            Inputs: [
-                {
-                    type: "Text",
-                    placeholder: "Header Search Input Types",
-                    name: "HeaderSearchInputTypes",
-                    value: "",
-                    popoverMessage:
-                        "What type of input is allowed for this component of the search form?",
-                    flexdatalistdata: ["text"],
-                    flexdataid: Math.random().toString(36).substring(2, 8),
-                },
-                {
-                    type: "Text",
-                    placeholder: "Header Search Input Placeholders",
-                    name: "HeaderSearchInputPlaceholders",
-                    value: "",
-                    popoverMessage:
-                        "Individual value may be any string, no commas",
-                },
-            ],
-        },
-        {
-            Subtitle: "Header Cards",
-            SubtitlePopoverMessage:
-                "Each field represents a component of the cards in the raw archive. Value set must be equal in length to other header search input fields. Separate values separated by commas",
-            Inputs: [
-                {
-                    type: "Text",
-                    placeholder: "Header Card Subtitles",
-                    name: "HeaderCardSubtitles",
-                    value: "",
-                    popoverMessage:
-                        "The subtitle of each header card in the raw archive for this collection.",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Header Card Amounts",
-                    name: "HeaderCardAmounts",
-                    value: "",
-                    popoverMessage: "Value is a number",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Header Card Increases",
-                    name: "HeaderCardIncreases",
-                    value: "",
-                    popoverMessage:
-                        "Value is a number that represents a percentage",
-                },
-                {
-                    type: "Text",
-                    placeholder: "Header Card Descriptions",
-                    name: "HeaderCardDescriptions",
-                    value: "",
-                },
-            ],
-        },
-        {
-            Subtitle: "Table",
-            SubtitlePopoverMessage:
-                "Each field represents a component of the table that holds the data",
-            Inputs: [
                 {
                     type: "Text",
                     placeholder: "Table Title",
@@ -118,28 +50,12 @@
                     value: "",
                     flexdatalistdisabled: true,
                 },
-            ],
-        },
-        {
-            Subtitle: "Creation Card",
-            SubtitlePopoverMessage: "The misc parts of the creation card",
-            Inputs: [
                 {
                     type: "Text",
                     placeholder: "Creation Card Title",
                     name: "CreationCardTitle",
                     value: "",
                     flexdatalistdisabled: true,
-                },
-                {
-                    type: "Text",
-                    placeholder: "Creation Card Required Field",
-                    name: "CreationCardRequiredField",
-                    value: "",
-                    popoverMessage:
-                        "true indicates that the field is required, false indicates it is not",
-                    flexdatalistdata: ["true", "false"],
-                    flexdataid: Math.random().toString(36).substring(2, 8),
                 },
             ],
         },
@@ -193,12 +109,93 @@
                     popoverMessage:
                         "If this is a flexdatalist and the collection is chosen, which field from the collection should be used? Values in 'Collection Name': 'Field' pairs",
                 },
+                {
+                    type: "Text",
+                    placeholder: "Creation Card Required Field",
+                    name: "CreationCardRequiredField",
+                    value: "",
+                    popoverMessage:
+                        "true indicates that the field is required, false indicates it is not",
+                    flexdatalistdata: ["true", "false"],
+                    flexdataid: Math.random().toString(36).substring(2, 8),
+                },
+            ],
+        },
+        {
+            Subtitle: "Header Search Inputs",
+            SubtitlePopoverMessage:
+                "Corresponds to the search inputs in the header. Value set must be equal in length to creation card inputs",
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Header Search Input Types",
+                    name: "HeaderSearchInputTypes",
+                    value: "",
+                    popoverMessage:
+                        "What type of input is allowed for this component of the search form?",
+                    flexdatalistdata: ["text"],
+                    flexdataid: Math.random().toString(36).substring(2, 8),
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Input Searchable",
+                    name: "HeaderSearchEnabled",
+                    value: "",
+                    popoverMessage:
+                        "Should this input even be searchable (True) or not at all (False)?",
+                    flexdatalistdata: ["True", "False"],
+                    flexdataid: Math.random().toString(36).substring(2, 8),
+                },
+                // {
+                //     type: "Text",
+                //     placeholder: "Header Search Input Placeholders",
+                //     name: "HeaderSearchInputPlaceholders",
+                //     value: "",
+                //     popoverMessage:
+                //         "Individual value may be any string, no commas",
+                // },
+            ],
+        },
+        {
+            Subtitle: "Header Cards",
+            SubtitlePopoverMessage:
+                "Each field represents a component of the cards in the raw archive. Value set must be equal in length to other header search input fields.",
+            Inputs: [
+                {
+                    type: "Text",
+                    placeholder: "Header Card Subtitles",
+                    name: "HeaderCardSubtitles",
+                    value: "",
+                    popoverMessage:
+                        "The subtitle of each header card in the raw archive for this collection.",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Card Amounts",
+                    name: "HeaderCardAmounts",
+                    value: "",
+                    popoverMessage: "Value is a number",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Card Increases",
+                    name: "HeaderCardIncreases",
+                    value: "",
+                    popoverMessage:
+                        "Value is a number that represents a percentage",
+                },
+                {
+                    type: "Text",
+                    placeholder: "Header Card Descriptions",
+                    name: "HeaderCardDescriptions",
+                    value: "",
+                },
             ],
         },
     ];
 </script>
 
-<AdminNavbar title={"Archive Designer"} />
+<AdminNavbar />
 <HeaderStats
     title={"Archive Designer"}
     titleFontSize={"text-6xl"}

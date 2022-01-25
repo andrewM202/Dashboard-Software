@@ -93,7 +93,8 @@ def create_archive_collection():
     all the header_search_input lists should have same length, otherwise return error
     """ 
 
-    collection_name = request.form['CollectionName'].lower().replace(" ", "_")
+    # Gen for auto-generated, non-default collection
+    collection_name = "gen_" + request.form['CollectionName'].lower().replace(" ", "_")
 
     ArchiveCollectionSettings(
         # Collection_name is db-friendly collection title
@@ -101,9 +102,12 @@ def create_archive_collection():
         # Title is just regular collection name
         collection_title = request.form['CollectionName'],
         header_search_input_types = [i for i in request.form['HeaderSearchInputTypes'].split(",")],
-        header_search_input_placeholders = [i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
+        # Commented out so the header input placeholders 
+        # just equal the creation card input placeholders
+        header_search_input_placeholders = [i for i in request.form['CreationCardInputNames'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
         # Header search input names are just the creation card ones
         header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
+        header_search_enabled = [eval(i) for i in request.form['HeaderSearchEnabled'].split(",")],
 
         header_card_subtitles = [i for i in request.form['HeaderCardSubtitles'].split(",")],
         header_card_amounts = [round(float(i), 2) for i in request.form['HeaderCardAmounts'].split(",")],
@@ -126,7 +130,7 @@ def create_archive_collection():
         creationcard_input_types = [i for i in request.form['CreationCardInputTypes'].split(",")],
         # The names are just db-friendly placeholders
         creationcard_input_names = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
-        creationcard_input_placeholders = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
+        creationcard_input_placeholders = [i for i in request.form['CreationCardInputNames'].split(",")],
     ).save()
 
     # Add collection name to archive_collections collection
@@ -189,7 +193,7 @@ def retrieve_archive_configuration():
             return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = sorted([i.lower().replace(' ', '_') for i in collection.table_db_field_names]) 
             return_settings[collection["collection_title"]]["Table"]["Title"] = collection.table_title
         ######### Creation Card #########
-        return_settings[collection["collection_title"]]["CreationCard"]["Title"] = f"Create {collection.collection_title}"
+        return_settings[collection["collection_title"]]["CreationCard"]["Title"] = collection.collection_title
         return_settings[collection["collection_title"]]["CreationCard"]["Inputs"] = []
         for i in range(0, len(collection.creationcard_input_types)):
             if collection.creationcard_flexdatalistdata[i] == "None":
@@ -311,13 +315,6 @@ def search_archive():
     col = db.get_database(db_name).get_collection(collection)
 
     # Build filter JSON
-    # filter_json = {
-    #     "$match": {
-    #         "$and": [
-
-    #         ]
-    #     }
-    # }
     filter_json = {
         "$and": [
 

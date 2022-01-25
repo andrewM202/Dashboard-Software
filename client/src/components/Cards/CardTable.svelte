@@ -65,7 +65,7 @@
 
   function downloadData() {
     const name = `${CollectionName}.json`;
-    const saveData = JSON.stringify(data);
+    const saveData = JSON.stringify(data, undefined, 2);
 
     const a = document.createElement("a");
     const type = name.split(".").pop();
