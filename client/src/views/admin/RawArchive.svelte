@@ -20,6 +20,47 @@
         }
     }
 
+    // Searh function for headerstats
+    function SearchResults(e) {
+        e.preventDefault();
+        let formSelector;
+        // Instead of hard coding form selector, find first form element
+        // and set that as selector
+        for (let i = 0; i < e.path.length; i++) {
+            if (e.path[i].tagName === "FORM") {
+                formSelector = e.path[i];
+                break;
+            }
+        }
+        // console.log(selector);
+        // Get data from form
+        let data = j$(formSelector).serialize(); //j$(`form#${formID}`).serialize();
+        // Clear form
+        j$(formSelector).trigger("reset"); // j$(`form#${formID}`).trigger("reset");
+        // Get search results for collection
+        j$.ajax({
+            type: "POST",
+            url: "/admin/archive-data/search-data/",
+            data: data,
+            success: function (data) {
+                // Data returns as string, turn into JSON
+                data = JSON.parse(data);
+                // On success, replace the correlating collection
+                // data in the dataSettingsStore to the updated,
+                // filtered data
+                for (let entry of Object.entries($dataSettingsStore)) {
+                    if (entry[1].CollectionName === data.CollectionName) {
+                        $dataSettingsStore[entry[0]].Table.Data = [data.data];
+                    }
+                }
+            },
+            error: function (error) {
+                console.log("Error");
+                console.log(error);
+            },
+        });
+    }
+
     // Bind openTab to AdminNavbar component
     let openTab = 0;
 </script>
@@ -35,6 +76,7 @@
                 titleFontSize={"text-4xl"}
                 inputs={section[1].HeaderSearchInputs}
                 CollectionName={section[1].CollectionName}
+                SearchFunction={SearchResults}
             />
             <div class="block px-4 md:px-10 mx-auto w-full m-12">
                 <div class="flex flex-wrap ml-8">

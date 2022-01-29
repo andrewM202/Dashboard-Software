@@ -2,7 +2,11 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
-    import { collectionKeysStore, collectionsStore } from "../../stores.js";
+    import {
+        collectionKeysStore,
+        collectionsStore,
+        dataSettingsStore,
+    } from "../../stores.js";
 
     // The collections in the database
     let collections, collectionKeys;
@@ -15,16 +19,15 @@
     let tableData = [];
     $: tableData = [collections, collectionKeys];
 
-    let titleSearchInputs = [
+    let titleSearchInputs;
+    $: titleSearchInputs = [
         {
             type: "Text",
             placeholder: "Collection Name",
             name: "CollectionName",
-        },
-        {
-            type: "Text",
-            placeholder: "Last Name",
-            name: "LastName",
+            flexdatalistdata: collections,
+            flexdataid: Math.random().toString(36).substring(2, 8),
+            flexdatafields: ["collection_name"],
         },
     ];
 
@@ -79,12 +82,6 @@
                     popoverMessage:
                         "This defines the actual name of the field. Choose it wisely!",
                 },
-                // {
-                //     type: "Text",
-                //     placeholder: "Creation Card Input Placeholders",
-                //     name: "CreationCardInputPlaceholders",
-                //     value: "",
-                // },
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Flexdatalist data",
@@ -146,14 +143,6 @@
                     flexdatalistdata: ["True", "False"],
                     flexdataid: Math.random().toString(36).substring(2, 8),
                 },
-                // {
-                //     type: "Text",
-                //     placeholder: "Header Search Input Placeholders",
-                //     name: "HeaderSearchInputPlaceholders",
-                //     value: "",
-                //     popoverMessage:
-                //         "Individual value may be any string, no commas",
-                // },
             ],
         },
         {
@@ -201,6 +190,7 @@
     titleFontSize={"text-6xl"}
     titleColor={"text-black"}
     inputs={titleSearchInputs}
+    submitValue={"Edit"}
 />
 
 <div class="mt-4 w-full md:w-11/12 h-auto px-4">

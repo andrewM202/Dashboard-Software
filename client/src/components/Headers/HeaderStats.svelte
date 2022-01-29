@@ -2,7 +2,6 @@
     // core components
     import CardStats from "components/Cards/CardStats.svelte";
     import { tick } from "svelte";
-    import { dataSettingsStore, getDBResource } from "../../stores.js";
 
     // Optional Arguments
     export let cards;
@@ -11,9 +10,11 @@
     export let titleFontSize; // Pass in class for font size
     export let inputs;
     export let CollectionName;
+    export let SearchFunction; // Pass in the search function for the form
+    export let submitValue; // Value of the submit button
 
-    let id = Math.random().toString(36).substr(2, 8); // Generate random string
-    let formID = Math.random().toString(36).substr(2, 8);
+    // let id = Math.random().toString(36).substr(2, 8); // Generate random string
+    // let formID = Math.random().toString(36).substr(2, 8);
 
     async function positionSearchBar(node) {
         await tick();
@@ -27,34 +28,19 @@
         }
     }
 
-    function SearchResults(e) {
-        e.preventDefault();
-        // Get data from form
-        let data = j$(`form#${formID}`).serialize();
-        // Clear form
-        j$(`form#${formID}`).trigger("reset");
-        // Get search results for collection
-        j$.ajax({
-            type: "POST",
-            url: "/admin/archive-data/search-data/",
-            data: data,
-            success: function (data) {
-                // Data returns as string, turn into JSON
-                data = JSON.parse(data);
-                // On success, replace the correlating collection
-                // data in the dataSettingsStore to the updated,
-                // filtered data
-                for (let entry of Object.entries($dataSettingsStore)) {
-                    if (entry[1].CollectionName === data.CollectionName) {
-                        $dataSettingsStore[entry[0]].Table.Data = [data.data];
-                    }
-                }
-            },
-            error: function (error) {
-                console.log("Error");
-                console.log(error);
-            },
-        });
+    async function styleFlexData() {
+        await tick();
+        let interval = setInterval(function () {
+            if (j$("ul.flexdatalist-results").length !== 0) {
+                clearInterval(interval);
+                j$("ul.flexdatalist-results").css({
+                    "border-width": "0",
+                });
+                j$("#headerStatsFlexForm-flexdatalist").click(function () {
+                    j$(".item").css({ cursor: "pointer" });
+                });
+            }
+        }, 10);
     }
 </script>
 
@@ -92,7 +78,7 @@
             </div>
             <!-- Inputs -->
             {#if inputs !== undefined}
-                <form id={formID}>
+                <form>
                     <input
                         type="hidden"
                         name="CollectionName"
@@ -100,32 +86,57 @@
                     />
                     <div
                         use:positionSearchBar
-                        {id}
                         class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
                     >
                         {#each inputs as input}
-                            <div class="mb-3 py-0 mx-4">
+                            {#if input.flexdatalistdata !== undefined}
                                 <input
-                                    type={input.type}
+                                    use:styleFlexData
+                                    list={input.flexdataid}
+                                    data-min-length="0"
+                                    type="text"
                                     placeholder={input.placeholder}
                                     name={input.name}
-                                    value={input.type === "Submit"
-                                        ? input.placeholder
-                                        : ""}
-                                    class="{input.type === 'Submit'
-                                        ? 'cursor-pointer'
-                                        : ''} px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                    id="headerStatsFlexForm"
+                                    class="flexdatalist px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                                 />
-                            </div>
+                                <datalist id={input.flexdataid}>
+                                    {#each input.flexdatalistdata as datarow}
+                                        {#each Object.entries(datarow) as datapoint}
+                                            {#if input.flexdatafields.includes(datapoint[0])}
+                                                <option value={datapoint[1]}
+                                                    >{datapoint[1]}</option
+                                                >
+                                            {/if}
+                                        {/each}
+                                    {/each}
+                                </datalist>
+                            {:else}
+                                <div class="mb-3 py-0 mx-4">
+                                    <input
+                                        type={input.type}
+                                        placeholder={input.placeholder}
+                                        name={input.name}
+                                        value={input.type === "Submit"
+                                            ? input.placeholder
+                                            : ""}
+                                        class="{input.type === 'Submit'
+                                            ? 'cursor-pointer'
+                                            : ''} px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                    />
+                                </div>
+                            {/if}
                         {/each}
-                        <div class="mb-3 py-0 mx-4">
+                        <div class="mb-3 py-0 mx-4 h-full">
                             <input
-                                on:click={SearchResults}
+                                on:click={SearchFunction}
                                 type="Submit"
                                 placeholder="Submit"
-                                name="Submit"
-                                value="Submit"
-                                class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                name="submit"
+                                value={submitValue !== undefined
+                                    ? submitValue
+                                    : "Submit"}
+                                class="h-full cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                             />
                         </div>
                     </div>
