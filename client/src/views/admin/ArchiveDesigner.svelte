@@ -54,7 +54,14 @@
                         }
                     }
                     // Manually set the collection name
-                    cardSettings[0].Inputs[0].value = col["collection_title"];
+                    j$(`[name=collection_name]`).val(
+                        col["collection_title"].toString()
+                    );
+                    // Manually set creation card input names, as
+                    // this should be the placeholders in the UI
+                    j$(`[name=creationcard_input_names]`).val(
+                        col["creationcard_input_placeholders"].toString()
+                    );
                 }
             }
 
