@@ -260,7 +260,7 @@ def retrieve_archive_configuration():
             return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = sorted([i.lower().replace(' ', '_') for i in collection.table_db_field_names]) 
             return_settings[collection["collection_title"]]["Table"]["Title"] = collection.table_title
         ######### Creation Card #########
-        return_settings[collection["collection_title"]]["CreationCard"]["Title"] = collection.collection_title
+        return_settings[collection["collection_title"]]["CreationCard"]["Title"] = collection.creationcard_title
         return_settings[collection["collection_title"]]["CreationCard"]["Inputs"] = []
         for i in range(0, len(collection.creationcard_input_types)):
             if collection.creationcard_flexdatalistdata[i] == "gen_none" or collection.creationcard_flexdatalistdata[i] == "None":
