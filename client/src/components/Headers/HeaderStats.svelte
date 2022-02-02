@@ -102,13 +102,14 @@
                                 />
                                 <datalist id={input.flexdataid}>
                                     {#each input.flexdatalistdata as datarow}
-                                        {#each Object.entries(datarow) as datapoint}
+                                        <option value={datarow} />
+                                        <!-- {#each Object.entries(datarow) as datapoint}
                                             {#if input.flexdatafields.includes(datapoint[0])}
                                                 <option value={datapoint[1]}
                                                     >{datapoint[1]}</option
                                                 >
                                             {/if}
-                                        {/each}
+                                        {/each} -->
                                     {/each}
                                 </datalist>
                             {:else}

@@ -2,22 +2,91 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
-    import {
-        collectionKeysStore,
-        collectionsStore,
-        dataSettingsStore,
-    } from "../../stores.js";
+    import { dataSettingsStore, getDBResource } from "../../stores.js";
 
-    // The collections in the database
-    let collections, collectionKeys;
-    $: collections = $collectionsStore;
-    $: collectionKeys = $collectionKeysStore;
-    $: if (collectionKeys !== undefined) {
-        collectionKeys = collectionKeys.KeyPairs;
+    let collectionTitles, collectionPairs;
+    async function getDBData() {
+        collectionTitles = await getDBResource(
+            "/admin/archive-data/collection-titles"
+        );
+        collectionPairs = await getDBResource(
+            "/admin/archive-data/collection-title-pairs"
+        );
     }
 
+    getDBData();
+
     let tableData = [];
-    $: tableData = [collections, collectionKeys];
+    $: tableData = [collectionTitles, collectionPairs];
+
+    // Is a collection being edited?
+    // If so, which one?
+    let postURL = "/admin/archive-data/create-collection";
+
+    function HeaderSearchFunction(e) {
+        e.preventDefault();
+        let form;
+        // Instead of hard coding form selector, find first form element
+        // and set that as selector
+        for (let i = 0; i < e.path.length; i++) {
+            if (e.path[i].tagName === "FORM") {
+                form = e.path[i];
+                break;
+            }
+        }
+        let formData = j$(form)
+            .find("input[name=flexdatalist-CollectionName]")
+            .val();
+
+        j$(form).trigger("reset");
+
+        if (formData !== "") {
+            for (let col of Object.entries($dataSettingsStore)) {
+                // We found the right collection we are editing
+                if (formData === col[1].CollectionName) {
+                    /*
+                    console.log(col[1]);
+                    // Collection Name
+                    cardSettings[0].Inputs[0].value = col[1].CreationCard.Title;
+                    // Table title
+                    cardSettings[0].Inputs[1].value = col[1].Table.Title;
+                    // Creation Card Title
+                    cardSettings[0].Inputs[2].value = col[1].CreationCard.Title;
+                    // Creation Card Input Types
+                    cardSettings[1].Inputs[0].value =  
+                    // Creation Card Input Names
+                    cardSettings[1].Inputs[1].value = 
+                    // Creation Card Input Flexdatalist data
+                    cardSettings[1].Inputs[2].value = 
+                    // Creation Card Input Flexdatalist Field
+                    cardSettings[1].Inputs[3].value = 
+                    // Creation Card Required Field
+                    cardSettings[1].Inputs[4].value = 
+                    // Header Search Input Types
+                    cardSettings[2].Inputs[0].value = 
+                    // Header Input Searchable
+                    cardSettings[2].Inputs[1].value = 
+                    // Header Card Subtitles
+                    cardSettings[3].Inputs[0].value = 
+                    // Header Card Amounts
+                    cardSettings[3].Inputs[0].value = 
+                    // Header Card Increases
+                    cardSettings[3].Inputs[0].value = 
+                    // Header Card Descriptions
+                    cardSettings[3].Inputs[0].value = 
+                    */
+                }
+            }
+
+            // Change CardSettings's values
+            for (let setting of cardSettings) {
+                for (let input of setting.Inputs) {
+                    // console.log(input.name);
+                    j$(`[name=${input.name}]`).val("test");
+                }
+            }
+        }
+    }
 
     let titleSearchInputs;
     $: titleSearchInputs = [
@@ -25,7 +94,7 @@
             type: "Text",
             placeholder: "Collection Name",
             name: "CollectionName",
-            flexdatalistdata: collections,
+            flexdatalistdata: collectionTitles,
             flexdataid: Math.random().toString(36).substring(2, 8),
             flexdatafields: ["collection_name"],
         },
@@ -88,7 +157,7 @@
                     name: "CreationCardFlexdatalistData",
                     value: "",
                     dbFieldNames: ["collection_name"],
-                    flexdatalistdata: collections,
+                    flexdatalistdata: collectionTitles,
                     flexdatanonedata: true, // Adds a "None value"
                     flexdataid: Math.random().toString(36).substring(2, 8),
                     popoverMessage:
@@ -99,8 +168,7 @@
                     placeholder: "Creation Card Input Flexdatalist Field",
                     name: "CreationCardFlexdatalistField",
                     value: "",
-                    // dbFieldNames: ["collection_name"],
-                    flexdatalistdata: collectionKeys,
+                    flexdatalistdata: collectionPairs,
                     flexdatanonedata: true, // Adds a "None value"
                     flexdataid: Math.random().toString(36).substring(2, 8),
                     popoverMessage:
@@ -185,19 +253,22 @@
 </script>
 
 <AdminNavbar />
-<HeaderStats
-    title={"Archive Designer"}
-    titleFontSize={"text-6xl"}
-    titleColor={"text-black"}
-    inputs={titleSearchInputs}
-    submitValue={"Edit"}
-/>
+{#if tableData.includes(undefined) !== true}
+    <HeaderStats
+        title={"Archive Designer"}
+        titleFontSize={"text-6xl"}
+        titleColor={"text-black"}
+        inputs={titleSearchInputs}
+        submitValue={"Edit"}
+        SearchFunction={HeaderSearchFunction}
+    />
+{/if}
 
 <div class="mt-4 w-full md:w-11/12 h-auto px-4">
     {#if tableData.includes(undefined) !== true}
         <CardSettings
             title={"Archive Creation"}
-            postURL={"/admin/archive-data/create-collection"}
+            {postURL}
             settings={cardSettings}
         />
     {/if}
