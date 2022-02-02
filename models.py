@@ -77,7 +77,6 @@ class ArchiveCollectionSettings(Document):
 
     # Table fields
     table_title = StringField(required=True)
-    table_update_form_names = ListField()
     table_db_field_names = ListField(required=True)
     
     # Creation card fields

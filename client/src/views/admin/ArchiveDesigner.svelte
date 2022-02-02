@@ -35,6 +35,7 @@
                 break;
             }
         }
+
         let formData = j$(form)
             .find("input[name=flexdatalist-CollectionName]")
             .val();
@@ -62,6 +63,11 @@
                     j$(`[name=creationcard_input_names]`).val(
                         col["creationcard_input_placeholders"].toString()
                     );
+                    // Manually add a hidden input with the collection ID
+                    // we are changing
+                    j$("#archCreateForm").append(
+                        `<input id="collectionEditID" type="hidden" value="${col["_id"].$oid}" name="collectionEditID">`
+                    );
                 }
             }
 
@@ -76,6 +82,9 @@
             }
             // Reset postURL
             postURL = "/admin/archive-data/create-collection";
+
+            // Remove hidden collection ID
+            j$(form).find("#archCreateForm").remove();
         }
     }
 

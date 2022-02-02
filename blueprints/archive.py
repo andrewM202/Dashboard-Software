@@ -84,6 +84,67 @@ def retrieve_specific_archive_data(collection):
     else: 
         return "Invalid Collection"
 
+@bp.route("/admin/archive-data/edit-collection", methods=["POST"])
+@login_required
+def edit_archive_collection():
+    # Gen for auto-generated, non-default collection
+    collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
+
+    # Normalize flex data fields
+    flex_fields = [i.partition(": ")[2].lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistfield'].split(",")]
+    flex_data = ["gen_" + i.lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistdata'].split(",")]
+
+    ArchiveCollectionSettingsID = request.form['collectionEditID']
+    # Get old collection name for update purposes
+    oldColName = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("collection_name")[0].collection_name
+
+    ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
+        # Collection_name is db-friendly collection title
+        collection_name = collection_name,
+        # Title is just regular collection name
+        collection_title = request.form['collection_name'],
+        header_search_input_types = [i for i in request.form['header_search_input_types'].split(",")],
+        # Commented out so the header input placeholders 
+        # just equal the creation card input placeholders
+        header_search_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
+        # Header search input names are just the creation card ones
+        header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+        header_search_enabled = [i for i in request.form['header_search_enabled'].split(",")],
+
+        header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")],
+        header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")],
+        header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")],
+        header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")],
+
+        table_title = request.form['table_title'],
+        # The table field names are also just the creation card names
+        table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+
+        creationcard_title = request.form['creationcard_title'],
+        creationcard_flexdatalistdata = flex_data, # [i for i in request.form['creationcard_flexdatalistdata'].split(",")],
+        creationcard_flexdatalistfield = flex_fields, # [i.partition(" ")[2] for i in request.form['creationcard_flexdatalistfield'].split(",")],
+        creationcard_required_field = [i for i in request.form['creationcard_required_field'].split(",")],
+
+        creationcard_input_types = [i for i in request.form['creationcard_input_types'].split(",")],
+        # The names are just db-friendly placeholders
+        creationcard_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+        creationcard_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],
+    )
+
+    # Add collection name to archive_collections collection
+    ArchiveCollections.objects(collection_name=oldColName).update(
+        collection_name = collection_name,
+        uploaded_data = False,
+        base_collection = False,
+    )
+
+    # Rename collection if they are different
+    if  oldColName != collection_name:
+        db.get_database(db_name).get_collection(oldColName).rename(collection_name)
+    
+    return redirect('/admin/archive-designer')
+        
+
 @bp.route("/admin/archive-data/create-collection", methods=['POST'])
 @login_required
 def create_archive_collection():
@@ -122,7 +183,6 @@ def create_archive_collection():
             # The await data is just the data from the collection. For now it should be blank
             # because when a collection is created it should be empty
             table_title = request.form['table_title'],
-            table_update_form_names = list(),
             # The table field names are also just the creation card names
             table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
 
@@ -257,7 +317,6 @@ def retrieve_collection_pairs():
             pair = f"{title}: {field}"
             key_pairs.append(pair)
 
-    print(key_pairs)
     return json_util.dumps(key_pairs)
 
 @bp.route("/admin/archive-data/collection-titles")
@@ -271,15 +330,12 @@ def retrieve_collection_titles():
     collection_names = []
     for col in archive_collections:
         collection_names.append(col.collection_name)
-    print(collection_names)
 
     # Get titles based off of those names
     collection_titles = []
     for name in collection_names:
         col_title = ArchiveCollectionSettings.objects(collection_name=name).only('collection_title')[0]
         collection_titles.append(col_title.collection_title)
-
-    print(collection_titles)
 
     return json_util.dumps(collection_titles)
 

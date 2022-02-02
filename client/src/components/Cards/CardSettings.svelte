@@ -7,7 +7,7 @@
   export let title;
   export let postURL;
 
-  let formID = Math.random().toString(36).substring(2, 8); // Generate random string
+  let formID = "archCreateForm"; // Math.random().toString(36).substring(2, 8); // Generate random string
   let error = false; // Error for if field is required
 
   class popover {
