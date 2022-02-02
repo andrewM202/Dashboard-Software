@@ -95,49 +95,47 @@ def create_archive_collection():
 
     try:
         # Gen for auto-generated, non-default collection
-        collection_name = "gen_" + request.form['CollectionName'].lower().replace(" ", "_")
+        collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
 
         # Normalize flex data fields
-        flex_fields = [i.partition(": ")[2].lower().replace(" ", "_") for i in request.form['CreationCardFlexdatalistField'].split(",")]
-        flex_data = ["gen_" + i.lower().replace(" ", "_") for i in request.form['CreationCardFlexdatalistData'].split(",")]
-        # print(flex_data)
-        # print(flex_fields)
+        flex_fields = [i.partition(": ")[2].lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistfield'].split(",")]
+        flex_data = ["gen_" + i.lower().replace(" ", "_") for i in request.form['creationcard_flexdatalistdata'].split(",")]
 
         ArchiveCollectionSettings(
             # Collection_name is db-friendly collection title
             collection_name = collection_name,
             # Title is just regular collection name
-            collection_title = request.form['CollectionName'],
-            header_search_input_types = [i for i in request.form['HeaderSearchInputTypes'].split(",")],
+            collection_title = request.form['collection_name'],
+            header_search_input_types = [i for i in request.form['header_search_input_types'].split(",")],
             # Commented out so the header input placeholders 
             # just equal the creation card input placeholders
-            header_search_input_placeholders = [i for i in request.form['CreationCardInputNames'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
+            header_search_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
             # Header search input names are just the creation card ones
-            header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
-            header_search_enabled = [eval(i) for i in request.form['HeaderSearchEnabled'].split(",")],
+            header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+            header_search_enabled = [eval(i) for i in request.form['header_search_enabled'].split(",")],
 
-            header_card_subtitles = [i for i in request.form['HeaderCardSubtitles'].split(",")],
-            header_card_amounts = [round(float(i), 2) for i in request.form['HeaderCardAmounts'].split(",")],
-            header_card_increases = [round(float(i), 2) for i in request.form['HeaderCardIncreases'].split(",")],
-            header_card_descriptions = [i for i in request.form['HeaderCardDescriptions'].split(",")],
+            header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")],
+            header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")],
+            header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")],
+            header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")],
 
             # The await data is just the data from the collection. For now it should be blank
             # because when a collection is created it should be empty
-            table_title = request.form['TableTitle'],
+            table_title = request.form['table_title'],
             table_update_form_names = list(),
             # The table field names are also just the creation card names
-            table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
+            table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
 
             # Awaitdata is the data required for flexdatalist
-            creationcard_title = request.form['CreationCardTitle'],
-            creationcard_flexdatalistdata = flex_data, # [i for i in request.form['CreationCardFlexdatalistData'].split(",")],
-            creationcard_flexdatalistfield = flex_fields, # [i.partition(" ")[2] for i in request.form['CreationCardFlexdatalistField'].split(",")],
-            creationcard_required_field = [i for i in request.form['CreationCardRequiredField'].split(",")],
+            creationcard_title = request.form['creationcard_title'],
+            creationcard_flexdatalistdata = flex_data, # [i for i in request.form['creationcard_flexdatalistdata'].split(",")],
+            creationcard_flexdatalistfield = flex_fields, # [i.partition(" ")[2] for i in request.form['creationcard_flexdatalistfield'].split(",")],
+            creationcard_required_field = [i for i in request.form['creationcard_required_field'].split(",")],
 
-            creationcard_input_types = [i for i in request.form['CreationCardInputTypes'].split(",")],
+            creationcard_input_types = [i for i in request.form['creationcard_input_types'].split(",")],
             # The names are just db-friendly placeholders
-            creationcard_input_names = [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")],
-            creationcard_input_placeholders = [i for i in request.form['CreationCardInputNames'].split(",")],
+            creationcard_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+            creationcard_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],
         ).save()
 
         # Add collection name to archive_collections collection
@@ -152,13 +150,13 @@ def create_archive_collection():
         col = db.get_database(db_name).get_collection(collection_name)
         insert_json = {}
 
-        for field in [i.lower().replace(" ", "_") for i in request.form['CreationCardInputNames'].split(",")]:
+        for field in [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")]:
             insert_json[field] = "Sample Value"
         col.insert_one(insert_json)
     
     except Exception as e:
         return redirect('/admin/archive-designer')
-
+    
     return redirect('/admin/archive-designer')
 
 @bp.route("/admin/archive-configuration")

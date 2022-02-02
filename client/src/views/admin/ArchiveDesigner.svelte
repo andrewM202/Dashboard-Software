@@ -20,8 +20,6 @@
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
 
-    $: console.log(archiveConfig);
-
     // Is a collection being edited?
     // If so, which one?
     let postURL = "/admin/archive-data/create-collection";
@@ -47,48 +45,30 @@
             for (let col of archiveConfig) {
                 // We found the right collection we are editing
                 if (formData === col.collection_title) {
-                    console.log("found");
-                    /*
-                    console.log(col[1]);
-                    // Collection Name
-                    cardSettings[0].Inputs[0].value = col[1].CreationCard.Title;
-                    // Table title
-                    cardSettings[0].Inputs[1].value = col[1].Table.Title;
-                    // Creation Card Title
-                    cardSettings[0].Inputs[2].value = col[1].CreationCard.Title;
-                    // Creation Card Input Types
-                    cardSettings[1].Inputs[0].value =  
-                    // Creation Card Input Names
-                    cardSettings[1].Inputs[1].value = 
-                    // Creation Card Input Flexdatalist data
-                    cardSettings[1].Inputs[2].value = 
-                    // Creation Card Input Flexdatalist Field
-                    cardSettings[1].Inputs[3].value = 
-                    // Creation Card Required Field
-                    cardSettings[1].Inputs[4].value = 
-                    // Header Search Input Types
-                    cardSettings[2].Inputs[0].value = 
-                    // Header Input Searchable
-                    cardSettings[2].Inputs[1].value = 
-                    // Header Card Subtitles
-                    cardSettings[3].Inputs[0].value = 
-                    // Header Card Amounts
-                    cardSettings[3].Inputs[0].value = 
-                    // Header Card Increases
-                    cardSettings[3].Inputs[0].value = 
-                    // Header Card Descriptions
-                    cardSettings[3].Inputs[0].value = 
-                    */
+                    // Loop through each input and set to right value
+                    for (let setting of cardSettings) {
+                        for (let input of setting.Inputs) {
+                            j$(`[name=${input.name}]`).val(
+                                col[input.name].toString()
+                            );
+                        }
+                    }
+                    // Manually set the collection name
+                    cardSettings[0].Inputs[0].value = col["collection_title"];
                 }
             }
 
-            // Change CardSettings's values
+            // Change postURL to the edit URL
+            postURL = "/admin/archive-data/edit-collection";
+        } else {
+            // Reset form if blank
             for (let setting of cardSettings) {
                 for (let input of setting.Inputs) {
-                    // console.log(input.name);
-                    j$(`[name=${input.name}]`).val("test,test,");
+                    j$(`[name=${input.name}]`).val("");
                 }
             }
+            // Reset postURL
+            postURL = "/admin/archive-data/create-collection";
         }
     }
 
@@ -113,7 +93,7 @@
                 {
                     type: "Text",
                     placeholder: "Collection Name",
-                    name: "CollectionName",
+                    name: "collection_name",
                     value: "",
                     popoverMessage:
                         "Name of the collection. This will show in the top navigation of the raw archive",
@@ -122,14 +102,14 @@
                 {
                     type: "Text",
                     placeholder: "Table Title",
-                    name: "TableTitle",
+                    name: "table_title",
                     value: "",
                     flexdatalistdisabled: true,
                 },
                 {
                     type: "Text",
                     placeholder: "Creation Card Title",
-                    name: "CreationCardTitle",
+                    name: "creationcard_title",
                     value: "",
                     flexdatalistdisabled: true,
                 },
@@ -142,7 +122,7 @@
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Types",
-                    name: "CreationCardInputTypes",
+                    name: "creationcard_input_types",
                     value: "",
                     flexdatalistdata: ["text"],
                     flexdataid: Math.random().toString(36).substring(2, 8),
@@ -150,7 +130,7 @@
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Names",
-                    name: "CreationCardInputNames",
+                    name: "creationcard_input_names",
                     value: "",
                     popoverMessage:
                         "This defines the actual name of the field. Choose it wisely!",
@@ -158,7 +138,7 @@
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Flexdatalist data",
-                    name: "CreationCardFlexdatalistData",
+                    name: "creationcard_flexdatalistdata",
                     value: "",
                     dbFieldNames: ["collection_name"],
                     flexdatalistdata: collectionTitles,
@@ -170,7 +150,7 @@
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Flexdatalist Field",
-                    name: "CreationCardFlexdatalistField",
+                    name: "creationcard_flexdatalistfield",
                     value: "",
                     flexdatalistdata: collectionPairs,
                     flexdatanonedata: true, // Adds a "None value"
@@ -181,7 +161,7 @@
                 {
                     type: "Text",
                     placeholder: "Creation Card Required Field",
-                    name: "CreationCardRequiredField",
+                    name: "creationcard_required_field",
                     value: "",
                     popoverMessage:
                         "true indicates that the field is required, false indicates it is not",
@@ -198,7 +178,7 @@
                 {
                     type: "Text",
                     placeholder: "Header Search Input Types",
-                    name: "HeaderSearchInputTypes",
+                    name: "header_search_input_types",
                     value: "",
                     popoverMessage:
                         "What type of input is allowed for this component of the search form?",
@@ -208,7 +188,7 @@
                 {
                     type: "Text",
                     placeholder: "Header Input Searchable",
-                    name: "HeaderSearchEnabled",
+                    name: "header_search_enabled",
                     value: "",
                     popoverMessage:
                         "Should this input even be searchable (True) or not at all (False)?",
@@ -225,7 +205,7 @@
                 {
                     type: "Text",
                     placeholder: "Header Card Subtitles",
-                    name: "HeaderCardSubtitles",
+                    name: "header_card_subtitles",
                     value: "",
                     popoverMessage:
                         "The subtitle of each header card in the raw archive for this collection.",
@@ -233,14 +213,14 @@
                 {
                     type: "Text",
                     placeholder: "Header Card Amounts",
-                    name: "HeaderCardAmounts",
+                    name: "header_card_amounts",
                     value: "",
                     popoverMessage: "Value is a number",
                 },
                 {
                     type: "Text",
                     placeholder: "Header Card Increases",
-                    name: "HeaderCardIncreases",
+                    name: "header_card_increases",
                     value: "",
                     popoverMessage:
                         "Value is a number that represents a percentage",
@@ -248,7 +228,7 @@
                 {
                     type: "Text",
                     placeholder: "Header Card Descriptions",
-                    name: "HeaderCardDescriptions",
+                    name: "header_card_descriptions",
                     value: "",
                 },
             ],

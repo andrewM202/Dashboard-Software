@@ -68,7 +68,7 @@ class ArchiveCollectionSettings(Document):
     header_search_input_types = ListField()
     header_search_input_placeholders = ListField()
     header_search_input_names = ListField()
-    header_search_enabled = BooleanField(required=True)
+    header_search_enabled = ListField(required=True)
 
     header_card_subtitles = ListField()
     header_card_amounts = ListField()
