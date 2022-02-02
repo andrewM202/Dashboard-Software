@@ -232,23 +232,6 @@ def testing_route():
     archive_settings = ArchiveCollectionSettings.objects()
     return archive_settings.to_json()
 
-@bp.route("/admin/archive-collection-key-pairs")
-@login_required
-def archive_collection_keys():
-    """ Will delete this route later """
-    key_pairs = {}
-    key_pairs["KeyPairs"] = []
-    collections = ArchiveCollections.objects().only('collection_name')
-    for collection in collections:
-        col = db.get_database(db_name).get_collection(collection.collection_name)
-        doc = col.find_one()
-        doc_key_values = doc.items()
-        for key_value_pair in doc_key_values:
-            if key_value_pair[0] != "_id":
-                # key_pairs[collection.collection_name].append(f"{collection.collection_name}: {key_value_pair[0]}")
-                key_pairs["KeyPairs"].append(f"{collection.collection_name}: {key_value_pair[0]}")
-    return key_pairs
-
 @bp.route("/admin/archive-data/collection-title-pairs")
 @login_required
 def retrieve_collection_pairs():
@@ -278,13 +261,6 @@ def retrieve_collection_pairs():
 
     print(key_pairs)
     return json_util.dumps(key_pairs)
-
-@bp.route("/admin/archive-data/collections")
-@login_required
-def retrieve_all_archive_data():
-    """ Returns all of the collections for the archive """
-    archive_collections = ArchiveCollections.objects().only('collection_name')
-    return archive_collections.to_json()
 
 @bp.route("/admin/archive-data/collection-titles")
 @login_required

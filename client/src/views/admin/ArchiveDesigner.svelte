@@ -2,9 +2,9 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
-    import { dataSettingsStore, getDBResource } from "../../stores.js";
+    import { getDBResource } from "../../stores.js";
 
-    let collectionTitles, collectionPairs;
+    let collectionTitles, collectionPairs, archiveConfig;
     async function getDBData() {
         collectionTitles = await getDBResource(
             "/admin/archive-data/collection-titles"
@@ -12,12 +12,15 @@
         collectionPairs = await getDBResource(
             "/admin/archive-data/collection-title-pairs"
         );
+        archiveConfig = await getDBResource("/admin/archive-config-collection");
     }
 
     getDBData();
 
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
+
+    $: console.log(archiveConfig);
 
     // Is a collection being edited?
     // If so, which one?
@@ -41,9 +44,10 @@
         j$(form).trigger("reset");
 
         if (formData !== "") {
-            for (let col of Object.entries($dataSettingsStore)) {
+            for (let col of archiveConfig) {
                 // We found the right collection we are editing
-                if (formData === col[1].CollectionName) {
+                if (formData === col.collection_title) {
+                    console.log("found");
                     /*
                     console.log(col[1]);
                     // Collection Name
@@ -82,7 +86,7 @@
             for (let setting of cardSettings) {
                 for (let input of setting.Inputs) {
                     // console.log(input.name);
-                    j$(`[name=${input.name}]`).val("test");
+                    j$(`[name=${input.name}]`).val("test,test,");
                 }
             }
         }
@@ -262,6 +266,12 @@
         submitValue={"Edit"}
         SearchFunction={HeaderSearchFunction}
     />
+{:else}
+    <HeaderStats
+        title={"Archive Designer"}
+        titleFontSize={"text-6xl"}
+        titleColor={"text-black"}
+    />
 {/if}
 
 <div class="mt-4 w-full md:w-11/12 h-auto px-4">
@@ -271,5 +281,7 @@
             {postURL}
             settings={cardSettings}
         />
+    {:else}
+        <CardSettings title={"Archive Creation"} {postURL} />
     {/if}
 </div>
