@@ -159,8 +159,8 @@ def edit_archive_collection():
         table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
 
         creationcard_title = request.form['creationcard_title'],
-        creationcard_flexdatalistdata = flex_data, # [i for i in request.form['creationcard_flexdatalistdata'].split(",")],
-        creationcard_flexdatalistfield = flex_fields, # [i.partition(" ")[2] for i in request.form['creationcard_flexdatalistfield'].split(",")],
+        creationcard_flexdatalistdata = flex_data, 
+        creationcard_flexdatalistfield = flex_fields, 
         creationcard_required_field = [i for i in request.form['creationcard_required_field'].split(",")],
 
         creationcard_input_types = [i for i in request.form['creationcard_input_types'].split(",")],
@@ -180,15 +180,13 @@ def edit_archive_collection():
     if oldColName != collection_name:
         db.get_database(db_name).get_collection(oldColName).rename(collection_name)
 
-    # Need to remove flexdata that references this collection if necessary
-    
     return redirect('/admin/archive-designer')
         
 
 @bp.route("/admin/archive-data/create-collection", methods=['POST'])
 @login_required
 def create_archive_collection():
-    """ Returns all of the collections for the archive 
+    """ Create a collection for the archive
     Goals:
     - Make it so input "set" lists should all be same length. For instance, 
     all the header_search_input lists should have same length, otherwise return error
@@ -210,7 +208,7 @@ def create_archive_collection():
             header_search_input_types = [i for i in request.form['header_search_input_types'].split(",")],
             # Commented out so the header input placeholders 
             # just equal the creation card input placeholders
-            header_search_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
+            header_search_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],
             # Header search input names are just the creation card ones
             header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
             header_search_enabled = [eval(i) for i in request.form['header_search_enabled'].split(",")],
@@ -228,8 +226,8 @@ def create_archive_collection():
 
             # Awaitdata is the data required for flexdatalist
             creationcard_title = request.form['creationcard_title'],
-            creationcard_flexdatalistdata = flex_data, # [i for i in request.form['creationcard_flexdatalistdata'].split(",")],
-            creationcard_flexdatalistfield = flex_fields, # [i.partition(" ")[2] for i in request.form['creationcard_flexdatalistfield'].split(",")],
+            creationcard_flexdatalistdata = flex_data, 
+            creationcard_flexdatalistfield = flex_fields, 
             creationcard_required_field = [i for i in request.form['creationcard_required_field'].split(",")],
 
             creationcard_input_types = [i for i in request.form['creationcard_input_types'].split(",")],
