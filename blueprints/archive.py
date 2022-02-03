@@ -117,7 +117,12 @@ def edit_archive_collection():
     update_json = { "$set": {}}
     for old_field in old_field_names:
         if old_field not in new_field_names:
+            # Remove that field from this collection
             col.update_many( { }, { '$unset': { old_field: 1 } } )
+
+            # If this old field is a flexdatalist reference 
+            # in another collection, remove the reference
+            
 
     ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
         # Collection_name is db-friendly collection title

@@ -6,7 +6,8 @@
   export let settings;
   export let title;
   export let postURL;
-  export let buttonTitle;
+  export let descButtonTitle;
+  export let submitButtonTitle;
 
   let formID = "archCreateForm"; // Math.random().toString(36).substring(2, 8); // Generate random string
   let error = false; // Error for if field is required
@@ -184,12 +185,12 @@
         <h6 class="text-blueGray-700 text-xl font-bold">
           {title !== undefined ? title : "My Account"}
         </h6>
-        {#if buttonTitle !== undefined}
+        {#if descButtonTitle !== undefined}
           <button
             class="bg-red-400 text-white active:bg-red-500 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
             type="button"
           >
-            {buttonTitle}
+            {descButtonTitle}
           </button>
         {/if}
       </div>
@@ -327,7 +328,7 @@
         <input
           on:click={submit}
           type="submit"
-          value="Search"
+          value={submitButtonTitle !== undefined ? submitButtonTitle : "Submit"}
           placeholder="Search"
           class="py-3 mx-3 my-6 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
         />

@@ -25,6 +25,7 @@
     let postURL = "/admin/archive-data/create-collection";
     let archiveDesignerButtonTitle = "Collection Creation";
     let headerSubmitValue = "Edit Collection"; // Submit/Edit button in header search
+    let archiveDesignerSubmitButtonTitle = "Create Collection"; // Submit button in archive designer
 
     function HeaderSearchFunction(e) {
         e.preventDefault();
@@ -79,6 +80,7 @@
             archiveDesignerButtonTitle = "Edit Collection";
             // Header search button
             headerSubmitValue = "Reset / Switch Form";
+            archiveDesignerSubmitButtonTitle = "Submit Changes";
         } else {
             // Reset form if blank
             for (let setting of cardSettings) {
@@ -96,6 +98,7 @@
             archiveDesignerButtonTitle = "Collection Creation";
 
             headerSubmitValue = "Edit Collection";
+            archiveDesignerSubmitButtonTitle = "Create Collection";
         }
     }
 
@@ -288,12 +291,14 @@
             {postURL}
             settings={cardSettings}
             buttonTitle={archiveDesignerButtonTitle}
+            submitButtonTitle={archiveDesignerSubmitButtonTitle}
         />
     {:else}
         <CardSettings
             title={"Archive Creation"}
             {postURL}
-            buttonTitle={"Collection Creation"}
+            descButtonTitle={"Collection Creation"}
+            submitButtonTitle={"Search"}
         />
     {/if}
 </div>
