@@ -98,6 +98,27 @@ def edit_archive_collection():
     # Get old collection name for update purposes
     oldColName = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("collection_name")[0].collection_name
 
+    # If adding new field, put a sample value in or remove old fields
+    col = db.get_database(db_name).get_collection(collection_name)
+    new_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")]
+    old_field_names = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("table_db_field_names")[0].table_db_field_names
+    print(old_field_names)
+    print(new_field_names)
+
+    # Add sample value to old documents that don't have new field
+    update_json = { "$set": {}}
+    for new_field in new_field_names:
+        if new_field not in old_field_names:
+            update_query = {new_field: {"$exists": False}}
+            update_json["$set"][new_field] = "Sample Value"
+            col.update_many(update_query, update_json)
+
+    # Remove fields from document that no longer exists
+    update_json = { "$set": {}}
+    for old_field in old_field_names:
+        if old_field not in new_field_names:
+            col.update_many( { }, { '$unset': { old_field: 1 } } )
+
     ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
         # Collection_name is db-friendly collection title
         collection_name = collection_name,
@@ -139,7 +160,7 @@ def edit_archive_collection():
     )
 
     # Rename collection if they are different
-    if  oldColName != collection_name:
+    if oldColName != collection_name:
         db.get_database(db_name).get_collection(oldColName).rename(collection_name)
 
     # Need to remove flexdata that references this collection if necessary
