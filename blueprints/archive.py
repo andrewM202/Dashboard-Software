@@ -102,8 +102,8 @@ def edit_archive_collection():
     col = db.get_database(db_name).get_collection(collection_name)
     new_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")]
     old_field_names = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("table_db_field_names")[0].table_db_field_names
-    print(old_field_names)
-    print(new_field_names)
+    # print(old_field_names)
+    # print(new_field_names)
 
     # Add sample value to old documents that don't have new field
     update_json = { "$set": {}}
@@ -113,6 +113,8 @@ def edit_archive_collection():
             update_json["$set"][new_field] = "Sample Value"
             col.update_many(update_query, update_json)
 
+    col_settings = ArchiveCollectionSettings.objects()
+    print(col_settings)
     # Remove fields from document that no longer exists
     update_json = { "$set": {}}
     for old_field in old_field_names:
@@ -121,8 +123,23 @@ def edit_archive_collection():
             col.update_many( { }, { '$unset': { old_field: 1 } } )
 
             # If this old field is a flexdatalist reference 
-            # in another collection, remove the reference
-            
+            # in another collection, make the field a regular input 
+            # with no flexdatalist reference. Leave all values intact however
+            col_settings = ArchiveCollectionSettings.objects()
+            for setting in col_settings:
+                for i in range(0, len(setting.creationcard_flexdatalistdata)):
+                    if(setting.creationcard_flexdatalistdata[i] == oldColName):
+                        if(setting.creationcard_flexdatalistfield[i] == old_field):
+                            # We found the old field, lets update it to none in given collection
+                            new_listdata = setting.creationcard_flexdatalistdata
+                            new_listdata[i] = "None"
+                            new_listfield = setting.creationcard_flexdatalistfield
+                            new_listfield[i] = "None"
+                            ArchiveCollectionSettings.objects(id=setting.id).update(
+                                creationcard_flexdatalistdata = new_listdata,
+                                creationcard_flexdatalistfield = new_listfield
+                            )
+
 
     ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
         # Collection_name is db-friendly collection title

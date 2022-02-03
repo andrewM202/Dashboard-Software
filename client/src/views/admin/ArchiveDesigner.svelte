@@ -290,7 +290,7 @@
             title={"Archive Creation"}
             {postURL}
             settings={cardSettings}
-            buttonTitle={archiveDesignerButtonTitle}
+            descButtonTitle={archiveDesignerButtonTitle}
             submitButtonTitle={archiveDesignerSubmitButtonTitle}
         />
     {:else}
