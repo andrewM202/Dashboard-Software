@@ -79,7 +79,6 @@ def retrieve_specific_archive_data(collection):
     """ Retrieve specific archive data """
     if(collection in collections):
         test_col = db.get_database(db_name).get_collection(collection)
-        # return json.loads(json_util.dumps(test_col.find_one()))
         return json_util.dumps(test_col.find())
     else: 
         return "Invalid Collection"
@@ -102,8 +101,6 @@ def edit_archive_collection():
     col = db.get_database(db_name).get_collection(collection_name)
     new_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")]
     old_field_names = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("table_db_field_names")[0].table_db_field_names
-    # print(old_field_names)
-    # print(new_field_names)
 
     # Add sample value to old documents that don't have new field
     update_json = { "$set": {}}
@@ -114,7 +111,6 @@ def edit_archive_collection():
             col.update_many(update_query, update_json)
 
     col_settings = ArchiveCollectionSettings.objects()
-    print(col_settings)
     # Remove fields from document that no longer exists
     update_json = { "$set": {}}
     for old_field in old_field_names:
@@ -140,7 +136,6 @@ def edit_archive_collection():
                                 creationcard_flexdatalistfield = new_listfield
                             )
 
-
     ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
         # Collection_name is db-friendly collection title
         collection_name = collection_name,
@@ -154,10 +149,10 @@ def edit_archive_collection():
         header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
         header_search_enabled = [i for i in request.form['header_search_enabled'].split(",")],
 
-        header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")],
-        header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")],
-        header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")],
-        header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")],
+        header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")] if len(request.form['header_card_subtitles']) > 0 else [],
+        header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")] if len(request.form['header_card_amounts']) > 0 else [],
+        header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")] if len(request.form['header_card_increases']) > 0 else [],
+        header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")] if len(request.form['header_card_descriptions']) > 0 else [],
 
         table_title = request.form['table_title'],
         # The table field names are also just the creation card names
@@ -220,10 +215,10 @@ def create_archive_collection():
             header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
             header_search_enabled = [eval(i) for i in request.form['header_search_enabled'].split(",")],
 
-            header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")],
-            header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")],
-            header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")],
-            header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")],
+            header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")] if len(request.form['header_card_subtitles']) > 0 else [],
+            header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")] if len(request.form['header_card_amounts']) > 0 else [],
+            header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")] if len(request.form['header_card_increases']) > 0 else [],
+            header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")] if len(request.form['header_card_descriptions']) > 0 else [],
 
             # The await data is just the data from the collection. For now it should be blank
             # because when a collection is created it should be empty
