@@ -6,6 +6,7 @@
   export let settings;
   export let title;
   export let postURL;
+  export let buttonTitle;
 
   let formID = "archCreateForm"; // Math.random().toString(36).substring(2, 8); // Generate random string
   let error = false; // Error for if field is required
@@ -183,12 +184,14 @@
         <h6 class="text-blueGray-700 text-xl font-bold">
           {title !== undefined ? title : "My Account"}
         </h6>
-        <button
-          class="bg-red-400 text-white active:bg-red-500 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-          type="button"
-        >
-          Settings
-        </button>
+        {#if buttonTitle !== undefined}
+          <button
+            class="bg-red-400 text-white active:bg-red-500 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+            type="button"
+          >
+            {buttonTitle}
+          </button>
+        {/if}
       </div>
     </div>
     <div class="flex-auto px-4 lg:px-10 py-10 pt-0">

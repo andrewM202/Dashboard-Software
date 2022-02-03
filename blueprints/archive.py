@@ -141,6 +141,8 @@ def edit_archive_collection():
     # Rename collection if they are different
     if  oldColName != collection_name:
         db.get_database(db_name).get_collection(oldColName).rename(collection_name)
+
+    # Need to remove flexdata that references this collection if necessary
     
     return redirect('/admin/archive-designer')
         

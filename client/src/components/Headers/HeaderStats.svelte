@@ -14,7 +14,7 @@
     export let submitValue; // Value of the submit button
 
     // let id = Math.random().toString(36).substr(2, 8); // Generate random string
-    // let formID = Math.random().toString(36).substr(2, 8);
+    let submitButtonID = Math.random().toString(36).substr(2, 8);
 
     async function positionSearchBar(node) {
         await tick();
@@ -24,6 +24,14 @@
                     "grid-column-start": 1,
                     "grid-column-end": 3,
                 });
+            }
+            // Make submit button bigger if next to flexdata input
+            if (
+                inputs.length === 1 &&
+                inputs[0].flexdatalistdata !== undefined
+            ) {
+                j$(`#${submitButtonID}`).addClass("h-full");
+                j$(`#${submitButtonID}`).parent().addClass("h-full");
             }
         }
     }
@@ -128,16 +136,17 @@
                                 </div>
                             {/if}
                         {/each}
-                        <div class="mb-3 py-0 mx-4 h-full">
+                        <div class="mb-3 py-0 mx-4">
                             <input
                                 on:click={SearchFunction}
+                                id={submitButtonID}
                                 type="Submit"
                                 placeholder="Submit"
                                 name="submit"
                                 value={submitValue !== undefined
                                     ? submitValue
                                     : "Submit"}
-                                class="h-full cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                             />
                         </div>
                     </div>

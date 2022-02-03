@@ -23,6 +23,8 @@
     // Is a collection being edited?
     // If so, which one?
     let postURL = "/admin/archive-data/create-collection";
+    let archiveDesignerButtonTitle = "Collection Creation";
+    let headerSubmitValue = "Edit Collection"; // Submit/Edit button in header search
 
     function HeaderSearchFunction(e) {
         e.preventDefault();
@@ -73,6 +75,10 @@
 
             // Change postURL to the edit URL
             postURL = "/admin/archive-data/edit-collection";
+            // Change button title
+            archiveDesignerButtonTitle = "Edit Collection";
+            // Header search button
+            headerSubmitValue = "Reset / Switch Form";
         } else {
             // Reset form if blank
             for (let setting of cardSettings) {
@@ -85,6 +91,11 @@
 
             // Remove hidden collection ID
             j$(form).find("#archCreateForm").remove();
+
+            // Change button title
+            archiveDesignerButtonTitle = "Collection Creation";
+
+            headerSubmitValue = "Edit Collection";
         }
     }
 
@@ -259,7 +270,7 @@
         titleFontSize={"text-6xl"}
         titleColor={"text-black"}
         inputs={titleSearchInputs}
-        submitValue={"Edit"}
+        submitValue={headerSubmitValue}
         SearchFunction={HeaderSearchFunction}
     />
 {:else}
@@ -276,8 +287,13 @@
             title={"Archive Creation"}
             {postURL}
             settings={cardSettings}
+            buttonTitle={archiveDesignerButtonTitle}
         />
     {:else}
-        <CardSettings title={"Archive Creation"} {postURL} />
+        <CardSettings
+            title={"Archive Creation"}
+            {postURL}
+            buttonTitle={"Collection Creation"}
+        />
     {/if}
 </div>
