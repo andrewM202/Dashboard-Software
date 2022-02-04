@@ -78,14 +78,11 @@
                 CollectionName={section[1].CollectionName}
                 SearchFunction={SearchResults}
             />
-            <div class="block px-4 md:px-10 mx-auto w-full m-12">
-                <div class="flex flex-wrap ml-8">
+            <div class="block lg:px-10 mx-auto w-full my-12">
+                <div class="flex flex-wrap ml-8 w-full">
                     <div
-                        class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
+                        class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-6"
                     >
-                        <!-- {#await section[1].Table.Data[0]}
-                            <p>Loading...</p>
-                        {:then data} -->
                         <CardTable
                             color="dark"
                             data={section[1].Table.Data[0]}
@@ -94,22 +91,24 @@
                             DBFieldNames={section[1].Table.DBFieldNames}
                             title={section[1].Table.Title}
                         />
-                        <!-- {:catch error}
-                            <p style="color: red">{error.message}</p>
-                        {/await} -->
                     </div>
                 </div>
             </div>
-            {#if section[1].CreationCard !== undefined}
-                <!-- {#if section[1].CreationCard.Data.includes(undefined) !== true} -->
-                <DataCreationCard
-                    CollectionName={section[1].CollectionName}
-                    flexdata={section[1].CreationCard.Flexdatalistdata}
-                    title={section[1].CreationCard.Title}
-                    inputs={section[1].CreationCard.Inputs}
-                />
-                <!-- {/if} -->
-            {/if}
+            <div class="lg:px-10 mx-auto w-full">
+                <div class="flex flex-wrap ml-8">
+                    <div class="w-full h-auto bg-blueGray-700 mb-12 p-6">
+                        {#if section[1].CreationCard !== undefined}
+                            <DataCreationCard
+                                CollectionName={section[1].CollectionName}
+                                flexdata={section[1].CreationCard
+                                    .Flexdatalistdata}
+                                title={section[1].CreationCard.Title}
+                                inputs={section[1].CreationCard.Inputs}
+                            />
+                        {/if}
+                    </div>
+                </div>
+            </div>
         </div>
     {/each}
 {/if}

@@ -47,10 +47,6 @@
     async function runPreJS() {
         await tick();
         if (inputs.length % 2 === 0) {
-            // j$("div#rawArchiveTableContainer.grid div:last-child").css({
-            //     "grid-column-start": 1,
-            //     "grid-column-end": 3,
-            // });
             j$(`div#rawArchiveTableContainer div#${submitID}:last-child`).css({
                 width: "100%",
             });
@@ -128,111 +124,90 @@
     }
 </script>
 
-<div class="px-4 md:px-10 mx-auto w-full">
-    <div class="flex flex-wrap ml-8">
-        <div class="w-full h-auto bg-blueGray-700 mb-12 p-8">
-            <div class="w-full h-full bg-red-500">
-                <div class="flex flex-col items-center w-full">
-                    <h3
-                        class="text-4xl text-center font-normal leading-normal mt-0 mb-2"
-                    >
-                        {title}
-                    </h3>
-                    {#if error !== false}
-                        <div
-                            class="text-white w-3/4 px-6 py-4 border-0 rounded relative mb-4 bg-blueGray-700"
-                        >
-                            <span
-                                class="text-xl inline-block mr-5 align-middle"
-                            >
-                                <i class="fas fa-bell" />
-                            </span>
-                            <span class="inline-block align-middle mr-8">
-                                <b class="capitalize">Error! </b>{error}
-                            </span>
-                            <button
-                                on:click={closeAlert}
-                                class="absolute pr-4 bg-transparent text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none"
-                            >
-                                <span>×</span>
-                            </button>
-                        </div>
-                    {/if}
-                </div>
-                <div class="flex-auto py-10 pt-0">
-                    <form id={formID}>
-                        <input
-                            type="hidden"
-                            name="CollectionName"
-                            value={CollectionName}
-                        />
-                        {#if inputs !== undefined}
-                            <div
-                                class="flex flex-wrap"
-                                id="rawArchiveTableContainer"
-                            >
-                                {#each inputs as input, i}
-                                    <div class="w-full lg:w-6/12 py-2 px-4">
-                                        <div class="relative w-full mb-3">
-                                            <!-- Flexdatalist Inputs -->
-                                            {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
-                                                <input
-                                                    list={input.flexdataid}
-                                                    multiple
-                                                    type={input.type}
-                                                    placeholder={input.placeholder}
-                                                    name={input.name}
-                                                    value=""
-                                                    class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                                    data-min-length="0"
-                                                />
-                                                <datalist id={input.flexdataid}>
-                                                    {#each input.flexdatalistdata as datarow}
-                                                        {#each Object.entries(datarow) as datapoint}
-                                                            {#if input.flexdatafields.includes(datapoint[0])}
-                                                                <option
-                                                                    value={datapoint[1]}
-                                                                    >{datapoint[1]}</option
-                                                                >
-                                                            {/if}
-                                                        {/each}
-                                                    {/each}
-                                                </datalist>
-                                                <!-- Any Input Not A Submit Or Flexdatalist -->
-                                            {:else if input.type !== "Submit"}
-                                                <input
-                                                    id={input.name}
-                                                    type={input.type}
-                                                    placeholder={input.placeholder}
-                                                    name={input.name}
-                                                    value=""
-                                                    class="border-0 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                                />
-                                            {/if}
-                                        </div>
-                                    </div>
-                                {/each}
-                                <div
-                                    class="w-full lg:w-6/12 py-2 px-4"
-                                    id={submitID}
-                                >
-                                    <div class="relative w-full mb-3">
-                                        <input
-                                            on:click={submit}
-                                            type="Submit"
-                                            placeholder="Submit"
-                                            name="SubmitButton"
-                                            value="Submit"
-                                            class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        {/if}
-                    </form>
-                </div>
+<div class="w-full h-full bg-red-500">
+    <div class="flex flex-col items-center w-full">
+        <h3 class="text-4xl text-center font-normal leading-normal mt-0 mb-2">
+            {title}
+        </h3>
+        {#if error !== false}
+            <div
+                class="text-white w-3/4 px-6 py-4 border-0 rounded relative mb-4 bg-blueGray-700"
+            >
+                <span class="text-xl inline-block mr-5 align-middle">
+                    <i class="fas fa-bell" />
+                </span>
+                <span class="inline-block align-middle mr-8">
+                    <b class="capitalize">Error! </b>{error}
+                </span>
+                <button
+                    on:click={closeAlert}
+                    class="absolute pr-4 bg-transparent text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none"
+                >
+                    <span>×</span>
+                </button>
             </div>
-        </div>
+        {/if}
+    </div>
+    <div class="flex-auto py-10 pt-0">
+        <form id={formID}>
+            <input type="hidden" name="CollectionName" value={CollectionName} />
+            {#if inputs !== undefined}
+                <div class="flex flex-wrap" id="rawArchiveTableContainer">
+                    {#each inputs as input, i}
+                        <div class="w-full lg:w-6/12 py-2 px-4">
+                            <div class="relative w-full mb-3">
+                                <!-- Flexdatalist Inputs -->
+                                {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
+                                    <input
+                                        list={input.flexdataid}
+                                        multiple
+                                        type={input.type}
+                                        placeholder={input.placeholder}
+                                        name={input.name}
+                                        value=""
+                                        class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        data-min-length="0"
+                                    />
+                                    <datalist id={input.flexdataid}>
+                                        {#each input.flexdatalistdata as datarow}
+                                            {#each Object.entries(datarow) as datapoint}
+                                                {#if input.flexdatafields.includes(datapoint[0])}
+                                                    <option value={datapoint[1]}
+                                                        >{datapoint[1]}</option
+                                                    >
+                                                {/if}
+                                            {/each}
+                                        {/each}
+                                    </datalist>
+                                    <!-- Any Input Not A Submit Or Flexdatalist -->
+                                {:else if input.type !== "Submit"}
+                                    <input
+                                        id={input.name}
+                                        type={input.type}
+                                        placeholder={input.placeholder}
+                                        name={input.name}
+                                        value=""
+                                        class="border-0 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                    />
+                                {/if}
+                            </div>
+                        </div>
+                    {/each}
+                    <div class="w-full lg:w-6/12 py-2 px-4" id={submitID}>
+                        <div class="relative w-full mb-3">
+                            <input
+                                on:click={submit}
+                                type="Submit"
+                                placeholder="Submit"
+                                name="SubmitButton"
+                                value="Submit"
+                                class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            />
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        </form>
     </div>
 </div>
 
