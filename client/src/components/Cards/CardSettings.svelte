@@ -171,6 +171,13 @@
       },
     });
   }
+
+  let showModal = false;
+
+  function toggleModal(e) {
+    e.preventDefault();
+    showModal = !showModal;
+  }
 </script>
 
 {#if settings !== undefined}
@@ -249,6 +256,7 @@
                     <!-- Tooltip End -->
                     {input.placeholder}
                   </label>
+                  <!-- Any regular inpit with the flexdatalist disabled -->
                   {#if input.flexdatalistdisabled === true}
                     <input
                       id="grid-username"
@@ -258,18 +266,83 @@
                       class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       value={input.value}
                     />
-                    <!-- Generic flexlist with no predefined values -->
+                    <!-- Any submit input -->
                   {:else if input.type === "submit"}
-                    <input
-                      id="grid-username"
-                      postURL={input.postURL}
-                      on:click={submit}
-                      name={input.name}
-                      type={input.type}
-                      placeholder={input.placeholder}
-                      class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      value={input.value}
-                    />
+                    {#if input.confirmationRequired === true}
+                      <!-- If this button should have a modal -->
+                      <button
+                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        on:click={toggleModal}>{input.value}</button
+                      >
+                      {#if showModal}
+                        <div
+                          style="margin: 0;
+                          left: 50%;
+                          bottom: 25%;
+                          -ms-transform: translate(-50%, -50%);
+                          transform: translate(-50%, -50%);"
+                          class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+                        >
+                          <div class="relative w-auto my-6  max-w-sm">
+                            <!--content-->
+                            <div
+                              class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
+                            >
+                              <!--header-->
+                              <div
+                                class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
+                              >
+                                <h3 class="text-3xl font-semibold">Deletion</h3>
+                                <button
+                                  class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                  on:click={toggleModal}
+                                >
+                                  <span
+                                    class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none"
+                                  >
+                                    ×
+                                  </span>
+                                </button>
+                              </div>
+                              <!--footer-->
+                              <div
+                                class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
+                              >
+                                <button
+                                  class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  type="button"
+                                  on:click={toggleModal}
+                                >
+                                  Close
+                                </button>
+                                <button
+                                  class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  type="button"
+                                  on:click={submit}
+                                  on:click={toggleModal}
+                                  postURL={input.postURL}
+                                >
+                                  Confirm delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="opacity-25 fixed inset-0 z-40 bg-black" />
+                      {/if}
+                    {:else}
+                      <input
+                        id="grid-username"
+                        postURL={input.postURL}
+                        on:click={submit}
+                        name={input.name}
+                        type={input.type}
+                        placeholder={input.placeholder}
+                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        value={input.value}
+                      />
+                    {/if}
+                    <!-- Generic flexlist with no predefined values -->
                   {:else if input.flexdatalistdata === undefined}
                     <input
                       use:styleFlexDataRegular

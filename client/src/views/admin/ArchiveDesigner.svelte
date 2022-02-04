@@ -20,9 +20,10 @@
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
 
+    $: console.log(archiveConfig);
+
     // Is a collection being edited?
     // If so, which one?
-    let postURL = "/admin/archive-data/create-collection";
     let archiveDesignerButtonTitle = "Collection Creation";
     let headerSubmitValue = "Edit Collection"; // Submit/Edit button in header search
 
@@ -70,6 +71,9 @@
                     j$("#archCreateForm").append(
                         `<input id="collectionEditID" type="hidden" value="${col["_id"].$oid}" name="collectionEditID">`
                     );
+                    // Append an input to the form with the original collection_name.
+                    // this is so if a user changes collection name and deletes it at
+                    // same time, it will delete correct collection
                 }
             }
 
@@ -107,6 +111,7 @@
                         popoverMessage:
                             "Press this button to delete the collection",
                         postURL: "/admin/archive-data/delete-collection",
+                        confirmationRequired: true, // User required to confirm the deletion
                     },
                 ],
             });
@@ -352,6 +357,7 @@
             title={"Archive Creation"}
             settings={cardSettings}
             descButtonTitle={archiveDesignerButtonTitle}
+            collectionID={1}
         />
     {:else}
         <CardSettings

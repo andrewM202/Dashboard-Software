@@ -3599,6 +3599,10 @@ select {
   z-index: 50;
 }
 
+.z-100 {
+  z-index: 100;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
