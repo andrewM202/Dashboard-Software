@@ -25,7 +25,6 @@
     let postURL = "/admin/archive-data/create-collection";
     let archiveDesignerButtonTitle = "Collection Creation";
     let headerSubmitValue = "Edit Collection"; // Submit/Edit button in header search
-    let archiveDesignerSubmitButtonTitle = "Create Collection"; // Submit button in archive designer
 
     function HeaderSearchFunction(e) {
         e.preventDefault();
@@ -74,13 +73,44 @@
                 }
             }
 
-            // Change postURL to the edit URL
-            postURL = "/admin/archive-data/edit-collection";
             // Change button title
             archiveDesignerButtonTitle = "Edit Collection";
             // Header search button
             headerSubmitValue = "Reset / Switch Form";
-            archiveDesignerSubmitButtonTitle = "Submit Changes";
+
+            // Add collection deletion button
+            // Have to make clone because $ will override chanes otherwise
+            let cardSettingsClone = cardSettings;
+            cardSettingsClone.pop();
+            cardSettingsClone.push({
+                Subtitle: "Edit Collection",
+                Inputs: [
+                    {
+                        type: "submit",
+                        placeholder: "Collection Changes",
+                        name: "header_card_subtitles",
+                        value: "Submit Changes",
+                        popoverMessage:
+                            "Press this button to submit chnages to the collection",
+                        postURL: "/admin/archive-data/edit-collection",
+                    },
+                ],
+            });
+            cardSettingsClone.push({
+                Subtitle: "Delete Collection",
+                Inputs: [
+                    {
+                        type: "submit",
+                        placeholder: "Collection Deletion",
+                        name: "header_card_subtitles",
+                        value: "Delete Collection",
+                        popoverMessage:
+                            "Press this button to delete the collection",
+                        postURL: "/admin/archive-data/delete-collection",
+                    },
+                ],
+            });
+            cardSettings = cardSettingsClone;
         } else {
             // Reset form if blank
             for (let setting of cardSettings) {
@@ -88,9 +118,6 @@
                     j$(`[name=${input.name}]`).val("");
                 }
             }
-            // Reset postURL
-            postURL = "/admin/archive-data/create-collection";
-
             // Remove hidden collection ID
             j$(form).find("#archCreateForm").remove();
 
@@ -98,7 +125,28 @@
             archiveDesignerButtonTitle = "Collection Creation";
 
             headerSubmitValue = "Edit Collection";
-            archiveDesignerSubmitButtonTitle = "Create Collection";
+
+            // Remove collection deletion button
+            let cardSettingsClone = cardSettings;
+            cardSettingsClone.pop();
+            cardSettingsClone.pop();
+            // Add back collection creation button
+            cardSettingsClone.push({
+                Subtitle: "Create Collection",
+                Inputs: [
+                    {
+                        type: "submit",
+                        placeholder: "Collection Creqation",
+                        name: "header_card_subtitles",
+                        value: "Create Collection",
+                        popoverMessage:
+                            "Press this button to create the collection",
+                        flexdatalistdisabled: true,
+                        postURL: "/admin/archive-data/create-collection",
+                    },
+                ],
+            });
+            cardSettings = cardSettingsClone;
         }
     }
 
@@ -263,6 +311,20 @@
                 },
             ],
         },
+        {
+            Subtitle: "Create Collection",
+            Inputs: [
+                {
+                    type: "submit",
+                    placeholder: "Collection Creation",
+                    name: "header_card_subtitles",
+                    value: "Create Collection",
+                    popoverMessage:
+                        "Press this button to create the collection",
+                    postURL: "/admin/archive-data/create-collection",
+                },
+            ],
+        },
     ];
 </script>
 
@@ -288,17 +350,13 @@
     {#if tableData.includes(undefined) !== true}
         <CardSettings
             title={"Archive Creation"}
-            {postURL}
             settings={cardSettings}
             descButtonTitle={archiveDesignerButtonTitle}
-            submitButtonTitle={archiveDesignerSubmitButtonTitle}
         />
     {:else}
         <CardSettings
             title={"Archive Creation"}
-            {postURL}
             descButtonTitle={"Collection Creation"}
-            submitButtonTitle={"Search"}
         />
     {/if}
 </div>

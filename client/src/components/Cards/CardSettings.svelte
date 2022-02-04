@@ -5,9 +5,7 @@
 
   export let settings;
   export let title;
-  export let postURL;
   export let descButtonTitle;
-  export let submitButtonTitle;
 
   let formID = "archCreateForm"; // Math.random().toString(36).substring(2, 8); // Generate random string
   let error = false; // Error for if field is required
@@ -151,6 +149,7 @@
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
+    let postURL = e.srcElement.attributes.posturl.nodeValue;
     j$.ajax({
       type: "POST",
       url: `${location.origin}${postURL}`,
@@ -197,7 +196,7 @@
     </div>
     <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
       <form method="POST" id={formID}>
-        {#each settings as inputSection}
+        {#each settings as inputSection, i}
           <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
             <!-- Tooltip Start -->
             {#if inputSection.SubtitlePopoverMessage !== undefined}
@@ -221,7 +220,10 @@
           </h6>
           <div class="flex flex-wrap">
             {#each inputSection.Inputs as input}
-              <div class="w-full lg:w-6/12 px-4">
+              <!-- If input is a submit make it full width else only partial width -->
+              <div
+                class="{input.type === 'submit' ? '' : 'lg:w-6/12 px-4'} w-full"
+              >
                 <div class="relative w-full mb-3">
                   <label
                     class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -257,6 +259,17 @@
                       value={input.value}
                     />
                     <!-- Generic flexlist with no predefined values -->
+                  {:else if input.type === "submit"}
+                    <input
+                      id="grid-username"
+                      postURL={input.postURL}
+                      on:click={submit}
+                      name={input.name}
+                      type={input.type}
+                      placeholder={input.placeholder}
+                      class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value={input.value}
+                    />
                   {:else if input.flexdatalistdata === undefined}
                     <input
                       use:styleFlexDataRegular
@@ -322,16 +335,11 @@
               </div>
             {/each}
           </div>
-
-          <hr class="mt-6 border-b-1 border-blueGray-300" />
+          <!-- Add hr if this is not last input section -->
+          {#if i !== settings.length - 1}
+            <hr class="mt-6 border-b-1 border-blueGray-300" />
+          {/if}
         {/each}
-        <input
-          on:click={submit}
-          type="submit"
-          value={submitButtonTitle !== undefined ? submitButtonTitle : "Submit"}
-          placeholder="Search"
-          class="py-3 mx-3 my-6 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-        />
       </form>
     </div>
   </div>
