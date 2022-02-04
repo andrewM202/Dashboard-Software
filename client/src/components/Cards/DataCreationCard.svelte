@@ -12,6 +12,7 @@
     let flexdatalist = [];
 
     let formID = Math.random().toString(36).substring(2, 8); // Generate random string
+    let submitID = Math.random().toString(36).substring(2, 8);
 
     // Simplify flexdata data so looping does not
     // Have to occur in the HTML with templating engine
@@ -46,9 +47,12 @@
     async function runPreJS() {
         await tick();
         if (inputs.length % 2 === 0) {
-            j$("div#rawArchiveTableContainer.grid div:last-child").css({
-                "grid-column-start": 1,
-                "grid-column-end": 3,
+            // j$("div#rawArchiveTableContainer.grid div:last-child").css({
+            //     "grid-column-start": 1,
+            //     "grid-column-end": 3,
+            // });
+            j$(`div#rawArchiveTableContainer div#${submitID}:last-child`).css({
+                width: "100%",
             });
         }
         // Run interval until flexdatalist loads,
@@ -155,81 +159,78 @@
                         </div>
                     {/if}
                 </div>
-                <form id={formID}>
-                    <input
-                        type="hidden"
-                        name="CollectionName"
-                        value={CollectionName}
-                    />
-                    <div
-                        id="rawArchiveTableContainer"
-                        class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
-                    >
+                <div class="flex-auto py-10 pt-0">
+                    <form id={formID}>
+                        <input
+                            type="hidden"
+                            name="CollectionName"
+                            value={CollectionName}
+                        />
                         {#if inputs !== undefined}
-                            {#each inputs as input, i}
-                                <div class="mb-3 py-0 mx-4">
-                                    <!-- Flexdatalist Inputs -->
-                                    {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
-                                        <input
-                                            list={input.flexdataid}
-                                            multiple
-                                            type={input.type}
-                                            placeholder={input.placeholder}
-                                            name={input.name}
-                                            value=""
-                                            class="flexdatalist py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                                            data-min-length="0"
-                                        />
-                                        <datalist id={input.flexdataid}>
-                                            {#each input.flexdatalistdata as datarow}
-                                                {#each Object.entries(datarow) as datapoint}
-                                                    {#if input.flexdatafields.includes(datapoint[0])}
-                                                        <option
-                                                            value={datapoint[1]}
-                                                            >{datapoint[1]}</option
-                                                        >
-                                                    {/if}
-                                                {/each}
-                                            {/each}
-                                        </datalist>
-                                        <!-- Any Input Not A Submit Or Flexdatalist -->
-                                    {:else if input.type !== "Submit"}
-                                        <input
-                                            id={input.name}
-                                            type={input.type}
-                                            placeholder={input.placeholder}
-                                            name={input.name}
-                                            value=""
-                                            class="py-3 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                                        />
-                                        <!-- Submit Inputs -->
-                                    {:else}
-                                        <input
-                                            on:click={submit}
-                                            type="Submit"
-                                            placeholder={input.placeholder}
-                                            name={input.name}
-                                            value={input.placeholder}
-                                            class="py-3 mx-3 my-2 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                                        />
-                                    {/if}
-                                </div>
-                                {#if i + 1 === inputs.length}
-                                    <div class="mb-3 py-0 mx-4">
+                            <div
+                                class="flex flex-wrap"
+                                id="rawArchiveTableContainer"
+                            >
+                                {#each inputs as input, i}
+                                    <div class="w-full lg:w-6/12 py-2 px-4">
+                                        <div class="relative w-full mb-3">
+                                            <!-- Flexdatalist Inputs -->
+                                            {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
+                                                <input
+                                                    list={input.flexdataid}
+                                                    multiple
+                                                    type={input.type}
+                                                    placeholder={input.placeholder}
+                                                    name={input.name}
+                                                    value=""
+                                                    class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                                    data-min-length="0"
+                                                />
+                                                <datalist id={input.flexdataid}>
+                                                    {#each input.flexdatalistdata as datarow}
+                                                        {#each Object.entries(datarow) as datapoint}
+                                                            {#if input.flexdatafields.includes(datapoint[0])}
+                                                                <option
+                                                                    value={datapoint[1]}
+                                                                    >{datapoint[1]}</option
+                                                                >
+                                                            {/if}
+                                                        {/each}
+                                                    {/each}
+                                                </datalist>
+                                                <!-- Any Input Not A Submit Or Flexdatalist -->
+                                            {:else if input.type !== "Submit"}
+                                                <input
+                                                    id={input.name}
+                                                    type={input.type}
+                                                    placeholder={input.placeholder}
+                                                    name={input.name}
+                                                    value=""
+                                                    class="border-0 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                                />
+                                            {/if}
+                                        </div>
+                                    </div>
+                                {/each}
+                                <div
+                                    class="w-full lg:w-6/12 py-2 px-4"
+                                    id={submitID}
+                                >
+                                    <div class="relative w-full mb-3">
                                         <input
                                             on:click={submit}
                                             type="Submit"
                                             placeholder="Submit"
                                             name="SubmitButton"
                                             value="Submit"
-                                            class="py-3 mx-3 my-2 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                            class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                         />
                                     </div>
-                                {/if}
-                            {/each}
+                                </div>
+                            </div>
                         {/if}
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

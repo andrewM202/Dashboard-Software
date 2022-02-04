@@ -15,26 +15,20 @@
 
     // let id = Math.random().toString(36).substr(2, 8); // Generate random string
     let submitButtonID = Math.random().toString(36).substr(2, 8);
+    let submitID = Math.random().toString(36).substring(2, 8);
 
-    async function positionSearchBar(node) {
+    async function positionSearchBar() {
         await tick();
         if (inputs !== undefined) {
             if (inputs.length % 2 === 0) {
-                j$(node).children().last().css({
-                    "grid-column-start": 1,
-                    "grid-column-end": 3,
+                j$(`#${submitID}`).css({
+                    width: "100%",
                 });
-            }
-            // Make submit button bigger if next to flexdata input
-            if (
-                inputs.length === 1 &&
-                inputs[0].flexdatalistdata !== undefined
-            ) {
-                j$(`#${submitButtonID}`).addClass("h-full");
-                j$(`#${submitButtonID}`).parent().addClass("h-full");
             }
         }
     }
+
+    positionSearchBar();
 
     async function styleFlexData() {
         await tick();
@@ -127,7 +121,10 @@
                                     </div>
                                 </div>
                             {/each}
-                            <div class="w-full lg:w-6/12 py-2 px-4">
+                            <div
+                                class="w-full lg:w-6/12 py-2 px-4"
+                                id={submitID}
+                            >
                                 <div class="relative w-full mb-3">
                                     <input
                                         on:click={SearchFunction}
