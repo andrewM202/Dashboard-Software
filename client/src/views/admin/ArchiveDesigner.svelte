@@ -20,8 +20,6 @@
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
 
-    $: console.log(archiveConfig);
-
     // Is a collection being edited?
     // If so, which one?
     let archiveDesignerButtonTitle = "Collection Creation";
@@ -117,41 +115,47 @@
             });
             cardSettings = cardSettingsClone;
         } else {
-            // Reset form if blank
-            for (let setting of cardSettings) {
-                for (let input of setting.Inputs) {
-                    j$(`[name=${input.name}]`).val("");
+            // Start reset if last object in cardSettings is the Delete Collection button
+            if (
+                cardSettings[cardSettings.length - 1].Subtitle ===
+                "Delete Collection"
+            ) {
+                // Reset form if blank
+                for (let setting of cardSettings) {
+                    for (let input of setting.Inputs) {
+                        j$(`[name=${input.name}]`).val("");
+                    }
                 }
+                // Remove hidden collection ID
+                j$(form).find("#archCreateForm").remove();
+
+                // Change button title
+                archiveDesignerButtonTitle = "Collection Creation";
+
+                headerSubmitValue = "Edit Collection";
+
+                // Remove collection deletion button
+                let cardSettingsClone = cardSettings;
+                cardSettingsClone.pop();
+                cardSettingsClone.pop();
+                // Add back collection creation button
+                cardSettingsClone.push({
+                    Subtitle: "Create Collection",
+                    Inputs: [
+                        {
+                            type: "submit",
+                            placeholder: "Collection Creation",
+                            name: "header_card_subtitles",
+                            value: "Create Collection",
+                            popoverMessage:
+                                "Press this button to create the collection",
+                            flexdatalistdisabled: true,
+                            postURL: "/admin/archive-data/create-collection",
+                        },
+                    ],
+                });
+                cardSettings = cardSettingsClone;
             }
-            // Remove hidden collection ID
-            j$(form).find("#archCreateForm").remove();
-
-            // Change button title
-            archiveDesignerButtonTitle = "Collection Creation";
-
-            headerSubmitValue = "Edit Collection";
-
-            // Remove collection deletion button
-            let cardSettingsClone = cardSettings;
-            cardSettingsClone.pop();
-            cardSettingsClone.pop();
-            // Add back collection creation button
-            cardSettingsClone.push({
-                Subtitle: "Create Collection",
-                Inputs: [
-                    {
-                        type: "submit",
-                        placeholder: "Collection Creqation",
-                        name: "header_card_subtitles",
-                        value: "Create Collection",
-                        popoverMessage:
-                            "Press this button to create the collection",
-                        flexdatalistdisabled: true,
-                        postURL: "/admin/archive-data/create-collection",
-                    },
-                ],
-            });
-            cardSettings = cardSettingsClone;
         }
     }
 

@@ -2,6 +2,7 @@
   import { createPopper } from "@popperjs/core";
   import { tick } from "svelte";
   import Flexdata from "../Plugin/Flexdata.svelte";
+  import { refreshData } from "../../stores.js";
 
   export let settings;
   export let title;
@@ -161,6 +162,7 @@
         j$("html, body").animate({ scrollTop: "0px" }, 500);
         // Remove flexdatalist values
         j$("li.value").remove();
+        refreshData();
       },
       error: function (e) {
         // Error logging
@@ -261,6 +263,7 @@
                     <input
                       id="grid-username"
                       name={input.name}
+                      postURL={input.postURL}
                       type={input.type}
                       placeholder={input.placeholder}
                       class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
