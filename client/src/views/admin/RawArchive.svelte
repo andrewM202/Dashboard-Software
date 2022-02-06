@@ -67,7 +67,14 @@
 </script>
 
 {#if DataSettings !== undefined && UserSettings !== undefined}
-    <AdminNavbar bind:openTab {navItems} />
+    <AdminNavbar
+        bind:openTab
+        {navItems}
+        navBarBGColor={UserSettings[0].navigation_color !== undefined &&
+        UserSettings[0].navigation_color !== null
+            ? `Background-color: ${UserSettings[0].navigation_color}`
+            : undefined}
+    />
     {#each Object.entries(DataSettings) as section}
         <div class={navItems[openTab] === section[0] ? "block" : "hidden"}>
             <HeaderStats
@@ -78,8 +85,18 @@
                 inputs={section[1].HeaderSearchInputs}
                 CollectionName={section[1].CollectionName}
                 SearchFunction={SearchResults}
+                headerBGColor={UserSettings[0].archive_header_color !==
+                    undefined && UserSettings[0].archive_header_color !== null
+                    ? `Background-color: ${UserSettings[0].archive_header_color}`
+                    : undefined}
             />
-            <div class="block lg:px-10 mx-auto w-full my-12">
+            <div
+                style={UserSettings[0].background_color !== undefined &&
+                UserSettings[0].background_color !== null
+                    ? `Background-color: ${UserSettings[0].background_color}`
+                    : undefined}
+                class="block lg:px-10 mx-auto w-full my-12"
+            >
                 <div class="flex flex-wrap ml-8 w-full">
                     <div
                         class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-6"
@@ -91,11 +108,32 @@
                             headers={section[1].Table.Headers}
                             DBFieldNames={section[1].Table.DBFieldNames}
                             title={section[1].Table.Title}
+                            tableBGColor={UserSettings[0]
+                                .archive_table_color !== undefined &&
+                            UserSettings[0].archive_table_color !== null
+                                ? `Background-color: ${UserSettings[0].archive_table_color}`
+                                : undefined}
+                            tableHeaderColor={UserSettings[0]
+                                .archive_table_header_color !== undefined &&
+                            UserSettings[0].archive_table_header_color !== null
+                                ? `Background-color: ${UserSettings[0].archive_table_header_color}`
+                                : undefined}
+                            tableAltColor={UserSettings[0]
+                                .archive_table_alt_color !== undefined &&
+                            UserSettings[0].archive_table_alt_color !== null
+                                ? UserSettings[0].archive_table_alt_color
+                                : undefined}
                         />
                     </div>
                 </div>
             </div>
-            <div class="lg:px-10 mx-auto w-full">
+            <div
+                style={UserSettings[0].background_color !== undefined &&
+                UserSettings[0].background_color !== null
+                    ? `Background-color: ${UserSettings[0].background_color}`
+                    : undefined}
+                class="lg:px-10 mx-auto w-full"
+            >
                 <div class="flex flex-wrap ml-8">
                     <div class="w-full h-auto bg-blueGray-700 mb-12 p-6">
                         {#if section[1].CreationCard !== undefined}

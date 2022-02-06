@@ -12,6 +12,7 @@
     export let CollectionName;
     export let SearchFunction; // Pass in the search function for the form
     export let submitValue; // Value of the submit button
+    export let headerBGColor;
 
     // let id = Math.random().toString(36).substr(2, 8); // Generate random string
     let submitButtonID = Math.random().toString(36).substr(2, 8);
@@ -47,7 +48,7 @@
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-24 pt-16">
+<div class="relative bg-red-500 md:pt-24 pt-16" style={headerBGColor}>
     <div class="px-4 py-2 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}

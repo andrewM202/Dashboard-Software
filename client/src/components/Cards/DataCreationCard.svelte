@@ -10,8 +10,6 @@
     export let CollectionName;
     export let creationColor;
 
-    $: console.log(creationColor);
-
     let flexdatalist = [];
 
     let formID = Math.random().toString(36).substring(2, 8); // Generate random string

@@ -3,10 +3,12 @@
   export let navItems;
   export let openTab;
   export let title;
+  export let navBarBGColor;
 </script>
 
 <!-- Navbar -->
 <nav
+  style={navBarBGColor}
   class="absolute bg-red-500 top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4"
 >
   {#if title !== undefined}

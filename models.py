@@ -116,7 +116,17 @@ class UserSettings(Document):
     """ Personal settings set by each user """
     sidebar_state = BooleanField(default=False) # Whether the sidebar is closed by default
     sidebar_color = StringField()
+
     archive_header_color = StringField()
+
     archive_table_color = StringField()
+    archive_table_header_color = StringField()
+    archive_table_alt_color = StringField()
+
     archive_creation_color = StringField()
+
     background_color = StringField()
+
+    footer_color = StringField()
+
+    navigation_color = StringField()

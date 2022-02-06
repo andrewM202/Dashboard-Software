@@ -42,15 +42,17 @@ def settings():
 @bp.route("/admin/setting-changes", methods=["POST"])
 @login_required
 def change_settings():
-    # sidebar_state = request.form['sidebar-state'] if request.form['sidebar-state'] is not None else 'Not Set'
-    # print(request.form.get('sidebar-state') if request.form.get('sidebar-state') is not None else 'Not Set')
     UserSettings.objects().update(
         sidebar_state = True if request.form.get('sidebar-state') == "on" else False,
         sidebar_color = request.form['sidebar-color'],
         archive_header_color = request.form['archive-header-color'],
         archive_table_color = request.form['archive-table-color'],
+        archive_table_header_color = request.form['archive-table-header-color'],
+        archive_table_alt_color = request.form['archive-table-alt-color'],
         archive_creation_color = request.form['archive-creation-color'],
         background_color = request.form['background-color'],
+        footer_color = request.form['footer-color'],
+        navigation_color = request.form['navigation-color'],
     )
     
     return send_from_directory('client/public', 'index.html')
@@ -72,7 +74,11 @@ def set_default_settings():
         sidebar_color = None,
         archive_header_color = None,
         archive_table_color = None,
+        archive_table_header_color = None,
+        archive_table_alt_color = None,
         archive_creation_color = None,
         background_color = None,
+        footer_color = None,
+        navigation_color = None,
     )
     return send_from_directory('client/public', 'index.html')

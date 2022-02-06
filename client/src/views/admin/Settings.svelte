@@ -20,7 +20,11 @@
           placeholder: "Sidebar Color",
           name: "sidebar-color",
           value:
-            settingsConfig !== undefined ? settingsConfig[0].sidebar_color : "",
+            settingsConfig !== undefined
+              ? settingsConfig[0].sidebar_color === null
+                ? "#FFFFFF"
+                : settingsConfig[0].sidebar_color
+              : "",
           flexdatalistdisabled: true,
         },
         {
@@ -29,15 +33,46 @@
           name: "archive-header-color",
           value:
             settingsConfig !== undefined
-              ? settingsConfig[0].archive_header_color
+              ? settingsConfig[0].archive_header_color === null
+                ? "#EF4444"
+                : settingsConfig[0].archive_header_color
               : "",
           flexdatalistdisabled: true,
         },
         {
           type: "color",
-          placeholder: "Archive Table Color",
+          placeholder: "Archive Table Background Color",
           name: "archive-table-color",
-          value: "",
+          value:
+            settingsConfig !== undefined
+              ? settingsConfig[0].archive_table_color === null
+                ? "#EF4444"
+                : settingsConfig[0].archive_table_color
+              : "",
+          flexdatalistdisabled: true,
+        },
+        {
+          type: "color",
+          placeholder: "Archive Table Headers Color",
+          name: "archive-table-header-color",
+          value:
+            settingsConfig !== undefined
+              ? settingsConfig[0].archive_table_header_color === null
+                ? "#BE123C"
+                : settingsConfig[0].archive_table_header_color
+              : "",
+          flexdatalistdisabled: true,
+        },
+        {
+          type: "color",
+          placeholder: "Archive Table Alt Row Color",
+          name: "archive-table-alt-color",
+          value:
+            settingsConfig !== undefined
+              ? settingsConfig[0].archive_table_alt_color === null
+                ? "#DC2626"
+                : settingsConfig[0].archive_table_alt_color
+              : "",
           flexdatalistdisabled: true,
         },
         {
@@ -46,7 +81,9 @@
           name: "archive-creation-color",
           value:
             settingsConfig !== undefined
-              ? settingsConfig[0].archive_creation_color
+              ? settingsConfig[0].archive_creation_color === null
+                ? "#EF4444"
+                : settingsConfig[0].archive_creation_color
               : "",
           flexdatalistdisabled: true,
         },
@@ -56,7 +93,33 @@
           name: "background-color",
           value:
             settingsConfig !== undefined
-              ? settingsConfig[0].background_color
+              ? settingsConfig[0].background_color === null
+                ? "#F1F5F9"
+                : settingsConfig[0].background_color
+              : "",
+          flexdatalistdisabled: true,
+        },
+        {
+          type: "color",
+          placeholder: "Footer Color",
+          name: "footer-color",
+          value:
+            settingsConfig !== undefined
+              ? settingsConfig[0].footer_color === null
+                ? "#F1F5F9"
+                : settingsConfig[0].footer_color
+              : "",
+          flexdatalistdisabled: true,
+        },
+        {
+          type: "color",
+          placeholder: "Navigation Color",
+          name: "navigation-color",
+          value:
+            settingsConfig !== undefined
+              ? settingsConfig[0].navigation_color === null
+                ? "#EF4444"
+                : settingsConfig[0].navigation_color
               : "",
           flexdatalistdisabled: true,
         },
