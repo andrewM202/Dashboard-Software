@@ -42,8 +42,10 @@ def settings():
 @bp.route("/admin/setting-changes", methods=["POST"])
 @login_required
 def change_settings():
+    # sidebar_state = request.form['sidebar-state'] if request.form['sidebar-state'] is not None else 'Not Set'
+    # print(request.form.get('sidebar-state') if request.form.get('sidebar-state') is not None else 'Not Set')
     UserSettings.objects().update(
-        sidebar_state = True if request.form['sidebar-state'] == "on" else False,
+        sidebar_state = True if request.form.get('sidebar-state') == "on" else False,
         sidebar_color = request.form['sidebar-color'],
         archive_header_color = request.form['archive-header-color'],
         archive_table_color = request.form['archive-table-color'],

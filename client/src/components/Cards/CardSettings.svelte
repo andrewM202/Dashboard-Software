@@ -150,6 +150,7 @@
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
+    console.log(data);
     let postURL = e.srcElement.attributes.posturl.nodeValue;
     j$.ajax({
       type: "POST",
@@ -289,7 +290,7 @@
                       type={input.type}
                       placeholder=""
                       class="border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      value=""
+                      value={input.value}
                     />
                   {:else if input.type === "checkbox"}
                     <input
@@ -298,14 +299,13 @@
                       role="switch"
                       name={input.name}
                       id="flexSwitchCheckDefault"
-                      value="on"
+                      value={input.value}
                       on:click={changeCheckboxValue}
                       use:setCheckboxState
                     />
                     <label
                       class="form-check-label inline-block text-gray-800"
-                      for="flexSwitchCheckDefault"
-                      >Default switch checkbox input</label
+                      for="flexSwitchCheckDefault">{input.placeholder}</label
                     >
                     <!-- Any regular input with the flexdatalist disabled -->
                   {:else if input.flexdatalistdisabled === true}
