@@ -114,8 +114,9 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 
 class UserSettings(Document):
     """ Personal settings set by each user """
-    sidebar_closed = BooleanField(default=False) # Whether the sidebar is closed by default
-    archive_header_bg_color = StringField()
+    sidebar_state = BooleanField(default=False) # Whether the sidebar is closed by default
+    sidebar_color = StringField()
+    archive_header_color = StringField()
     archive_table_color = StringField()
     archive_creation_color = StringField()
-    archive_background_color = StringField()
+    background_color = StringField()

@@ -174,6 +174,29 @@
     });
   }
 
+  // A function to change the value of
+  // a checkbox when it is clicked,
+  // from on or off
+  function changeCheckboxValue(e) {
+    let checkboxValue = j$(e.path[0]).val();
+    // Toggle value from on or off
+    checkboxValue === "off"
+      ? j$(e.path[0]).val("on")
+      : j$(e.path[0]).val("off");
+    // Update checkboxValue since we just changed it
+    checkboxValue = j$(e.path[0]).val();
+    // Add the "checked" attribute if its value is on
+    checkboxValue === "off"
+      ? j$(e.path[0]).removeAttr("checked")
+      : j$(e.path[0]).attr("checked", "");
+  }
+
+  function setCheckboxState(e) {
+    let checkboxValue = j$(e).val();
+    // If checkboxValue is is on add checked attribute
+    checkboxValue === "on" ? j$(e).attr("checked", "") : "";
+  }
+
   let showModal = false;
 
   function toggleModal(e) {
@@ -268,6 +291,22 @@
                       class="border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       value=""
                     />
+                  {:else if input.type === "checkbox"}
+                    <input
+                      class="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top bg-white bg-no-repeat bg-contain bg-gray-300 focus:outline-none cursor-pointer shadow-sm"
+                      type="checkbox"
+                      role="switch"
+                      name={input.name}
+                      id="flexSwitchCheckDefault"
+                      value="on"
+                      on:click={changeCheckboxValue}
+                      use:setCheckboxState
+                    />
+                    <label
+                      class="form-check-label inline-block text-gray-800"
+                      for="flexSwitchCheckDefault"
+                      >Default switch checkbox input</label
+                    >
                     <!-- Any regular input with the flexdatalist disabled -->
                   {:else if input.flexdatalistdisabled === true}
                     <input
