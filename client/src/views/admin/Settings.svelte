@@ -2,21 +2,13 @@
   // core components
   import CardSettings from "components/Cards/CardSettings.svelte";
   export let location;
-  import { getDBResource } from "../../stores.js";
+  import { userSettingsStore } from "../../stores.js";
 
   let settingsConfig;
-  async function getDBData() {
-    settingsConfig = await getDBResource("/admin/settings-config");
-  }
-
-  getDBData();
+  $: settingsConfig = $userSettingsStore;
 
   let tableData = [];
-  $: tableData = [settingsConfig];
-
-  // $: if (settingsConfig !== undefined) {
-  //   console.log(settingsConfig[0]);
-  // }
+  $: tableData = [$userSettingsStore];
 
   let adminSettings;
   $: adminSettings = [
@@ -80,7 +72,7 @@
           value:
             settingsConfig !== undefined
               ? settingsConfig[0].sidebar_state === true
-                ? "bob"
+                ? "on"
                 : "off"
               : "",
           popoverMessage: "Should the sidebar be closed or open by default?",
@@ -120,7 +112,11 @@
 <div class="flex flex-wrap">
   <div class="w-full px-4 h-90vh">
     {#if tableData.includes(undefined) !== true}
-      <CardSettings settings={adminSettings} title={"Site Settings"} />
+      <CardSettings
+        settings={adminSettings}
+        title={"Site Settings"}
+        clearForm={false}
+      />
     {:else}
       <CardSettings settings={[]} title={"Site Settings"} />
     {/if}

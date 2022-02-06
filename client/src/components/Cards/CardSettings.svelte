@@ -7,6 +7,7 @@
   export let settings;
   export let title;
   export let descButtonTitle;
+  export let clearForm = true; // Should the form be cleared after post
 
   let formID = "archCreateForm"; // Math.random().toString(36).substring(2, 8); // Generate random string
   let error = false; // Error for if field is required
@@ -158,7 +159,7 @@
       data: data,
       success: function () {
         // Reset form
-        j$(`#${formID}`).trigger("reset");
+        if (clearForm) j$(`#${formID}`).trigger("reset");
         // Scroll to top of window
         j$("html, body").animate({ scrollTop: "0px" }, 500);
         // Remove flexdatalist values
