@@ -2,12 +2,12 @@
   import { createPopper } from "@popperjs/core";
   import { tick } from "svelte";
   import Flexdata from "../Plugin/Flexdata.svelte";
+  import { refreshData } from "../../stores.js";
 
   export let settings;
   export let title;
-  export let postURL;
   export let descButtonTitle;
-  export let submitButtonTitle;
+  export let clearForm = true; // Should the form be cleared after post
 
   let formID = "archCreateForm"; // Math.random().toString(36).substring(2, 8); // Generate random string
   let error = false; // Error for if field is required
@@ -151,17 +151,19 @@
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
+    let postURL = e.srcElement.attributes.posturl.nodeValue;
     j$.ajax({
       type: "POST",
       url: `${location.origin}${postURL}`,
       data: data,
       success: function () {
         // Reset form
-        j$(`#${formID}`).trigger("reset");
+        if (clearForm) j$(`#${formID}`).trigger("reset");
         // Scroll to top of window
         j$("html, body").animate({ scrollTop: "0px" }, 500);
         // Remove flexdatalist values
         j$("li.value").remove();
+        refreshData();
       },
       error: function (e) {
         // Error logging
@@ -171,6 +173,36 @@
         j$("html, body").animate({ scrollTop: "0px" }, 500);
       },
     });
+  }
+
+  // A function to change the value of
+  // a checkbox when it is clicked,
+  // from on or off
+  function changeCheckboxValue(e) {
+    let checkboxValue = j$(e.path[0]).val();
+    // Toggle value from on or off
+    checkboxValue === "off"
+      ? j$(e.path[0]).val("on")
+      : j$(e.path[0]).val("off");
+    // Update checkboxValue since we just changed it
+    checkboxValue = j$(e.path[0]).val();
+    // Add the "checked" attribute if its value is on
+    checkboxValue === "off"
+      ? j$(e.path[0]).removeAttr("checked")
+      : j$(e.path[0]).attr("checked", "");
+  }
+
+  function setCheckboxState(e) {
+    let checkboxValue = j$(e).val();
+    // If checkboxValue is is on add checked attribute
+    checkboxValue === "on" ? j$(e).attr("checked", "") : "";
+  }
+
+  let showModal = false;
+
+  function toggleModal(e) {
+    e.preventDefault();
+    showModal = !showModal;
   }
 </script>
 
@@ -197,7 +229,7 @@
     </div>
     <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
       <form method="POST" id={formID}>
-        {#each settings as inputSection}
+        {#each settings as inputSection, i}
           <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
             <!-- Tooltip Start -->
             {#if inputSection.SubtitlePopoverMessage !== undefined}
@@ -221,7 +253,10 @@
           </h6>
           <div class="flex flex-wrap">
             {#each inputSection.Inputs as input}
-              <div class="w-full lg:w-6/12 px-4">
+              <!-- If input is a submit make it full width else only partial width -->
+              <div
+                class="{input.type === 'submit' ? '' : 'lg:w-6/12 px-4'} w-full"
+              >
                 <div class="relative w-full mb-3">
                   <label
                     class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -247,7 +282,33 @@
                     <!-- Tooltip End -->
                     {input.placeholder}
                   </label>
-                  {#if input.flexdatalistdisabled === true}
+
+                  {#if input.type === "color"}
+                    <input
+                      id="grid-username"
+                      name={input.name}
+                      type={input.type}
+                      placeholder=""
+                      class="border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value={input.value}
+                    />
+                  {:else if input.type === "checkbox"}
+                    <input
+                      class="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top bg-white bg-no-repeat bg-contain bg-gray-300 focus:outline-none cursor-pointer shadow-sm"
+                      type="checkbox"
+                      role="switch"
+                      name={input.name}
+                      id="flexSwitchCheckDefault"
+                      value={input.value}
+                      on:click={changeCheckboxValue}
+                      use:setCheckboxState
+                    />
+                    <label
+                      class="form-check-label inline-block text-gray-800"
+                      for="flexSwitchCheckDefault">{input.placeholder}</label
+                    >
+                    <!-- Any regular input with the flexdatalist disabled -->
+                  {:else if input.flexdatalistdisabled === true}
                     <input
                       id="grid-username"
                       name={input.name}
@@ -256,6 +317,82 @@
                       class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       value={input.value}
                     />
+                    <!-- Any submit input -->
+                  {:else if input.type === "submit"}
+                    {#if input.confirmationRequired === true}
+                      <!-- If this button should have a modal -->
+                      <button
+                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        on:click={toggleModal}>{input.value}</button
+                      >
+                      {#if showModal}
+                        <div
+                          style="margin: 0;
+                          left: 50%;
+                          bottom: 25%;
+                          -ms-transform: translate(-50%, -50%);
+                          transform: translate(-50%, -50%);"
+                          class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+                        >
+                          <div class="relative w-auto my-6  max-w-sm">
+                            <!--content-->
+                            <div
+                              class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
+                            >
+                              <!--header-->
+                              <div
+                                class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t"
+                              >
+                                <h3 class="text-3xl font-semibold">Deletion</h3>
+                                <button
+                                  class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                  on:click={toggleModal}
+                                >
+                                  <span
+                                    class="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none"
+                                  >
+                                    ×
+                                  </span>
+                                </button>
+                              </div>
+                              <!--footer-->
+                              <div
+                                class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b"
+                              >
+                                <button
+                                  class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  type="button"
+                                  on:click={toggleModal}
+                                >
+                                  Close
+                                </button>
+                                <button
+                                  class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  type="button"
+                                  on:click={submit}
+                                  on:click={toggleModal}
+                                  postURL={input.postURL}
+                                >
+                                  Confirm delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="opacity-25 fixed inset-0 z-40 bg-black" />
+                      {/if}
+                    {:else}
+                      <input
+                        id="grid-username"
+                        postURL={input.postURL}
+                        on:click={submit}
+                        name={input.name}
+                        type={input.type}
+                        placeholder={input.placeholder}
+                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        value={input.value}
+                      />
+                    {/if}
                     <!-- Generic flexlist with no predefined values -->
                   {:else if input.flexdatalistdata === undefined}
                     <input
@@ -322,16 +459,11 @@
               </div>
             {/each}
           </div>
-
-          <hr class="mt-6 border-b-1 border-blueGray-300" />
+          <!-- Add hr if this is not last input section -->
+          {#if i !== settings.length - 1}
+            <hr class="mt-6 border-b-1 border-blueGray-300" />
+          {/if}
         {/each}
-        <input
-          on:click={submit}
-          type="submit"
-          value={submitButtonTitle !== undefined ? submitButtonTitle : "Submit"}
-          placeholder="Search"
-          class="py-3 mx-3 my-6 cursor-pointer text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-        />
       </form>
     </div>
   </div>

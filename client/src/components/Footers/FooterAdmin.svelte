@@ -1,9 +1,10 @@
 <script>
   // make dynamic date to be added to footer
   let date = new Date().getFullYear();
+  export let footerBGColor;
 </script>
 
-<footer class="block py-4">
+<footer style={footerBGColor} class="block py-4">
   <div class="container mx-auto px-4">
     <hr class="mb-4 border-b-1 border-blueGray-200" />
     <div class="flex flex-wrap items-center md:justify-between justify-center">

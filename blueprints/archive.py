@@ -257,6 +257,51 @@ def create_archive_collection():
     
     return redirect('/admin/archive-designer')
 
+@bp.route("/admin/archive-data/delete-collection", methods=["POST"])
+@login_required
+def delete_collection():
+    """ Delete a collection """
+
+    # get archive collection settings document ID
+    acs_docid = request.form['collectionEditID']
+    # get collection name of collection we are deleting
+    collection_name = ArchiveCollectionSettings.objects(id=acs_docid)[0].collection_name
+
+    # Make all inputs that reference a field from this deleted collection
+    # as a flexdatalist input be regular inputs
+    old_field_names = ArchiveCollectionSettings.objects(id=acs_docid).only("table_db_field_names")[0].table_db_field_names
+    update_json = { "$set": {}}
+    for old_field in old_field_names:
+        # If this old field is a flexdatalist reference 
+        # in another collection, make the field a regular input 
+        # with no flexdatalist reference. Leave all values intact however
+        col_settings = ArchiveCollectionSettings.objects()
+        for setting in col_settings:
+            for i in range(0, len(setting.creationcard_flexdatalistdata)):
+                if(setting.creationcard_flexdatalistdata[i] == collection_name):
+                    if(setting.creationcard_flexdatalistfield[i] == old_field):
+                        # We found the old field, lets update it to none in given collection
+                        new_listdata = setting.creationcard_flexdatalistdata
+                        new_listdata[i] = "None"
+                        new_listfield = setting.creationcard_flexdatalistfield
+                        new_listfield[i] = "None"
+                        ArchiveCollectionSettings.objects(id=setting.id).update(
+                            creationcard_flexdatalistdata = new_listdata,
+                            creationcard_flexdatalistfield = new_listfield
+                        )
+
+    # Delete from ArchiveCollectionSettings
+    ArchiveCollectionSettings.objects(id=acs_docid).delete()   
+
+    # Delete from ArchiveCollections
+    ArchiveCollections.objects(collection_name=collection_name).delete()
+
+    # Delete the actual collection from mongoengine
+    col = db.get_database(db_name).get_collection(collection_name)
+    col.drop()
+
+    return redirect('/admin/archive-designer')
+
 @bp.route("/admin/archive-configuration")
 @login_required
 def retrieve_archive_configuration():

@@ -2082,6 +2082,10 @@ select {
   height: 100%;
 }
 
+.h-90vh { 
+  height: 90vh;
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -2637,6 +2641,10 @@ select {
 
 .p-5 {
   padding: 1.25rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
 }
 
 .p-8 {
@@ -3593,6 +3601,10 @@ select {
 
 .z-50 {
   z-index: 50;
+}
+
+.z-100 {
+  z-index: 100;
 }
 
 .gap-2 {
