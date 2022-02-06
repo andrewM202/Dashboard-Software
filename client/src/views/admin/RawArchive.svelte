@@ -5,12 +5,13 @@
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
-    import { dataSettingsStore } from "../../stores.js";
+    import { dataSettingsStore, userSettingsStore } from "../../stores.js";
 
     // Defines input buttons for HeaderStats
-    let DataSettings;
+    let DataSettings, UserSettings;
 
     $: DataSettings = $dataSettingsStore;
+    $: UserSettings = $userSettingsStore;
 
     let navItems = [];
     $: if (DataSettings !== undefined) {
@@ -65,7 +66,7 @@
     let openTab = 0;
 </script>
 
-{#if DataSettings !== undefined}
+{#if DataSettings !== undefined && UserSettings !== undefined}
     <AdminNavbar bind:openTab {navItems} />
     {#each Object.entries(DataSettings) as section}
         <div class={navItems[openTab] === section[0] ? "block" : "hidden"}>
@@ -104,6 +105,11 @@
                                     .Flexdatalistdata}
                                 title={section[1].CreationCard.Title}
                                 inputs={section[1].CreationCard.Inputs}
+                                creationColor={UserSettings[0]
+                                    .archive_creation_color !== undefined &&
+                                UserSettings[0].archive_creation_color !== null
+                                    ? `Background-color: ${UserSettings[0].archive_creation_color}`
+                                    : undefined}
                             />
                         {/if}
                     </div>

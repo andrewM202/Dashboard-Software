@@ -151,7 +151,6 @@
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
-    console.log(data);
     let postURL = e.srcElement.attributes.posturl.nodeValue;
     j$.ajax({
       type: "POST",

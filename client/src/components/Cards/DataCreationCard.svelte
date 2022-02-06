@@ -8,6 +8,9 @@
     export let inputs;
     export let flexdata;
     export let CollectionName;
+    export let creationColor;
+
+    $: console.log(creationColor);
 
     let flexdatalist = [];
 
@@ -124,7 +127,7 @@
     }
 </script>
 
-<div class="w-full h-full bg-red-500">
+<div style={creationColor} class="w-full h-full bg-red-500">
     <div class="flex flex-col items-center w-full">
         <h3 class="text-4xl text-center font-normal leading-normal mt-0 mb-2">
             {title}

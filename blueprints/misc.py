@@ -66,5 +66,13 @@ def settings_config():
 @bp.route("/admin/set-default-settings", methods=["POST"])
 @login_required
 def set_default_settings():
-    
+    """ Set user settings back to default """
+    UserSettings.objects().update(
+        sidebar_state = None,
+        sidebar_color = None,
+        archive_header_color = None,
+        archive_table_color = None,
+        archive_creation_color = None,
+        background_color = None,
+    )
     return send_from_directory('client/public', 'index.html')
