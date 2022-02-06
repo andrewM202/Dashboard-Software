@@ -2,20 +2,17 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
-    import { getDBResource } from "../../stores.js";
+    import {
+        getDBResource,
+        collectionTitlesStore,
+        collectionPairsStore,
+        archiveConfigStore,
+    } from "../../stores.js";
 
     let collectionTitles, collectionPairs, archiveConfig;
-    async function getDBData() {
-        collectionTitles = await getDBResource(
-            "/admin/archive-data/collection-titles"
-        );
-        collectionPairs = await getDBResource(
-            "/admin/archive-data/collection-title-pairs"
-        );
-        archiveConfig = await getDBResource("/admin/archive-config-collection");
-    }
-
-    getDBData();
+    $: collectionTitles = $collectionTitlesStore;
+    $: collectionPairs = $collectionPairsStore;
+    $: archiveConfig = $archiveConfigStore;
 
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
