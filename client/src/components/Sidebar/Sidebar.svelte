@@ -5,6 +5,7 @@
   import NotificationDropdown from "components/Dropdowns/NotificationDropdown.svelte";
   import UserDropdown from "components/Dropdowns/UserDropdown.svelte";
   export let location; // Needs to be here for location to be dynamically updated
+  export let sidebarBackgroundColor;
 
   let collapseShow = "hidden";
 
@@ -69,6 +70,7 @@
   class="fas fa-plus-square hidden sticky left-10 cursor-pointer"
 />
 <nav
+  style={sidebarBackgroundColor}
   id="SideBarNav"
   class="z-50 md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
 >

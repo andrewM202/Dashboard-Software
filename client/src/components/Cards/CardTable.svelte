@@ -44,9 +44,9 @@
   export let UpdateURL;
   export let Modification;
   export let CollectionName;
-
-  // $: data = data;
-  // $: console.log(data);
+  export let tableBGColor;
+  export let tableHeaderColor;
+  export let tableAltColor;
 
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
@@ -57,8 +57,13 @@
   $: if (data) {
     async function makeOddRowsRed() {
       await tick();
-      j$("table > tbody > tr").removeClass("bg-red-600");
-      j$("table > tbody > tr:even").addClass("bg-red-600");
+      if (tableAltColor !== undefined) {
+        j$("table > tbody > tr").css("background-color", undefined);
+        j$("table > tbody > tr:even").css("background-color", tableAltColor);
+      } else {
+        j$("table > tbody > tr").removeClass("bg-red-600");
+        j$("table > tbody > tr:even").addClass("bg-red-600");
+      }
     }
     makeOddRowsRed();
   }
@@ -81,6 +86,7 @@
 </script>
 
 <div
+  style={tableBGColor}
   class="relative flex flex-col min-w-0 break-words w-full h-full shadow-lg rounded {color ===
   'light'
     ? 'bg-white'
@@ -165,6 +171,7 @@
             {#each headers as header}
               <!-- top-0 required for sticky table headers -->
               <th
+                style={tableHeaderColor}
                 class="w-56 sticky top-0 px-6 align-middle border-solid py-3 text-s uppercase border-l border-r font-semibold text-left {color ===
                 'light'
                   ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
@@ -175,6 +182,7 @@
             {/each}
             {#if Modification !== false}
               <th
+                style={tableHeaderColor}
                 class="w-28 sticky top-0 px-6 align-middle order-solid py-3 text-s uppercase border-l border-r font-semibold text-center {color ===
                 'light'
                   ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'

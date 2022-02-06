@@ -1,5 +1,10 @@
 <script>
   import { Router, Route } from "svelte-routing";
+  import { userSettingsStore } from "../stores.js";
+
+  // Users Settings
+  let UserSettings;
+  $: UserSettings = $userSettingsStore;
 
   // components for this layout
   import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
@@ -21,7 +26,17 @@
 
 {#if ["/admin/dashboard", "/admin/tables", "/admin/maps"].includes(location.pathname)}
   <div>
-    <Sidebar {location} />
+    {#if UserSettings !== undefined}
+      <Sidebar
+        {location}
+        sidebarBackgroundColor={UserSettings[0].sidebar_color !== undefined &&
+        UserSettings[0].sidebar_color !== null
+          ? `Background-color: ${UserSettings[0].sidebar_color}`
+          : undefined}
+      />
+    {:else}
+      <Sidebar {location} />
+    {/if}
     <div class="relative md:ml-64 bg-blueGray-100">
       <AdminNavbar />
       <HeaderStats />
@@ -35,13 +50,32 @@
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
         </Router>
-        <FooterAdmin />
+        {#if UserSettings !== undefined}
+          <FooterAdmin
+            footerBGColor={UserSettings[0].footer_color !== undefined &&
+            UserSettings[0].footer_color !== null
+              ? `Background-color: ${UserSettings[0].footer_color}`
+              : undefined}
+          />
+        {:else}
+          <FooterAdmin />
+        {/if}
       </div>
     </div>
   </div>
 {:else}
   <div>
-    <Sidebar {location} />
+    {#if UserSettings !== undefined}
+      <Sidebar
+        {location}
+        sidebarBackgroundColor={UserSettings[0].sidebar_color !== undefined &&
+        UserSettings[0].sidebar_color !== null
+          ? `Background-color: ${UserSettings[0].sidebar_color}`
+          : undefined}
+      />
+    {:else}
+      <Sidebar {location} />
+    {/if}
     <div class="relative md:ml-64 bg-blueGray-100">
       <div id="AdminMainContentContainer" class="mx-auto w-full">
         <Router url="admin">
@@ -53,7 +87,16 @@
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
         </Router>
-        <FooterAdmin />
+        {#if UserSettings !== undefined}
+          <FooterAdmin
+            footerBGColor={UserSettings[0].footer_color !== undefined &&
+            UserSettings[0].footer_color !== null
+              ? `Background-color: ${UserSettings[0].footer_color}`
+              : undefined}
+          />
+        {:else}
+          <FooterAdmin />
+        {/if}
       </div>
     </div>
   </div>

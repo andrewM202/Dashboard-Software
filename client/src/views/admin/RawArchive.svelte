@@ -5,12 +5,13 @@
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 
-    import { dataSettingsStore } from "../../stores.js";
+    import { dataSettingsStore, userSettingsStore } from "../../stores.js";
 
     // Defines input buttons for HeaderStats
-    let DataSettings;
+    let DataSettings, UserSettings;
 
     $: DataSettings = $dataSettingsStore;
+    $: UserSettings = $userSettingsStore;
 
     let navItems = [];
     $: if (DataSettings !== undefined) {
@@ -65,8 +66,15 @@
     let openTab = 0;
 </script>
 
-{#if DataSettings !== undefined}
-    <AdminNavbar bind:openTab {navItems} />
+{#if DataSettings !== undefined && UserSettings !== undefined}
+    <AdminNavbar
+        bind:openTab
+        {navItems}
+        navBarBGColor={UserSettings[0].navigation_color !== undefined &&
+        UserSettings[0].navigation_color !== null
+            ? `Background-color: ${UserSettings[0].navigation_color}`
+            : undefined}
+    />
     {#each Object.entries(DataSettings) as section}
         <div class={navItems[openTab] === section[0] ? "block" : "hidden"}>
             <HeaderStats
@@ -77,15 +85,22 @@
                 inputs={section[1].HeaderSearchInputs}
                 CollectionName={section[1].CollectionName}
                 SearchFunction={SearchResults}
+                headerBGColor={UserSettings[0].archive_header_color !==
+                    undefined && UserSettings[0].archive_header_color !== null
+                    ? `Background-color: ${UserSettings[0].archive_header_color}`
+                    : undefined}
             />
-            <div class="block px-4 md:px-10 mx-auto w-full m-12">
-                <div class="flex flex-wrap ml-8">
+            <div
+                style={UserSettings[0].background_color !== undefined &&
+                UserSettings[0].background_color !== null
+                    ? `Background-color: ${UserSettings[0].background_color}`
+                    : undefined}
+                class="block lg:px-10 mx-auto w-full my-12"
+            >
+                <div class="flex flex-wrap ml-8 w-full">
                     <div
-                        class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-8"
+                        class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-6"
                     >
-                        <!-- {#await section[1].Table.Data[0]}
-                            <p>Loading...</p>
-                        {:then data} -->
                         <CardTable
                             color="dark"
                             data={section[1].Table.Data[0]}
@@ -93,23 +108,51 @@
                             headers={section[1].Table.Headers}
                             DBFieldNames={section[1].Table.DBFieldNames}
                             title={section[1].Table.Title}
+                            tableBGColor={UserSettings[0]
+                                .archive_table_color !== undefined &&
+                            UserSettings[0].archive_table_color !== null
+                                ? `Background-color: ${UserSettings[0].archive_table_color}`
+                                : undefined}
+                            tableHeaderColor={UserSettings[0]
+                                .archive_table_header_color !== undefined &&
+                            UserSettings[0].archive_table_header_color !== null
+                                ? `Background-color: ${UserSettings[0].archive_table_header_color}`
+                                : undefined}
+                            tableAltColor={UserSettings[0]
+                                .archive_table_alt_color !== undefined &&
+                            UserSettings[0].archive_table_alt_color !== null
+                                ? UserSettings[0].archive_table_alt_color
+                                : undefined}
                         />
-                        <!-- {:catch error}
-                            <p style="color: red">{error.message}</p>
-                        {/await} -->
                     </div>
                 </div>
             </div>
-            {#if section[1].CreationCard !== undefined}
-                <!-- {#if section[1].CreationCard.Data.includes(undefined) !== true} -->
-                <DataCreationCard
-                    CollectionName={section[1].CollectionName}
-                    flexdata={section[1].CreationCard.Flexdatalistdata}
-                    title={section[1].CreationCard.Title}
-                    inputs={section[1].CreationCard.Inputs}
-                />
-                <!-- {/if} -->
-            {/if}
+            <div
+                style={UserSettings[0].background_color !== undefined &&
+                UserSettings[0].background_color !== null
+                    ? `Background-color: ${UserSettings[0].background_color}`
+                    : undefined}
+                class="lg:px-10 mx-auto w-full"
+            >
+                <div class="flex flex-wrap ml-8">
+                    <div class="w-full h-auto bg-blueGray-700 mb-12 p-6">
+                        {#if section[1].CreationCard !== undefined}
+                            <DataCreationCard
+                                CollectionName={section[1].CollectionName}
+                                flexdata={section[1].CreationCard
+                                    .Flexdatalistdata}
+                                title={section[1].CreationCard.Title}
+                                inputs={section[1].CreationCard.Inputs}
+                                creationColor={UserSettings[0]
+                                    .archive_creation_color !== undefined &&
+                                UserSettings[0].archive_creation_color !== null
+                                    ? `Background-color: ${UserSettings[0].archive_creation_color}`
+                                    : undefined}
+                            />
+                        {/if}
+                    </div>
+                </div>
+            </div>
         </div>
     {/each}
 {/if}

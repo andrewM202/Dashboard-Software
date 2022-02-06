@@ -12,29 +12,24 @@
     export let CollectionName;
     export let SearchFunction; // Pass in the search function for the form
     export let submitValue; // Value of the submit button
+    export let headerBGColor;
 
     // let id = Math.random().toString(36).substr(2, 8); // Generate random string
     let submitButtonID = Math.random().toString(36).substr(2, 8);
+    let submitID = Math.random().toString(36).substring(2, 8);
 
-    async function positionSearchBar(node) {
+    async function positionSearchBar() {
         await tick();
         if (inputs !== undefined) {
             if (inputs.length % 2 === 0) {
-                j$(node).children().last().css({
-                    "grid-column-start": 1,
-                    "grid-column-end": 3,
+                j$(`#${submitID}`).css({
+                    width: "100%",
                 });
-            }
-            // Make submit button bigger if next to flexdata input
-            if (
-                inputs.length === 1 &&
-                inputs[0].flexdatalistdata !== undefined
-            ) {
-                j$(`#${submitButtonID}`).addClass("h-full");
-                j$(`#${submitButtonID}`).parent().addClass("h-full");
             }
         }
     }
+
+    positionSearchBar();
 
     async function styleFlexData() {
         await tick();
@@ -53,7 +48,7 @@
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-24 pb-16 pt-16">
+<div class="relative bg-red-500 md:pt-24 pt-16" style={headerBGColor}>
     <div class="px-4 py-2 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
@@ -86,71 +81,68 @@
             </div>
             <!-- Inputs -->
             {#if inputs !== undefined}
-                <form>
-                    <input
-                        type="hidden"
-                        name="CollectionName"
-                        value={CollectionName}
-                    />
-                    <div
-                        use:positionSearchBar
-                        class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
-                    >
-                        {#each inputs as input}
-                            {#if input.flexdatalistdata !== undefined}
-                                <input
-                                    use:styleFlexData
-                                    list={input.flexdataid}
-                                    data-min-length="0"
-                                    type="text"
-                                    placeholder={input.placeholder}
-                                    name={input.name}
-                                    id="headerStatsFlexForm"
-                                    class="flexdatalist px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                                />
-                                <datalist id={input.flexdataid}>
-                                    {#each input.flexdatalistdata as datarow}
-                                        <option value={datarow} />
-                                        <!-- {#each Object.entries(datarow) as datapoint}
-                                            {#if input.flexdatafields.includes(datapoint[0])}
-                                                <option value={datapoint[1]}
-                                                    >{datapoint[1]}</option
-                                                >
-                                            {/if}
-                                        {/each} -->
-                                    {/each}
-                                </datalist>
-                            {:else}
-                                <div class="mb-3 py-0 mx-4">
+                <div class="flex-auto py-10 pt-0">
+                    <form>
+                        <input
+                            type="hidden"
+                            name="CollectionName"
+                            value={CollectionName}
+                        />
+                        <div class="flex flex-wrap">
+                            {#each inputs as input}
+                                <div class="w-full lg:w-6/12 py-2 px-4">
+                                    <div class="relative w-full mb-3">
+                                        {#if input.flexdatalistdata !== undefined}
+                                            <input
+                                                use:styleFlexData
+                                                list={input.flexdataid}
+                                                data-min-length="0"
+                                                type="text"
+                                                placeholder={input.placeholder}
+                                                name={input.name}
+                                                id="headerStatsFlexForm"
+                                                class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                            />
+                                            <datalist id={input.flexdataid}>
+                                                {#each input.flexdatalistdata as datarow}
+                                                    <option value={datarow} />
+                                                {/each}
+                                            </datalist>
+                                        {:else}
+                                            <input
+                                                type={input.type}
+                                                placeholder={input.placeholder}
+                                                name={input.name}
+                                                value={input.type === "Submit"
+                                                    ? input.placeholder
+                                                    : ""}
+                                                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                            />
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/each}
+                            <div
+                                class="w-full lg:w-6/12 py-2 px-4"
+                                id={submitID}
+                            >
+                                <div class="relative w-full mb-3">
                                     <input
-                                        type={input.type}
-                                        placeholder={input.placeholder}
-                                        name={input.name}
-                                        value={input.type === "Submit"
-                                            ? input.placeholder
-                                            : ""}
-                                        class="{input.type === 'Submit'
-                                            ? 'cursor-pointer'
-                                            : ''} px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                                        on:click={SearchFunction}
+                                        id={submitButtonID}
+                                        type="Submit"
+                                        placeholder="Submit"
+                                        name="submit"
+                                        value={submitValue !== undefined
+                                            ? submitValue
+                                            : "Submit"}
+                                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                     />
                                 </div>
-                            {/if}
-                        {/each}
-                        <div class="mb-3 py-0 mx-4">
-                            <input
-                                on:click={SearchFunction}
-                                id={submitButtonID}
-                                type="Submit"
-                                placeholder="Submit"
-                                name="submit"
-                                value={submitValue !== undefined
-                                    ? submitValue
-                                    : "Submit"}
-                                class="cursor-pointer px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
-                            />
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             {/if}
         </div>
     </div>
