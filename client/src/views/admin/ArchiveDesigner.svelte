@@ -361,7 +361,6 @@
             title={"Archive Creation"}
             settings={cardSettings}
             descButtonTitle={archiveDesignerButtonTitle}
-            collectionID={1}
         />
     {:else}
         <CardSettings

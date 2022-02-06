@@ -22,4 +22,11 @@ def profile():
 # Path for all the static files (compiled JS/CSS, etc.)
 @bp.route("/<path:path>")
 def home(path):
-  return send_from_directory('client/public', path)# 
+  return send_from_directory('client/public', path)
+
+########################### Settings Page #####################################
+
+@bp.route("/admin/settings")
+@login_required
+def settings():
+    return send_from_directory('client/public', 'index.html')

@@ -258,12 +258,21 @@
                     <!-- Tooltip End -->
                     {input.placeholder}
                   </label>
-                  <!-- Any regular inpit with the flexdatalist disabled -->
-                  {#if input.flexdatalistdisabled === true}
+
+                  {#if input.type === "color"}
                     <input
                       id="grid-username"
                       name={input.name}
-                      postURL={input.postURL}
+                      type={input.type}
+                      placeholder=""
+                      class="border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value=""
+                    />
+                    <!-- Any regular input with the flexdatalist disabled -->
+                  {:else if input.flexdatalistdisabled === true}
+                    <input
+                      id="grid-username"
+                      name={input.name}
                       type={input.type}
                       placeholder={input.placeholder}
                       class="border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"

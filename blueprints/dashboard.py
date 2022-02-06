@@ -9,11 +9,6 @@ bp = Blueprint("dashboard", __name__)
 def dashboard():
     return send_from_directory('client/public', 'index.html')
 
-@bp.route("/admin/settings")
-@login_required
-def settings():
-    return send_from_directory('client/public', 'index.html')
-
 @bp.route("/admin/maps")
 @login_required
 def maps():
