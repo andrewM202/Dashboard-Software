@@ -33,6 +33,10 @@
         UserSettings[0].sidebar_color !== null
           ? `Background-color: ${UserSettings[0].sidebar_color}`
           : undefined}
+        sidebarDefaultToggled={UserSettings[0].sidebar_state !== undefined &&
+        UserSettings[0].sidebar_state !== null
+          ? UserSettings[0].sidebar_state
+          : true}
       />
     {:else}
       <Sidebar {location} />
@@ -72,6 +76,10 @@
         UserSettings[0].sidebar_color !== null
           ? `Background-color: ${UserSettings[0].sidebar_color}`
           : undefined}
+        sidebarDefaultToggled={UserSettings[0].sidebar_state !== undefined &&
+        UserSettings[0].sidebar_state !== null
+          ? UserSettings[0].sidebar_state
+          : true}
       />
     {:else}
       <Sidebar {location} />

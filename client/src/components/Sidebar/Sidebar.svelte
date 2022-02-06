@@ -4,8 +4,10 @@
   // core components
   import NotificationDropdown from "components/Dropdowns/NotificationDropdown.svelte";
   import UserDropdown from "components/Dropdowns/UserDropdown.svelte";
+  import { tick } from "svelte";
   export let location; // Needs to be here for location to be dynamically updated
   export let sidebarBackgroundColor;
+  export let sidebarDefaultToggled;
 
   let collapseShow = "hidden";
 
@@ -51,6 +53,17 @@
     }
   }
 
+  // Sets nav bar by default on or off based
+  // on user setting
+  async function userSettingsNavBarToggle() {
+    await tick();
+    j$("#DefaultVisibleSidebarIcon").click();
+  }
+
+  if (sidebarDefaultToggled !== undefined && sidebarDefaultToggled) {
+    userSettingsNavBarToggle();
+  }
+
   function logoutUser(e) {
     e.preventDefault();
     // Send an ajax request to the logout route, as Svelte
@@ -78,6 +91,7 @@
     class="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto"
   >
     <i
+      id="DefaultVisibleSidebarIcon"
       on:click={closeSideBar}
       class="fas fa-times hidden md:block absolute top-10 right-10 cursor-pointer"
     />
