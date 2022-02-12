@@ -70,7 +70,7 @@ def settings_config():
 def set_default_settings():
     """ Set user settings back to default """
     UserSettings.objects().update(
-        sidebar_state = None,
+        sidebar_state = False,
         sidebar_color = None,
         archive_header_color = None,
         archive_table_color = None,
