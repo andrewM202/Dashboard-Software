@@ -13,8 +13,6 @@
     $: collectionPairs = $collectionPairsStore;
     $: archiveConfig = $archiveConfigStore;
 
-    $: console.log(archiveConfig);
-
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
 

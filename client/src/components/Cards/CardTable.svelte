@@ -35,7 +35,7 @@
   // Popover Stuff End
 
   // can be one of light or dark
-  export let color = "light";
+  export let color = "dark";
   export let data;
   export let headers;
   export let title;
@@ -47,6 +47,7 @@
   export let tableBGColor;
   export let tableHeaderColor;
   export let tableAltColor;
+  export let inputs;
 
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
@@ -215,6 +216,7 @@
                     UpdateFormNames={DBFieldNames}
                     {CollectionName}
                     DeleteID={Object.values(row)}
+                    {inputs}
                   />
                 </td>
               {/if}
