@@ -3,7 +3,6 @@
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
     import {
-        getDBResource,
         collectionTitlesStore,
         collectionPairsStore,
         archiveConfigStore,
@@ -13,6 +12,8 @@
     $: collectionTitles = $collectionTitlesStore;
     $: collectionPairs = $collectionPairsStore;
     $: archiveConfig = $archiveConfigStore;
+
+    $: console.log(archiveConfig);
 
     let tableData = [];
     $: tableData = [collectionTitles, collectionPairs];
@@ -47,9 +48,39 @@
                     // Loop through each input and set to right value
                     for (let setting of cardSettings) {
                         for (let input of setting.Inputs) {
-                            j$(`[name=${input.name}]`).val(
-                                col[input.name].toString()
-                            );
+                            // If this is the flexdatalistdata  or
+                            // flexdatalistfield input, change name from gen_ _ format
+                            // to titled value. Ie gen_organizations -> Organizations
+                            // Same with none, gen_none -> None
+                            if (
+                                input.name === "creationcard_flexdatalistdata"
+                            ) {
+                                let tempFlexdataListArray = col[input.name];
+                                for (
+                                    let i = 0;
+                                    i < tempFlexdataListArray.length;
+                                    i++
+                                ) {
+                                    if (tempFlexdataListArray[i] !== "None") {
+                                        for (let arch of archiveConfig) {
+                                            if (
+                                                arch.collection_name ===
+                                                tempFlexdataListArray[i]
+                                            ) {
+                                                tempFlexdataListArray[i] =
+                                                    arch.collection_title;
+                                            }
+                                        }
+                                    }
+                                }
+                                j$(`[name=${input.name}]`).val(
+                                    tempFlexdataListArray.toString()
+                                );
+                            } else {
+                                j$(`[name=${input.name}]`).val(
+                                    col[input.name].toString()
+                                );
+                            }
                         }
                     }
                     // Manually set the collection name
