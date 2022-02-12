@@ -49,6 +49,9 @@
   export let tableAltColor;
   export let inputs;
 
+  $: console.log(inputs);
+  $: console.log(headers);
+
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
   }
@@ -197,13 +200,26 @@
         {#if data !== undefined}
           {#each data as row}
             <tr>
-              {#each Object.entries(row) as entry}
+              {#each Object.entries(row) as entry, i}
                 {#if DBFieldNames.includes(entry[0])}
-                  <td
-                    class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
-                  >
-                    {entry[1]}
-                  </td>
+                  <!-- If this is a color input style it differently -->
+                  {#if headers[i - 1] === "Color"}
+                    <td
+                      class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                    >
+                      <span
+                        class="p-3 px-12"
+                        style="background-color: {entry[1]}; border-radius: 16px;"
+                        >{entry[1]}</span
+                      >
+                    </td>
+                  {:else}
+                    <td
+                      class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                    >
+                      {entry[1]}
+                    </td>
+                  {/if}
                 {/if}
               {/each}
               {#if Modification !== false}

@@ -155,17 +155,22 @@
             </div>
         {/if}
     </div>
-    <div class="flex-auto py-10 pt-0">
+    <div class="flex-auto py-5 pt-0">
         <form id={formID}>
             <input type="hidden" name="CollectionName" value={CollectionName} />
             {#if inputs !== undefined}
                 <div class="flex flex-wrap" id="rawArchiveTableContainer">
                     {#each inputs as input, i}
-                        <div class="w-full lg:w-6/12 py-2 px-4">
+                        <div class="w-full lg:w-6/12 py-1 px-4">
                             <div class="relative w-full mb-3">
+                                <label
+                                    class="w-full text-lg text-center form-check-label inline-block text-gray-800"
+                                    for={input.name}>{input.placeholder}</label
+                                >
                                 <!-- Flexdatalist Inputs -->
                                 {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
                                     <input
+                                        id={input.name}
                                         list={input.flexdataid}
                                         multiple
                                         type={input.type}
@@ -209,7 +214,7 @@
                             </div>
                         </div>
                     {/each}
-                    <div class="w-full lg:w-6/12 py-2 px-4" id={submitID}>
+                    <div class="w-full lg:w-6/12 pt-6 px-4" id={submitID}>
                         <div class="relative w-full mb-3">
                             <input
                                 on:click={submit}

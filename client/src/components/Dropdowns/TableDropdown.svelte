@@ -111,7 +111,7 @@
           break;
         }
       }
-      // console.log(type);
+      // Style input differently if it is a color input
       if (type.toLowerCase() === "color") {
         j$(child).html(
           `<input name='${UpdateFormNames[index]}'
