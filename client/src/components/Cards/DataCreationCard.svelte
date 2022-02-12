@@ -57,10 +57,16 @@
         let interval = setInterval(function () {
             if (j$("ul.flexdatalist-multiple").length !== 0) {
                 clearInterval(interval);
-                j$("li.input-container.flexdatalist-multiple-value input").css(
-                    "min-width",
-                    "150px"
-                );
+                j$("li.input-container.flexdatalist-multiple-value input").css({
+                    "min-width": "150px",
+                    height: "100%",
+                });
+                j$("li.input-container.flexdatalist-multiple-value").css({
+                    height: "2rem",
+                });
+                j$("ul.flexdatalist-multiple").css({
+                    height: "3rem",
+                });
                 // Make the items in flexlist have cursor pointers
                 j$("ul.flexdatalist-multiple").click(function () {
                     j$(".item").css({ cursor: "pointer" });
@@ -166,7 +172,7 @@
                                         placeholder={input.placeholder}
                                         name={input.name}
                                         value=""
-                                        class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        class="flexdatalist h-12 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                         data-min-length="0"
                                     />
                                     <datalist id={input.flexdataid}>
@@ -180,15 +186,24 @@
                                             {/each}
                                         {/each}
                                     </datalist>
-                                    <!-- Any Input Not A Submit Or Flexdatalist -->
-                                {:else if input.type !== "Submit"}
+                                {:else if input.type.toLowerCase() === "color"}
+                                    <input
+                                        id={input.name}
+                                        name={input.name}
+                                        type={input.type}
+                                        placeholder=""
+                                        class="h-12 border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        value={input.value}
+                                    />
+                                    <!-- Any Input Not A Flexdatalist -->
+                                {:else if input.type.toLowerCase() !== "Submit"}
                                     <input
                                         id={input.name}
                                         type={input.type}
                                         placeholder={input.placeholder}
                                         name={input.name}
                                         value=""
-                                        class="border-0 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        class="h-12 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                     />
                                 {/if}
                             </div>

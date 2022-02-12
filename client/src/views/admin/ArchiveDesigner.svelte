@@ -201,14 +201,27 @@
         },
         {
             Subtitle: "Creation Card Inputs",
-            SubtitlePopoverMessage: "Define the inputs for creating a document",
+            SubtitlePopoverMessage:
+                "Define the inputs for creating a document.",
             Inputs: [
                 {
                     type: "Text",
                     placeholder: "Creation Card Input Types",
                     name: "creationcard_input_types",
                     value: "",
-                    flexdatalistdata: ["text"],
+                    popoverMessage:
+                        "Notice if this is a flexdatalist input, it can only be a 'text' input type",
+                    flexdatalistdata: [
+                        "Text",
+                        "Date",
+                        "Month",
+                        "Color",
+                        "Number",
+                        "Image",
+                        "File",
+                        "Email",
+                        "Url",
+                    ],
                     flexdataid: Math.random().toString(36).substring(2, 8),
                 },
                 {
