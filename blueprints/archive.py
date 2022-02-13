@@ -87,6 +87,17 @@ def retrieve_specific_archive_data(collection):
 @login_required
 def edit_archive_collection():
     try:
+        # Throw error if any of the collection names or titles
+        # are not set 
+        if(len(request.form['collection_name']) == 0):
+            return jsonify("Collection name must be set"), 400
+
+        if(len(request.form['table_title']) == 0):
+            return jsonify("Table title must be set"), 400
+
+        if(len(request.form['creationcard_title']) == 0):
+            return jsonify("Creation card title must be set"), 400
+
         # Check if this collection name already exists
         collections = db.get_database(db_name).collection_names()
         new_col_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
@@ -109,17 +120,13 @@ def edit_archive_collection():
         c_fd_length = len(request.form['creationcard_flexdatalistdata'].split(",")) if request.form['creationcard_flexdatalistdata'].split(",") != [''] else []
         c_ff_length = len(request.form['creationcard_flexdatalistfield'].split(",")) if request.form['creationcard_flexdatalistfield'].split(",") != [''] else []
         c_r_f_length = len(request.form['creationcard_required_field'].split(",")) if request.form['creationcard_required_field'].split(",") != [''] else []
-        h_s_i_t_length = request.form['header_search_input_types'].split(",") if request.form['header_search_input_types'].split(",") != [''] else []
-        h_s_e_length = request.form['header_search_enabled'].split(",") if request.form['header_search_enabled'].split(",") != [''] else []
+        h_s_i_t_length = len(request.form['header_search_input_types'].split(",")) if request.form['header_search_input_types'].split(",") != [''] else []
+        h_s_e_length = len(request.form['header_search_enabled'].split(",")) if request.form['header_search_enabled'].split(",") != [''] else []
         if(c_i_t_length != c_i_n_length or c_i_t_length != c_fd_length or c_i_t_length != c_ff_length or c_i_t_length != c_r_f_length or c_i_t_length != h_s_i_t_length or c_i_t_length != h_s_e_length):
             return jsonify("Creation card and header search lengths must be equal"), 400
 
-    except Exception as e:
-        return redirect('/admin/archive-designer')
+        # If we pass all the checks, go on
 
-    # If we pass all the checks, go on
-
-    try:
         # Gen for auto-generated, non-default collection
         collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
 
@@ -230,6 +237,17 @@ def create_archive_collection():
     """ 
 
     try:
+        # Throw error if any of the collection names or titles
+        # are not set 
+        if(len(request.form['collection_name']) == 0):
+            return jsonify("Collection name must be set"), 400
+
+        if(len(request.form['table_title']) == 0):
+            return jsonify("Table title must be set"), 400
+
+        if(len(request.form['creationcard_title']) == 0):
+            return jsonify("Creation card title must be set"), 400
+
         # Check if this collection name already exists
         collections = db.get_database(db_name).collection_names()
         new_col_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
@@ -252,15 +270,24 @@ def create_archive_collection():
         c_fd_length = len(request.form['creationcard_flexdatalistdata'].split(",")) if request.form['creationcard_flexdatalistdata'].split(",") != [''] else []
         c_ff_length = len(request.form['creationcard_flexdatalistfield'].split(",")) if request.form['creationcard_flexdatalistfield'].split(",") != [''] else []
         c_r_f_length = len(request.form['creationcard_required_field'].split(",")) if request.form['creationcard_required_field'].split(",") != [''] else []
-        h_s_i_t_length = request.form['header_search_input_types'].split(",") if request.form['header_search_input_types'].split(",") != [''] else []
-        h_s_e_length = request.form['header_search_enabled'].split(",") if request.form['header_search_enabled'].split(",") != [''] else []
+        h_s_i_t_length = len(request.form['header_search_input_types'].split(",")) if request.form['header_search_input_types'].split(",") != [''] else []
+        h_s_e_length = len(request.form['header_search_enabled'].split(",")) if request.form['header_search_enabled'].split(",") != [''] else []
+        print(c_i_t_length)
+        print(c_i_n_length)
+        print(c_fd_length)
+        print(c_ff_length)
+        print(c_r_f_length)
+        print(h_s_i_t_length)
+        print(h_s_e_length)
         if(c_i_t_length != c_i_n_length or c_i_t_length != c_fd_length or c_i_t_length != c_ff_length or c_i_t_length != c_r_f_length or c_i_t_length != h_s_i_t_length or c_i_t_length != h_s_e_length):
             return jsonify("Creation card and header search lengths must be equal"), 400
 
-    except Exception as e:
-        return redirect('/admin/archive-designer')
+        # Check if lengths are more than 0
+        if(c_i_t_length == 0):
+            return jsonify("Creation card and header search inputs cannot be empty"), 400
 
-    try:
+        # All checks have passed, create collection    
+
         # Gen for auto-generated, non-default collection
         collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
 
