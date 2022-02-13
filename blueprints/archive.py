@@ -272,13 +272,6 @@ def create_archive_collection():
         c_r_f_length = len(request.form['creationcard_required_field'].split(",")) if request.form['creationcard_required_field'].split(",") != [''] else []
         h_s_i_t_length = len(request.form['header_search_input_types'].split(",")) if request.form['header_search_input_types'].split(",") != [''] else []
         h_s_e_length = len(request.form['header_search_enabled'].split(",")) if request.form['header_search_enabled'].split(",") != [''] else []
-        print(c_i_t_length)
-        print(c_i_n_length)
-        print(c_fd_length)
-        print(c_ff_length)
-        print(c_r_f_length)
-        print(h_s_i_t_length)
-        print(h_s_e_length)
         if(c_i_t_length != c_i_n_length or c_i_t_length != c_fd_length or c_i_t_length != c_ff_length or c_i_t_length != c_r_f_length or c_i_t_length != h_s_i_t_length or c_i_t_length != h_s_e_length):
             return jsonify("Creation card and header search lengths must be equal"), 400
 
@@ -607,3 +600,9 @@ def search_archive():
 
     return json_util.dumps(return_obj)
     
+########################### Archive Upload #####################################
+
+@bp.route("/admin/archive-upload")
+@login_required
+def archive_upload():
+    return send_from_directory('client/public', 'index.html')

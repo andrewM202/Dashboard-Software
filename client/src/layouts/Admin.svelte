@@ -15,6 +15,8 @@
   // pages for this layout
   import RawArchive from "views/admin/RawArchive.svelte";
   import ArchiveDesigner from "views/admin/ArchiveDesigner.svelte";
+  import ArchiveUpload from "views/admin/ArchiveUpload.svelte";
+  import DashboardDesigner from "views/admin/DashboardDesigner.svelte";
   import Notes from "views/admin/Notes.svelte";
   import Dashboard from "views/admin/Dashboard.svelte";
   import Settings from "views/admin/Settings.svelte";
@@ -53,6 +55,8 @@
           <Route path="raw-archive" component={RawArchive} />
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
+          <Route path="archive-upload" component={ArchiveUpload} />
+          <Route path="dashboard-designer" component={DashboardDesigner} />
         </Router>
         {#if UserSettings !== undefined}
           <FooterAdmin
@@ -94,6 +98,8 @@
           <Route path="raw-archive" component={RawArchive} />
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
+          <Route path="archive-upload" component={ArchiveUpload} />
+          <Route path="dashboard-designer" component={DashboardDesigner} />
         </Router>
         {#if UserSettings !== undefined}
           <FooterAdmin

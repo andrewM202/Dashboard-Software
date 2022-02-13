@@ -164,7 +164,7 @@
                         <div class="w-full lg:w-6/12 py-1 px-4">
                             <div class="relative w-full mb-3">
                                 <label
-                                    class="w-full text-lg text-center form-check-label inline-block text-gray-800"
+                                    class="w-full font-semibold text-lg text-center form-check-label inline-block text-gray-800"
                                     for={input.name}>{input.placeholder}</label
                                 >
                                 <!-- Flexdatalist Inputs -->

@@ -23,3 +23,8 @@ def people_dashboard():
 @login_required
 def tables():
     return send_from_directory('client/public', 'index.html')
+
+@bp.route("/admin/dashboard-designer")
+@login_required
+def dashboard_designer():
+    return send_from_directory('client/public', 'index.html')

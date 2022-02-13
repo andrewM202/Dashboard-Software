@@ -177,16 +177,14 @@
           <a
             use:link
             href="/admin/dashboard"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/dashboard'
-            ) !== -1
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/dashboard'
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-chart-line mr-2 text-sm {location.href.indexOf(
-                '/admin/dashboard'
-              ) !== -1
+              class="fas fa-chart-line mr-2 text-sm {location.pathname ===
+              '/admin/dashboard'
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
@@ -387,16 +385,14 @@
           <a
             use:link
             href="/admin/dashboard-designer"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/dashboard-designer'
-            ) !== -1
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/dashboard-designer'
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-edit mr-2 text-sm {location.href.indexOf(
-                '/admin/dashboard-designer'
-              ) !== -1
+              class="fas fa-edit mr-2 text-sm {location.pathname ===
+              '/admin/dashboard-designer'
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
@@ -417,27 +413,6 @@
       <ul
         class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
       >
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/archive-upload"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/archive-upload'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-database mr-2 text-sm {location.href.indexOf(
-                '/admin/archive-upload'
-              ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Upload Data
-          </a>
-        </li>
-
         <li class="items-center">
           <a
             use:link
@@ -477,6 +452,27 @@
                 : 'text-blueGray-300'}"
             />
             Archive Designer
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/archive-upload"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/archive-upload'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-database mr-2 text-sm {location.href.indexOf(
+                '/admin/archive-upload'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Archive Upload
           </a>
         </li>
 
