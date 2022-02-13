@@ -49,9 +49,6 @@
   export let tableAltColor;
   export let inputs;
 
-  $: console.log(inputs);
-  $: console.log(headers);
-
   function toggleFullscreen(e) {
     j$(e.path[6]).fullScreen(true);
   }
