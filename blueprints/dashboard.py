@@ -28,3 +28,8 @@ def tables():
 @login_required
 def dashboard_designer():
     return send_from_directory('client/public', 'index.html')
+
+@bp.route("/admin/chart-designer")
+@login_required
+def chart_designer():
+    return send_from_directory('client/public', 'index.html')

@@ -39,7 +39,7 @@
                 j$("ul.flexdatalist-results").css({
                     "border-width": "0",
                 });
-                j$("#headerStatsFlexForm-flexdatalist").click(function () {
+                j$(".headerStatsFlexForm").click(function () {
                     j$(".item").css({ cursor: "pointer" });
                 });
             }
@@ -100,8 +100,8 @@
                                                 type="text"
                                                 placeholder={input.placeholder}
                                                 name={input.name}
-                                                id="headerStatsFlexForm"
-                                                class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                                id={input.name}
+                                                class="headerStatsFlexForm flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                             />
                                             <datalist id={input.flexdataid}>
                                                 {#each input.flexdatalistdata as datarow}

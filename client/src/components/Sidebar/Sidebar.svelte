@@ -384,6 +384,25 @@
         <li class="items-center">
           <a
             use:link
+            href="/admin/chart-designer"
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/chart-designer'
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-edit mr-2 text-sm {location.pathname ===
+              '/admin/chart-designer'
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Chart Designer
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
             href="/admin/dashboard-designer"
             class="text-xs uppercase py-3 font-bold block {location.pathname ===
             '/admin/dashboard-designer'
