@@ -2,11 +2,10 @@
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
-    import { tick } from "svelte";
     import { collectionPairsStore } from "../../stores.js";
+    import { tick } from "svelte";
     // D3 Imports
-    import * as d3 from "d3";
-    import { Histogram } from "@d3/histogram";
+    import { createBarChart } from "components/DesignerCharts/BarChart.svelte";
 
     $: collectionPairs = $collectionPairsStore;
 
@@ -80,33 +79,34 @@
         },
     ];
 
-    async function createBarChart() {
+    // async function createBarChart(connectionNodeID, settings) {
+    //     await tick();
+    //     let data = [4, 8, 15, 16, 23, 42, 12];
+    //     const div = d3
+    //         .create("div")
+    //         .style("font", "20px sans-serif")
+    //         .style("text-align", "right")
+    //         .style("color", "white")
+    //         .style("height", "100%")
+    //         .style("overflow", "auto");
+
+    //     div.selectAll("div")
+    //         .data(data)
+    //         .join("div")
+    //         .style("background", "steelblue")
+    //         .style("padding", "3px")
+    //         .style("margin", "1px")
+    //         .style("width", (d) => `${d * 20}px`)
+    //         .style("height", (d) => `50px`)
+    //         .text((d) => d);
+
+    //     j$(`#${connectionNodeID}`).append(div.node());
+    // }
+    async function createCharts() {
         await tick();
-        let data = [4, 8, 15, 16, 23, 42];
-        const div = d3
-            .create("div")
-            .style("font", "20px sans-serif")
-            .style("text-align", "right")
-            .style("color", "white")
-            .style("height", "100%");
-
-        div.selectAll("div")
-            .data(data)
-            .join("div")
-            .style("background", "steelblue")
-            .style("padding", "3px")
-            .style("margin", "1px")
-            .style("width", (d) => `${d * 20}px`)
-            .style(
-                "height",
-                (d) =>
-                    `calc(${(100 * 1) / data.length}% - ${8 / data.length}px)`
-            )
-            .text((d) => d);
-
-        j$("#ChartCreationContainer").append(div.node());
+        createBarChart(j$("#ChartCreationContainer"), "test");
     }
-    createBarChart();
+    createCharts();
 
     function HeaderSearchFunction(e) {
         e.preventDefault();
@@ -142,12 +142,10 @@
     </div>
 {/if}
 
-<div class="mt-4 w-full md:w-11/12 h-auto px-4">
+<div class="mt-4 w-full overflow-x-auto md:w-11/12 h-auto px-4">
     <div
         id="ChartCreationContainer"
-        class="w-full border-8 border-blueGray-200"
-        style="height: 500px; border-radius: 8px; "
-    >
-        <!-- <svg width="100%" height="100%" /> -->
-    </div>
+        class="w-full overflow-x-auto border-8 border-blueGray-200"
+        style="border-radius: 8px; "
+    />
 </div>
