@@ -48,12 +48,26 @@
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-24 pt-16" style={headerBGColor}>
-    <div class="px-4 py-2 md:px-10 mx-auto w-full">
+<div
+    id="HeaderStatsHeaderDiv"
+    class="relative bg-red-500 md:pt-24 pt-16"
+    style={headerBGColor}
+>
+    <!-- <img
+        style="position: absolute; left: 0; top: 0; background-repeat: repeat-x; height: 100%;"
+        src="/assets/img/dots-left.svg"
+        alt="background-topography"
+    /> -->
+    <!-- <img
+        style="position: absolute; left: 0; top: 0; background-repeat: repeat-x; height: 100%; width: 100%;"
+        src="/assets/img/rand-dots.svg"
+        alt="background-topography"
+    /> -->
+    <div class="px-4 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
                 <h3
-                    class="{titleColor} {titleFontSize} text-center font-normal leading-normal mt-0 mb-2"
+                    class="{titleColor} {titleFontSize} z-50 text-center font-normal leading-normal mt-0 mb-2"
                 >
                     {title}
                 </h3>

@@ -1,10 +1,7 @@
 <script>
-    import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
 </script>
-
-<AdminNavbar />
 
 <HeaderStats
     title={"Archive Upload"}

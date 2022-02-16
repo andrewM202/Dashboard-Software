@@ -376,7 +376,6 @@
     ];
 </script>
 
-<AdminNavbar />
 {#if tableData.includes(undefined) !== true}
     <HeaderStats
         title={"Archive Designer"}

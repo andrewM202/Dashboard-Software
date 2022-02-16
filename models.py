@@ -130,3 +130,8 @@ class UserSettings(Document):
     footer_color = StringField()
 
     navigation_color = StringField()
+
+########################### Notes #####################################
+
+class Notes(Document):
+    """ Holds all of the notes """

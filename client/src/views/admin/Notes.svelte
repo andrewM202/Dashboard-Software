@@ -1,37 +1,225 @@
 <script>
-    import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     // core components
-    // import Tree from "../../components/Plugin/Tree.svelte";
+
+    /*
+    Commands when focused on node:
+    - enter :                                           edit title of node
+    - control + shift + n :                             create new node
+    - control + n :                                     create sibling node
+    - control + shift + up/down/left/right arrow key:   move node around
+    - command + backspace :                             delete node
+    */
+
     j$(function () {
-        j$("#tree").fancytree({
-            extensions: ["dnd5", "edit"],
-            dnd5: {
-                preventVoidMoves: true,
-                preventRecursion: true,
-                autoExpandMS: 400,
-                dragStart: function (node, data) {
-                    return true;
+        // Attach the fancytree widget to an existing <div id="tree"> element
+        // and pass the tree options as an argument to the fancytree() function:
+        j$("#treegrid")
+            .fancytree({
+                extensions: ["dnd5", "edit", "table", "gridnav"],
+                dnd5: {
+                    preventVoidMoves: true,
+                    preventRecursion: true,
+                    autoExpandMS: 400,
+                    dragStart: function (node, data) {
+                        return true;
+                    },
+                    dragEnter: function (node, data) {
+                        // return ["before", "after"];
+                        return true;
+                    },
+                    dragDrop: function (node, data) {
+                        data.otherNode.moveTo(node, data.hitMode);
+                    },
                 },
-                dragEnter: function (node, data) {
-                    // return ["before", "after"];
-                    return true;
+                edit: {
+                    triggerStart: ["f2", "shift+click", "mac+enter"],
+                    close: function (event, data) {
+                        if (data.save && data.isNew) {
+                            // Quick-enter: add new nodes until we hit [enter] on an empty title
+                            j$("#tree").trigger("nodeCommand", {
+                                cmd: "addSibling",
+                            });
+                        }
+                    },
+                    adjustWidthOfs: 4, // null: don't adjust input size to content
+                    inputCss: { minWidth: "3em" },
+                    beforeEdit: j$.noop, // Return false to prevent edit mode
+                    edit: j$.noop, // Editor was opened (available as data.input)
+                    beforeClose: function (event, data) {
+                        if (data.originalEvent.type === "mousedown") {
+                            // We could prevent the mouse click from generating a blur event
+                            // (which would then again close the editor) and return `false` to keep
+                            // the editor open:
+                            //      data.originalEvent.preventDefault();
+                            //      return false;
+                            // Or go on with closing the editor, but discard any changes:
+                            data.save = false;
+                        }
+                    },
+                    save: j$.noop,
                 },
-                dragDrop: function (node, data) {
-                    data.otherNode.moveTo(node, data.hitMode);
+                checkbox: true,
+                table: {
+                    indentation: 20, // indent 20px per node level
+                    nodeColumnIdx: 2, // render the node title into the 2nd column
+                    checkboxColumnIdx: 0, // render the checkboxes into the 1st column
                 },
-            },
-            edit: {
-                triggerStart: ["f2", "shift+click", "mac+enter"],
-                close: function (event, data) {
-                    if (data.save && data.isNew) {
-                        // Quick-enter: add new nodes until we hit [enter] on an empty title
-                        j$("#tree").trigger("nodeCommand", {
-                            cmd: "addSibling",
-                        });
-                    }
+                source: {
+                    url: "/admin/load-notes",
                 },
-            },
+                postProcess: function (event, data) {
+                    // Process data from load-notes route
+                    data.result = j$.parseJSON(
+                        JSON.stringify(data.response)
+                    )[0];
+                },
+                // source: [
+                //     { title: "Node 1", key: "1", qty: 5 },
+                //     { title: "Node 2", key: "2" },
+                //     { title: "Node 3", key: "3" },
+                //     { title: "Node 4", key: "4" },
+                //     {
+                //         title: "Folder 2",
+                //         key: "2",
+                //         folder: true,
+                //         children: [
+                //             { title: "Node 2.1", key: "3" },
+                //             { title: "Node 2.2", key: "4" },
+                //         ],
+                //     },
+                //     { title: "Node 5", key: "5" },
+                // ],
+                tooltip: function (event, data) {
+                    return data.node.data.author;
+                },
+                lazyLoad: function (event, data) {
+                    data.result = { url: "ajax-sub2.json" };
+                },
+                renderColumns: function (event, data) {
+                    var node = data.node,
+                        j$tdList = j$(node.tr).find(">td");
+
+                    // (index #0 is rendered by fancytree by adding the checkbox)
+                    j$tdList.eq(1).text(node.getIndexHier());
+                    // (index #2 is rendered by fancytree)
+                    j$tdList.eq(3).text(node.data.qty);
+                    // Rendered by row template:
+                    //        j$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+                },
+            })
+            .on("nodeCommand", function (event, data) {
+                // Custom event handler that is triggered by keydown-handler and
+                // context menu:
+                var refNode,
+                    moveMode,
+                    tree = j$.ui.fancytree.getTree(this),
+                    node = tree.getActiveNode();
+
+                switch (data.cmd) {
+                    case "addChild":
+                    case "addSibling":
+                    case "indent":
+                    case "moveDown":
+                    case "moveUp":
+                    case "outdent":
+                    case "remove":
+                    case "rename":
+                        tree.applyCommand(data.cmd, node);
+                        break;
+                    case "cut":
+                        CLIPBOARD = { mode: data.cmd, data: node };
+                        break;
+                    case "copy":
+                        CLIPBOARD = {
+                            mode: data.cmd,
+                            data: node.toDict(true, function (dict, node) {
+                                delete dict.key;
+                            }),
+                        };
+                        break;
+                    case "clear":
+                        CLIPBOARD = null;
+                        break;
+                    case "paste":
+                        if (CLIPBOARD.mode === "cut") {
+                            // refNode = node.getPrevSibling();
+                            CLIPBOARD.data.moveTo(node, "child");
+                            CLIPBOARD.data.setActive();
+                        } else if (CLIPBOARD.mode === "copy") {
+                            node.addChildren(CLIPBOARD.data).setActive();
+                        }
+                        break;
+                    default:
+                        alert("Unhandled command: " + data.cmd);
+                        return;
+                }
+            })
+            .on("keydown", function (e) {
+                var cmd = null;
+                // console.log(e.type, $.ui.fancytree.eventToString(e));
+                switch (j$.ui.fancytree.eventToString(e)) {
+                    case "ctrl+shift+n":
+                    case "meta+shift+n": // mac: cmd+shift+n
+                        cmd = "addChild";
+                        break;
+                    case "ctrl+c":
+                    case "meta+c": // mac
+                        cmd = "copy";
+                        break;
+                    case "ctrl+v":
+                    case "meta+v": // mac
+                        cmd = "paste";
+                        break;
+                    case "ctrl+x":
+                    case "meta+x": // mac
+                        cmd = "cut";
+                        break;
+                    case "ctrl+n":
+                    case "meta+n": // mac
+                        cmd = "addSibling";
+                        break;
+                    case "del":
+                    case "meta+backspace": // mac
+                        cmd = "remove";
+                        break;
+                    // case "f2":  // already triggered by ext-edit pluging
+                    //   cmd = "rename";
+                    //   break;
+                    case "ctrl+up":
+                    case "ctrl+shift+up": // mac
+                        cmd = "moveUp";
+                        break;
+                    case "ctrl+down":
+                    case "ctrl+shift+down": // mac
+                        cmd = "moveDown";
+                        break;
+                    case "ctrl+right":
+                    case "ctrl+shift+right": // mac
+                        cmd = "indent";
+                        break;
+                    case "ctrl+left":
+                    case "ctrl+shift+left": // mac
+                        cmd = "outdent";
+                }
+                if (cmd) {
+                    // console.log(cmd);
+                    j$(this).trigger("nodeCommand", { cmd: cmd });
+                    return false;
+                }
+            });
+
+        /* Handle custom checkbox clicks */
+        j$("#treegrid").on("click", "input[name=like]", function (e) {
+            var node = j$.ui.fancytree.getNode(e),
+                j$input = j$(e.target);
+
+            e.stopPropagation(); // prevent fancytree activate for this row
+            if (j$input.is(":checked")) {
+                // alert("like " + node);
+            } else {
+                // alert("dislike " + node);
+            }
         });
     });
 
@@ -48,19 +236,74 @@
 
 <!-- <Tree /> -->
 
-<AdminNavbar />
-<HeaderStats />
-<div class="mt-4 w-full h-500-px">
-    <div id="tree">
-        <ul id="treeData" style="display: none;">
-            <li>Node 1</li>
-            <li class="folder">
-                Folder 2
-                <ul>
-                    <li id="3 text-black">Node 2.1</li>
-                    <li id="4">Node 2.2</li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+<HeaderStats
+    title={"Notes"}
+    titleFontSize={"text-6xl"}
+    titleColor={"text-black"}
+/>
+<div class="w-full h-auto">
+    <!-- Add a <table> element where the tree should appear: -->
+    <table id="treegrid" class="table-auto w-full">
+        <colgroup>
+            <col width="25px" />
+            <col width="100px" />
+            <col width="100px" />
+            <col width="100px" />
+            <col width="100px" />
+        </colgroup>
+        <thead>
+            <tr class="bg-blueGray-200 text-left">
+                <th
+                    class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
+                />
+                <th
+                    class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
+                    >#</th
+                >
+                <th
+                    class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
+                    >Folder</th
+                >
+                <th
+                    class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
+                    >Qty</th
+                >
+                <th
+                    class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
+                    >Order</th
+                >
+            </tr>
+        </thead>
+        <!-- Optionally define a row that serves as template, when new nodes are created: -->
+        <tbody>
+            <tr class="text-center">
+                <td
+                    class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
+                />
+                <td
+                    class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
+                />
+                <td
+                    class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
+                />
+                <td
+                    class="text-lefttext-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
+                />
+                <td
+                    class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
+                    ><input type="checkbox" name="like" /></td
+                >
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-8 w-full overflow-x-auto md:w-11/12 h-auto px-4">
+    <h1 class="text-2xl text-center font-medium text-base font-semibold">
+        Note Text
+    </h1>
+    <div
+        class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto"
+        style="border-radius: 8px; min-height: 500px;"
+    />
 </div>

@@ -7,7 +7,6 @@
   $: UserSettings = $userSettingsStore;
 
   // components for this layout
-  import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
   import Sidebar from "components/Sidebar/Sidebar.svelte";
   import HeaderStats from "components/Headers/HeaderStats.svelte";
   import FooterAdmin from "components/Footers/FooterAdmin.svelte";
@@ -45,7 +44,7 @@
       <Sidebar {location} />
     {/if}
     <div class="relative md:ml-64 bg-blueGray-100">
-      <AdminNavbar />
+      <!-- <AdminNavbar /> -->
       <HeaderStats />
       <div class="px-4 md:px-10 mx-auto w-full m-24">
         <Router url="admin">

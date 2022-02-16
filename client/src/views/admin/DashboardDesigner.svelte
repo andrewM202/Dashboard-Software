@@ -1,5 +1,4 @@
 <script>
-    import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
 
@@ -65,8 +64,6 @@
         e.preventDefault();
     }
 </script>
-
-<AdminNavbar />
 
 <HeaderStats
     title={"Dashboard Designer"}
