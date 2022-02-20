@@ -239,8 +239,14 @@
                         let updateJson = {
                             data: {
                                 title: data.childNode.title,
-                                desc: data.childNode.desc,
-                                text: data.childNode.text,
+                                desc:
+                                    data.childNode.data.desc === undefined
+                                        ? data.childNode.desc
+                                        : data.childNode.data.desc,
+                                text:
+                                    data.childNode.data.text === undefined
+                                        ? data.childNode.text
+                                        : data.childNode.data.text,
                                 folder:
                                     data.childNode.folder === undefined
                                         ? false
@@ -252,6 +258,8 @@
                                 parent_key: data.childNode?.parent?.key,
                             },
                         };
+                        console.log(data.childNode);
+                        console.log(data);
                         j$.ajax({
                             type: "POST",
                             url: `${location.origin}/admin/update-notes`,
