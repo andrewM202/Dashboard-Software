@@ -11,6 +11,7 @@
     - command + backspace :                             delete node
     */
 
+    let lastSelectedNode;
     j$(function () {
         // Attach the fancytree widget to an existing <div id="tree"> element
         // and pass the tree options as an argument to the fancytree() function:
@@ -57,66 +58,240 @@
                             data.save = false;
                         }
                     },
-                    save: function (event, data) {
-                        // Update this node when saving
+                    //     save: function (event, data) {
+                    //         // Update this node when saving
+                    //         let updateJson;
+                    //         // console.log(data);
+                    //         if (data.isNew) {
+                    //             // Have to do interval until title is not null, because
+                    //             // title is not set immediately on new node
+                    //             // because its updated asynchronously it seems
+                    //             let interval = setInterval(function () {
+                    //                 if (data.node.title !== "") {
+                    //                     let newData_children = [];
+                    //                     if (data.node.children !== null) {
+                    //                         for (let child of data.node.children) {
+                    //                             newData_children.push({
+                    //                                 title: child.title,
+                    //                                 key: child.key,
+                    //                             });
+                    //                         }
+                    //                     } else {
+                    //                         newData_children = null;
+                    //                     }
+                    //                     updateJson = {
+                    //                         isNew: data.isNew,
+                    //                         data: {
+                    //                             title: data.node.title,
+                    //                             folder:
+                    //                                 data.node.folder === undefined
+                    //                                     ? false
+                    //                                     : data.node.folder,
+                    //                             key: data.node.key,
+                    //                             data: data.node.data,
+                    //                             children: newData_children,
+                    //                             parent_title:
+                    //                                 data.node.parent.title,
+                    //                             parent_key: data.node.parent.key,
+                    //                         },
+                    //                     };
+                    //                     data.node.desc = "";
+                    //                     data.node.text = "";
+                    //                     clearInterval(interval);
+                    //                     j$.ajax({
+                    //                         type: "POST",
+                    //                         url: `${location.origin}/admin/update-notes`,
+                    //                         data: updateJson,
+                    //                         success: function (e) {
+                    //                             console.log("Success");
+                    //                             // Set the key to the one returned from server
+                    //                             data.node.key = e;
+                    //                             data.node.text = "test";
+                    //                         },
+                    //                         error: function (e) {
+                    //                             error =
+                    //                                 "Server Error During Creation.";
+                    //                             // Error logging
+                    //                             console.log(e.statusText);
+                    //                             console.log(e.responseText);
+                    //                         },
+                    //                     });
+                    //                 }
+                    //             }, 1);
+                    //         } else {
+                    //             // Get newData and oldData chilren's key and title pairs
+                    //             // in separate json
+                    //             setTimeout(function () {
+                    //                 let oldData_children = [];
+                    //                 if (data.tree.activeNode.children !== null) {
+                    //                     for (let child of data.tree.activeNode
+                    //                         .children) {
+                    //                         oldData_children.push({
+                    //                             title: child.title,
+                    //                             key: child.key,
+                    //                         });
+                    //                     }
+                    //                 } else {
+                    //                     oldData_children = null;
+                    //                 }
+                    //                 let newData_children = [];
+                    //                 if (data.node.children !== null) {
+                    //                     for (let child of data.node.children) {
+                    //                         newData_children.push({
+                    //                             title: child.title,
+                    //                             key: child.key,
+                    //                         });
+                    //                     }
+                    //                 } else {
+                    //                     newData_children = null;
+                    //                 }
+
+                    //                 updateJson = {
+                    //                     isNew: data.isNew,
+                    //                     oldData: {
+                    //                         title: data.orgTitle,
+                    //                         folder:
+                    //                             data.tree.activeNode.folder ===
+                    //                             undefined
+                    //                                 ? false
+                    //                                 : data.tree.activeNode.folder,
+                    //                         key: data.tree.activeNode.key,
+                    //                         children: oldData_children,
+                    //                         parent_title:
+                    //                             data.tree.activeNode.parent.title,
+                    //                         parent_key:
+                    //                             data.tree.activeNode.parent.key,
+                    //                     },
+                    //                     newData: {
+                    //                         title: data.node.title,
+                    //                         desc: data.node.desc,
+                    //                         text: data.node.text,
+                    //                         folder:
+                    //                             data.node.folder === undefined
+                    //                                 ? false
+                    //                                 : data.node.folder,
+                    //                         key: data.node.key,
+                    //                         children: newData_children,
+                    //                         parent_title: data.node.parent.title,
+                    //                         parent_key: data.node.parent.key,
+                    //                     },
+                    //                 };
+                    //                 console.log(updateJson);
+                    //                 updateNodeData(
+                    //                     updateJson,
+                    //                     "/admin/update-notes"
+                    //                 );
+                    //             }, 250);
+                    //         }
+                    //     },
+                },
+                modifyChild: function (event, data) {
+                    // Check if we are deleting node
+                    console.log(data.operation);
+                    if (data.operation === "remove") {
+                        // This operation is for deleting nodes
+
+                        console.log(data);
                         let updateJson;
-                        // console.log(data);
-                        if (data.isNew) {
-                            // Have to do interval until title is not null, because
-                            // title is not set immediately on new node
-                            // because its updated asynchronously it seems
-                            let interval = setInterval(function () {
-                                if (data.node.title !== "") {
-                                    let newData_children = [];
-                                    if (data.node.children !== null) {
-                                        for (let child of data.node.children) {
-                                            newData_children.push({
-                                                title: child.title,
-                                                key: child.key,
-                                            });
-                                        }
-                                    } else {
-                                        newData_children = null;
-                                    }
-                                    updateJson = {
-                                        isNew: data.isNew,
-                                        data: {
-                                            title: data.node.title,
-                                            folder:
-                                                data.node.folder === undefined
-                                                    ? false
-                                                    : data.node.folder,
-                                            key: data.node.key,
-                                            data: data.node.data,
-                                            children: newData_children,
-                                            parent_title:
-                                                data.node.parent.title,
-                                            parent_key: data.node.parent.key,
-                                        },
-                                    };
-                                    clearInterval(interval);
-                                    updateNodeData(updateJson);
-                                }
-                            }, 1);
+                        if (
+                            data.childNode !== undefined &&
+                            data.childNode !== null
+                        ) {
+                            updateJson = {
+                                data: {
+                                    key: data.childNode.key,
+                                },
+                            };
                         } else {
-                            // Get newData and oldData chilren's key and title pairs
-                            // in separate json
-                            setTimeout(function () {
-                                let oldData_children = [];
-                                if (data.tree.activeNode.children !== null) {
-                                    for (let child of data.tree.activeNode
-                                        .children) {
-                                        oldData_children.push({
-                                            title: child.title,
-                                            key: child.key,
-                                        });
-                                    }
-                                } else {
-                                    oldData_children = null;
+                            updateJson = {
+                                data: {
+                                    key: lastSelectedNode.key, //data.node.key,
+                                },
+                            };
+                        }
+                        // let tree = j$.ui.fancytree.getTree();
+                        console.log(updateJson);
+                        j$.ajax({
+                            type: "POST",
+                            url: `${location.origin}/admin/delete-note`,
+                            data: updateJson,
+                            error: function (e) {
+                                error = "Server Error During Creation.";
+                                // Error logging
+                                console.log(e.statusText);
+                                console.log(e.responseText);
+                            },
+                        });
+                    } else if (data.operation === "rename") {
+                        // This operation is for creating and renaming nodes
+
+                        let newData_children = [];
+                        if (data.node.children !== null) {
+                            for (let child of data.node.children) {
+                                newData_children.push({
+                                    title: child.title,
+                                    key: child.key,
+                                });
+                            }
+                        } else {
+                            newData_children = null;
+                        }
+                        let updateJson = {
+                            data: {
+                                title: data.childNode.title,
+                                desc: data.childNode.desc,
+                                text: data.childNode.text,
+                                folder:
+                                    data.childNode.folder === undefined
+                                        ? false
+                                        : data.childNode.folder,
+                                key: data.childNode.key,
+                                data: data.childNode.data,
+                                children: newData_children,
+                                parent_title: data.childNode?.parent?.title,
+                                parent_key: data.childNode?.parent?.key,
+                            },
+                        };
+                        j$.ajax({
+                            type: "POST",
+                            url: `${location.origin}/admin/update-notes`,
+                            data: updateJson,
+                            success: function (e) {
+                                if (e !== "Updated Node") {
+                                    // We just created a new node
+                                    let tree = j$.ui.fancytree.getTree();
+                                    tree.getActiveNode().key = e;
+                                    tree.getActiveNode().text = "";
+                                    tree.getActiveNode().desc = "";
+                                    data.node.text = "";
+                                    data.node.desc = "";
                                 }
+                            },
+                            error: function (e) {
+                                error = "Server Error During Creation.";
+                                // Error logging
+                                console.log(e.statusText);
+                                console.log(e.responseText);
+                            },
+                        });
+                    } else if (data.operation === "add") {
+                        // This operation is solely for moving nodes
+
+                        // console.log(data);
+                        // console.log(data.node.tree);
+                        // console.log(data.childNode.key);
+
+                        // Check if this is really a new node or
+                        // if this is a node that just moved
+                        // Its a moved node its key does not have an underscore
+                        if (data.childNode.key.indexOf("_") === -1) {
+                            console.log("This is an already created node");
+                            console.log(data.childNode);
+
+                            function nodeMoveCreation(startNode) {
                                 let newData_children = [];
-                                if (data.node.children !== null) {
-                                    for (let child of data.node.children) {
+                                if (startNode.children !== null) {
+                                    for (let child of startNode.children) {
                                         newData_children.push({
                                             title: child.title,
                                             key: child.key,
@@ -125,47 +300,81 @@
                                 } else {
                                     newData_children = null;
                                 }
-
-                                updateJson = {
-                                    isNew: data.isNew,
-                                    oldData: {
-                                        title: data.orgTitle,
+                                let updateJson = {
+                                    data: {
+                                        title: startNode.title,
+                                        desc:
+                                            startNode.desc === undefined
+                                                ? startNode.data.desc
+                                                : startNode.desc,
+                                        text:
+                                            startNode.text === undefined
+                                                ? startNode.data.text
+                                                : startNode.text,
                                         folder:
-                                            data.tree.activeNode.folder ===
-                                            undefined
+                                            startNode.folder === undefined
                                                 ? false
-                                                : data.tree.activeNode.folder,
-                                        key: data.tree.activeNode.key,
-                                        data: data.tree.activeNode.data,
-                                        children: oldData_children,
-                                        parent_title:
-                                            data.tree.activeNode.parent.title,
-                                        parent_key:
-                                            data.tree.activeNode.parent.key,
-                                    },
-                                    newData: {
-                                        title: data.node.title,
-                                        folder:
-                                            data.node.folder === undefined
-                                                ? false
-                                                : data.node.folder,
-                                        key: data.node.key,
-                                        data: data.node.data,
+                                                : startNode.folder,
+                                        key: startNode.key,
+                                        data: startNode.data,
                                         children: newData_children,
-                                        parent_title: data.node.parent.title,
-                                        parent_key: data.node.parent.key,
+                                        parent_title: startNode?.parent?.title,
+                                        parent_key: startNode?.parent?.key,
                                     },
                                 };
-                                updateNodeData(updateJson);
+                                console.log(updateJson);
+                                // updateNodeData(
+                                //     updateJson,
+                                //     "/admin/create-moved-note"
+                                // );
+                                j$.ajax({
+                                    type: "POST",
+                                    url: `${location.origin}/admin/create-moved-note`,
+                                    data: updateJson,
+                                    success: function (e) {
+                                        if (e !== "Updated Node") {
+                                            // We just created a new node
+                                            let tree =
+                                                j$.ui.fancytree.getTree();
+                                            // tree.getActiveNode().key = e;
+                                            // tree.getActiveNode().text = "";
+                                            // tree.getActiveNode().desc = "";
+                                            // tree.getNodeByKey()
+                                            // data.node.text = "";
+                                            // data.node.desc = "";
+                                        }
+                                    },
+                                    error: function (e) {
+                                        error = "Server Error During Creation.";
+                                        // Error logging
+                                        console.log(e.statusText);
+                                        console.log(e.responseText);
+                                    },
+                                });
+                                // Re call the function for all of the child nodes
+                                if (startNode.children !== null) {
+                                    for (let child of startNode.children) {
+                                        nodeMoveCreation(child);
+                                    }
+                                }
+                            }
+
+                            setTimeout(function () {
+                                nodeMoveCreation(data.childNode);
                             }, 500);
                         }
-                    },
-                },
-                modifyChild: function (event, data) {
-                    // Check if we are deleting node
-                    if (data.operation === "remove") {
-                        console.log(event);
+
+                        // Event trigger for moving a node.
+
+                        // Recursively make server requests for each
+                        // child node of the moved node, as they
+                        // were just deleted
                     }
+                    console.log("------");
+                },
+                focus: function (event, data) {
+                    lastSelectedNode = data.node;
+                    // console.log(lastSelectedNode);
                 },
                 checkbox: true,
                 table: {
@@ -180,7 +389,6 @@
                 },
                 postProcess: function (event, data) {
                     // Process data from load-notes route
-                    console.log(data.response);
                     data.result = j$.parseJSON(
                         JSON.stringify(data.response)
                     )[0];
@@ -325,10 +533,10 @@
         });
     });
 
-    function updateNodeData(data) {
+    function updateNodeData(data, route) {
         j$.ajax({
             type: "POST",
-            url: `${location.origin}/admin/update-notes`,
+            url: `${location.origin}${route}`,
             data: data,
             success: function (e) {
                 console.log("Success");

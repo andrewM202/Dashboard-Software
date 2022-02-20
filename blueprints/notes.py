@@ -101,8 +101,13 @@ def update_notes():
         if "newData[children]" in key and "[key]" in key:
             new_data_children.append(key)
 
+    # Check if new node by if key exists already
+    note_key = data["data[key]"]
+    is_new = False if len(Notes.objects(key=note_key)) > 0 else True
+    # print(note_key)
+
     # If this is a new node
-    if(data["isNew"] == "true"):
+    if(is_new):
         new_note_key = str(Notes.objects().count() + 1)
         Notes(
             title = data["data[title]"],
@@ -123,25 +128,86 @@ def update_notes():
             Notes.objects(key=data["data[parent_key]"]).update(
                 sub_nodes = parent_node_sub_nodes
             )
+
+        # Return the new note key
+        return new_note_key
     # If this is updating an existing node
     else:
-        print(data["newData[key]"])
-        print(data["newData[title]"])
-        Notes.objects(key=data["newData[key]"]).update(
-            title = data["newData[title]"],
-            description = data["newData[data][desc]"],
-            key = data["newData[key]"], 
-            folder = True if data["newData[folder]"] == "true" else False,
-            text = data["newData[data][text]"],
+        Notes.objects(key=data["data[key]"]).update(
+            title = data["data[title]"],
+            description = data["data[desc]"],
+            folder = True if data["data[folder]"] == "true" else False,
+            text = data["data[text]"],
             sub_nodes = [data[key] for key in new_data_children],
-            parent_node = data["newData[parent_key]"],
+            parent_node = data["data[parent_key]"],
         )
 
-    return send_from_directory('client/public', 'index.html')
+    return "Updated Node"
 
-@bp.route("/admin/delete-note")
+@bp.route("/admin/delete-note", methods=["POST"])
 @login_required
 def delete_note():
     """ Delete a note """
-    print("test")
-    return send_from_directory('client/public', 'index.html')
+
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+    delete_key = data["data[key]"]
+
+    # If this note has any child nodes delete them recursively
+    def delete_nodes(node):
+        if (len(node.sub_nodes) > 0):
+            for sub_node_key in node.sub_nodes:
+                delete_nodes(Notes.objects(key=sub_node_key)[0])
+        Notes.objects(key=node.key).delete()
+
+    delete_nodes(Notes.objects(key=delete_key)[0])
+
+    # If this note has a parent note delete it from its list
+    for note in Notes.objects():
+        if(delete_key in note.sub_nodes):
+            old_sub_nodes = note.sub_nodes
+            old_sub_nodes.remove(delete_key)
+            Notes.objects(key=note.key).update(
+                sub_nodes = old_sub_nodes
+            )
+
+    print(f"Deleted Node: {data['data[key]']}")
+
+    return "Deleted Node"
+
+@bp.route("/admin/create-moved-note", methods=["POST"])
+@login_required
+def create_moved_note():
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+
+    new_data_children = []
+
+    for key in data_keys:
+        if "newData[children]" in key and "[key]" in key:
+            new_data_children.append(key)
+
+    Notes(
+        title = data["data[title]"],
+        key = data["data[key]"],
+        description = data["data[desc]"],
+        folder = True if data["data[folder]"] == "true" else False,
+        text = data["data[text]"],
+        sub_nodes = [data[key] for key in new_data_children],
+        parent_node = data["data[parent_key]"],
+    ).save()
+    # If this new note has a parent node, add that to the 
+    # parent node's sub_nodes field
+    parent_nodes_len = len(Notes.objects(key=data["data[parent_key]"]))
+    # Append key of new sub node
+    if(parent_nodes_len > 0):
+        print(f"Parent Key: {data['data[parent_key]']}")
+        print(f"Current Node: {data['data[key]']}")
+        print()
+        parent_node_sub_nodes = list(Notes.objects(key=data["data[parent_key]"])[0].sub_nodes)
+        parent_node_sub_nodes.append(data["data[key]"])
+        Notes.objects(key=data["data[parent_key]"]).update(
+            sub_nodes = parent_node_sub_nodes
+        )
+
+    return data["data[key]"]
