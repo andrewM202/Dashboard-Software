@@ -361,7 +361,7 @@
 
                             setTimeout(function () {
                                 nodeMoveCreation(data.childNode);
-                            }, 500);
+                            }, 50);
                         }
 
                         // Event trigger for moving a node.

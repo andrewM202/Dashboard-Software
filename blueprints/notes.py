@@ -199,15 +199,19 @@ def create_moved_note():
     # If this new note has a parent node, add that to the 
     # parent node's sub_nodes field
     parent_nodes_len = len(Notes.objects(key=data["data[parent_key]"]))
-    # Append key of new sub node
     if(parent_nodes_len > 0):
         print(f"Parent Key: {data['data[parent_key]']}")
         print(f"Current Node: {data['data[key]']}")
         print()
         parent_node_sub_nodes = list(Notes.objects(key=data["data[parent_key]"])[0].sub_nodes)
-        parent_node_sub_nodes.append(data["data[key]"])
-        Notes.objects(key=data["data[parent_key]"]).update(
-            sub_nodes = parent_node_sub_nodes
-        )
+        # If you spam moving a node back and forth this route can 
+        # be called before the previous one was completed, causing 
+        # duplicates to be created. To prevent that, don't add this
+        # moved node to the parent's sub_nodes list if its already in there
+        if data["data[key]"] not in parent_node_sub_nodes:
+            parent_node_sub_nodes.append(data["data[key]"])
+            Notes.objects(key=data["data[parent_key]"]).update(
+                sub_nodes = parent_node_sub_nodes
+            )
 
     return data["data[key]"]
