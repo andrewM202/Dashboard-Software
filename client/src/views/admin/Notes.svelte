@@ -352,9 +352,22 @@
         j$(".fancytree-edit-input").css("min-width", "100px");
     }, 100);
 
-    function editNote(e) {
+    let titleSearchInputs = [
+        {
+            type: "Text",
+            placeholder: "Note Title",
+            name: "NoteTitle",
+        },
+        {
+            type: "Text",
+            placeholder: "Note Description",
+            name: "NoteDesc",
+        },
+    ];
+
+    function HeaderSearchFunction(e) {
         e.preventDefault();
-        console.log("Test");
+        console.log("test");
     }
 </script>
 
@@ -364,6 +377,8 @@
     title={"Notes"}
     titleFontSize={"text-6xl"}
     titleColor={"text-black"}
+    inputs={titleSearchInputs}
+    SearchFunction={HeaderSearchFunction}
 />
 <div class="w-full h-auto">
     <!-- Add a <table> element where the tree should appear: -->
@@ -390,7 +405,7 @@
                 >
                 <th
                     class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-                    >Title</th
+                    >Description</th
                 >
                 <th
                     class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
@@ -440,14 +455,3 @@
         <p>Text</p>
     </div>
 </div>
-
-<!-- <div class="my-8 w-full overflow-x-auto md:w-11/12 h-auto px-4">
-    <input
-        id="grid-username"
-        name="header_card_subtitles"
-        type="submit"
-        placeholder="Collection Creation"
-        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-        value="Edit Note"
-    />
-</div> -->

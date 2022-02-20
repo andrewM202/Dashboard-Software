@@ -49,7 +49,6 @@ def load_notes():
             # If this note has child notes add them to the config
             # using recursion
             def parse_child_nodes(node):
-                print(node.title)
                 notes = []
                 for child in node.sub_nodes:
                     curr_node = Notes.objects(key=child)[0]
@@ -75,23 +74,6 @@ def load_notes():
 
             if(len(note.sub_nodes) > 0):
                 note_config["children"] = parse_child_nodes(note)
-                # print(parse_child_nodes(note))
-            # child_nodes = parse_child_nodes(note)
-            # print(child_nodes)
-
-            # if(len(note.sub_nodes) > 0):
-            #     note_config["children"] = []
-            #     for sub_node in note.sub_nodes:
-            #         # print(sub_node)
-            #         child_node = Notes.objects(key=sub_node)[0]
-            #         child_note = {
-            #             "title": child_node.title,
-            #             "desc": child_node.description,
-            #             "folder": child_node.folder,
-            #             "text": child_node.text,
-            #             "key": child_node.key,
-            #         }
-            #         note_config["children"].append(child_note)
 
             return_notes.append(note_config)
     return json_util.dumps(return_notes)
@@ -102,10 +84,23 @@ def update_notes():
     """ Route for editing or creating a new note """
     data = request.form.to_dict()
     data_keys = request.form.keys()
-    print(data)
+    # print(data)
     # print(data_keys)
 
-    """
+    # All the keys substructure come in arrays, so instead of 
+    # trying to make an actual JSON as it should be, lets just make
+    # the arrays ourself 
+    new_data_children = []
+
+    for key in data_keys:
+        # print(dedent(f"""
+        # Key: {key} 
+        # Data: {data[key]}
+        # """))
+
+        if "newData[children]" in key and "[key]" in key:
+            new_data_children.append(key)
+
     # If this is a new node
     if(data["isNew"] == "true"):
         new_note_key = str(Notes.objects().count() + 1)
@@ -113,7 +108,7 @@ def update_notes():
             title = data["data[title]"],
             description = "", # data["data[description]"],
             key = new_note_key, # data["data[key]"], # Make the key an index in Notes
-            folder = data["data[folder]"],
+            folder = True if data["data[folder]"] == "true" else False,
             text = "",
             sub_nodes = [],
             parent_node = data["data[parent_key]"],
@@ -138,14 +133,15 @@ def update_notes():
             key = data["newData[key]"], 
             folder = True if data["newData[folder]"] == "true" else False,
             text = data["newData[data][text]"],
-            sub_nodes = [i.key for i in data["newData[children]"]],
+            sub_nodes = [data[key] for key in new_data_children],
             parent_node = data["newData[parent_key]"],
         )
-    """
 
-    # for key in data_keys:
-    #     print(dedent(f"""
-    #     Key: {key} 
-    #     Data: {data[key]}
-    #     """))
+    return send_from_directory('client/public', 'index.html')
+
+@bp.route("/admin/delete-note")
+@login_required
+def delete_note():
+    """ Delete a note """
+    print("test")
     return send_from_directory('client/public', 'index.html')
