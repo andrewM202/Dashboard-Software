@@ -11,7 +11,8 @@
     - command + backspace :                             delete node
     */
 
-    let lastSelectedNode;
+    let lastSelectedNode; // Set to the last selected node by the focus event
+    let editingNote = false; // Whether or not we are currently editing a node
     j$(function () {
         // Attach the fancytree widget to an existing <div id="tree"> element
         // and pass the tree options as an argument to the fancytree() function:
@@ -58,132 +59,6 @@
                             data.save = false;
                         }
                     },
-                    //     save: function (event, data) {
-                    //         // Update this node when saving
-                    //         let updateJson;
-                    //         // console.log(data);
-                    //         if (data.isNew) {
-                    //             // Have to do interval until title is not null, because
-                    //             // title is not set immediately on new node
-                    //             // because its updated asynchronously it seems
-                    //             let interval = setInterval(function () {
-                    //                 if (data.node.title !== "") {
-                    //                     let newData_children = [];
-                    //                     if (data.node.children !== null) {
-                    //                         for (let child of data.node.children) {
-                    //                             newData_children.push({
-                    //                                 title: child.title,
-                    //                                 key: child.key,
-                    //                             });
-                    //                         }
-                    //                     } else {
-                    //                         newData_children = null;
-                    //                     }
-                    //                     updateJson = {
-                    //                         isNew: data.isNew,
-                    //                         data: {
-                    //                             title: data.node.title,
-                    //                             folder:
-                    //                                 data.node.folder === undefined
-                    //                                     ? false
-                    //                                     : data.node.folder,
-                    //                             key: data.node.key,
-                    //                             data: data.node.data,
-                    //                             children: newData_children,
-                    //                             parent_title:
-                    //                                 data.node.parent.title,
-                    //                             parent_key: data.node.parent.key,
-                    //                         },
-                    //                     };
-                    //                     data.node.desc = "";
-                    //                     data.node.text = "";
-                    //                     clearInterval(interval);
-                    //                     j$.ajax({
-                    //                         type: "POST",
-                    //                         url: `${location.origin}/admin/update-notes`,
-                    //                         data: updateJson,
-                    //                         success: function (e) {
-                    //                             console.log("Success");
-                    //                             // Set the key to the one returned from server
-                    //                             data.node.key = e;
-                    //                             data.node.text = "test";
-                    //                         },
-                    //                         error: function (e) {
-                    //                             error =
-                    //                                 "Server Error During Creation.";
-                    //                             // Error logging
-                    //                             console.log(e.statusText);
-                    //                             console.log(e.responseText);
-                    //                         },
-                    //                     });
-                    //                 }
-                    //             }, 1);
-                    //         } else {
-                    //             // Get newData and oldData chilren's key and title pairs
-                    //             // in separate json
-                    //             setTimeout(function () {
-                    //                 let oldData_children = [];
-                    //                 if (data.tree.activeNode.children !== null) {
-                    //                     for (let child of data.tree.activeNode
-                    //                         .children) {
-                    //                         oldData_children.push({
-                    //                             title: child.title,
-                    //                             key: child.key,
-                    //                         });
-                    //                     }
-                    //                 } else {
-                    //                     oldData_children = null;
-                    //                 }
-                    //                 let newData_children = [];
-                    //                 if (data.node.children !== null) {
-                    //                     for (let child of data.node.children) {
-                    //                         newData_children.push({
-                    //                             title: child.title,
-                    //                             key: child.key,
-                    //                         });
-                    //                     }
-                    //                 } else {
-                    //                     newData_children = null;
-                    //                 }
-
-                    //                 updateJson = {
-                    //                     isNew: data.isNew,
-                    //                     oldData: {
-                    //                         title: data.orgTitle,
-                    //                         folder:
-                    //                             data.tree.activeNode.folder ===
-                    //                             undefined
-                    //                                 ? false
-                    //                                 : data.tree.activeNode.folder,
-                    //                         key: data.tree.activeNode.key,
-                    //                         children: oldData_children,
-                    //                         parent_title:
-                    //                             data.tree.activeNode.parent.title,
-                    //                         parent_key:
-                    //                             data.tree.activeNode.parent.key,
-                    //                     },
-                    //                     newData: {
-                    //                         title: data.node.title,
-                    //                         desc: data.node.desc,
-                    //                         text: data.node.text,
-                    //                         folder:
-                    //                             data.node.folder === undefined
-                    //                                 ? false
-                    //                                 : data.node.folder,
-                    //                         key: data.node.key,
-                    //                         children: newData_children,
-                    //                         parent_title: data.node.parent.title,
-                    //                         parent_key: data.node.parent.key,
-                    //                     },
-                    //                 };
-                    //                 console.log(updateJson);
-                    //                 updateNodeData(
-                    //                     updateJson,
-                    //                     "/admin/update-notes"
-                    //                 );
-                    //             }, 250);
-                    //         }
-                    //     },
                 },
                 modifyChild: function (event, data) {
                     // Check if we are deleting node
@@ -294,7 +169,7 @@
                         // Its a moved node its key does not have an underscore
                         if (data.childNode.key.indexOf("_") === -1) {
                             console.log("This is an already created node");
-                            console.log(data.childNode);
+                            // console.log(data.childNode);
 
                             function nodeMoveCreation(startNode) {
                                 let newData_children = [];
@@ -330,11 +205,6 @@
                                         parent_key: startNode?.parent?.key,
                                     },
                                 };
-                                console.log(updateJson);
-                                // updateNodeData(
-                                //     updateJson,
-                                //     "/admin/create-moved-note"
-                                // );
                                 j$.ajax({
                                     type: "POST",
                                     url: `${location.origin}/admin/create-moved-note`,
@@ -382,7 +252,39 @@
                 },
                 focus: function (event, data) {
                     lastSelectedNode = data.node;
-                    // console.log(lastSelectedNode);
+
+                    // Make text of selected node white for
+                    // easier visibility
+                    let node = data.node,
+                        j$tdList = j$(node.tr).find(">td");
+
+                    j$tdList.eq(3).css({
+                        color: "white",
+                    });
+                    j$tdList.eq(2).find("span.fancytree-title").css({
+                        color: "white",
+                    });
+                    j$tdList.eq(1).css({
+                        color: "white",
+                    });
+                },
+                blur: function (event, data) {
+                    // Once the node is no longer selected,
+                    // change the text color to black for
+                    // easier visibility
+
+                    let node = data.node,
+                        j$tdList = j$(node.tr).find(">td");
+
+                    j$tdList.eq(3).css({
+                        color: "",
+                    });
+                    j$tdList.eq(2).find("span.fancytree-title").css({
+                        color: "",
+                    });
+                    j$tdList.eq(1).css({
+                        color: "",
+                    });
                 },
                 checkbox: true,
                 table: {
@@ -405,7 +307,7 @@
                     return data.node.data.author;
                 },
                 renderColumns: function (event, data) {
-                    var node = data.node,
+                    let node = data.node,
                         j$tdList = j$(node.tr).find(">td");
 
                     // (index #0 is rendered by fancytree by adding the checkbox)
@@ -414,7 +316,60 @@
                     j$tdList.eq(3).text(node.data.desc);
                     // When you click on edit node button
                     j$tdList.eq(4).click(function () {
-                        console.log(data);
+                        if (editingNote === false) {
+                            // Not currently editing a node, so lets start
+                            editingNote = true;
+                            j$tdList.eq(3).html(`
+                            <input
+                                type="text"
+                                name="desc"
+                                value="${
+                                    node.data.desc === undefined
+                                        ? ""
+                                        : node.data.desc
+                                }"
+                                placeholder="Note Description"
+                                style="color: black;"
+                                class="w-full h-full text-dark"
+                            />`);
+                            j$tdList.eq(4).find("input").attr({
+                                value: "Save Edit",
+                            });
+                        } else {
+                            // We are currently editing, so lets
+                            // save the edits
+                            editingNote = false;
+                            console.log("done editing");
+
+                            let newDesc = j$tdList.eq(3).find("input").val();
+                            j$tdList.eq(3).html(newDesc);
+
+                            j$tdList.eq(4).find("input").attr({
+                                value: "Edit Note",
+                            });
+
+                            let updateJson = {
+                                key: node.key,
+                                desc: newDesc,
+                                text: "",
+                            };
+
+                            // Update server
+                            j$.ajax({
+                                type: "POST",
+                                url: `${location.origin}/admin/update-note-details`,
+                                data: updateJson,
+                                success: function (e) {
+                                    console.log("Success");
+                                },
+                                error: function (e) {
+                                    error = "Server Error During Creation.";
+                                    // Error logging
+                                    console.log(e.statusText);
+                                    console.log(e.responseText);
+                                },
+                            });
+                        }
                     });
                 },
                 activate: function (event, data) {
@@ -541,23 +496,6 @@
         });
     });
 
-    function updateNodeData(data, route) {
-        j$.ajax({
-            type: "POST",
-            url: `${location.origin}${route}`,
-            data: data,
-            success: function (e) {
-                console.log("Success");
-            },
-            error: function (e) {
-                error = "Server Error During Creation.";
-                // Error logging
-                console.log(e.statusText);
-                console.log(e.responseText);
-            },
-        });
-    }
-
     // Fancytree Edit Styling
     setInterval(function () {
         j$(".fancytree-edit-input").css(
@@ -642,7 +580,7 @@
                     class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
                 />
                 <td
-                    class="text-lefttext-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
+                    class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
                 />
                 <td
                     class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"

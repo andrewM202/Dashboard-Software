@@ -39,6 +39,7 @@ def load_notes():
         # print(note.sub_nodes)
         # print(note.parent_node)
         if(note.parent_node == "root_1"): # root_! is root node
+            print(note.description)
             note_config = {
                 "title": note.title,
                 "desc": note.description,
@@ -178,6 +179,9 @@ def delete_note():
 @bp.route("/admin/create-moved-note", methods=["POST"])
 @login_required
 def create_moved_note():
+    """ When a note is moved, they are deleted because
+    a remove event is triggered by fancytree 
+    so they must be recreated """
     data = request.form.to_dict()
     data_keys = request.form.keys()
 
@@ -215,3 +219,22 @@ def create_moved_note():
             )
 
     return data["data[key]"]
+
+@bp.route("/admin/update-note-details", methods=["POST"])
+@login_required
+def update_note_details():
+    """ Update note details 
+    like title, description """
+
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+
+    Notes.objects(key=data["key"]).update(
+        key = data["key"],
+        description = data["desc"],
+        text = data["text"],
+    )
+
+    print(data)
+
+    return "Success"
