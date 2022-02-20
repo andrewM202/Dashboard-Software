@@ -14,7 +14,7 @@
     j$(function () {
         // Attach the fancytree widget to an existing <div id="tree"> element
         // and pass the tree options as an argument to the fancytree() function:
-        j$("#treegrid")
+        let tree = j$("#treegrid")
             .fancytree({
                 extensions: ["dnd5", "edit", "table", "gridnav"],
                 dnd5: {
@@ -57,7 +57,115 @@
                             data.save = false;
                         }
                     },
-                    save: j$.noop,
+                    save: function (event, data) {
+                        // Update this node when saving
+                        let updateJson;
+                        // console.log(data);
+                        if (data.isNew) {
+                            // Have to do interval until title is not null, because
+                            // title is not set immediately on new node
+                            // because its updated asynchronously it seems
+                            let interval = setInterval(function () {
+                                if (data.node.title !== "") {
+                                    let newData_children = [];
+                                    if (data.node.children !== null) {
+                                        for (let child of data.node.children) {
+                                            newData_children.push({
+                                                title: child.title,
+                                                key: child.key,
+                                            });
+                                        }
+                                    } else {
+                                        newData_children = null;
+                                    }
+                                    updateJson = {
+                                        isNew: data.isNew,
+                                        data: {
+                                            title: data.node.title,
+                                            folder:
+                                                data.node.folder === undefined
+                                                    ? false
+                                                    : data.node.folder,
+                                            key: data.node.key,
+                                            data: data.node.data,
+                                            children: newData_children,
+                                            parent_title:
+                                                data.node.parent.title,
+                                            parent_key: data.node.parent.key,
+                                        },
+                                    };
+                                    clearInterval(interval);
+                                    updateNodeData(updateJson);
+                                }
+                            }, 1);
+                        } else {
+                            // Get newData and oldData chilren's key and title pairs
+                            // in separate json
+                            setTimeout(function () {
+                                let oldData_children = [];
+                                if (data.tree.activeNode.children !== null) {
+                                    for (let child of data.tree.activeNode
+                                        .children) {
+                                        oldData_children.push({
+                                            title: child.title,
+                                            key: child.key,
+                                        });
+                                    }
+                                } else {
+                                    oldData_children = null;
+                                }
+                                let newData_children = [];
+                                if (data.node.children !== null) {
+                                    for (let child of data.node.children) {
+                                        newData_children.push({
+                                            title: child.title,
+                                            key: child.key,
+                                        });
+                                    }
+                                } else {
+                                    newData_children = null;
+                                }
+
+                                updateJson = {
+                                    isNew: data.isNew,
+                                    oldData: {
+                                        title: data.orgTitle,
+                                        folder:
+                                            data.tree.activeNode.folder ===
+                                            undefined
+                                                ? false
+                                                : data.tree.activeNode.folder,
+                                        key: data.tree.activeNode.key,
+                                        data: data.tree.activeNode.data,
+                                        children: oldData_children,
+                                        parent_title:
+                                            data.tree.activeNode.parent.title,
+                                        parent_key:
+                                            data.tree.activeNode.parent.key,
+                                    },
+                                    newData: {
+                                        title: data.node.title,
+                                        folder:
+                                            data.node.folder === undefined
+                                                ? false
+                                                : data.node.folder,
+                                        key: data.node.key,
+                                        data: data.node.data,
+                                        children: newData_children,
+                                        parent_title: data.node.parent.title,
+                                        parent_key: data.node.parent.key,
+                                    },
+                                };
+                                updateNodeData(updateJson);
+                            }, 500);
+                        }
+                    },
+                },
+                modifyChild: function (event, data) {
+                    // Check if we are deleting node
+                    if (data.operation === "remove") {
+                        console.log(event);
+                    }
                 },
                 checkbox: true,
                 table: {
@@ -67,34 +175,18 @@
                 },
                 source: {
                     url: "/admin/load-notes",
+                    dataType: "json",
+                    cache: false,
                 },
                 postProcess: function (event, data) {
                     // Process data from load-notes route
+                    console.log(data.response);
                     data.result = j$.parseJSON(
                         JSON.stringify(data.response)
                     )[0];
                 },
-                // source: [
-                //     { title: "Node 1", key: "1", qty: 5 },
-                //     { title: "Node 2", key: "2" },
-                //     { title: "Node 3", key: "3" },
-                //     { title: "Node 4", key: "4" },
-                //     {
-                //         title: "Folder 2",
-                //         key: "2",
-                //         folder: true,
-                //         children: [
-                //             { title: "Node 2.1", key: "3" },
-                //             { title: "Node 2.2", key: "4" },
-                //         ],
-                //     },
-                //     { title: "Node 5", key: "5" },
-                // ],
                 tooltip: function (event, data) {
                     return data.node.data.author;
-                },
-                lazyLoad: function (event, data) {
-                    data.result = { url: "ajax-sub2.json" };
                 },
                 renderColumns: function (event, data) {
                     var node = data.node,
@@ -103,9 +195,19 @@
                     // (index #0 is rendered by fancytree by adding the checkbox)
                     j$tdList.eq(1).text(node.getIndexHier());
                     // (index #2 is rendered by fancytree)
-                    j$tdList.eq(3).text(node.data.qty);
-                    // Rendered by row template:
-                    //        j$tdList.eq(4).html("<input type='checkbox' name='like' value='" + node.key + "'>");
+                    j$tdList.eq(3).text(node.data.desc);
+                    // When you click on edit node button
+                    j$tdList.eq(4).click(function () {
+                        console.log(data);
+                    });
+                },
+                activate: function (event, data) {
+                    let activeNode = data.tree.activeNode;
+                    // console.log(data.tree.activeNode);
+                    if (activeNode) {
+                        let noteText = activeNode.data.text;
+                        j$("#noteText").html(noteText ? noteText : "");
+                    }
                 },
             })
             .on("nodeCommand", function (event, data) {
@@ -223,6 +325,23 @@
         });
     });
 
+    function updateNodeData(data) {
+        j$.ajax({
+            type: "POST",
+            url: `${location.origin}/admin/update-notes`,
+            data: data,
+            success: function (e) {
+                console.log("Success");
+            },
+            error: function (e) {
+                error = "Server Error During Creation.";
+                // Error logging
+                console.log(e.statusText);
+                console.log(e.responseText);
+            },
+        });
+    }
+
     // Fancytree Edit Styling
     setInterval(function () {
         j$(".fancytree-edit-input").css(
@@ -232,6 +351,11 @@
         );
         j$(".fancytree-edit-input").css("min-width", "100px");
     }, 100);
+
+    function editNote(e) {
+        e.preventDefault();
+        console.log("Test");
+    }
 </script>
 
 <!-- <Tree /> -->
@@ -266,11 +390,11 @@
                 >
                 <th
                     class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-                    >Qty</th
+                    >Title</th
                 >
                 <th
                     class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-                    >Order</th
+                    >Edit Note</th
                 >
             </tr>
         </thead>
@@ -291,7 +415,13 @@
                 />
                 <td
                     class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
-                    ><input type="checkbox" name="like" /></td
+                    ><input
+                        type="button"
+                        name="like"
+                        value="Edit Note"
+                        style=""
+                        class="w-full h-full cursor-pointer"
+                    /></td
                 >
             </tr>
         </tbody>
@@ -303,7 +433,21 @@
         Note Text
     </h1>
     <div
+        id="noteText"
         class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto"
         style="border-radius: 8px; min-height: 500px;"
-    />
+    >
+        <p>Text</p>
+    </div>
 </div>
+
+<!-- <div class="my-8 w-full overflow-x-auto md:w-11/12 h-auto px-4">
+    <input
+        id="grid-username"
+        name="header_card_subtitles"
+        type="submit"
+        placeholder="Collection Creation"
+        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+        value="Edit Note"
+    />
+</div> -->

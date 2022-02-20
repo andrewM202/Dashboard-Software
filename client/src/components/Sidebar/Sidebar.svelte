@@ -25,6 +25,7 @@
         position: "absolute",
         right: "0",
         width: "100vw",
+        // top: "-26px",
       });
       j$("#AdminMainContentContainer").addClass("bg-blueGray-100");
       j$("#AdminMainContentContainer").prepend(j$("#ReOpenSideBarIcon"));
@@ -42,6 +43,7 @@
         position: "inherit",
         right: "0",
         width: "auto",
+        top: "0",
       });
       j$("#AdminMainContentContainer").removeClass("bg-blueGray-100");
       j$("#ReOpenSideBarIcon").css({
