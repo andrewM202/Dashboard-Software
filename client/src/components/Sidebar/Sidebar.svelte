@@ -82,7 +82,7 @@
 <i
   id="ReOpenSideBarIcon"
   on:click={closeSideBar}
-  class="fas fa-plus-square hidden sticky left-10 cursor-pointer"
+  class="fas fa-plus-square float-left hidden sticky left-10 cursor-pointer"
 />
 <nav
   style={sidebarBackgroundColor}

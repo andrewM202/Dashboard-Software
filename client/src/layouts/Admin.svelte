@@ -93,7 +93,6 @@
     {/if}
     <div class="relative md:ml-64 bg-blueGray-100">
       <div id="AdminMainContentContainer" class="mx-auto w-full">
-        <AdminNavbar />
         <Router url="admin">
           <Route path="dashboard" component={Dashboard} />
           <Route path="settings" component={Settings} />
