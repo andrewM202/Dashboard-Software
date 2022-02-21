@@ -706,7 +706,7 @@
     </h1>
     <div
         id="noteText"
-        class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto ck ck-content"
+        class="w-full p-4 overflow-x-auto border-8 border-blueGray-200 h-auto ck ck-content"
         style="border-radius: 8px; min-height: 500px;"
         contenteditable="false"
     />
