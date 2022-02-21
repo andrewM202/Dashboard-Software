@@ -322,7 +322,6 @@
                         .unbind("click")
                         .click(function (e) {
                             if (editingNote === false) {
-                                console.log("test");
                                 // Not currently editing a node, so lets start
                                 editingNote = true;
                                 j$tdList.eq(3).html(`
@@ -341,6 +340,41 @@
                                 j$tdList.eq(4).find("input").attr({
                                     value: "Save Edit",
                                 });
+
+                                // CKEditor
+                                j$("#noteText")
+                                    .html(`<div class="document-editor">
+                                        <div class="document-editor__toolbar"></div>
+                                        <div class="document-editor__editable-container">
+                                            <div class="document-editor__editable">
+                                                ${j$("#noteText").html()}
+                                            </div>
+                                        </div>
+                                    </div>`);
+
+                                DecoupledEditor.create(
+                                    document.querySelector(
+                                        ".document-editor__editable"
+                                    ),
+                                    {}
+                                )
+                                    .then((editor) => {
+                                        const toolbarContainer =
+                                            document.querySelector(
+                                                ".document-editor__toolbar"
+                                            );
+
+                                        toolbarContainer.appendChild(
+                                            editor.ui.view.toolbar.element
+                                        );
+
+                                        window.editor = editor;
+                                    })
+                                    .catch((err) => {
+                                        console.error(err);
+                                    });
+
+                                // Stop tabbing when focused on textarea for ckeditor
                             } else {
                                 // We are currently editing, so lets
                                 // save the edits
@@ -357,10 +391,16 @@
                                     value: "Edit Note",
                                 });
 
+                                let noteTextValue = j$(
+                                    "#noteText .document-editor__editable"
+                                ).html();
+                                node.data.text = noteTextValue;
+                                j$("#noteText").html(noteTextValue);
+
                                 let updateJson = {
                                     key: node.key,
                                     desc: newDesc,
-                                    text: "",
+                                    text: noteTextValue,
                                 };
 
                                 // Update server
@@ -614,7 +654,5 @@
         id="noteText"
         class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto"
         style="border-radius: 8px; min-height: 500px;"
-    >
-        <p>Text</p>
-    </div>
+    />
 </div>
