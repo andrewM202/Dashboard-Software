@@ -38,7 +38,7 @@ def load_notes():
     for note in Notes.objects():
         # print(note.sub_nodes)
         # print(note.parent_node)
-        if(note.parent_node == "root_1"): # root_! is root node
+        if("root" in note.parent_node): # root_! is root node
             print(note.description)
             note_config = {
                 "title": note.title,
@@ -282,7 +282,7 @@ def note_search():
         for note in Notes.objects():
             # print(note.sub_nodes)
             # print(note.parent_node)
-            if(note.parent_node == "root_1"): # root_! is root node
+            if("root" in note.parent_node): # root_! is root node
                 print(note.description)
                 note_config = {
                     "title": note.title,
