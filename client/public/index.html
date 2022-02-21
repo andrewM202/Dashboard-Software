@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,10 +34,10 @@
   <script> const j$ = window.$; </script>
   <!-- CKEditor -->
   <script src="/build/ckeditor.js"></script>
-
+  <!-- Get CSRF Token -->
   <script>
     async function getToken() {
-      const response = await fetch(`${location.origin}/auth/getcsrf`, {
+      const response = await fetch("/auth/getcsrf", {
         credentials: "same-origin",
       }).then((res) => {
         csrf_token = res.headers.get(["X-CSRFToken"]);
