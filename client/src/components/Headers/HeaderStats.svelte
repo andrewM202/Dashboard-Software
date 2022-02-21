@@ -53,16 +53,6 @@
     class="relative bg-red-500 md:pt-24 pt-16"
     style={headerBGColor}
 >
-    <!-- <img
-        style="position: absolute; left: 0; top: 0; background-repeat: repeat-x; height: 100%;"
-        src="/assets/img/dots-left.svg"
-        alt="background-topography"
-    /> -->
-    <!-- <img
-        style="position: absolute; left: 0; top: 0; background-repeat: repeat-x; height: 100%; width: 100%;"
-        src="/assets/img/rand-dots.svg"
-        alt="background-topography"
-    /> -->
     <div class="px-4 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
@@ -130,7 +120,7 @@
                                                 value={input.type === "Submit"
                                                     ? input.placeholder
                                                     : ""}
-                                                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                             />
                                         {/if}
                                     </div>
@@ -150,7 +140,7 @@
                                         value={submitValue !== undefined
                                             ? submitValue
                                             : "Submit"}
-                                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                     />
                                 </div>
                             </div>

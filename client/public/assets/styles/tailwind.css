@@ -2445,6 +2445,11 @@ select {
   margin-top: -1rem;
 }
 
+.hover\:bg-gray-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(228, 228, 231, var(--tw-bg-opacity));
+}
+
 .max-h-860-px {
   max-height: 860px;
 }
