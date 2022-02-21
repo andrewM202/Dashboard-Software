@@ -352,6 +352,32 @@
                                         </div>
                                     </div>`);
 
+                                // Prevent tabbing in the editor
+                                j$("#noteText").keydown(function (e) {
+                                    if (e.keyCode === 9) {
+                                        // tab was pressed
+                                        // get caret position/selection
+                                        var start = this.selectionStart;
+                                        var end = this.selectionEnd;
+
+                                        var value = j$(this).val();
+
+                                        // set textarea value to: text before caret + tab + text after caret
+                                        j$(this).val(
+                                            value.substring(0, start) +
+                                                "\t" +
+                                                value.substring(end)
+                                        );
+
+                                        // put caret at right position again (add one for the tab)
+                                        this.selectionStart =
+                                            this.selectionEnd = start + 1;
+
+                                        // prevent the focus lose
+                                        e.preventDefault();
+                                    }
+                                });
+
                                 DecoupledEditor.create(
                                     document.querySelector(
                                         ".document-editor__editable"
@@ -373,8 +399,6 @@
                                     .catch((err) => {
                                         console.error(err);
                                     });
-
-                                // Stop tabbing when focused on textarea for ckeditor
                             } else {
                                 // We are currently editing, so lets
                                 // save the edits
@@ -566,6 +590,11 @@
             placeholder: "Note Description",
             name: "NoteDesc",
         },
+        {
+            type: "Text",
+            placeholder: "Note Text",
+            name: "NoteText",
+        },
     ];
 
     function HeaderSearchFunction(e) {
@@ -652,7 +681,8 @@
     </h1>
     <div
         id="noteText"
-        class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto"
+        class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto ck ck-content"
         style="border-radius: 8px; min-height: 500px;"
+        contenteditable="false"
     />
 </div>
