@@ -314,12 +314,18 @@
                     j$tdList.eq(1).text(node.getIndexHier());
                     // (index #2 is rendered by fancytree)
                     j$tdList.eq(3).text(node.data.desc);
-                    // When you click on edit node button
-                    j$tdList.eq(4).click(function () {
-                        if (editingNote === false) {
-                            // Not currently editing a node, so lets start
-                            editingNote = true;
-                            j$tdList.eq(3).html(`
+                    // When you click on edit node button, unbind click event
+                    // and rebind it to fix bug where a new node's click event
+                    // is fired twice for some reason
+                    j$tdList
+                        .eq(4)
+                        .unbind("click")
+                        .click(function (e) {
+                            if (editingNote === false) {
+                                console.log("test");
+                                // Not currently editing a node, so lets start
+                                editingNote = true;
+                                j$tdList.eq(3).html(`
                             <input
                                 type="text"
                                 name="desc"
@@ -332,45 +338,48 @@
                                 style="color: black;"
                                 class="w-full h-full text-dark"
                             />`);
-                            j$tdList.eq(4).find("input").attr({
-                                value: "Save Edit",
-                            });
-                        } else {
-                            // We are currently editing, so lets
-                            // save the edits
-                            editingNote = false;
-                            console.log("done editing");
+                                j$tdList.eq(4).find("input").attr({
+                                    value: "Save Edit",
+                                });
+                            } else {
+                                // We are currently editing, so lets
+                                // save the edits
+                                editingNote = false;
+                                console.log("Finished Editing");
 
-                            let newDesc = j$tdList.eq(3).find("input").val();
-                            j$tdList.eq(3).html(newDesc);
+                                let newDesc = j$tdList
+                                    .eq(3)
+                                    .find("input")
+                                    .val();
+                                j$tdList.eq(3).html(newDesc);
 
-                            j$tdList.eq(4).find("input").attr({
-                                value: "Edit Note",
-                            });
+                                j$tdList.eq(4).find("input").attr({
+                                    value: "Edit Note",
+                                });
 
-                            let updateJson = {
-                                key: node.key,
-                                desc: newDesc,
-                                text: "",
-                            };
+                                let updateJson = {
+                                    key: node.key,
+                                    desc: newDesc,
+                                    text: "",
+                                };
 
-                            // Update server
-                            j$.ajax({
-                                type: "POST",
-                                url: `${location.origin}/admin/update-note-details`,
-                                data: updateJson,
-                                success: function (e) {
-                                    console.log("Success");
-                                },
-                                error: function (e) {
-                                    error = "Server Error During Creation.";
-                                    // Error logging
-                                    console.log(e.statusText);
-                                    console.log(e.responseText);
-                                },
-                            });
-                        }
-                    });
+                                // Update server
+                                j$.ajax({
+                                    type: "POST",
+                                    url: `${location.origin}/admin/update-note-details`,
+                                    data: updateJson,
+                                    success: function (e) {
+                                        console.log("Success");
+                                    },
+                                    error: function (e) {
+                                        error = "Server Error During Creation.";
+                                        // Error logging
+                                        console.log(e.statusText);
+                                        console.log(e.responseText);
+                                    },
+                                });
+                            }
+                        });
                 },
                 activate: function (event, data) {
                     let activeNode = data.tree.activeNode;
