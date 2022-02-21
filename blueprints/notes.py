@@ -236,34 +236,7 @@ def update_note_details():
         text = data["text"],
     )
 
-    print(data)
-
     return "Success"
-
-# @bp.route("/admin/note-search/<noteText>/<noteDesc>/<noteTitle>")
-# @login_required
-# def note_search(noteText, noteDesc, noteTitle):
-#     """ Search for notes and return 
-#     corresponding JSON payload of notes """
-
-#     return_notes = []
-#     for note in Notes.objects():
-#         if(noteText in note.text and noteDesc in note.description and noteTitle in note.title): 
-#             note_config = {
-#                 "title": note.title,
-#                 "desc": note.description,
-#                 "folder": note.folder,
-#                 "text": note.text,
-#                 "key": note.key,
-#                 "children": [],
-#             }
-#             return_notes.append(note_config)
-
-#     print(return_notes)
-
-#     return json_util.dumps(return_notes)
-
-
 
 @bp.route("/admin/note-search", methods=["POST"])
 @login_required

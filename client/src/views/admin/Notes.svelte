@@ -327,7 +327,7 @@
                                 name="desc"
                                 value="${
                                     node.data.desc === undefined
-                                        ? ""
+                                        ? j$tdList.eq(3).text()
                                         : node.data.desc
                                 }"
                                 placeholder="Note Description"
@@ -658,7 +658,7 @@
                 >
                 <th
                     class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-                    >Folder</th
+                    >Notes</th
                 >
                 <th
                     class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
