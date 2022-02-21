@@ -150,31 +150,36 @@ def update_notes():
 def delete_note():
     """ Delete a note """
 
-    data = request.form.to_dict()
-    data_keys = request.form.keys()
-    delete_key = data["data[key]"]
+    # Can only delete a note if there is more than 1 left
+    if(len(Notes.objects()) > 1):
 
-    # If this note has any child nodes delete them recursively
-    def delete_nodes(node):
-        if (len(node.sub_nodes) > 0):
-            for sub_node_key in node.sub_nodes:
-                delete_nodes(Notes.objects(key=sub_node_key)[0])
-        Notes.objects(key=node.key).delete()
+        data = request.form.to_dict()
+        data_keys = request.form.keys()
+        delete_key = data["data[key]"]
 
-    delete_nodes(Notes.objects(key=delete_key)[0])
+        # If this note has any child nodes delete them recursively
+        def delete_nodes(node):
+            if (len(node.sub_nodes) > 0):
+                for sub_node_key in node.sub_nodes:
+                    delete_nodes(Notes.objects(key=sub_node_key)[0])
+            Notes.objects(key=node.key).delete()
 
-    # If this note has a parent note delete it from its list
-    for note in Notes.objects():
-        if(delete_key in note.sub_nodes):
-            old_sub_nodes = note.sub_nodes
-            old_sub_nodes.remove(delete_key)
-            Notes.objects(key=note.key).update(
-                sub_nodes = old_sub_nodes
-            )
+        delete_nodes(Notes.objects(key=delete_key)[0])
 
-    print(f"Deleted Node: {data['data[key]']}")
+        # If this note has a parent note delete it from its list
+        for note in Notes.objects():
+            if(delete_key in note.sub_nodes):
+                old_sub_nodes = note.sub_nodes
+                old_sub_nodes.remove(delete_key)
+                Notes.objects(key=note.key).update(
+                    sub_nodes = old_sub_nodes
+                )
 
-    return "Deleted Node"
+        print(f"Deleted Node: {data['data[key]']}")
+    else:
+        return "Cannot delete last note"
+
+    return "Deleted Note"
 
 @bp.route("/admin/create-moved-note", methods=["POST"])
 @login_required
