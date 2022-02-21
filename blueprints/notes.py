@@ -39,7 +39,6 @@ def load_notes():
         # print(note.sub_nodes)
         # print(note.parent_node)
         if("root" in note.parent_node): # root_! is root node
-            print(note.description)
             note_config = {
                 "title": note.title,
                 "desc": note.description,
@@ -85,8 +84,6 @@ def update_notes():
     """ Route for editing or creating a new note """
     data = request.form.to_dict()
     data_keys = request.form.keys()
-    # print(data)
-    # print(data_keys)
 
     # All the keys substructure come in arrays, so instead of 
     # trying to make an actual JSON as it should be, lets just make
@@ -336,7 +333,5 @@ def note_search():
                     "children": [],
                 }
                 return_notes.append(note_config)
-
-        print(return_notes)
 
         return json_util.dumps(return_notes)
