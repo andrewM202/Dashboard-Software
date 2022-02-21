@@ -129,6 +129,9 @@
           "border-width": "0",
         });
       }
+      j$(".flexDataRegular").click(function () {
+        j$(".item").css({ cursor: "pointer" });
+      });
     }, 10);
   }
 
@@ -408,6 +411,24 @@
                       multiple="multiple"
                     />
                     <datalist id="flexList" />
+                  {:else if input.flexdatalistdata[0] !== undefined && input.flexdatalistsingle && typeof input.flexdatalistdata[0] === "string"}
+                    <input
+                      use:styleFlexDataRegular
+                      type="text"
+                      placeholder=""
+                      class="flexdatalist flexDataRegular border-0 py-3 px-3 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
+                      data-min-length="0"
+                      list={input.flexdataid}
+                      name={input.name}
+                    />
+                    <datalist id={input.flexdataid}>
+                      {#if input.flexdatanonedata}
+                        <option value="None">None</option>
+                      {/if}
+                      {#each input.flexdatalistdata as data}
+                        <option value={data} />
+                      {/each}
+                    </datalist>
                     <!-- Data imported from store -->
                   {:else if input.flexdatalistdata[0] !== undefined && typeof input.flexdatalistdata[0] !== "string"}
                     <input

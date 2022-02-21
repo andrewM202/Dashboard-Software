@@ -39,7 +39,7 @@
                 j$("ul.flexdatalist-results").css({
                     "border-width": "0",
                 });
-                j$("#headerStatsFlexForm-flexdatalist").click(function () {
+                j$(".headerStatsFlexForm").click(function () {
                     j$(".item").css({ cursor: "pointer" });
                 });
             }
@@ -48,12 +48,26 @@
 </script>
 
 <!-- Header -->
-<div class="relative bg-red-500 md:pt-24 pt-16" style={headerBGColor}>
-    <div class="px-4 py-2 md:px-10 mx-auto w-full">
+<div
+    id="HeaderStatsHeaderDiv"
+    class="relative bg-red-500 md:pt-24 pt-16"
+    style={headerBGColor}
+>
+    <!-- <img
+        style="position: absolute; left: 0; top: 0; background-repeat: repeat-x; height: 100%;"
+        src="/assets/img/dots-left.svg"
+        alt="background-topography"
+    /> -->
+    <!-- <img
+        style="position: absolute; left: 0; top: 0; background-repeat: repeat-x; height: 100%; width: 100%;"
+        src="/assets/img/rand-dots.svg"
+        alt="background-topography"
+    /> -->
+    <div class="px-4 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
                 <h3
-                    class="{titleColor} {titleFontSize} text-center font-normal leading-normal mt-0 mb-2"
+                    class="{titleColor} {titleFontSize} z-50 text-center font-normal leading-normal mt-0 mb-2"
                 >
                     {title}
                 </h3>
@@ -100,8 +114,8 @@
                                                 type="text"
                                                 placeholder={input.placeholder}
                                                 name={input.name}
-                                                id="headerStatsFlexForm"
-                                                class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                                id={input.name}
+                                                class="headerStatsFlexForm flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                             />
                                             <datalist id={input.flexdataid}>
                                                 {#each input.flexdatalistdata as datarow}

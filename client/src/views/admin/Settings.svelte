@@ -173,7 +173,7 @@
 </script>
 
 <div class="flex flex-wrap">
-  <div class="w-full px-4 h-90vh">
+  <div class="w-full px-4">
     {#if tableData.includes(undefined) !== true}
       <CardSettings
         settings={adminSettings}

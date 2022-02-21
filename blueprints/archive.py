@@ -86,99 +86,143 @@ def retrieve_specific_archive_data(collection):
 @bp.route("/admin/archive-data/edit-collection", methods=["POST"])
 @login_required
 def edit_archive_collection():
-    # Gen for auto-generated, non-default collection
-    collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
+    try:
+        # Throw error if any of the collection names or titles
+        # are not set 
+        if(len(request.form['collection_name']) == 0):
+            return jsonify("Collection name must be set"), 400
 
-    # Normalize flex data fields
-    flex_fields = [i.partition(": ")[2].lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistfield'].split(",")]
-    flex_data = ["gen_" + i.lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistdata'].split(",")]
+        if(len(request.form['table_title']) == 0):
+            return jsonify("Table title must be set"), 400
 
-    ArchiveCollectionSettingsID = request.form['collectionEditID']
-    # Get old collection name for update purposes
-    oldColName = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("collection_name")[0].collection_name
+        if(len(request.form['creationcard_title']) == 0):
+            return jsonify("Creation card title must be set"), 400
 
-    # If adding new field, put a sample value in or remove old fields
-    col = db.get_database(db_name).get_collection(collection_name)
-    new_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")]
-    old_field_names = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("table_db_field_names")[0].table_db_field_names
+        # Check if this collection name already exists
+        collections = db.get_database(db_name).collection_names()
+        new_col_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
+        if(new_col_name in collections):
+            # Throw error if collection already exists
+            return jsonify("Collection name already exists"), 400
+        
+        # Check inputs are the same length
+        h_c_s_length = len(request.form['header_card_subtitles'].split(",")) if request.form['header_card_subtitles'].split(",") != [''] else []
+        h_c_a_length = len(request.form['header_card_amounts'].split(",")) if request.form['header_card_amounts'].split(",") != [''] else []
+        h_c_i_length = len(request.form['header_card_increases'].split(",")) if request.form['header_card_increases'].split(",") != [''] else []
+        h_c_d_length = len(request.form['header_card_descriptions'].split(",")) if request.form['header_card_descriptions'].split(",") != [''] else []
+        if(h_c_s_length != h_c_a_length or h_c_s_length != h_c_i_length or h_c_s_length != h_c_d_length):
+            return jsonify("Header card lengths must be equal"), 400
 
-    # Add sample value to old documents that don't have new field
-    update_json = { "$set": {}}
-    for new_field in new_field_names:
-        if new_field not in old_field_names:
-            update_query = {new_field: {"$exists": False}}
-            update_json["$set"][new_field] = "Sample Value"
-            col.update_many(update_query, update_json)
+        # Check if header search and creation card input 
+        # lengths are the same
+        c_i_t_length = len(request.form['creationcard_input_types'].split(",")) if request.form['creationcard_input_types'].split(",") != [''] else []
+        c_i_n_length = len(request.form['creationcard_input_names'].split(",")) if request.form['creationcard_input_names'].split(",") != [''] else []
+        c_fd_length = len(request.form['creationcard_flexdatalistdata'].split(",")) if request.form['creationcard_flexdatalistdata'].split(",") != [''] else []
+        c_ff_length = len(request.form['creationcard_flexdatalistfield'].split(",")) if request.form['creationcard_flexdatalistfield'].split(",") != [''] else []
+        c_r_f_length = len(request.form['creationcard_required_field'].split(",")) if request.form['creationcard_required_field'].split(",") != [''] else []
+        h_s_i_t_length = len(request.form['header_search_input_types'].split(",")) if request.form['header_search_input_types'].split(",") != [''] else []
+        h_s_e_length = len(request.form['header_search_enabled'].split(",")) if request.form['header_search_enabled'].split(",") != [''] else []
+        if(c_i_t_length != c_i_n_length or c_i_t_length != c_fd_length or c_i_t_length != c_ff_length or c_i_t_length != c_r_f_length or c_i_t_length != h_s_i_t_length or c_i_t_length != h_s_e_length):
+            return jsonify("Creation card and header search lengths must be equal"), 400
 
-    col_settings = ArchiveCollectionSettings.objects()
-    # Remove fields from document that no longer exists
-    update_json = { "$set": {}}
-    for old_field in old_field_names:
-        if old_field not in new_field_names:
-            # Remove that field from this collection
-            col.update_many( { }, { '$unset': { old_field: 1 } } )
+        # If we pass all the checks, go on
 
-            # If this old field is a flexdatalist reference 
-            # in another collection, make the field a regular input 
-            # with no flexdatalist reference. Leave all values intact however
-            col_settings = ArchiveCollectionSettings.objects()
-            for setting in col_settings:
-                for i in range(0, len(setting.creationcard_flexdatalistdata)):
-                    if(setting.creationcard_flexdatalistdata[i] == oldColName):
-                        if(setting.creationcard_flexdatalistfield[i] == old_field):
-                            # We found the old field, lets update it to none in given collection
-                            new_listdata = setting.creationcard_flexdatalistdata
-                            new_listdata[i] = "None"
-                            new_listfield = setting.creationcard_flexdatalistfield
-                            new_listfield[i] = "None"
-                            ArchiveCollectionSettings.objects(id=setting.id).update(
-                                creationcard_flexdatalistdata = new_listdata,
-                                creationcard_flexdatalistfield = new_listfield
-                            )
+        # Gen for auto-generated, non-default collection
+        collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
 
-    ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
-        # Collection_name is db-friendly collection title
-        collection_name = collection_name,
-        # Title is just regular collection name
-        collection_title = request.form['collection_name'],
-        header_search_input_types = [i for i in request.form['header_search_input_types'].split(",")],
-        # Commented out so the header input placeholders 
-        # just equal the creation card input placeholders
-        header_search_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
-        # Header search input names are just the creation card ones
-        header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
-        header_search_enabled = [i for i in request.form['header_search_enabled'].split(",")],
+        # Normalize flex data fields
+        flex_fields = [i.partition(": ")[2].lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistfield'].split(",")]
+        flex_data = ["gen_" + i.lower().replace(" ", "_") if i != "None" else i for i in request.form['creationcard_flexdatalistdata'].split(",")]
 
-        header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")] if len(request.form['header_card_subtitles']) > 0 else [],
-        header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")] if len(request.form['header_card_amounts']) > 0 else [],
-        header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")] if len(request.form['header_card_increases']) > 0 else [],
-        header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")] if len(request.form['header_card_descriptions']) > 0 else [],
+        ArchiveCollectionSettingsID = request.form['collectionEditID']
+        # Get old collection name for update purposes
+        oldColName = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("collection_name")[0].collection_name
 
-        table_title = request.form['table_title'],
-        # The table field names are also just the creation card names
-        table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+        # If adding new field, put a sample value in or remove old fields
+        col = db.get_database(db_name).get_collection(collection_name)
+        new_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")]
+        old_field_names = ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).only("table_db_field_names")[0].table_db_field_names
 
-        creationcard_title = request.form['creationcard_title'],
-        creationcard_flexdatalistdata = flex_data, 
-        creationcard_flexdatalistfield = flex_fields, 
-        creationcard_required_field = [i for i in request.form['creationcard_required_field'].split(",")],
+        # Add sample value to old documents that don't have new field
+        update_json = { "$set": {}}
+        for new_field in new_field_names:
+            if new_field not in old_field_names:
+                update_query = {new_field: {"$exists": False}}
+                update_json["$set"][new_field] = "Sample Value"
+                col.update_many(update_query, update_json)
 
-        creationcard_input_types = [i for i in request.form['creationcard_input_types'].split(",")],
-        # The names are just db-friendly placeholders
-        creationcard_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
-        creationcard_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],
-    )
+        col_settings = ArchiveCollectionSettings.objects()
+        # Remove fields from document that no longer exists
+        update_json = { "$set": {}}
+        for old_field in old_field_names:
+            if old_field not in new_field_names:
+                # Remove that field from this collection
+                col.update_many( { }, { '$unset': { old_field: 1 } } )
 
-    # Add collection name to archive_collections collection
-    ArchiveCollections.objects(collection_name=oldColName).update(
-        collection_name = collection_name,
-        uploaded_data = False,
-        base_collection = False,
-    )
+                # If this old field is a flexdatalist reference 
+                # in another collection, make the field a regular input 
+                # with no flexdatalist reference. Leave all values intact however
+                col_settings = ArchiveCollectionSettings.objects()
+                for setting in col_settings:
+                    for i in range(0, len(setting.creationcard_flexdatalistdata)):
+                        if(setting.creationcard_flexdatalistdata[i] == oldColName):
+                            if(setting.creationcard_flexdatalistfield[i] == old_field):
+                                # We found the old field, lets update it to none in given collection
+                                new_listdata = setting.creationcard_flexdatalistdata
+                                new_listdata[i] = "None"
+                                new_listfield = setting.creationcard_flexdatalistfield
+                                new_listfield[i] = "None"
+                                ArchiveCollectionSettings.objects(id=setting.id).update(
+                                    creationcard_flexdatalistdata = new_listdata,
+                                    creationcard_flexdatalistfield = new_listfield
+                                )
 
-    # Rename collection if they are different
-    if oldColName != collection_name:
-        db.get_database(db_name).get_collection(oldColName).rename(collection_name)
+        ArchiveCollectionSettings.objects(id=ArchiveCollectionSettingsID).update(
+            # Collection_name is db-friendly collection title
+            collection_name = collection_name,
+            # Title is just regular collection name
+            collection_title = request.form['collection_name'],
+            header_search_input_types = [i for i in request.form['header_search_input_types'].split(",")],
+            # Commented out so the header input placeholders 
+            # just equal the creation card input placeholders
+            header_search_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],#[i for i in request.form['HeaderSearchInputPlaceholders'].split(",")],
+            # Header search input names are just the creation card ones
+            header_search_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+            header_search_enabled = [i for i in request.form['header_search_enabled'].split(",")],
+
+            header_card_subtitles = [i for i in request.form['header_card_subtitles'].split(",")] if len(request.form['header_card_subtitles']) > 0 else [],
+            header_card_amounts = [round(float(i), 2) for i in request.form['header_card_amounts'].split(",")] if len(request.form['header_card_amounts']) > 0 else [],
+            header_card_increases = [round(float(i), 2) for i in request.form['header_card_increases'].split(",")] if len(request.form['header_card_increases']) > 0 else [],
+            header_card_descriptions = [i for i in request.form['header_card_descriptions'].split(",")] if len(request.form['header_card_descriptions']) > 0 else [],
+
+            table_title = request.form['table_title'],
+            # The table field names are also just the creation card names
+            table_db_field_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+
+            creationcard_title = request.form['creationcard_title'],
+            creationcard_flexdatalistdata = flex_data, 
+            creationcard_flexdatalistfield = flex_fields, 
+            creationcard_required_field = [i for i in request.form['creationcard_required_field'].split(",")],
+
+            creationcard_input_types = [i for i in request.form['creationcard_input_types'].split(",")],
+            # The names are just db-friendly placeholders
+            creationcard_input_names = [i.lower().replace(" ", "_") for i in request.form['creationcard_input_names'].split(",")],
+            creationcard_input_placeholders = [i for i in request.form['creationcard_input_names'].split(",")],
+        )
+
+        # Add collection name to archive_collections collection
+        ArchiveCollections.objects(collection_name=oldColName).update(
+            collection_name = collection_name,
+            uploaded_data = False,
+            base_collection = False,
+        )
+
+        # Rename collection if they are different
+        if oldColName != collection_name:
+            db.get_database(db_name).get_collection(oldColName).rename(collection_name)
+    
+    except Exception as e:
+        return redirect('/admin/archive-designer')
 
     return redirect('/admin/archive-designer')
         
@@ -193,6 +237,50 @@ def create_archive_collection():
     """ 
 
     try:
+        # Throw error if any of the collection names or titles
+        # are not set 
+        if(len(request.form['collection_name']) == 0):
+            return jsonify("Collection name must be set"), 400
+
+        if(len(request.form['table_title']) == 0):
+            return jsonify("Table title must be set"), 400
+
+        if(len(request.form['creationcard_title']) == 0):
+            return jsonify("Creation card title must be set"), 400
+
+        # Check if this collection name already exists
+        collections = db.get_database(db_name).collection_names()
+        new_col_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
+        if(new_col_name in collections):
+            # Throw error if collection already exists
+            return jsonify("Collection name already exists"), 400
+        
+        # Check inputs are the same length
+        h_c_s_length = len(request.form['header_card_subtitles'].split(",")) if request.form['header_card_subtitles'].split(",") != [''] else []
+        h_c_a_length = len(request.form['header_card_amounts'].split(",")) if request.form['header_card_amounts'].split(",") != [''] else []
+        h_c_i_length = len(request.form['header_card_increases'].split(",")) if request.form['header_card_increases'].split(",") != [''] else []
+        h_c_d_length = len(request.form['header_card_descriptions'].split(",")) if request.form['header_card_descriptions'].split(",") != [''] else []
+        if(h_c_s_length != h_c_a_length or h_c_s_length != h_c_i_length or h_c_s_length != h_c_d_length):
+            return jsonify("Header card lengths must be equal"), 400
+
+        # Check if header search and creation card input 
+        # lengths are the same
+        c_i_t_length = len(request.form['creationcard_input_types'].split(",")) if request.form['creationcard_input_types'].split(",") != [''] else []
+        c_i_n_length = len(request.form['creationcard_input_names'].split(",")) if request.form['creationcard_input_names'].split(",") != [''] else []
+        c_fd_length = len(request.form['creationcard_flexdatalistdata'].split(",")) if request.form['creationcard_flexdatalistdata'].split(",") != [''] else []
+        c_ff_length = len(request.form['creationcard_flexdatalistfield'].split(",")) if request.form['creationcard_flexdatalistfield'].split(",") != [''] else []
+        c_r_f_length = len(request.form['creationcard_required_field'].split(",")) if request.form['creationcard_required_field'].split(",") != [''] else []
+        h_s_i_t_length = len(request.form['header_search_input_types'].split(",")) if request.form['header_search_input_types'].split(",") != [''] else []
+        h_s_e_length = len(request.form['header_search_enabled'].split(",")) if request.form['header_search_enabled'].split(",") != [''] else []
+        if(c_i_t_length != c_i_n_length or c_i_t_length != c_fd_length or c_i_t_length != c_ff_length or c_i_t_length != c_r_f_length or c_i_t_length != h_s_i_t_length or c_i_t_length != h_s_e_length):
+            return jsonify("Creation card and header search lengths must be equal"), 400
+
+        # Check if lengths are more than 0
+        if(c_i_t_length == 0):
+            return jsonify("Creation card and header search inputs cannot be empty"), 400
+
+        # All checks have passed, create collection    
+
         # Gen for auto-generated, non-default collection
         collection_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
 
@@ -512,3 +600,9 @@ def search_archive():
 
     return json_util.dumps(return_obj)
     
+########################### Archive Upload #####################################
+
+@bp.route("/admin/archive-upload")
+@login_required
+def archive_upload():
+    return send_from_directory('client/public', 'index.html')

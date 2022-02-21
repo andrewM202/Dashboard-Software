@@ -6,6 +6,7 @@
   export let UpdateFormNames;
   export let DeleteID;
   export let CollectionName;
+  export let inputs;
   $: DeleteID = DeleteID[0].$oid;
   $: UpdateID = DeleteID;
 
@@ -56,7 +57,7 @@
 
     let parent = j$(e.path[4]);
     let children = j$(e.path[4]).children(".datacell");
-    // let closeButton = j$(`${e.path[4]}:last-child i`);
+    let extendedChildren = j$(children).find("*");
     // Event listener for saving changes
     j$(modifyButtonContainer.children()[0]).click(function (e) {
       e.preventDefault();
@@ -66,14 +67,13 @@
       const data = j$("#saveForm").serializeArray();
       j$.ajax({
         type: "POST",
-        // url: `${location.origin}${UpdateURL}`,
         url: `${location.origin}/admin/archive-data/update`,
         data: data,
         success: function () {
-          console.log("yay");
+          // console.log("yay");
         },
         error: function () {
-          console.log("rip");
+          // console.log("rip");
         },
       });
       j$(parent).unwrap();
@@ -83,16 +83,31 @@
       j$(modifyButtonContainer).append(modifyButtons);
       // Change the inputs back to regular text
       // with values from changed inputs
+      let index = 0;
       for (let child of children) {
         let value = j$(child).children().val();
         j$(child).html(value);
+        // Loop through extendedChildren x amount of times,
+        // but don't use the extChild variable
+        for (let extChild of extendedChildren) {
+          if (child == extendedChildren.prevObject[index]) {
+            j$(child).html(extendedChildren[index]);
+            // If it has a span it is a color input
+            if (j$(child).find("span").length > 0) {
+              // Change the css of the span so the color matches new value
+              j$(child).find("span").css({
+                "background-color": value,
+              });
+            }
+            j$(child).find("span").text(value);
+            break;
+          }
+        }
+        index++;
       }
       // Close the modify menu after all done
       j$(parent).find("i").click();
     });
-
-    // Hopefully can serialize without form element...
-    // j$(e.path[4]).wrap("<form></form>");
 
     // Change the text to input fields
     // Append hidden input with the update id for the DB
@@ -105,12 +120,33 @@
     // Index for setting the form names from settings JSON
     let index = 0;
     for (let child of children) {
-      j$(child).html(
-        `<input name='${UpdateFormNames[index]}'
+      // console.log(j$(child).text());
+      let type;
+      for (let input of inputs) {
+        if (input.name === UpdateFormNames[index]) {
+          type = input.type;
+          break;
+        }
+      }
+      // Style input differently if it is a color input
+      if (type.toLowerCase() === "color") {
+        j$(child).html(
+          `<input name='${UpdateFormNames[index]}'
+        type="${type}"
+        value='${j$(
+          child
+        ).text()}' class='childcell my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full'/>`
+        );
+      } else {
+        j$(child).html(
+          `<input name='${UpdateFormNames[index]}'
+        type="${type}"
         value='${j$(
           child
         ).text()}' class='childcell p-2 my-2 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full'/>`
-      );
+        );
+      }
+      // j$(child).val(value);
       index++;
     }
   }

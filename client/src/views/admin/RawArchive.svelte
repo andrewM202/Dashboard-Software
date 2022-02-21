@@ -62,6 +62,9 @@
         });
     }
 
+    // Create a mapping for the table so we know
+    // form input -> input type
+
     // Bind openTab to AdminNavbar component
     let openTab = 0;
 </script>
@@ -123,6 +126,7 @@
                             UserSettings[0].archive_table_alt_color !== null
                                 ? UserSettings[0].archive_table_alt_color
                                 : undefined}
+                            inputs={section[1].CreationCard.Inputs}
                         />
                     </div>
                 </div>
