@@ -1,5 +1,21 @@
 <script>
   export let location;
+
+  function register(e) {
+    e.preventDefault();
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}/auth/register-user`,
+      data: j$("#RegisterForm").serialize(),
+      success: function (location) {
+        console.log(location);
+        window.location = location;
+      },
+      error: function (e) {
+        console.log(e);
+      },
+    });
+  }
 </script>
 
 <div class="container mx-auto px-4 h-full">
@@ -12,7 +28,7 @@
           <div class="py-4 text-blueGray-400 text-center mb-3 font-bold">
             <small>Sign up</small>
           </div>
-          <form action="/auth/register-user" method="post">
+          <form id="RegisterForm">
             <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -84,6 +100,7 @@
               <button
                 class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                 type="submit"
+                on:click={register}
               >
                 Create Account
               </button>

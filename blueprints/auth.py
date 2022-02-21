@@ -1,8 +1,9 @@
-from flask import render_template, redirect, Blueprint, \
+from flask import jsonify, render_template, redirect, Blueprint, \
     send_from_directory, request
-from models import User, db, pwd_context
+from models import User, db, pwd_context, user_datastore
 from flask_security import login_user, current_user, logout_user
 from passlib.context import CryptContext # Password hashing
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 ########################### Global Variables #####################################
 
@@ -35,13 +36,13 @@ def login():
                     loggedin_user = User.objects().first()
                     print()
                     login_user(loggedin_user)
-                    return redirect('/admin/dashboard')
+                    return '/admin/dashboard'
                 else:
-                    return redirect('/auth/login')
+                    return '/auth/login'
             except Exception as e:
                 return e
         else:
-            return redirect('/auth/login')
+            return '/auth/login'
     else:
         return send_from_directory('client/public', 'index.html')
 
@@ -60,28 +61,32 @@ def register():
     elif request.method == "POST":
         username = request.form['username']
         password = request.form['password']
-        usernamealready = None
-
-        try:
-            usernamealready = User.objects.get(username=username)
-        except Exception as e:
-            return send_from_directory('client/public', 'index.html')
+        usernamealready = True if len(User.objects(email=username)) > 0 else False
 
         if usernamealready:
-            error = "Sorry, that username is already present."
-            return send_from_directory('client/public', 'index.html')
+            return "Sorry, that username is already present.", 404
         else:
             user = User(
                 email=username,
                 password=pwd_context.hash(password), # Hash password
             ).save()
+            
+            # user_datastore.create_user(
+            #     email=username,
+            #     password=pwd_context.hash(password), # Hash password
+            # )
 
             login_user(user)
 
-            # db.session.add(user)
-            # db.session.commit()
-
-            return redirect('/admin/dashboard')
+            return '/admin/dashboard'
     else:
-        return send_from_directory('client/public', 'index.html')
+        return "Please send a valid request", 404
 
+
+# Get CSRF token
+@bp.route("/auth/getcsrf", methods=["GET"])
+def get_csrf():
+    token = generate_csrf()
+    response = jsonify({"detail": "CSRF cookie set"})
+    response.headers.set("X-CSRFToken", token)
+    return response

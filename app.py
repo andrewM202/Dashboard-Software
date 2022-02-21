@@ -4,9 +4,17 @@ import random
 from models import login, user_datastore
 from flask_security import Security
 from flask_paranoid import Paranoid
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
+# app.config.update(
+#     DEBUG=True,
+#     SECRET_KEY="secret_sauce",
+#     SESSION_COOKIE_HTTPONLY=True,
+#     REMEMBER_COOKIE_HTTPONLY=True,
+#     SESSION_COOKIE_SAMESITE="Strict",
+# )
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
@@ -41,6 +49,9 @@ security = Security(app, user_datastore)
 # Flask Paranoid
 paranoid = Paranoid(app)
 paranoid.redirect_view = 'auth.login'
+
+# Flask-WTF CSRF protection
+csrf = CSRFProtect(app)
 
 if __name__ == "__main__":
     app.run(debug=True)
