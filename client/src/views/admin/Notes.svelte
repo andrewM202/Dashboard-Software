@@ -65,8 +65,6 @@
                     console.log(data.operation);
                     if (data.operation === "remove") {
                         // This operation is for deleting nodes
-
-                        console.log(data);
                         let updateJson;
                         if (
                             data.childNode !== undefined &&
@@ -101,8 +99,8 @@
                         // This operation is for creating and renaming nodes
 
                         let newData_children = [];
-                        if (data.node.children !== null) {
-                            for (let child of data.node.children) {
+                        if (data.childNode.children !== null) {
+                            for (let child of data.childNode.children) {
                                 newData_children.push({
                                     title: child.title,
                                     key: child.key,
@@ -111,6 +109,7 @@
                         } else {
                             newData_children = null;
                         }
+                        console.log(newData_children);
                         let updateJson = {
                             data: {
                                 title: data.childNode.title,
@@ -133,8 +132,6 @@
                                 parent_key: data.childNode?.parent?.key,
                             },
                         };
-                        console.log(data.childNode);
-                        console.log(data);
                         j$.ajax({
                             type: "POST",
                             url: `${location.origin}/admin/update-notes`,

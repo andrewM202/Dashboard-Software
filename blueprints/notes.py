@@ -99,13 +99,12 @@ def update_notes():
         # Data: {data[key]}
         # """))
 
-        if "newData[children]" in key and "[key]" in key:
+        if "data[children]" in key and "[key]" in key:
             new_data_children.append(key)
 
     # Check if new node by if key exists already
     note_key = data["data[key]"]
     is_new = False if len(Notes.objects(key=note_key)) > 0 else True
-    # print(note_key)
 
     # If this is a new node
     if(is_new):
@@ -243,3 +242,11 @@ def update_note_details():
     print(data)
 
     return "Success"
+
+@bp.route("/admin/note-serialized", methods=["POST"])
+@login_required
+def note_search():
+    """ Search for notes and return 
+    corresponding JSON payload of notes """
+
+    return "Notes"
