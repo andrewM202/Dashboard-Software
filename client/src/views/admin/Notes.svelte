@@ -16,7 +16,7 @@
     j$(function () {
         // Attach the fancytree widget to an existing <div id="tree"> element
         // and pass the tree options as an argument to the fancytree() function:
-        let tree = j$("#treegrid")
+        j$("#treegrid")
             .fancytree({
                 extensions: ["dnd5", "edit", "table", "gridnav"],
                 dnd5: {
@@ -596,7 +596,34 @@
 
     function HeaderSearchFunction(e) {
         e.preventDefault();
-        console.log("test");
+
+        let form;
+        // Instead of hard coding form selector, find first form element
+        // and set that as selector
+        for (let i = 0; i < e.path.length; i++) {
+            if (e.path[i].tagName === "FORM") {
+                form = e.path[i];
+                break;
+            }
+        }
+
+        j$.ajax({
+            type: "POST",
+            url: `${location.origin}/admin/note-search`,
+            data: j$(form).serialize(),
+            success: function (e) {
+                // Load fancytree with data from search
+                let tree = j$.ui.fancytree.getTree();
+                tree.reload([j$.parseJSON(e)]);
+                j$(form)[0].reset();
+            },
+            error: function (e) {
+                error = "Server Error During Creation.";
+                // Error logging
+                console.log(e.statusText);
+                console.log(e.responseText);
+            },
+        });
     }
 </script>
 
@@ -608,6 +635,7 @@
     titleColor={"text-black"}
     inputs={titleSearchInputs}
     SearchFunction={HeaderSearchFunction}
+    submitValue={"Search Notes"}
 />
 <div class="w-full h-auto">
     <!-- Add a <table> element where the tree should appear: -->

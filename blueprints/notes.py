@@ -243,10 +243,100 @@ def update_note_details():
 
     return "Success"
 
-@bp.route("/admin/note-serialized", methods=["POST"])
+# @bp.route("/admin/note-search/<noteText>/<noteDesc>/<noteTitle>")
+# @login_required
+# def note_search(noteText, noteDesc, noteTitle):
+#     """ Search for notes and return 
+#     corresponding JSON payload of notes """
+
+#     return_notes = []
+#     for note in Notes.objects():
+#         if(noteText in note.text and noteDesc in note.description and noteTitle in note.title): 
+#             note_config = {
+#                 "title": note.title,
+#                 "desc": note.description,
+#                 "folder": note.folder,
+#                 "text": note.text,
+#                 "key": note.key,
+#                 "children": [],
+#             }
+#             return_notes.append(note_config)
+
+#     print(return_notes)
+
+#     return json_util.dumps(return_notes)
+
+
+
+@bp.route("/admin/note-search", methods=["POST"])
 @login_required
 def note_search():
     """ Search for notes and return 
     corresponding JSON payload of notes """
 
-    return "Notes"
+    data = request.form.to_dict()
+
+    # If the form is empty reload the entire tree, else do the search
+    if(data["NoteText"] == "" and data["NoteDesc"] == "" and data["NoteTitle"] == ""):
+        return_notes = []
+        for note in Notes.objects():
+            # print(note.sub_nodes)
+            # print(note.parent_node)
+            if(note.parent_node == "root_1"): # root_! is root node
+                print(note.description)
+                note_config = {
+                    "title": note.title,
+                    "desc": note.description,
+                    "folder": note.folder,
+                    "text": note.text,
+                    "key": note.key,
+                }
+                # If this note has child notes add them to the config
+                # using recursion
+                def parse_child_nodes(node):
+                    notes = []
+                    for child in node.sub_nodes:
+                        curr_node = Notes.objects(key=child)[0]
+                        if(len(curr_node.sub_nodes) > 0):
+                            child_note = {
+                            "title": curr_node.title,
+                            "desc": curr_node.description,
+                            "folder": curr_node.folder,
+                            "text": curr_node.text,
+                            "key": curr_node.key,
+                            "children": parse_child_nodes(curr_node)
+                        }
+                        else:
+                            child_note = {
+                                "title": curr_node.title,
+                                "desc": curr_node.description,
+                                "folder": curr_node.folder,
+                                "text": curr_node.text,
+                                "key": curr_node.key,
+                            }
+                        notes.append(child_note)
+                    return notes
+
+                if(len(note.sub_nodes) > 0):
+                    note_config["children"] = parse_child_nodes(note)
+
+                return_notes.append(note_config)
+        return json_util.dumps(return_notes)
+
+    else:
+        return_notes = []
+        for note in Notes.objects():
+            if(data["NoteText"].lower() in note.text.lower() and data["NoteDesc"].lower() in note.description.lower() and data["NoteTitle"].lower() in note.title.lower()): 
+                note_config = {
+                    "title": note.title,
+                    "desc": note.description,
+                    "folder": note.folder,
+                    "text": note.text,
+                    "key": note.key,
+                    "children": [],
+                }
+                return_notes.append(note_config)
+
+        print(return_notes)
+
+        return json_util.dumps(return_notes)
