@@ -7,14 +7,17 @@
   $: UserSettings = $userSettingsStore;
 
   // components for this layout
-  import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
   import Sidebar from "components/Sidebar/Sidebar.svelte";
   import HeaderStats from "components/Headers/HeaderStats.svelte";
   import FooterAdmin from "components/Footers/FooterAdmin.svelte";
+  import AdminNavbar from "components/NavBars/AdminNavbar.svelte";
 
   // pages for this layout
   import RawArchive from "views/admin/RawArchive.svelte";
   import ArchiveDesigner from "views/admin/ArchiveDesigner.svelte";
+  import ArchiveUpload from "views/admin/ArchiveUpload.svelte";
+  import DashboardDesigner from "views/admin/DashboardDesigner.svelte";
+  import ChartDesigner from "views/admin/ChartDesigner.svelte";
   import Notes from "views/admin/Notes.svelte";
   import Dashboard from "views/admin/Dashboard.svelte";
   import Settings from "views/admin/Settings.svelte";
@@ -42,9 +45,10 @@
       <Sidebar {location} />
     {/if}
     <div class="relative md:ml-64 bg-blueGray-100">
-      <AdminNavbar />
-      <HeaderStats />
-      <div class="px-4 md:px-10 mx-auto w-full m-24">
+      <div
+        id="AdminMainContentContainer"
+        class="px-4 md:px-10 mx-auto w-full m-24"
+      >
         <Router url="admin">
           <Route path="dashboard" component={Dashboard} />
           <Route path="settings" component={Settings} />
@@ -53,6 +57,9 @@
           <Route path="raw-archive" component={RawArchive} />
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
+          <Route path="archive-upload" component={ArchiveUpload} />
+          <Route path="dashboard-designer" component={DashboardDesigner} />
+          <Route path="chart-designer" component={ChartDesigner} />
         </Router>
         {#if UserSettings !== undefined}
           <FooterAdmin
@@ -94,6 +101,9 @@
           <Route path="raw-archive" component={RawArchive} />
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
+          <Route path="archive-upload" component={ArchiveUpload} />
+          <Route path="dashboard-designer" component={DashboardDesigner} />
+          <Route path="chart-designer" component={ChartDesigner} />
         </Router>
         {#if UserSettings !== undefined}
           <FooterAdmin

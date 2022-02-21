@@ -130,3 +130,15 @@ class UserSettings(Document):
     footer_color = StringField()
 
     navigation_color = StringField()
+
+########################### Notes #####################################
+
+class Notes(Document):
+    """ Holds all of the notes """
+    title = StringField()
+    description = StringField()
+    key = StringField()
+    folder = BooleanField(default=False)
+    text = StringField()
+    sub_nodes = ListField() # Whether this node has children or not
+    parent_node = StringField() # StringField instead of ListField because a single node can only have 1 parent

@@ -25,6 +25,7 @@
         position: "absolute",
         right: "0",
         width: "100vw",
+        // top: "-26px",
       });
       j$("#AdminMainContentContainer").addClass("bg-blueGray-100");
       j$("#AdminMainContentContainer").prepend(j$("#ReOpenSideBarIcon"));
@@ -42,6 +43,7 @@
         position: "inherit",
         right: "0",
         width: "auto",
+        top: "0",
       });
       j$("#AdminMainContentContainer").removeClass("bg-blueGray-100");
       j$("#ReOpenSideBarIcon").css({
@@ -80,7 +82,7 @@
 <i
   id="ReOpenSideBarIcon"
   on:click={closeSideBar}
-  class="fas fa-plus-square hidden sticky left-10 cursor-pointer"
+  class="fas fa-plus-square float-left hidden sticky left-10 cursor-pointer"
 />
 <nav
   style={sidebarBackgroundColor}
@@ -177,16 +179,14 @@
           <a
             use:link
             href="/admin/dashboard"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/dashboard'
-            ) !== -1
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/dashboard'
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-chart-line mr-2 text-sm {location.href.indexOf(
-                '/admin/dashboard'
-              ) !== -1
+              class="fas fa-chart-line mr-2 text-sm {location.pathname ===
+              '/admin/dashboard'
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
@@ -386,17 +386,34 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/dashboard-designer"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/dashboard-designer'
-            ) !== -1
+            href="/admin/chart-designer"
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/chart-designer'
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-edit mr-2 text-sm {location.href.indexOf(
-                '/admin/dashboard-designer'
-              ) !== -1
+              class="fas fa-edit mr-2 text-sm {location.pathname ===
+              '/admin/chart-designer'
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Chart Designer
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/dashboard-designer"
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/dashboard-designer'
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-edit mr-2 text-sm {location.pathname ===
+              '/admin/dashboard-designer'
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
@@ -417,27 +434,6 @@
       <ul
         class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
       >
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/archive-upload"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/archive-upload'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-database mr-2 text-sm {location.href.indexOf(
-                '/admin/archive-upload'
-              ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Upload Data
-          </a>
-        </li>
-
         <li class="items-center">
           <a
             use:link
@@ -477,6 +473,27 @@
                 : 'text-blueGray-300'}"
             />
             Archive Designer
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/archive-upload"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
+              '/admin/archive-upload'
+            ) !== -1
+              ? 'text-red-500 hover:text-red-600'
+              : 'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-database mr-2 text-sm {location.href.indexOf(
+                '/admin/archive-upload'
+              ) !== -1
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Archive Upload
           </a>
         </li>
 

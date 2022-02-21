@@ -57,10 +57,16 @@
         let interval = setInterval(function () {
             if (j$("ul.flexdatalist-multiple").length !== 0) {
                 clearInterval(interval);
-                j$("li.input-container.flexdatalist-multiple-value input").css(
-                    "min-width",
-                    "150px"
-                );
+                j$("li.input-container.flexdatalist-multiple-value input").css({
+                    "min-width": "150px",
+                    height: "100%",
+                });
+                j$("li.input-container.flexdatalist-multiple-value").css({
+                    height: "2rem",
+                });
+                j$("ul.flexdatalist-multiple").css({
+                    height: "3rem",
+                });
                 // Make the items in flexlist have cursor pointers
                 j$("ul.flexdatalist-multiple").click(function () {
                     j$(".item").css({ cursor: "pointer" });
@@ -149,24 +155,29 @@
             </div>
         {/if}
     </div>
-    <div class="flex-auto py-10 pt-0">
+    <div class="flex-auto py-5 pt-0">
         <form id={formID}>
             <input type="hidden" name="CollectionName" value={CollectionName} />
             {#if inputs !== undefined}
                 <div class="flex flex-wrap" id="rawArchiveTableContainer">
                     {#each inputs as input, i}
-                        <div class="w-full lg:w-6/12 py-2 px-4">
+                        <div class="w-full lg:w-6/12 py-1 px-4">
                             <div class="relative w-full mb-3">
+                                <label
+                                    class="w-full font-semibold text-lg text-center form-check-label inline-block text-gray-800"
+                                    for={input.name}>{input.placeholder}</label
+                                >
                                 <!-- Flexdatalist Inputs -->
                                 {#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
                                     <input
+                                        id={input.name}
                                         list={input.flexdataid}
                                         multiple
                                         type={input.type}
                                         placeholder={input.placeholder}
                                         name={input.name}
                                         value=""
-                                        class="flexdatalist border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        class="flexdatalist h-12 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                         data-min-length="0"
                                     />
                                     <datalist id={input.flexdataid}>
@@ -180,21 +191,30 @@
                                             {/each}
                                         {/each}
                                     </datalist>
-                                    <!-- Any Input Not A Submit Or Flexdatalist -->
-                                {:else if input.type !== "Submit"}
+                                {:else if input.type.toLowerCase() === "color"}
+                                    <input
+                                        id={input.name}
+                                        name={input.name}
+                                        type={input.type}
+                                        placeholder=""
+                                        class="h-12 border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        value={input.value}
+                                    />
+                                    <!-- Any Input Not A Flexdatalist -->
+                                {:else if input.type.toLowerCase() !== "Submit"}
                                     <input
                                         id={input.name}
                                         type={input.type}
                                         placeholder={input.placeholder}
                                         name={input.name}
                                         value=""
-                                        class="border-0 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        class="h-12 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                     />
                                 {/if}
                             </div>
                         </div>
                     {/each}
-                    <div class="w-full lg:w-6/12 py-2 px-4" id={submitID}>
+                    <div class="w-full lg:w-6/12 pt-6 px-4" id={submitID}>
                         <div class="relative w-full mb-3">
                             <input
                                 on:click={submit}
