@@ -8,13 +8,25 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
-# app.config.update(
-#     DEBUG=True,
-#     SECRET_KEY="secret_sauce",
-#     SESSION_COOKIE_HTTPONLY=True,
-#     REMEMBER_COOKIE_HTTPONLY=True,
-#     SESSION_COOKIE_SAMESITE="Strict",
-# )
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    REMEMBER_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Strict",
+    SECURITY_RECOVERABLE = True,
+    SECURITY_TRACKABLE = True,
+    SECURITY_CHANGEABLE = True,
+    SECURITY_CONFIRMABLE = True,
+    SECURITY_REGISTERABLE = True,
+    SECURITY_UNIFIED_SIGNIN = True,
+    # enforce CSRF protection for session / browser - but allow token-based
+    # API calls to go through
+    SECURITY_CSRF_PROTECT_MECHANISMS = ["session", "basic"],
+    SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True,
+    # Send Cookie with csrf-token. This is the default for Axios and Angular.
+    SECURITY_CSRF_COOKIE_NAME = "XSRF-TOKEN",
+    WTF_CSRF_CHECK_DEFAULT = False,
+    WTF_CSRF_TIME_LIMIT = None,
+)
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
