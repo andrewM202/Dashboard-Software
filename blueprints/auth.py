@@ -130,9 +130,50 @@ def deny_user():
     return ""
 
 @login_required
+@bp.route("/auth/users-roles")
+def users_and_roles():
+    """ Returns all of the users and their roles,
+    for the admin settings page """
+
+    users = User.objects(active=True)
+
+    filtered_users = []
+    for user in users:
+        filtered_users.append({
+            "username": user.email,
+            "roles": [Role.objects(id=role.id)[0].name for role in user.roles],
+            "id": user.get_id()
+        })
+
+    return jsonify(filtered_users)
+
+@login_required
+@bp.route("/auth/update-user", methods=["POST"])
+def update_user():
+    """ Update the username and/or role of a user """
+    data = request.form.to_dict()
+    
+    User.objects(id=data['id']).update(
+        email=data['username'],
+        roles=[Role.objects(name=data['role'])[0].id]
+    )
+    
+    return ""
+
+@login_required
+@bp.route("/auth/delete-user", methods=["POST"])
+def delete_user():
+    """ Delete a user """
+    data = request.form.to_dict()
+
+    User.objects(id=data['id']).delete()
+    
+    return ""
+
+@login_required
 @bp.route("/auth/user-test")
-def tewgwg_user():
-    """ Deny a user """
+def current_user_test():
+    """ current_user testing """
     print(current_user)
     print(current_user.roles[0].name == "Admin")
     

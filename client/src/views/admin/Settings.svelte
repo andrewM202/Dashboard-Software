@@ -2,17 +2,25 @@
   // core components
   import CardSettings from "components/Cards/CardSettings.svelte";
   import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
-  import ApprovalTable from "components/Cards/ApprovalTable.svelte";
-  import { userSettingsStore, unapprovedUsersStore } from "../../stores.js";
+  import AuthTable from "components/Cards/AuthTable.svelte";
+  import {
+    userSettingsStore,
+    unapprovedUsersStore,
+    usersStore,
+    refreshAuth,
+  } from "../../stores.js";
 
   export let location;
 
-  let settingsConfig, unapprovedUsers;
+  let settingsConfig, unapprovedUsers, users;
   $: settingsConfig = $userSettingsStore;
   $: unapprovedUsers = $unapprovedUsersStore;
+  $: users = $usersStore;
+
+  $: console.log(users);
 
   let tableData = [];
-  $: tableData = [settingsConfig, unapprovedUsers];
+  $: tableData = [settingsConfig, unapprovedUsers, users];
 
   let generalSettings;
   $: generalSettings = [
@@ -205,6 +213,7 @@
   ];
 
   function approvalSubmitFunction(e) {
+    e.preventDefault();
     let form;
     for (let i = 0; i < e.path.length; i++) {
       if (e.path[i].tagName === "TR") {
@@ -212,10 +221,29 @@
         break;
       }
     }
-    e.preventDefault();
     j$.ajax({
       type: "POST",
       url: `${location.origin}/auth/approve-user`,
+      data: j$(form).find("*").serialize(),
+      success: function () {
+        j$(form).remove();
+        refreshAuth();
+      },
+    });
+  }
+
+  function denySubmitFunction(e) {
+    e.preventDefault();
+    let form;
+    for (let i = 0; i < e.path.length; i++) {
+      if (e.path[i].tagName === "TR") {
+        form = e.path[i];
+        break;
+      }
+    }
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}/auth/deny-user`,
       data: j$(form).find("*").serialize(),
       success: function () {
         j$(form).remove();
@@ -223,7 +251,8 @@
     });
   }
 
-  function denySubmitFunction(e) {
+  function updateUserFunction(e) {
+    e.preventDefault();
     let form;
     for (let i = 0; i < e.path.length; i++) {
       if (e.path[i].tagName === "TR") {
@@ -231,10 +260,28 @@
         break;
       }
     }
-    e.preventDefault();
     j$.ajax({
       type: "POST",
-      url: `${location.origin}/auth/deny-user`,
+      url: `${location.origin}/auth/update-user`,
+      data: j$(form).find("*").serialize(),
+      success: function () {
+        refreshAuth();
+      },
+    });
+  }
+
+  function deleteUserFunction(e) {
+    e.preventDefault();
+    let form;
+    for (let i = 0; i < e.path.length; i++) {
+      if (e.path[i].tagName === "TR") {
+        form = e.path[i];
+        break;
+      }
+    }
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}/auth/delete-user`,
       data: j$(form).find("*").serialize(),
       success: function () {
         j$(form).remove();
@@ -280,12 +327,27 @@
       <CardSettings title={"Site Settings"} settings={adminSettings} />
     </div>
   </div>
-  <ApprovalTable
-    data={unapprovedUsers}
-    approveFunction={approvalSubmitFunction}
-    denyFunction={denySubmitFunction}
-    tableHeaders={["User", "Role", "Approve", "Deny"]}
-    DBFieldNames={["email"]}
-    roles={["Admin", "User", "Guest"]}
-  />
+  <div class="w-full px-4 mt-4">
+    <AuthTable
+      data={unapprovedUsers}
+      approveFunction={approvalSubmitFunction}
+      denyFunction={denySubmitFunction}
+      tableHeaders={["User", "Role", "Approve", "Deny"]}
+      DBFieldNames={["email"]}
+      roles={["Admin", "User", "Guest"]}
+      use={"approval"}
+      title={"New Account Approval"}
+    />
+  </div>
+  <div class="w-full px-4 mt-4">
+    <AuthTable
+      data={users}
+      roles={["Admin", "User", "Guest"]}
+      approveFunction={updateUserFunction}
+      denyFunction={deleteUserFunction}
+      tableHeaders={["User", "Role", "Delete Account", "Save Changes"]}
+      title={"Existing Account Management"}
+      use={"user-updating"}
+    />
+  </div>
 {/if}
