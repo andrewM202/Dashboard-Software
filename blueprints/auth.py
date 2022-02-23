@@ -128,3 +128,12 @@ def deny_user():
     User.objects(email=data["username"]).delete()
     
     return ""
+
+@login_required
+@bp.route("/auth/user-test")
+def tewgwg_user():
+    """ Deny a user """
+    print(current_user)
+    print(current_user.roles[0].name == "Admin")
+    
+    return ""
