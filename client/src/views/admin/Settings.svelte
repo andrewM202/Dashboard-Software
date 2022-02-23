@@ -1,17 +1,21 @@
 <script>
   // core components
   import CardSettings from "components/Cards/CardSettings.svelte";
-  export let location;
-  import { userSettingsStore } from "../../stores.js";
+  import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
+  import ApprovalTable from "components/Cards/ApprovalTable.svelte";
+  import { userSettingsStore, unapprovedUsersStore } from "../../stores.js";
 
-  let settingsConfig;
+  export let location;
+
+  let settingsConfig, unapprovedUsers;
   $: settingsConfig = $userSettingsStore;
+  $: unapprovedUsers = $unapprovedUsersStore;
 
   let tableData = [];
-  $: tableData = [$userSettingsStore];
+  $: tableData = [settingsConfig, unapprovedUsers];
 
-  let adminSettings;
-  $: adminSettings = [
+  let generalSettings;
+  $: generalSettings = [
     {
       Subtitle: "Color Customization",
       Inputs: [
@@ -170,18 +174,118 @@
       ],
     },
   ];
+
+  let adminSettings = [
+    {
+      Subtitle: "Roles & Permissions",
+      Inputs: [
+        {
+          type: "text",
+          placeholder: "Role",
+          name: "role",
+          value: "Role",
+          popoverMessage: "What permissions does each role have?",
+          flexdatalistdata: ["Admin", "User", "Guest"],
+          flexdataid: Math.random().toString(36).substring(2, 8),
+        },
+      ],
+    },
+    {
+      Subtitle: "Submit Changes",
+      Inputs: [
+        {
+          type: "submit",
+          placeholder: "Submit Changes",
+          value: "Submit Change",
+          popoverMessage: "Press this button to create the collection",
+          postURL: "/admin/admin-setting-changes",
+        },
+      ],
+    },
+  ];
+
+  function approvalSubmitFunction(e) {
+    let form;
+    for (let i = 0; i < e.path.length; i++) {
+      if (e.path[i].tagName === "TR") {
+        form = e.path[i];
+        break;
+      }
+    }
+    e.preventDefault();
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}/auth/approve-user`,
+      data: j$(form).find("*").serialize(),
+      success: function () {
+        j$(form).remove();
+      },
+    });
+  }
+
+  function denySubmitFunction(e) {
+    let form;
+    for (let i = 0; i < e.path.length; i++) {
+      if (e.path[i].tagName === "TR") {
+        form = e.path[i];
+        break;
+      }
+    }
+    e.preventDefault();
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}/auth/deny-user`,
+      data: j$(form).find("*").serialize(),
+      success: function () {
+        j$(form).remove();
+      },
+    });
+  }
+
+  // Bind openTab to AdminNavbar component
+  let openTab = 0;
+  let navItems = ["General", "Admin"];
 </script>
 
-<div class="flex flex-wrap">
-  <div class="w-full px-4">
-    {#if tableData.includes(undefined) !== true}
-      <CardSettings
-        settings={adminSettings}
-        title={"Site Settings"}
-        clearForm={false}
-      />
-    {:else}
-      <CardSettings settings={[]} title={"Site Settings"} />
-    {/if}
+{#if settingsConfig !== undefined}
+  <AdminNavbar
+    bind:openTab
+    navBarBGColor={settingsConfig[0].navigation_color !== undefined &&
+    settingsConfig[0].navigation_color !== null
+      ? `Background-color: ${settingsConfig[0].navigation_color}`
+      : undefined}
+    {navItems}
+  />
+{:else}
+  <AdminNavbar bind:openTab {navItems} />
+{/if}
+
+{#if openTab === 0}
+  <div class="flex flex-wrap">
+    <div class="w-full px-4 mt-4">
+      {#if tableData.includes(undefined) !== true}
+        <CardSettings
+          settings={generalSettings}
+          title={"Site Settings"}
+          clearForm={false}
+        />
+      {:else}
+        <CardSettings settings={[]} title={"Site Settings"} />
+      {/if}
+    </div>
   </div>
-</div>
+{:else if openTab == 1}
+  <div class="flex flex-wrap">
+    <div class="w-full px-4 mt-4">
+      <CardSettings title={"Site Settings"} settings={adminSettings} />
+    </div>
+  </div>
+  <ApprovalTable
+    data={unapprovedUsers}
+    approveFunction={approvalSubmitFunction}
+    denyFunction={denySubmitFunction}
+    tableHeaders={["User", "Role", "Approve", "Deny"]}
+    DBFieldNames={["email"]}
+    roles={["Admin", "User", "Guest"]}
+  />
+{/if}

@@ -97,12 +97,17 @@ class ArchiveCollectionSettings(Document):
 class Role(Document, RoleMixin):
     name = StringField(max_length=80, unique=True)
     description = StringField(max_length=255)
+    permissions = ListField()
 
 class User(Document, UserMixin):
     """ Login Information """
-    email = StringField(max_length=255)
+    email = StringField(max_length=255, unique=True)
     password = StringField(max_length=255)
-    active = BooleanField(default=True)
+    active = BooleanField(default=False)
+    confirmed_at = DateTimeField()
+    current_login_at = DateTimeField()
+    current_login_ip = StringField()
+    login_count = IntField()
     roles = ListField(ReferenceField(Role), default=[])
 
 # Setup Flask-Security

@@ -10,6 +10,7 @@
       success: function (location) {
         console.log(location);
         window.location = location;
+        // j$("#RegisterForm").reset();
       },
       error: function (e) {
         console.log(e);
