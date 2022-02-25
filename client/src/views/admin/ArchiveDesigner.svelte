@@ -109,37 +109,48 @@
             // Add collection deletion button
             // Have to make clone because $ will override chanes otherwise
             let cardSettingsClone = cardSettings;
-            cardSettingsClone.pop();
-            cardSettingsClone.push({
-                Subtitle: "Edit Collection",
-                Inputs: [
-                    {
-                        type: "submit",
-                        placeholder: "Collection Changes",
-                        name: "header_card_subtitles",
-                        value: "Submit Changes",
-                        popoverMessage:
-                            "Press this button to submit chnages to the collection",
-                        postURL: "/admin/archive-data/edit-collection",
-                    },
-                ],
-            });
-            cardSettingsClone.push({
-                Subtitle: "Delete Collection",
-                Inputs: [
-                    {
-                        type: "submit",
-                        placeholder: "Collection Deletion",
-                        name: "header_card_subtitles",
-                        value: "Delete Collection",
-                        popoverMessage:
-                            "Press this button to delete the collection",
-                        postURL: "/admin/archive-data/delete-collection",
-                        confirmationRequired: true, // User required to confirm the deletion
-                    },
-                ],
-            });
-            cardSettings = cardSettingsClone;
+            console.log(cardSettingsClone);
+            // Only add edit collections object if one does not
+            // already exist
+            let editAlreadyExists = false;
+            for (let setting of cardSettingsClone) {
+                if (setting.Subtitle === "Edit Collection") {
+                    editAlreadyExists = true;
+                }
+            }
+            if (editAlreadyExists === false) {
+                cardSettingsClone.pop();
+                cardSettingsClone.push({
+                    Subtitle: "Edit Collection",
+                    Inputs: [
+                        {
+                            type: "submit",
+                            placeholder: "Collection Changes",
+                            name: "header_card_subtitles",
+                            value: "Submit Changes",
+                            popoverMessage:
+                                "Press this button to submit chnages to the collection",
+                            postURL: "/admin/archive-data/edit-collection",
+                        },
+                    ],
+                });
+                cardSettingsClone.push({
+                    Subtitle: "Delete Collection",
+                    Inputs: [
+                        {
+                            type: "submit",
+                            placeholder: "Collection Deletion",
+                            name: "header_card_subtitles",
+                            value: "Delete Collection",
+                            popoverMessage:
+                                "Press this button to delete the collection",
+                            postURL: "/admin/archive-data/delete-collection",
+                            confirmationRequired: true, // User required to confirm the deletion
+                        },
+                    ],
+                });
+                cardSettings = cardSettingsClone;
+            }
         } else {
             // Start reset if last object in cardSettings is the Delete Collection button
             if (
