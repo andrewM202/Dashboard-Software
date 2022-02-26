@@ -265,7 +265,7 @@
                         color: "white",
                     });
                 },
-                blur: function (event, data) {
+                deactivate: function (event, data) {
                     // Once the node is no longer selected,
                     // change the text color to black for
                     // easier visibility

@@ -50,7 +50,7 @@
 <!-- Header -->
 <div
     id="HeaderStatsHeaderDiv"
-    class="relative bg-red-500 md:pt-24 pt-16"
+    class="relative bg-red-500 md:pt-24 pt-12"
     style={headerBGColor}
 >
     <div class="px-4 md:px-10 mx-auto w-full">

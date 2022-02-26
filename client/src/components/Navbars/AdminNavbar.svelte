@@ -9,7 +9,7 @@
 <!-- Navbar -->
 <nav
   style={navBarBGColor}
-  class="absolute bg-red-500 top-0 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4"
+  class="bg-red-500 block w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start items-center p-4"
 >
   {#if title !== undefined}
     <div class="md:block hidden md:pr-10 px-4 w-40">

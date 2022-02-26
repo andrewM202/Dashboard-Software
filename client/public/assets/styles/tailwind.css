@@ -2450,6 +2450,10 @@ select {
   background-color: rgba(228, 228, 231, var(--tw-bg-opacity));
 }
 
+.max-h-500-px {
+  max-height: 500px;
+}
+
 .max-h-860-px {
   max-height: 860px;
 }
@@ -2504,6 +2508,10 @@ select {
 
 .min-h-screen-75 {
   min-height: 75vh;
+}
+
+.min-h-250 {
+  min-height: 250px;
 }
 
 .min-w-0 {

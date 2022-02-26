@@ -4,9 +4,25 @@ import random
 from models import login, user_datastore
 from flask_security import Security
 from flask_paranoid import Paranoid
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    REMEMBER_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Strict",
+    SECURITY_RECOVERABLE = True,
+    SECURITY_TRACKABLE = True,
+    SECURITY_CHANGEABLE = True,
+    SECURITY_CONFIRMABLE = True,
+    SECURITY_REGISTERABLE = True,
+    SECURITY_UNIFIED_SIGNIN = True,
+    # enforce CSRF protection for session / browser - but allow token-based
+    # API calls to go through
+    SECURITY_CSRF_PROTECT_MECHANISMS = ["session", "basic"],
+    SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True,
+)
 
 # Register Routes / Import Blueprints
 # Raw Archive routes
@@ -41,6 +57,9 @@ security = Security(app, user_datastore)
 # Flask Paranoid
 paranoid = Paranoid(app)
 paranoid.redirect_view = 'auth.login'
+
+# Flask-WTF CSRF protection
+csrf = CSRFProtect(app)
 
 if __name__ == "__main__":
     app.run(debug=True)

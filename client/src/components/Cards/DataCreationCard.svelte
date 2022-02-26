@@ -65,7 +65,7 @@
                     height: "2rem",
                 });
                 j$("ul.flexdatalist-multiple").css({
-                    height: "3rem",
+                    "min-height": "3rem",
                 });
                 // Make the items in flexlist have cursor pointers
                 j$("ul.flexdatalist-multiple").click(function () {
