@@ -81,6 +81,9 @@
             j$(".item").css({ cursor: "pointer" });
           }
         );
+        j$("li.input-container.flexdatalist-multiple-value").focus(function () {
+          j$(".item").css({ cursor: "pointer" });
+        });
         j$("li.input-container.flexdatalist-multiple-value").css({
           "min-height": "2rem",
         });
@@ -90,16 +93,26 @@
         j$("ul.flexdatalist-multiple").css({
           "min-height": "3rem",
         });
+        // If we tab into a flex input make the items have a cursor pointer
+        j$(document).keydown(function (event) {
+          if (event.keyCode === 9) {
+            // We just tabbed. Set a timeout for 250 milliseconds
+            // and then add the cursor property
+            setTimeout(function () {
+              j$(".item").css({ cursor: "pointer" });
+            }, 250);
+          }
+        });
       }
     }, 10);
   }
 
   // Have it recalculate numbers on any document change, so if you
   // press enter when focused on form it still runs
+  let currentDraggedElem;
   j$(document).on("change", function () {
     let lists = j$("ul.flexdatalist-multiple");
     for (let list of lists) {
-      let listValuesCount = j$(list).find("li.value").length;
       let count = 0;
       j$(list)
         .find("li.value span.text")
@@ -118,6 +131,135 @@
                 j$(this).text().length
               );
             j$(this).text(`${count}. ${baseText}`);
+          }
+        });
+
+      j$(list)
+        .find("li.value")
+        .each(function () {
+          let currElemEvents = j$._data(this, "events");
+          // console.log(currElemEvents);
+          // Make each of the values in the inputs draggable
+          j$(this).attr("draggable", true);
+          // Give the inputs a grab css
+          j$(this).css("cursor", "grab");
+          // Create event listeners
+          // If this element does not already have the events
+          if (currElemEvents.drag === undefined) {
+            j$(this).on("drag", function (e) {
+              if (j$(this) !== undefined) currentDraggedElem = j$(this);
+            });
+          }
+          if (currElemEvents.dragover === undefined) {
+            j$(this).on("dragover", function (e) {
+              e.preventDefault();
+              // If we are dragging over li.value
+              if (
+                j$(e.currentTarget).attr("class") === "value" &&
+                j$(e.currentTarget).is("li")
+              ) {
+                // If that li.value is a different element from the
+                // one being dragged
+                if (j$(e.currentTarget) === j$(this)) {
+                  e.dataTransfer.dropEffect = "copy";
+                }
+              }
+            });
+          }
+
+          if (currElemEvents.drop === undefined) {
+            j$(this).on("drop", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("Dropped");
+              // console.log(e.originalEvent.path); The path of the element that was dropped on
+              // console.log(j$(e.currentTarget)); // The element the draggable was dropped on
+              // console.log(currentDraggedElem); // The element that was dragged
+              // Get the parent UL element
+              let parent;
+              for (let elem of e.originalEvent.path) {
+                let attr = j$(elem).attr("class");
+                if (attr !== undefined) {
+                  if (
+                    attr.indexOf("flexdatalist-multiple") !== -1 &&
+                    j$(elem).is("ul")
+                  ) {
+                    parent = elem;
+                  }
+                }
+              }
+              // console.log(parent);
+              let pc = parent.children;
+              // Find the index of the currentDraggedElem
+              // to see if its before or after the element dropped on
+              let draggedIndex;
+              for (let j = 0; j < parent.children.length; j++) {
+                if (j$(pc[j]).is(j$(currentDraggedElem))) {
+                  draggedIndex = j;
+                  break;
+                }
+              }
+              for (let i = 0; i < parent.children.length; i++) {
+                if (j$(pc[i]).is(j$(e.currentTarget))) {
+                  // Put the dragged element right in front of it
+                  // or behind it depending on the draggedIndex
+                  if (i > draggedIndex) {
+                    j$(currentDraggedElem).insertAfter(parent.children[i]);
+                  } else {
+                    j$(currentDraggedElem).insertBefore(parent.children[i]);
+                  }
+
+                  // Set the value of the input again now that it is re-ordered
+                  let stringValues = "";
+                  for (let child of parent.children) {
+                    if (j$(child).is("li")) {
+                      let nodeClass = j$(child).attr("class");
+                      if (nodeClass === "value") {
+                        // console.log(j$(child).text());
+                        let baseText = j$(child)
+                          .text()
+                          .substring(
+                            j$(child).text().indexOf(" ") + 1,
+                            j$(child).text().length
+                          );
+                        baseText = baseText.substring(0, baseText.length - 1);
+                        stringValues += "," + baseText;
+                      }
+                    }
+                  }
+                  // This gets rid of initial ,
+                  stringValues = stringValues.substring(1, stringValues.length);
+
+                  // We have to find the input now
+                  // and set it's value to stringValues
+                  j$(parent).siblings("input").val(stringValues);
+
+                  // Renumber all of the elements start
+                  let count = 0;
+                  j$(list)
+                    .find("li.value span.text")
+                    .each(function () {
+                      let currentText = j$(this).text();
+                      count++;
+                      if (j$(this).attr("Numbered") !== "true") {
+                        j$(this).text(`${count}. ${currentText}`);
+                        j$(this).attr("Numbered", "true");
+                      } else {
+                        // Renumber if it its already numbered, without duplications
+                        let baseText = j$(this)
+                          .text()
+                          .substring(
+                            j$(this).text().indexOf(" ") + 1,
+                            j$(this).text().length
+                          );
+                        j$(this).text(`${count}. ${baseText}`);
+                      }
+                    });
+                  // Renumber all of the elements end
+                  break; // End the for loop early since work is done
+                }
+              }
+            });
           }
         });
     }
@@ -150,12 +292,21 @@
       j$(".flexDataRegular").click(function () {
         j$(".item").css({ cursor: "pointer" });
       });
+      // If we tab into a flex input make the items have a cursor pointer
+      j$(document).keydown(function (event) {
+        if (event.keyCode === 9) {
+          // We just tabbed. Set a timeout for 250 milliseconds
+          // and then add the cursor property
+          setTimeout(function () {
+            j$(".item").css({ cursor: "pointer" });
+          }, 250);
+        }
+      });
     }, 10);
   }
 
   function submit(e) {
     e.preventDefault();
-    let data = j$(`#${formID}`).serialize();
     let postURL = e.srcElement.attributes.posturl.nodeValue;
     data = new FormData(j$(`#${formID}`)[0]);
     console.log(data);
