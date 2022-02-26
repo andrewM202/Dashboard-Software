@@ -2,6 +2,24 @@
   import { link } from "svelte-routing";
 
   export let location;
+
+  function signIn(e) {
+    e.preventDefault();
+    j$.ajax({
+      type: "POST",
+      url: `${location.origin}/auth/login`,
+      data: j$("#SignUpForm").serialize(),
+      success: function (location) {
+        window.location = location;
+      },
+      error: function (e) {
+        error = "Server Error During Creation.";
+        // Error logging
+        console.log(e.statusText);
+        console.log(e.responseText);
+      },
+    });
+  }
 </script>
 
 <div class="container mx-auto px-4 h-full">
@@ -14,7 +32,7 @@
           <div class="py-4 text-blueGray-400 text-center mb-3 font-bold">
             <small>Sign in</small>
           </div>
-          <form action="/auth/login" method="post">
+          <form id="SignUpForm">
             <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -63,6 +81,7 @@
               <button
                 class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                 type="submit"
+                on:click={signIn}
               >
                 Sign In
               </button>
@@ -72,11 +91,7 @@
       </div>
       <div class="flex flex-wrap mt-6 relative">
         <div class="w-1/2">
-          <a
-            href="#pablo"
-            on:click={(e) => e.preventDefault()}
-            class="text-blueGray-200"
-          >
+          <a href="#pablo" class="text-blueGray-200">
             <small>Forgot password?</small>
           </a>
         </div>

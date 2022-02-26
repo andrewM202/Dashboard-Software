@@ -1,8 +1,9 @@
-from flask import render_template, redirect, Blueprint, \
+from flask import jsonify, render_template, redirect, Blueprint, \
     send_from_directory, request
-from models import User, db, pwd_context
-from flask_security import login_user, current_user, logout_user
+from models import User, db, pwd_context, user_datastore, Role
+from flask_security import login_user, current_user, logout_user, login_required
 from passlib.context import CryptContext # Password hashing
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 ########################### Global Variables #####################################
 
@@ -28,20 +29,20 @@ def login():
         password = request.form['password']
         if username is not None and password is not None:
             try:
-                db_user = User.objects().first().email
-                db_pass = User.objects().first().password
+                db_user = User.objects(email=username).first().email
+                db_pass = User.objects(email=username).first().password
+                db_active = User.objects(email=username).first().active
                 # Verify password with hashing
-                if username == db_user and pwd_context.verify(password, db_pass):
+                if username == db_user and pwd_context.verify(password, db_pass) and db_active:
                     loggedin_user = User.objects().first()
-                    print()
                     login_user(loggedin_user)
-                    return redirect('/admin/dashboard')
+                    return '/admin/dashboard'
                 else:
-                    return redirect('/auth/login')
+                    return '/auth/login'
             except Exception as e:
                 return e
         else:
-            return redirect('/auth/login')
+            return '/auth/login'
     else:
         return send_from_directory('client/public', 'index.html')
 
@@ -60,28 +61,120 @@ def register():
     elif request.method == "POST":
         username = request.form['username']
         password = request.form['password']
-        usernamealready = None
-
-        try:
-            usernamealready = User.objects.get(username=username)
-        except Exception as e:
-            return send_from_directory('client/public', 'index.html')
+        usernamealready = True if len(User.objects(email=username)) > 0 else False
 
         if usernamealready:
-            error = "Sorry, that username is already present."
-            return send_from_directory('client/public', 'index.html')
+            print("Sorry, that username is already present.")
+            return "Sorry, that username is already present.", 404
         else:
             user = User(
                 email=username,
                 password=pwd_context.hash(password), # Hash password
             ).save()
 
-            login_user(user)
+            # user_datastore.create_user(
+            #     email=username,
+            #     password=pwd_context.hash(password), # Hash password
+            # )
+            # login_user(user)
 
-            # db.session.add(user)
-            # db.session.commit()
-
-            return redirect('/admin/dashboard')
+            return '/admin/dashboard'
     else:
-        return send_from_directory('client/public', 'index.html')
+        print("Please send a valid request")
+        return "Please send a valid request", 404
 
+
+# Get CSRF token
+@bp.route("/auth/getcsrf", methods=["GET"])
+def get_csrf():
+    token = generate_csrf()
+    response = jsonify({"detail": "CSRF cookie set"})
+    response.headers.set("X-CSRFToken", token)
+    return response
+
+@login_required
+@bp.route("/auth/unapproved-users", methods=["GET"])
+def unapproved_users():
+    """ Returns all of the users that have 
+    not gone through the approval process """
+    users = User.objects(active=False).only("email").to_json()
+    return users
+
+@login_required
+@bp.route("/auth/approve-user", methods=["POST"])
+def approve_user():
+    """ Approve a user """
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+
+    print(data)
+    print(Role.objects(name=data["role"])[0])
+
+    User.objects(email=data["username"]).update(
+        email=data["username"],
+        roles=Role.objects(name=data["role"]),
+        active=True,
+    )
+
+    return ""
+
+@login_required
+@bp.route("/auth/deny-user", methods=["POST"])
+def deny_user():
+    """ Deny a user """
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+
+    User.objects(email=data["username"]).delete()
+    
+    return ""
+
+@login_required
+@bp.route("/auth/users-roles")
+def users_and_roles():
+    """ Returns all of the users and their roles,
+    for the admin settings page """
+
+    users = User.objects(active=True)
+
+    filtered_users = []
+    for user in users:
+        filtered_users.append({
+            "username": user.email,
+            "roles": [Role.objects(id=role.id)[0].name for role in user.roles],
+            "id": user.get_id()
+        })
+
+    return jsonify(filtered_users)
+
+@login_required
+@bp.route("/auth/update-user", methods=["POST"])
+def update_user():
+    """ Update the username and/or role of a user """
+    data = request.form.to_dict()
+    
+    User.objects(id=data['id']).update(
+        email=data['username'],
+        roles=[Role.objects(name=data['role'])[0].id]
+    )
+    
+    return ""
+
+@login_required
+@bp.route("/auth/delete-user", methods=["POST"])
+def delete_user():
+    """ Delete a user """
+    data = request.form.to_dict()
+
+    User.objects(id=data['id']).delete()
+    
+    return ""
+
+@login_required
+@bp.route("/auth/user-test")
+def current_user_test():
+    """ current_user testing """
+    print(current_user)
+    print(current_user.roles[0].name == "Admin")
+    
+    return ""

@@ -8,9 +8,7 @@
 
   // components for this layout
   import Sidebar from "components/Sidebar/Sidebar.svelte";
-  import HeaderStats from "components/Headers/HeaderStats.svelte";
   import FooterAdmin from "components/Footers/FooterAdmin.svelte";
-  import AdminNavbar from "components/NavBars/AdminNavbar.svelte";
 
   // pages for this layout
   import RawArchive from "views/admin/RawArchive.svelte";
@@ -47,6 +45,7 @@
     <div class="relative md:ml-64 bg-blueGray-100">
       <div
         id="AdminMainContentContainer"
+        style="min-height: 100vh;"
         class="px-4 md:px-10 mx-auto w-full m-24"
       >
         <Router url="admin">
@@ -92,7 +91,11 @@
       <Sidebar {location} />
     {/if}
     <div class="relative md:ml-64 bg-blueGray-100">
-      <div id="AdminMainContentContainer" class="mx-auto w-full">
+      <div
+        id="AdminMainContentContainer"
+        style="min-height: 100vh;"
+        class="mx-auto w-full"
+      >
         <Router url="admin">
           <Route path="dashboard" component={Dashboard} />
           <Route path="settings" component={Settings} />
