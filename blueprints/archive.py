@@ -627,58 +627,72 @@ def archive_file_upload():
     json_obj = loads(json)
     # print(json_obj)
 
-    # Flatten the JSON
+    # # Flatten the JSON and get all the keys
     flat_json = flatten_json(json_obj)
-    # Get all of the unique values, and sets of values
+    # print(json_obj)
+    # print(flat_json)
     unique_keys = []
     nums = "0123456789"
     for key in flat_json:
-        print(f"Key: {key} Value: {flat_json[key]}")
-        # new_key = key
-        # for i in range(0, len(key)):
-        #     if(key[i] in nums):
-        #         # Replace adjacent _ too
-        #         if(new_key[i+1] == "_" or new_key[i-1] == "_"):
-        #             new_key[]
+        temp = ""
+        for letter in key:
+            if letter not in nums:
+                temp = temp + letter
+        if(temp.startswith("_")):
+            l = list(temp)
+            l[0] = ""
+            temp = "".join(l)
+        if(temp.endswith("_")):
+            l = list(temp)
+            l[:-1] = ""
+            temp = "".join(l)
+        if(temp not in unique_keys):
+            unique_keys.append(temp)
+        # print(f"Key: {key} Value: {flat_json[key]}")
 
-    return ''
+    print(unique_keys)
+    print(len(unique_keys))
+
+    return jsonify([json_obj, unique_keys])
 
 # Function for flattening json
-def flatten_json(json):
-    paths = []
+# def flatten_json(json):
+#     paths = []
 
-    def flatten(piece):
-        if(type(piece) is dict):
-            pass
-        elif(type(piece) is list):
-            pass
-        else:
-            pass
-        
-    flatten(json)
-    
-# def flatten_json(y):
-#     out = {}
-  
-#     def flatten(x, name =''):
-          
-#         # If the Nested key-value 
-#         # pair is of dict type
-#         if type(x) is dict:
-              
-#             for a in x:
-#                 flatten(x[a], name + a + ',')
-                  
-#         # If the Nested key-value
-#         # pair is of list type
-#         elif type(x) is list:
-#             i = 0
-              
-#             for a in x:                
-#                 flatten(a, name + str(i) + ',')
-#                 i += 1
+#     def flatten(piece):
+#         if(type(piece) is dict):
+#             pass
+#         elif(type(piece) is list):
+#             pass
 #         else:
-#             out[name[:-1]] = x
+#             pass
+        
+#     flatten(json)
+    
+def flatten_json(y):
+    out = {}
   
-#     flatten(y)
-#     return out
+    def flatten(x, name = ''):
+          
+        # If the Nested key-value 
+        # pair is of dict type
+        if type(x) is dict:
+              
+            for a in x:
+                flatten(x[a], name + a + '_')
+                  
+        # If the Nested key-value
+        # pair is of list type
+        elif type(x) is list:
+            i = 0
+            if(all( isinstance(item, str) or isinstance(item, int) or isinstance(item, float) for item in x )):
+                out[name[:-1]] = x
+            else:
+                for a in x:  
+                    flatten(a, name + str(i) + '_')
+                    i += 1
+        else:
+            out[name[:-1]] = x
+  
+    flatten(y)
+    return out

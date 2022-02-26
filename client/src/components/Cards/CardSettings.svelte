@@ -153,22 +153,6 @@
     }, 10);
   }
 
-  function validateData() {
-    // Check each input
-    for (let input of inputs) {
-      if (input.type !== "Submit") {
-        let value = j$("#" + input.name).val();
-        if (value === "" && input.required === true) {
-          error = "Please Fill All Required Fields.";
-          j$("#" + input.name).attr(
-            "placeholder",
-            `${input.placeholder} Is Required!`
-          );
-        }
-      }
-    }
-  }
-
   function submit(e) {
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
@@ -338,12 +322,22 @@
                     >
                     <!-- Any regular input with the flexdatalist disabled -->
                   {:else if input.type === "textarea"}
-                    <textarea
-                      class="border-0 min-h-250 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      name={input.name}
-                      value={input.value}
-                      placeholder={input.placeholder}
-                    />
+                    {#if input.readonly === true}
+                      <textarea
+                        class="border-0 min-h-250 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        name={input.name}
+                        value={input.value}
+                        placeholder={input.placeholder}
+                        readonly
+                      />
+                    {:else}
+                      <textarea
+                        class="border-0 min-h-250 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        name={input.name}
+                        value={input.value}
+                        placeholder={input.placeholder}
+                      />
+                    {/if}
                   {:else if input.flexdatalistdisabled === true}
                     <input
                       id="grid-username"
@@ -421,7 +415,9 @@
                       <input
                         id="grid-username"
                         postURL={input.postURL}
-                        on:click={submit}
+                        on:click={input.submitFunction !== undefined
+                          ? input.submitFunction
+                          : submit}
                         name={input.name}
                         type={input.type}
                         placeholder={input.placeholder}
