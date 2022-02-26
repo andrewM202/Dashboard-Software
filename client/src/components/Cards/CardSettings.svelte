@@ -82,13 +82,13 @@
           }
         );
         j$("li.input-container.flexdatalist-multiple-value").css({
-          height: "2rem",
+          "min-height": "2rem",
         });
         j$("li.input-container.flexdatalist-multiple-value input").css({
-          height: "2.2rem",
+          "min-height": "2.2rem",
         });
         j$("ul.flexdatalist-multiple").css({
-          height: "3rem",
+          "min-height": "3rem",
         });
       }
     }, 10);
@@ -138,13 +138,13 @@
           "border-width": "0",
         });
         j$("li.input-container.flexdatalist-multiple-value").css({
-          height: "2rem",
+          "min-height": "2rem",
         });
         j$("li.input-container.flexdatalist-multiple-value input").css({
-          height: "2.2rem",
+          "min-height": "2.2rem",
         });
         j$("ul.flexdatalist-multiple").css({
-          height: "3rem",
+          "min-height": "3rem",
         });
       }
       j$(".flexDataRegular").click(function () {
@@ -279,9 +279,12 @@
           </h6>
           <div class="flex flex-wrap">
             {#each inputSection.Inputs as input}
-              <!-- If input is a submit make it full width else only partial width -->
+              <!-- If input is a submit or textarea make it full 
+                width else only partial width -->
               <div
-                class="{input.type === 'submit' ? '' : 'lg:w-6/12 px-4'} w-full"
+                class="{input.type !== 'submit' && input.type !== 'textarea'
+                  ? 'lg:w-6/12 px-4'
+                  : ''} {input.type === 'textarea' ? 'px-4' : ''} w-full"
               >
                 <div class="relative w-full mb-3">
                   <label
@@ -334,6 +337,13 @@
                       for="flexSwitchCheckDefault">{input.placeholder}</label
                     >
                     <!-- Any regular input with the flexdatalist disabled -->
+                  {:else if input.type === "textarea"}
+                    <textarea
+                      class="border-0 min-h-250 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      name={input.name}
+                      value={input.value}
+                      placeholder={input.placeholder}
+                    />
                   {:else if input.flexdatalistdisabled === true}
                     <input
                       id="grid-username"

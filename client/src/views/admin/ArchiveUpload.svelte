@@ -21,7 +21,13 @@
                     value: "",
                     popoverMessage:
                         "Which outer fields/keys in the JSON should be uploaded?",
-                    // flexdatalistdisabled: true,
+                },
+                {
+                    type: "textarea",
+                    placeholder: "JSON Text",
+                    name: "json_text",
+                    value: "",
+                    popoverMessage: "The actual JSON text",
                 },
             ],
         },
