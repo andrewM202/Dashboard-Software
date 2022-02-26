@@ -8,6 +8,7 @@ from uuid import uuid1
 from re import search
 # from flask_login import current_user
 from flask_security import login_required, current_user
+from json import loads
 
 ########################### Global Variables #####################################
 
@@ -98,12 +99,19 @@ def edit_archive_collection():
         if(len(request.form['creationcard_title']) == 0):
             return jsonify("Creation card title must be set"), 400
 
-        # Check if this collection name already exists
+        # Check if this collection name already exists. If it does,
+        # throw error if its the collection name of a different document to the 
+        # one we are editing
         collections = db.get_database(db_name).collection_names()
         new_col_name = "gen_" + request.form['collection_name'].lower().replace(" ", "_")
+
+        collection_id = request.form['collectionEditID']
+        same_doc = ArchiveCollectionSettings.objects(id=collection_id)
+        same_doc = True if len(same_doc) == 1 else False
         if(new_col_name in collections):
             # Throw error if collection already exists
-            return jsonify("Collection name already exists"), 400
+            if same_doc == False:
+                return jsonify("Collection name already exists"), 400
         
         # Check inputs are the same length
         h_c_s_length = len(request.form['header_card_subtitles'].split(",")) if request.form['header_card_subtitles'].split(",") != [''] else []
@@ -606,3 +614,71 @@ def search_archive():
 @login_required
 def archive_upload():
     return send_from_directory('client/public', 'index.html')
+
+@bp.route("/admin/archive-upload/upload-file", methods=["POST"])
+@login_required
+def archive_file_upload():
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+    file = request.files['json_file']
+    json = file.read().decode("utf-8")
+
+    # Turn json string into python data structure
+    json_obj = loads(json)
+    # print(json_obj)
+
+    # Flatten the JSON
+    flat_json = flatten_json(json_obj)
+    # Get all of the unique values, and sets of values
+    unique_keys = []
+    nums = "0123456789"
+    for key in flat_json:
+        print(f"Key: {key} Value: {flat_json[key]}")
+        # new_key = key
+        # for i in range(0, len(key)):
+        #     if(key[i] in nums):
+        #         # Replace adjacent _ too
+        #         if(new_key[i+1] == "_" or new_key[i-1] == "_"):
+        #             new_key[]
+
+    return ''
+
+# Function for flattening json
+def flatten_json(json):
+    paths = []
+
+    def flatten(piece):
+        if(type(piece) is dict):
+            pass
+        elif(type(piece) is list):
+            pass
+        else:
+            pass
+        
+    flatten(json)
+    
+# def flatten_json(y):
+#     out = {}
+  
+#     def flatten(x, name =''):
+          
+#         # If the Nested key-value 
+#         # pair is of dict type
+#         if type(x) is dict:
+              
+#             for a in x:
+#                 flatten(x[a], name + a + ',')
+                  
+#         # If the Nested key-value
+#         # pair is of list type
+#         elif type(x) is list:
+#             i = 0
+              
+#             for a in x:                
+#                 flatten(a, name + str(i) + ',')
+#                 i += 1
+#         else:
+#             out[name[:-1]] = x
+  
+#     flatten(y)
+#     return out

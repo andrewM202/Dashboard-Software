@@ -109,7 +109,6 @@
             // Add collection deletion button
             // Have to make clone because $ will override chanes otherwise
             let cardSettingsClone = cardSettings;
-            console.log(cardSettingsClone);
             // Only add edit collections object if one does not
             // already exist
             let editAlreadyExists = false;

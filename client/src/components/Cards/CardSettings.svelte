@@ -81,6 +81,15 @@
             j$(".item").css({ cursor: "pointer" });
           }
         );
+        j$("li.input-container.flexdatalist-multiple-value").css({
+          height: "2rem",
+        });
+        j$("li.input-container.flexdatalist-multiple-value input").css({
+          height: "2.2rem",
+        });
+        j$("ul.flexdatalist-multiple").css({
+          height: "3rem",
+        });
       }
     }, 10);
   }
@@ -128,6 +137,15 @@
         j$("#CardSettingsOriginParent ul.flexdatalist-multiple").css({
           "border-width": "0",
         });
+        j$("li.input-container.flexdatalist-multiple-value").css({
+          height: "2rem",
+        });
+        j$("li.input-container.flexdatalist-multiple-value input").css({
+          height: "2.2rem",
+        });
+        j$("ul.flexdatalist-multiple").css({
+          height: "3rem",
+        });
       }
       j$(".flexDataRegular").click(function () {
         j$(".item").css({ cursor: "pointer" });
@@ -155,10 +173,15 @@
     e.preventDefault();
     let data = j$(`#${formID}`).serialize();
     let postURL = e.srcElement.attributes.posturl.nodeValue;
+    data = new FormData(j$(`#${formID}`)[0]);
+    console.log(data);
     j$.ajax({
       type: "POST",
       url: `${location.origin}${postURL}`,
       data: data,
+      mimeType: "multipart/form-data",
+      contentType: false,
+      processData: false,
       success: function () {
         // Reset form
         if (clearForm) j$(`#${formID}`).trigger("reset");
@@ -435,7 +458,7 @@
                       use:styleFlexData
                       type="text"
                       placeholder=""
-                      class="flexdatalist border-0 py-3 px-3 my-2 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
+                      class="flexdatalist border-0 py-3 px-3 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
                       data-min-length="0"
                       multiple="multiple"
                       list={input.flexdataid}
@@ -459,7 +482,7 @@
                       use:styleFlexData
                       type="text"
                       placeholder=""
-                      class="flexdatalist border-0 py-3 px-3 my-2 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
+                      class="flexdatalist border-0 py-3 px-3 text-blueGray-600 relative bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 w-full"
                       data-min-length="0"
                       multiple="multiple"
                       list={input.flexdataid}
