@@ -654,20 +654,6 @@ def archive_file_upload():
     print(len(unique_keys))
 
     return jsonify([json_obj, unique_keys])
-
-# Function for flattening json
-# def flatten_json(json):
-#     paths = []
-
-#     def flatten(piece):
-#         if(type(piece) is dict):
-#             pass
-#         elif(type(piece) is list):
-#             pass
-#         else:
-#             pass
-        
-#     flatten(json)
     
 def flatten_json(y):
     out = {}

@@ -81,6 +81,9 @@
                         readonly: true,
                     });
                 } else {
+                    // Set flexdatalistdata for JSON Fields
+                    cardSettingsClone[0].Inputs[1].flexdatalistdata = data[1];
+                    // Set text area value to the uploaded JSON
                     cardSettingsClone[0].Inputs[2].value = JSON.stringify(
                         data[0],
                         undefined,
