@@ -17,7 +17,10 @@
     $: if (DataSettings !== undefined) {
         let entries = Object.entries(DataSettings);
         for (let entry of entries) {
-            navItems.push(entry[0]);
+            // Only add the item if its not already in there
+            if (!navItems.includes(entry[0])) {
+                navItems.push(entry[0]);
+            }
         }
     }
 

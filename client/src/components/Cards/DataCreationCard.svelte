@@ -67,6 +67,16 @@
                 j$("ul.flexdatalist-multiple").css({
                     "min-height": "3rem",
                 });
+                // If we tab into a flex input make the items have a cursor pointer
+                j$(document).keydown(function (event) {
+                    if (event.keyCode === 9) {
+                        // We just tabbed. Set a timeout for 250 milliseconds
+                        // and then add the cursor property
+                        setTimeout(function () {
+                            j$(".item").css({ cursor: "pointer" });
+                        }, 250);
+                    }
+                });
                 // Make the items in flexlist have cursor pointers
                 j$("ul.flexdatalist-multiple").click(function () {
                     j$(".item").css({ cursor: "pointer" });
