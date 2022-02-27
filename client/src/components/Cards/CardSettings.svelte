@@ -160,7 +160,7 @@
               ) {
                 // If that li.value is a different element from the
                 // one being dragged
-                if (j$(e.currentTarget) === j$(this)) {
+                if (!j$(e.currentTarget).is(j$(this))) {
                   e.dataTransfer.dropEffect = "copy";
                 }
               }
@@ -172,10 +172,11 @@
               e.preventDefault();
               e.stopPropagation();
               console.log("Dropped");
-              // console.log(e.originalEvent.path); The path of the element that was dropped on
+              // console.log(e.originalEvent.path); // The path of the element that was dropped on
               // console.log(j$(e.currentTarget)); // The element the draggable was dropped on
               // console.log(currentDraggedElem); // The element that was dragged
               // Get the parent UL element
+              let ulContainer;
               let parent;
               for (let elem of e.originalEvent.path) {
                 let attr = j$(elem).attr("class");
@@ -188,75 +189,81 @@
                   }
                 }
               }
-              // console.log(parent);
-              let pc = parent.children;
-              // Find the index of the currentDraggedElem
-              // to see if its before or after the element dropped on
-              let draggedIndex;
-              for (let j = 0; j < parent.children.length; j++) {
-                if (j$(pc[j]).is(j$(currentDraggedElem))) {
-                  draggedIndex = j;
-                  break;
-                }
-              }
-              for (let i = 0; i < parent.children.length; i++) {
-                if (j$(pc[i]).is(j$(e.currentTarget))) {
-                  // Put the dragged element right in front of it
-                  // or behind it depending on the draggedIndex
-                  if (i > draggedIndex) {
-                    j$(currentDraggedElem).insertAfter(parent.children[i]);
-                  } else {
-                    j$(currentDraggedElem).insertBefore(parent.children[i]);
+              // Only if the LIs are the same should we switch. Basically,
+              // both values have to be from the same flexdatalist input
+              if (j$(parent).is(j$(currentDraggedElem.parent("ul")))) {
+                let pc = parent.children;
+                // Find the index of the currentDraggedElem
+                // to see if its before or after the element dropped on
+                let draggedIndex;
+                for (let j = 0; j < parent.children.length; j++) {
+                  if (j$(pc[j]).is(j$(currentDraggedElem))) {
+                    draggedIndex = j;
+                    break;
                   }
+                }
+                for (let i = 0; i < parent.children.length; i++) {
+                  if (j$(pc[i]).is(j$(e.currentTarget))) {
+                    // Put the dragged element right in front of it
+                    // or behind it depending on the draggedIndex
+                    if (i > draggedIndex) {
+                      j$(currentDraggedElem).insertAfter(parent.children[i]);
+                    } else {
+                      j$(currentDraggedElem).insertBefore(parent.children[i]);
+                    }
 
-                  // Set the value of the input again now that it is re-ordered
-                  let stringValues = "";
-                  for (let child of parent.children) {
-                    if (j$(child).is("li")) {
-                      let nodeClass = j$(child).attr("class");
-                      if (nodeClass === "value") {
-                        // console.log(j$(child).text());
-                        let baseText = j$(child)
-                          .text()
-                          .substring(
-                            j$(child).text().indexOf(" ") + 1,
-                            j$(child).text().length
-                          );
-                        baseText = baseText.substring(0, baseText.length - 1);
-                        stringValues += "," + baseText;
+                    // Set the value of the input again now that it is re-ordered
+                    let stringValues = "";
+                    for (let child of parent.children) {
+                      if (j$(child).is("li")) {
+                        let nodeClass = j$(child).attr("class");
+                        if (nodeClass === "value") {
+                          // console.log(j$(child).text());
+                          let baseText = j$(child)
+                            .text()
+                            .substring(
+                              j$(child).text().indexOf(" ") + 1,
+                              j$(child).text().length
+                            );
+                          baseText = baseText.substring(0, baseText.length - 1);
+                          stringValues += "," + baseText;
+                        }
                       }
                     }
+                    // This gets rid of initial ,
+                    stringValues = stringValues.substring(
+                      1,
+                      stringValues.length
+                    );
+
+                    // We have to find the input now
+                    // and set it's value to stringValues
+                    j$(parent).siblings("input").val(stringValues);
+
+                    // Renumber all of the elements start
+                    let count = 0;
+                    j$(list)
+                      .find("li.value span.text")
+                      .each(function () {
+                        let currentText = j$(this).text();
+                        count++;
+                        if (j$(this).attr("Numbered") !== "true") {
+                          j$(this).text(`${count}. ${currentText}`);
+                          j$(this).attr("Numbered", "true");
+                        } else {
+                          // Renumber if it its already numbered, without duplications
+                          let baseText = j$(this)
+                            .text()
+                            .substring(
+                              j$(this).text().indexOf(" ") + 1,
+                              j$(this).text().length
+                            );
+                          j$(this).text(`${count}. ${baseText}`);
+                        }
+                      });
+                    // Renumber all of the elements end
+                    break; // End the for loop early since work is done
                   }
-                  // This gets rid of initial ,
-                  stringValues = stringValues.substring(1, stringValues.length);
-
-                  // We have to find the input now
-                  // and set it's value to stringValues
-                  j$(parent).siblings("input").val(stringValues);
-
-                  // Renumber all of the elements start
-                  let count = 0;
-                  j$(list)
-                    .find("li.value span.text")
-                    .each(function () {
-                      let currentText = j$(this).text();
-                      count++;
-                      if (j$(this).attr("Numbered") !== "true") {
-                        j$(this).text(`${count}. ${currentText}`);
-                        j$(this).attr("Numbered", "true");
-                      } else {
-                        // Renumber if it its already numbered, without duplications
-                        let baseText = j$(this)
-                          .text()
-                          .substring(
-                            j$(this).text().indexOf(" ") + 1,
-                            j$(this).text().length
-                          );
-                        j$(this).text(`${count}. ${baseText}`);
-                      }
-                    });
-                  // Renumber all of the elements end
-                  break; // End the for loop early since work is done
                 }
               }
             });
@@ -266,7 +273,6 @@
   });
 
   async function styleFlexDataRegular(e) {
-    // Allow duplicate values
     j$(e).flexdatalist({ noResultsText: "" });
 
     await tick();
