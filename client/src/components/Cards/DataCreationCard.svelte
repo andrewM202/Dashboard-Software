@@ -121,7 +121,7 @@
                         if (input.type !== "Submit") {
                             j$("#" + input.name).attr(
                                 "placeholder",
-                                `${input.name}`
+                                `${input.placeholder}`
                             );
                         }
                     }
