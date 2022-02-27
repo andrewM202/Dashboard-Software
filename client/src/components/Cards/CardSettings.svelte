@@ -264,7 +264,6 @@
         });
     }
   });
-  // Number each value in the flexdatalists End
 
   async function styleFlexDataRegular(e) {
     // Allow duplicate values
