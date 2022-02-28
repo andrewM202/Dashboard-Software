@@ -313,8 +313,7 @@
   function submit(e) {
     e.preventDefault();
     let postURL = e.srcElement.attributes.posturl.nodeValue;
-    data = new FormData(j$(`#${formID}`)[0]);
-    console.log(data);
+    let data = new FormData(j$(`#${formID}`)[0]);
     j$.ajax({
       type: "POST",
       url: `${location.origin}${postURL}`,
