@@ -44,6 +44,39 @@
         let data = j$(`#archCreateForm`).serialize();
         let postURL = e.srcElement.attributes.posturl.nodeValue;
         data = new FormData(j$(`#archCreateForm`)[0]);
+
+        // Read data from input
+        j$(function () {
+            let file = document.querySelector("input[type=file]").files[0];
+            let reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                var result = JSON.parse(reader.result); // Parse the result into an object
+
+                let cardSettingsClone = cardSettings;
+
+                if (alreadySubmitted === false) {
+                    cardSettingsClone[0].Inputs.push({
+                        type: "textarea",
+                        placeholder: "JSON Text",
+                        name: "json_text",
+                        value: JSON.stringify(result, undefined, 2),
+                        popoverMessage: "The actual JSON text",
+                        readonly: true,
+                    });
+                } else {
+                    cardSettingsClone[0].Inputs[2].value = JSON.stringify(
+                        result,
+                        undefined,
+                        2
+                    );
+                }
+                cardSettings = cardSettingsClone;
+            });
+
+            reader.readAsText(file);
+        });
+
         j$.ajax({
             type: "POST",
             url: `${location.origin}${postURL}`,
@@ -62,33 +95,20 @@
                 let cardSettingsClone = cardSettings;
                 if (alreadySubmitted === false) {
                     alreadySubmitted = true;
-                    cardSettingsClone[0].Inputs.push({
+                    cardSettingsClone[0].Inputs.splice(1, 0, {
                         type: "text",
                         placeholder: "JSON Fields",
                         name: "json_fields",
                         value: "",
                         popoverMessage:
                             "Which outer fields/keys in the JSON should be uploaded?",
-                        flexdatalistdata: data[1],
+                        flexdatalistdata: data,
                         flexdataid: Math.random().toString(36).substring(2, 8),
-                    });
-                    cardSettingsClone[0].Inputs.push({
-                        type: "textarea",
-                        placeholder: "JSON Text",
-                        name: "json_text",
-                        value: JSON.stringify(data[0], undefined, 2),
-                        popoverMessage: "The actual JSON text",
-                        readonly: true,
                     });
                 } else {
                     // Set flexdatalistdata for JSON Fields
-                    cardSettingsClone[0].Inputs[1].flexdatalistdata = data[1];
+                    cardSettingsClone[0].Inputs[1].flexdatalistdata = data;
                     // Set text area value to the uploaded JSON
-                    cardSettingsClone[0].Inputs[2].value = JSON.stringify(
-                        data[0],
-                        undefined,
-                        2
-                    );
                 }
                 cardSettings = cardSettingsClone;
             },

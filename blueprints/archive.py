@@ -653,7 +653,7 @@ def archive_file_upload():
     print(unique_keys)
     print(len(unique_keys))
 
-    return jsonify([json_obj, unique_keys])
+    return jsonify(unique_keys)
     
 def flatten_json(y):
     out = {}

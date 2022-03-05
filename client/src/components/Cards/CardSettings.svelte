@@ -57,7 +57,9 @@
       });
     }
   }
-  registerToolTips();
+  $: if (settings) {
+    registerToolTips();
+  }
 
   async function styleFlexData(e) {
     // Allow duplicate values
