@@ -53,6 +53,12 @@
     j$(e.path[6]).fullScreen(true);
   }
 
+  let tableIndexing = true;
+  function toggleTableIndexing(e) {
+    tableIndexing = tableIndexing === true ? false : true;
+    console.log(tableIndexing);
+  }
+
   // Reactive so it recolors the rows whenever
   // data is changed
   $: if (data) {
@@ -95,7 +101,13 @@
 >
   <div class="rounded-t mb-0 px-4 py-3 border-0">
     <div class="flex flex-wrap items-center">
-      <div class="relative w-full px-4 max-w-full flex flex-grow flex-1">
+      <div class="relative w-full max-w-full flex flex-grow flex-1">
+        <div
+          on:click={toggleTableIndexing}
+          class="cursor-pointer rounded-full px-2 mr-4 bg-rose-400"
+        >
+          <i class="fas fa-sort-numeric-down" />
+        </div>
         <h3
           class="font-semibold text-lg w-full {color === 'light'
             ? 'text-blueGray-700'
@@ -195,7 +207,7 @@
       </thead>
       <tbody>
         {#if data !== undefined}
-          {#each data as row}
+          {#each data as row, i}
             <tr>
               {#each Object.entries(row) as entry, i}
                 {#if DBFieldNames.includes(entry[0])}
