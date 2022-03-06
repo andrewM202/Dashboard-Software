@@ -650,8 +650,8 @@ def archive_file_upload():
             unique_keys.append(temp)
         # print(f"Key: {key} Value: {flat_json[key]}")
 
-    print(unique_keys)
-    print(len(unique_keys))
+    # print(unique_keys)
+    # print(len(unique_keys))
 
     return jsonify(unique_keys)
     
@@ -682,3 +682,108 @@ def flatten_json(y):
   
     flatten(y)
     return out
+
+@bp.route("/admin/archive-upload/create-uploaded-table", methods=["POST"])
+@login_required
+def create_uploaded_table():
+    data = request.form.to_dict()
+    data_keys = request.form.keys()
+    file = request.files['json_file']
+    json = file.read().decode("utf-8")
+
+    json_selected_fields = request.form['json_fields'].split(","),
+    for json_list in json_selected_fields:
+        json_selected_fields = json_list
+    for field in json_selected_fields:
+        print(field)
+
+    # Lets create the new collection
+    collection_name = "gen_" + request.form['table_name'].lower().replace(" ", "_")
+
+    # Check if this collection name already exists
+    collections = db.get_database(db_name).collection_names()
+    if(collection_name in collections):
+        # Throw error if collection already exists
+        return jsonify("Collection name already exists"), 400
+
+
+    newcol = db.get_database(db_name)[collection_name]
+    col = db.get_database(db_name).get_collection(collection_name)
+
+    # Turn json string into python data structure
+    json_obj = loads(json)
+
+    # Flatten the JSON and get all the keys
+    flat_json = flatten_json(json_obj)
+    nums = "0123456789"
+    insert_json = {}
+    for key in flat_json:
+        temp = ""
+        for letter in key:
+            if letter not in nums:
+                temp = temp + letter
+        if(temp.startswith("_")):
+            l = list(temp)
+            l[0] = ""
+            temp = "".join(l)
+        if(temp.endswith("_")):
+            l = list(temp)
+            l[:-1] = ""
+            temp = "".join(l)
+        if(temp in json_selected_fields):
+            # print(temp)
+            # print(flat_json[key])
+            # print()
+            if(temp in insert_json):
+                print(insert_json)
+                col.insert_one(insert_json)
+                insert_json = {}
+            else:
+                insert_json[temp] = flat_json[key]
+
+    # We just created the new table and inserted the documents into it.
+    # Now lets put this into the archive collection settings tables
+    ArchiveCollections(
+        collection_name = collection_name,
+        uploaded_data = True,
+        base_collection = False,
+    ).save()
+
+    ArchiveCollectionSettings(
+        # Collection_name is db-friendly collection title
+        collection_name = collection_name,
+        # Title is just regular collection name
+        collection_title = request.form['table_name'],
+        header_search_input_types = ["text" for i in json_selected_fields],
+        # Commented out so the header input placeholders 
+        # just equal the creation card input placeholders
+        header_search_input_placeholders = [i for i in json_selected_fields],
+        # Header search input names are just the creation card ones
+        header_search_input_names = [i.lower().replace(" ", "_") for i in json_selected_fields],
+        header_search_enabled = [True for i in json_selected_fields],
+
+        header_card_subtitles = [],
+        header_card_amounts = [],
+        header_card_increases = [],
+        header_card_descriptions = [],
+
+        # The await data is just the data from the collection. For now it should be blank
+        # because when a collection is created it should be empty
+        table_title = request.form['table_name'],
+        # The table field names are also just the creation card names
+        table_db_field_names = [i for i in json_selected_fields],
+
+        # Awaitdata is the data required for flexdatalist
+        creationcard_title = request.form['table_name'],
+        creationcard_flexdatalistdata = ["None" for i in json_selected_fields], 
+        creationcard_flexdatalistfield = ["None" for i in json_selected_fields], 
+        creationcard_required_field = [False for i in json_selected_fields],
+
+        creationcard_input_types = ["text" for i in json_selected_fields],
+        # The names are just db-friendly placeholders
+        creationcard_input_names = [i for i in json_selected_fields],
+        creationcard_input_placeholders = [i for i in json_selected_fields],
+    ).save()
+    
+
+    return ''

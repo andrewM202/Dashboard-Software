@@ -38,6 +38,44 @@
         },
     ];
 
+    function createTablePost(e) {
+        e.preventDefault();
+        // We want to send the JSON file not the JSON text textarea,
+        // so put disabled attribute on textarea and then remove it from
+        // file. Then switch it again to how it was originally on success
+        j$("textarea[name=json_text]").removeAttr("readonly");
+        j$("textarea[name=json_text]").attr("disabled", "");
+        j$("input[type=file]").removeAttr("disabled");
+        let data = new FormData(j$(`#archCreateForm`)[0]);
+        j$("textarea[name=json_text]").attr("readonly", "");
+        j$("textarea[name=json_text]").removeAttr("disabled");
+        j$("input[type=file]").attr("disabled", "");
+        j$.ajax({
+            type: "POST",
+            url: `${location.origin}/admin/archive-upload/create-uploaded-table`,
+            data: data,
+            mimeType: "multipart/form-data",
+            contentType: false,
+            processData: false,
+            success: function () {
+                // Reset form
+                // cardSettings = cardSettingsResetSavePoint;
+                // cardSettings[1].Inputs[0].submitFunction = fileSubmit;
+                // j$(`#archCreateForm`).trigger("reset");
+                // alreadySubmitted = false;
+                // // Get rid of disabled attribute on file inputs
+                // j$("input[type=file]").removeAttr("disabled");
+            },
+            error: function (e) {
+                // Error logging
+                console.log(e.statusText);
+                console.log(e.responseText);
+                // Scroll to top of window
+                j$("html, body").animate({ scrollTop: "0px" }, 500);
+            },
+        });
+    }
+
     // This variable is to hold the cardSettings variable when it was initially created
     // so it can be easily reset
     let cardSettingsResetSavePoint;
@@ -60,7 +98,15 @@
             value: "",
             popoverMessage: "Import this data into an existing table",
             flexdatalistdisabled: true,
-            submitFunction: existingTableImport,
+        });
+        cardSettingsClone[1].Inputs.splice(0, 0, {
+            type: "submit",
+            placeholder: "Create Table",
+            name: "create_table",
+            value: "Create Table",
+            popoverMessage:
+                "Press this button to create a new table from the uploaded file and fields selected",
+            submitFunction: createTablePost,
         });
         cardSettings = cardSettingsClone;
     }
@@ -75,6 +121,16 @@
                 cardSettingsClone[0].Inputs.pop(i);
             }
         }
+        cardSettingsClone[1].Inputs.splice(0, 0, {
+            type: "submit",
+            placeholder: "Create Table",
+            name: "create_table",
+            value: "Create Table",
+            popoverMessage:
+                "Press this button to create a new table from the uploaded file and fields selected",
+            postURL: "/admin/archive-upload/create-uploaded-table",
+            submitFunction: createTablePost,
+        });
         cardSettings = cardSettingsClone;
     }
 
@@ -85,6 +141,8 @@
         // Reset form
         j$(`#archCreateForm`).trigger("reset");
         alreadySubmitted = false;
+        // Get rid of disabled attribute on file inputs
+        j$("input[type=file]").removeAttr("disabled");
     }
 
     let alreadySubmitted = false;
@@ -95,7 +153,9 @@
         data = new FormData(j$(`#archCreateForm`)[0]);
         // Store copy of cardSettings originally
         cardSettingsResetSavePoint = JSON.parse(JSON.stringify(cardSettings));
-        // cardSettingsResetSavePoint[1].Inputs[0].submitFunction = fileSubmit;
+        // Make the file input disabled so user has to click reset
+        // form button to upload new file
+        j$("input[type=file]").attr("disabled", "");
 
         // Read data from input
         j$(function () {
@@ -136,7 +196,6 @@
                             "Import this data into an existing table",
                         submitFunction: existingTableImport,
                     });
-                    console.log(cardSettingsClone[1].Inputs);
                     // Replace the "Send File" button with a "Reset Form" button
                     cardSettingsClone[1].Inputs.pop();
                     cardSettingsClone[1].Inputs.push({
