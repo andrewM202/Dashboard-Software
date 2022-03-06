@@ -56,7 +56,6 @@
   let tableIndexing = true;
   function toggleTableIndexing(e) {
     tableIndexing = tableIndexing === true ? false : true;
-    console.log(tableIndexing);
   }
 
   // Reactive so it recolors the rows whenever
@@ -175,12 +174,21 @@
   </div>
   <div class="block w-full overflow-x-auto">
     <!-- Projects table -->
-    <table
-      class="table-fixed items-center w-full bg-transparent border-collapse"
-    >
+    <table class="items-center w-full bg-transparent border-collapse">
       <thead>
         <tr>
           {#if headers !== undefined}
+            {#if tableIndexing === true}
+              <th
+                style={tableHeaderColor}
+                class="w-16 text-center sticky top-0 px-6 align-middle border-solid py-3 text-s uppercase border-l border-r font-semibold text-left {color ===
+                'light'
+                  ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
+                  : 'bg-rose-700 text-red-200 border-red-600'}"
+              >
+                Index
+              </th>
+            {/if}
             {#each headers as header}
               <!-- top-0 required for sticky table headers -->
               <th
@@ -207,8 +215,15 @@
       </thead>
       <tbody>
         {#if data !== undefined}
-          {#each data as row, i}
+          {#each data as row, rowNum}
             <tr>
+              {#if tableIndexing === true}
+                <td
+                  class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-s p-4"
+                >
+                  {rowNum + 1}
+                </td>
+              {/if}
               {#each Object.entries(row) as entry, i}
                 {#if DBFieldNames.includes(entry[0])}
                   <!-- If this is a color input style it differently -->

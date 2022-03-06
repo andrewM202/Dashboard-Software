@@ -15,6 +15,8 @@
   let btnDropdownRef;
   let popoverDropdownRef;
 
+  $: console.log(dropdownPopoverShow);
+
   const toggleDropdown = (event) => {
     event.preventDefault();
     if (dropdownPopoverShow) {
@@ -26,6 +28,17 @@
       });
     }
   };
+
+  // If we click anywhere, close the popper
+  j$(document).click(function (e) {
+    // If we don't click the cog icon
+    if (!j$(e.target).is(j$("i.fas.fa-cog"))) {
+      // If we don't click the anchor tag surrounding the icon
+      if (!j$(e.target).is(j$("a#cogAnchor"))) {
+        dropdownPopoverShow = false;
+      }
+    }
+  });
 
   function deleteRow(e) {
     e.preventDefault();
@@ -167,8 +180,8 @@
 
 <div class="flex w-full justify-center">
   <a
-    class="text-white-500 py-1 px-3"
-    href="#pablo"
+    class="text-white-500 py-1 px-3 cursor-pointer"
+    id="cogAnchor"
     bind:this={btnDropdownRef}
     on:click={toggleDropdown}
   >

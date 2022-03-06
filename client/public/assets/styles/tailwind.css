@@ -2462,6 +2462,10 @@ select {
   max-width: 28rem;
 }
 
+.max-w-16 {
+  max-width: 4rem;
+}
+
 .max-w-xl {
   max-width: 36rem;
 }
@@ -2524,6 +2528,10 @@ select {
 
 .min-w-140-px {
   min-width: 140px;
+}
+
+.min-w-16 {
+  min-width: 4rem;
 }
 
 .object-contain {
