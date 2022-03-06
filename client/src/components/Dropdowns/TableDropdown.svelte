@@ -15,8 +15,6 @@
   let btnDropdownRef;
   let popoverDropdownRef;
 
-  $: console.log(dropdownPopoverShow);
-
   const toggleDropdown = (event) => {
     event.preventDefault();
     if (dropdownPopoverShow) {
