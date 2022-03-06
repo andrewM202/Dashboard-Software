@@ -221,8 +221,11 @@
           {#each data as row, rowNum}
             <tr>
               {#if tableIndexing === true}
-                <td
+                <!-- <td
                   class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-s p-4"
+                > -->
+                <td
+                  class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                 >
                   {rowNum + 1}
                 </td>
@@ -250,8 +253,11 @@
                 {/if}
               {/each}
               {#if Modification !== false}
-                <td
+                <!-- <td
                   class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs p-4"
+                > -->
+                <td
+                  class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                 >
                   <TableDropdown
                     {RefreshURL}

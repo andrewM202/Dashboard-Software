@@ -419,11 +419,12 @@ def retrieve_archive_configuration():
         ######### Header #########
         # All header search input fields should be same length
         for i in range(0, len(collection.header_search_input_types)):
-            return_settings[collection["collection_title"]]["HeaderSearchInputs"].append({ 
-                "type": collection.header_search_input_types[i], 
-                "placeholder": collection.header_search_input_placeholders[i], 
-                "name": collection.header_search_input_names[i] 
-            })
+            if(collection.header_search_enabled[i] in ["True", "true", True]):
+                return_settings[collection["collection_title"]]["HeaderSearchInputs"].append({ 
+                    "type": collection.header_search_input_types[i], 
+                    "placeholder": collection.header_search_input_placeholders[i], 
+                    "name": collection.header_search_input_names[i] 
+                })
         # All card input fields should be same length
         for i in range(0, len(collection.header_card_subtitles)):
             return_settings[collection["collection_title"]]["Cards"].append({ 
@@ -579,7 +580,6 @@ def search_archive():
     data = request.form.to_dict()
     data_keys = request.form.keys()
     collection = request.form['CollectionName']
-    # print(data)
     col = db.get_database(db_name).get_collection(collection)
 
     # Build filter JSON
@@ -597,11 +597,14 @@ def search_archive():
                 }
             })
 
+    # print(filter_json)
+
     filtered_data = col.find(filter_json)
 
     # Can't return plain list as it will return empty list (glitch?)
     return_obj = {"data": [], "CollectionName": request.form['CollectionName']}
     for data in filtered_data:
+        # print(data)
         # Sort the results alphabetically so they match table headers
         data = {key: val for key, val in sorted(data.items(), key = lambda ele: ele[0])}
         return_obj["data"].append(data)
@@ -739,10 +742,10 @@ def create_uploaded_table():
                     # print(insert_json)
                     col.insert_one(insert_json)
                     insert_json = {}
-                    insert_json[temp] = flat_json[key]
+                    insert_json[temp] = str(flat_json[key])
                 else:
                     # print(insert_json)
-                    insert_json[temp] = flat_json[key]
+                    insert_json[temp] = str(flat_json[key])
         # Insert last value
         col.insert_one(insert_json)
 
