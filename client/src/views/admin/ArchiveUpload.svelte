@@ -62,7 +62,16 @@
     }
 
     function existingTableImport(e) {
-        console.log("test");
+        let cardSettingsClone = cardSettings;
+        cardSettingsClone[0].Inputs;
+        let inputLength = cardSettingsClone[0].Inputs.length;
+        // Remove the last 2 buttons
+        for (let i = 0; i < inputLength; i++) {
+            if (i >= 3) {
+                cardSettingsClone[0].Inputs.pop(i);
+            }
+        }
+        cardSettings = cardSettingsClone;
     }
 
     let alreadySubmitted = false;

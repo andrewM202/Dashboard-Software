@@ -149,6 +149,19 @@
       // j$(child).val(value);
       index++;
     }
+    // Block invalid letters being pressed for number inputs
+    // (no euler's e, +, or -)
+    j$("input[type=number]").on("keydown", function (e) {
+      let invalidChars = ["-", "+", "e", "E"]; //include "." if you only want integers
+      if (invalidChars.includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+    // If user copy and pastes invalid letter
+    // into number input, remove it
+    j$("input[type=number]").on("input", function () {
+      this.value = this.value.replace(/[e\+\-]/gi, "");
+    });
   }
 </script>
 

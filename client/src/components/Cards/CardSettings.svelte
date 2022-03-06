@@ -430,7 +430,7 @@
                 <div class="relative w-full mb-3">
                   <label
                     class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                    for="grid-username"
+                    for=""
                   >
                     <!-- Tooltip Start -->
                     {#if input.popoverMessage !== undefined}
