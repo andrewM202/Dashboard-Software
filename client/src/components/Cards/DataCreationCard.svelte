@@ -81,6 +81,19 @@
                 j$("ul.flexdatalist-multiple").click(function () {
                     j$(".item").css({ cursor: "pointer" });
                 });
+                // Block invalid letters being pressed for number inputs
+                // (no euler's e, +, or -)
+                j$("input[type=number]").on("keydown", function (e) {
+                    let invalidChars = ["-", "+", "e", "E"]; //include "." if you only want integers
+                    if (invalidChars.includes(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+                // If user copy and pastes invalid letter
+                // into number input, remove it
+                j$("input[type=number]").on("input", function () {
+                    this.value = this.value.replace(/[e\+\-]/gi, "");
+                });
             }
         }, 10);
     }
@@ -444,7 +457,9 @@
                                 placeholder="Submit"
                                 name="SubmitButton"
                                 value="Submit"
-                                class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                class="{inputs.length % 2 === 1
+                                    ? 'mt-2'
+                                    : ''} cursor-pointer h-12 border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                             />
                         </div>
                     </div>

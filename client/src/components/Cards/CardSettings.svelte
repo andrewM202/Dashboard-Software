@@ -495,6 +495,18 @@
                         placeholder={input.placeholder}
                       />
                     {/if}
+                  {:else if input.type === "button"}
+                    <input
+                      id="grid-username"
+                      name={input.name}
+                      type={input.type}
+                      placeholder={input.placeholder}
+                      class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-400 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value={input.value}
+                      on:click={input.submitFunction !== undefined
+                        ? input.submitFunction
+                        : submit}
+                    />
                   {:else if input.flexdatalistdisabled === true}
                     <input
                       id="grid-username"

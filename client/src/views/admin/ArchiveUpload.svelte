@@ -38,6 +38,33 @@
         },
     ];
 
+    function newTableImport(e) {
+        let cardSettingsClone = cardSettings;
+        cardSettingsClone[0].Inputs;
+        let inputLength = cardSettingsClone[0].Inputs.length;
+        // Remove the last 2 buttons
+        for (let i = 0; i < inputLength; i++) {
+            if (i >= 3) {
+                cardSettingsClone[0].Inputs.pop(i);
+            }
+        }
+        // Add button for new table name
+        cardSettingsClone[0].Inputs.push({
+            type: "text",
+            placeholder: "New Table Name",
+            name: "table_name",
+            value: "",
+            popoverMessage: "Import this data into an existing table",
+            flexdatalistdisabled: true,
+            submitFunction: existingTableImport,
+        });
+        cardSettings = cardSettingsClone;
+    }
+
+    function existingTableImport(e) {
+        console.log("test");
+    }
+
     let alreadySubmitted = false;
     function fileSubmit(e) {
         e.preventDefault();
@@ -64,6 +91,26 @@
                         popoverMessage: "The actual JSON text",
                         readonly: true,
                     });
+                    // Push buttons to choose if importing
+                    // into existing or new table
+                    cardSettingsClone[0].Inputs.push({
+                        type: "button",
+                        placeholder: "New Table",
+                        name: "new_import",
+                        value: "Import Into New Table",
+                        popoverMessage:
+                            "Import this data into an entirely new table",
+                        submitFunction: newTableImport,
+                    });
+                    cardSettingsClone[0].Inputs.push({
+                        type: "button",
+                        placeholder: "Existing Table",
+                        name: "existing_import",
+                        value: "Import Into Existing Table",
+                        popoverMessage:
+                            "Import this data into an existing table",
+                        submitFunction: existingTableImport,
+                    });
                 } else {
                     cardSettingsClone[0].Inputs[2].value = JSON.stringify(
                         result,
@@ -88,8 +135,6 @@
                 data = JSON.parse(data);
                 // Reset form
                 // j$(`#archCreateForm`).trigger("reset");
-                // Scroll to top of window
-                j$("html, body").animate({ scrollTop: "0px" }, 500);
                 // Remove flexdatalist values
                 // j$("li.value").remove();
                 let cardSettingsClone = cardSettings;
