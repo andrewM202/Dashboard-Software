@@ -101,9 +101,12 @@
   <div class="rounded-t mb-0 px-4 py-3 border-0">
     <div class="flex flex-wrap items-center">
       <div class="relative w-full max-w-full flex flex-grow flex-1">
+        <!-- Icon for table indexing -->
         <div
           on:click={toggleTableIndexing}
-          class="cursor-pointer rounded-full px-2 mr-4 bg-rose-400"
+          class="{tableIndexing === true
+            ? 'bg-rose-400'
+            : 'bg-black'} cursor-pointer rounded-full px-2 mr-4"
         >
           <i class="fas fa-sort-numeric-down" />
         </div>
