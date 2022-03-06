@@ -27,7 +27,7 @@
             Inputs: [
                 {
                     type: "submit",
-                    placeholder: "Fie Upload",
+                    placeholder: "File Upload",
                     name: "data_file",
                     value: "Send File",
                     popoverMessage: "Press this button to upload the file",
@@ -37,6 +37,10 @@
             ],
         },
     ];
+
+    // This variable is to hold the cardSettings variable when it was initially created
+    // so it can be easily reset
+    let cardSettingsResetSavePoint;
 
     function newTableImport(e) {
         let cardSettingsClone = cardSettings;
@@ -74,12 +78,24 @@
         cardSettings = cardSettingsClone;
     }
 
+    function formReset(e) {
+        e.preventDefault();
+        cardSettings = cardSettingsResetSavePoint;
+        cardSettings[1].Inputs[0].submitFunction = fileSubmit;
+        // Reset form
+        j$(`#archCreateForm`).trigger("reset");
+        alreadySubmitted = false;
+    }
+
     let alreadySubmitted = false;
     function fileSubmit(e) {
         e.preventDefault();
         let data = j$(`#archCreateForm`).serialize();
         let postURL = e.srcElement.attributes.posturl.nodeValue;
         data = new FormData(j$(`#archCreateForm`)[0]);
+        // Store copy of cardSettings originally
+        cardSettingsResetSavePoint = JSON.parse(JSON.stringify(cardSettings));
+        // cardSettingsResetSavePoint[1].Inputs[0].submitFunction = fileSubmit;
 
         // Read data from input
         j$(function () {
@@ -120,6 +136,18 @@
                             "Import this data into an existing table",
                         submitFunction: existingTableImport,
                     });
+                    console.log(cardSettingsClone[1].Inputs);
+                    // Replace the "Send File" button with a "Reset Form" button
+                    cardSettingsClone[1].Inputs.pop();
+                    cardSettingsClone[1].Inputs.push({
+                        type: "submit",
+                        placeholder: "Form Reset",
+                        name: "reset_form",
+                        value: "Reset Form",
+                        popoverMessage: "Press this button to reset this form",
+                        submitFunction: formReset,
+                    });
+                    // Make a create form button
                 } else {
                     cardSettingsClone[0].Inputs[2].value = JSON.stringify(
                         result,
@@ -142,8 +170,6 @@
             processData: false,
             success: function (data) {
                 data = JSON.parse(data);
-                // Reset form
-                // j$(`#archCreateForm`).trigger("reset");
                 // Remove flexdatalist values
                 // j$("li.value").remove();
                 let cardSettingsClone = cardSettings;
