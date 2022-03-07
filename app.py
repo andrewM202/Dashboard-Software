@@ -65,7 +65,7 @@ csrf = CSRFProtect(app)
 def compress(response):
     """ Compress all requests """
     accept_encoding = flask.request.headers.get('accept-encoding','').lower()
-    if response.status_code<200 or response.status_code>=300 or response.direct_passthrough or 'gzip' not in accept_encoding or 'Content-Encoding' in response.headers:  return response
+    if response.status_code < 200 or response.status_code >= 300 or response.direct_passthrough or 'gzip' not in accept_encoding or 'Content-Encoding' in response.headers:  return response
     content = gzip.compress(response.get_data(), compresslevel=9)  # 0: no compression, 1: fastest, 9: slowest. Default: 9
     response.set_data(content)
     response.headers['content-length']   = len(content)

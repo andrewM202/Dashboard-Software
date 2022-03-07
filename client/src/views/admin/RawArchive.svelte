@@ -4,7 +4,6 @@
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardTable from "components/Cards/CardTable.svelte";
     import DataCreationCard from "components/Cards/DataCreationCard.svelte";
-
     import { dataSettingsStore, userSettingsStore } from "../../stores.js";
 
     // Defines input buttons for HeaderStats
@@ -65,6 +64,29 @@
         });
     }
 
+    // Function for raw archive data table slider
+    function archiveTableSliderStyling(e) {
+        let parent = j$(e).parent()[0];
+        j$(e).mousedown(function (downEv) {
+            downEv.preventDefault();
+            j$(window).mousemove(function (moveEv) {
+                let initialPos = j$(e).offset().top;
+                let movePos = moveEv.pageY;
+                let addHeight = movePos - initialPos;
+                if (j$(parent).innerHeight() >= 600) {
+                    if (j$(parent).height() + addHeight < 600) {
+                        j$(parent).height(600);
+                    } else {
+                        j$(parent).height(j$(parent).height() + addHeight);
+                    }
+                }
+            });
+            j$(window).mouseup(function () {
+                j$(window).unbind("mousemove");
+            });
+        });
+    }
+
     // Create a mapping for the table so we know
     // form input -> input type
 
@@ -105,8 +127,14 @@
             >
                 <div class="flex flex-wrap ml-8 w-full">
                     <div
-                        class="w-full h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-6"
+                        class="w-full relative h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-6"
                     >
+                        <div
+                            use:archiveTableSliderStyling
+                            id="testSliderDiv"
+                            style="right: -4px; bottom: -4px; cursor: ns-resize;"
+                            class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
+                        />
                         <CardTable
                             color="dark"
                             data={section[1].Table.Data[0]}
