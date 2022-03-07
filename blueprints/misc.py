@@ -18,6 +18,10 @@ collections = db.get_database(db_name).list_collection_names()
 def base():
     return send_from_directory('client/public', 'index.html')
 
+@bp.route("/robots.txt")
+def robots():
+    return send_from_directory('client/public', 'robots.txt')
+
 @bp.route("/landing")
 def landing():
     return send_from_directory('client/public', 'index.html')
