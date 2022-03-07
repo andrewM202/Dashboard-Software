@@ -74,10 +74,12 @@
                 let movePos = moveEv.pageY;
                 let addHeight = movePos - initialPos;
                 if (j$(parent).innerHeight() >= 600) {
-                    if (j$(parent).height() + addHeight < 600) {
-                        j$(parent).height(600);
+                    if (j$(parent).innerHeight() + addHeight < 600) {
+                        j$(parent).innerHeight(600);
                     } else {
-                        j$(parent).height(j$(parent).height() + addHeight);
+                        j$(parent).innerHeight(
+                            j$(parent).innerHeight() + addHeight
+                        );
                     }
                 }
             });
