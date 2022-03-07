@@ -2,7 +2,7 @@
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     import CardSettings from "components/Cards/CardSettings.svelte";
     import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
-    import { userSettingsStore } from "../../stores.js";
+    import { userSettingsStore, refreshData } from "../../stores.js";
 
     let settingsConfig;
     $: settingsConfig = $userSettingsStore;
@@ -59,12 +59,13 @@
             processData: false,
             success: function () {
                 // Reset form
-                // cardSettings = cardSettingsResetSavePoint;
-                // cardSettings[1].Inputs[0].submitFunction = fileSubmit;
-                // j$(`#archCreateForm`).trigger("reset");
-                // alreadySubmitted = false;
-                // // Get rid of disabled attribute on file inputs
-                // j$("input[type=file]").removeAttr("disabled");
+                cardSettings = cardSettingsResetSavePoint;
+                cardSettings[1].Inputs[0].submitFunction = fileSubmit;
+                j$(`#archCreateForm`).trigger("reset");
+                alreadySubmitted = false;
+                // Get rid of disabled attribute on file inputs
+                j$("input[type=file]").removeAttr("disabled");
+                refreshData();
             },
             error: function (e) {
                 // Error logging
