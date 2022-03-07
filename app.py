@@ -1,10 +1,10 @@
-from flask import Flask, send_from_directory, redirect, Blueprint
+from flask import Flask, Blueprint
 from config import Config
-import random
 from models import login, user_datastore
 from flask_security import Security
 from flask_paranoid import Paranoid
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+import flask, gzip
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
@@ -60,6 +60,17 @@ paranoid.redirect_view = 'auth.login'
 
 # Flask-WTF CSRF protection
 csrf = CSRFProtect(app)
+
+@app.after_request
+def compress(response):
+    """ Compress all requests """
+    accept_encoding = flask.request.headers.get('accept-encoding','').lower()
+    if response.status_code < 200 or response.status_code >= 300 or response.direct_passthrough or 'gzip' not in accept_encoding or 'Content-Encoding' in response.headers:  return response
+    content = gzip.compress(response.get_data(), compresslevel=9)  # 0: no compression, 1: fastest, 9: slowest. Default: 9
+    response.set_data(content)
+    response.headers['content-length']   = len(content)
+    response.headers['content-encoding'] = 'gzip'
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
