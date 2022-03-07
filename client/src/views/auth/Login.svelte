@@ -13,7 +13,6 @@
         window.location = location;
       },
       error: function (e) {
-        error = "Server Error During Creation.";
         // Error logging
         console.log(e.statusText);
         console.log(e.responseText);

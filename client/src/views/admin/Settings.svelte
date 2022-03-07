@@ -17,8 +17,6 @@
   $: unapprovedUsers = $unapprovedUsersStore;
   $: users = $usersStore;
 
-  $: console.log(users);
-
   let tableData = [];
   $: tableData = [settingsConfig, unapprovedUsers, users];
 
