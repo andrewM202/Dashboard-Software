@@ -103,6 +103,7 @@
       <div class="relative w-full max-w-full flex flex-grow flex-1">
         <!-- Icon for table indexing -->
         <div
+          style="height: 1.8rem; width: 1.8rem;"
           on:click={toggleTableIndexing}
           class="{tableIndexing === true
             ? 'bg-rose-400'
