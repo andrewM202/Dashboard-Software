@@ -1,10 +1,8 @@
 {
-  "name": "notus-svelte",
+  "name": "scientia-est-potentia",
   "version": "1.1.0",
-  "homepage": "https://demos.creative-tim.com/notus-svelte/",
-  "description": "Notus Svelte - A free Tailwind CSS and Svelte UI Kit and Admin by Creative Tim.",
-  "repository": "https://github.com/creativetimofficial/notus-svelte",
-  "license": "MIT",
+  "homepage": "127.0.0.1:5000",
+  "description": "Scientia Est Potentia - Data Storage and Visualization Made Easy",
   "scripts": {
     "build": "rollup -c",
     "autobuild": "rollup -w -c",

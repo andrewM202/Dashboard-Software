@@ -162,9 +162,15 @@
         j$(function () {
             let file = document.querySelector("input[type=file]").files[0];
             let reader = new FileReader();
+            let sliced;
 
             reader.addEventListener("load", function () {
-                var result = JSON.parse(reader.result); // Parse the result into an object
+                let result;
+                if (sliced) {
+                    result = reader.result;
+                } else {
+                    result = JSON.parse(reader.result); // Parse the result into an object
+                }
 
                 let cardSettingsClone = cardSettings;
 
@@ -173,7 +179,10 @@
                         type: "textarea",
                         placeholder: "JSON Text",
                         name: "json_text",
-                        value: JSON.stringify(result, undefined, 2),
+                        value:
+                            sliced === true
+                                ? result
+                                : JSON.stringify(result, undefined, 2),
                         popoverMessage: "The actual JSON text",
                         readonly: true,
                     });
@@ -218,6 +227,10 @@
                 cardSettings = cardSettingsClone;
             });
 
+            if (file.size > 25000) {
+                file = file.slice(0, 25000);
+                sliced = true;
+            }
             reader.readAsText(file);
         });
 
