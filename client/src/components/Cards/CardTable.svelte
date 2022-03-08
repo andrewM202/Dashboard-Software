@@ -96,7 +96,7 @@
       if (rangeEnd - totalRange < 1) {
         rangeStart = 1;
       } else {
-        rangeStart = rangeEnd - totalRange;
+        rangeStart = rangeEnd - totalRange + 1;
       }
     } else {
       rangeStart += totalRange;
@@ -131,9 +131,9 @@
   }
 
   // Variable for controlling which range of documents to draw up in DOM
+  let totalRange = 25;
   let rangeStart = 1;
-  let rangeEnd = data.length < 50 ? data.length : 50;
-  let totalRange = 50;
+  let rangeEnd = data.length < totalRange ? data.length : totalRange;
 </script>
 
 <div
