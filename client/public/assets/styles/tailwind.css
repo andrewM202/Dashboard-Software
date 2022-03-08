@@ -1387,6 +1387,11 @@ select {
   background-color: rgba(226, 232, 240, var(--tw-bg-opacity));
 }
 
+.bg-blueGray-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(100 116 139);
+}
+
 .bg-blueGray-600 {
   --tw-bg-opacity: 1;
   background-color: rgba(71, 85, 105, var(--tw-bg-opacity));
@@ -2129,6 +2134,10 @@ select {
   height: 600px;
 }
 
+.h-650-px {
+  height: 650px;
+}
+
 .text-55 {
   font-size: 55rem;
 }
@@ -2524,6 +2533,10 @@ select {
   min-height: 250px;
 }
 
+.min-h-600 {
+  min-height: 600px;
+}
+
 .min-w-0 {
   min-width: 0px;
 }
@@ -2563,6 +2576,18 @@ select {
 .object-scale-down {
   -o-object-fit: scale-down;
      object-fit: scale-down;
+}
+
+.opacity-20 {
+  opacity: 0.2;
+}
+
+.opacity-30 {
+  opacity: 0.3;
+}
+
+.opacity-40 {
+  opacity: 0.4;
 }
 
 .opacity-50 {
