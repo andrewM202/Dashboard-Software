@@ -89,11 +89,44 @@
     a.download = name;
     a.click();
   }
+
+  function archiveTableScrollerRight(e) {
+    if (rangeEnd + totalRange > data.length) {
+      rangeEnd = data.length;
+      if (rangeEnd - totalRange < 1) {
+        rangeStart = 1;
+      } else {
+        rangeStart = rangeEnd - totalRange;
+      }
+    } else {
+      rangeStart += totalRange;
+      rangeEnd += totalRange;
+    }
+  }
+
+  function archiveTableScrollerLeft(e) {
+    if (rangeStart - totalRange < 1) {
+      rangeStart = 1;
+      if (rangeStart + totalRange > data.length) {
+        rangeEnd = data.length;
+      } else {
+        rangeEnd = totalRange;
+      }
+    } else {
+      rangeStart -= totalRange;
+      rangeEnd -= totalRange;
+    }
+  }
+
+  // Variable for controlling which range of documents to draw up in DOM
+  let rangeStart = 1;
+  let rangeEnd = data.length < 50 ? data.length : 50;
+  let totalRange = 50;
 </script>
 
 <div
-  style={tableBGColor}
-  class="relative flex flex-col min-w-0 break-words w-full h-full shadow-lg rounded {color ===
+  style={(tableBGColor, "height: 90%;")}
+  class="flex flex-col min-w-0 break-words w-full shadow-lg rounded {color ===
   'light'
     ? 'bg-white'
     : 'bg-red-500 text-white'}"
@@ -220,60 +253,87 @@
       <tbody>
         {#if data !== undefined}
           {#each data as row, rowNum}
-            <tr>
-              {#if tableIndexing === true}
-                <!-- <td
+            {#if rowNum + 1 >= rangeStart && rowNum < rangeEnd}
+              <tr>
+                {#if tableIndexing === true}
+                  <!-- <td
                   class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-s p-4"
                 > -->
-                <td
-                  class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
-                >
-                  {rowNum + 1}
-                </td>
-              {/if}
-              {#each Object.entries(row) as entry, i}
-                {#if DBFieldNames.includes(entry[0])}
-                  <!-- If this is a color input style it differently -->
-                  {#if headers[i - 1] === "Color"}
-                    <td
-                      class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
-                    >
-                      <span
-                        class="p-3 px-12"
-                        style="background-color: {entry[1]}; border-radius: 16px;"
-                        >{entry[1]}</span
-                      >
-                    </td>
-                  {:else}
-                    <td
-                      class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
-                    >
-                      {entry[1]}
-                    </td>
-                  {/if}
+                  <td
+                    class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                  >
+                    {rowNum + 1}
+                  </td>
                 {/if}
-              {/each}
-              {#if Modification !== false}
-                <!-- <td
+                {#each Object.entries(row) as entry, i}
+                  {#if DBFieldNames.includes(entry[0])}
+                    <!-- If this is a color input style it differently -->
+                    {#if headers[i - 1] === "Color"}
+                      <td
+                        class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                      >
+                        <span
+                          class="p-3 px-12"
+                          style="background-color: {entry[1]}; border-radius: 16px;"
+                          >{entry[1]}</span
+                        >
+                      </td>
+                    {:else}
+                      <td
+                        class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                      >
+                        {entry[1]}
+                      </td>
+                    {/if}
+                  {/if}
+                {/each}
+                {#if Modification !== false}
+                  <!-- <td
                   class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-xs p-4"
                 > -->
-                <td
-                  class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
-                >
-                  <TableDropdown
-                    {RefreshURL}
-                    {UpdateURL}
-                    UpdateFormNames={DBFieldNames}
-                    {CollectionName}
-                    DeleteID={Object.values(row)}
-                    {inputs}
-                  />
-                </td>
-              {/if}
-            </tr>
+                  <td
+                    class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
+                  >
+                    <TableDropdown
+                      {RefreshURL}
+                      {UpdateURL}
+                      UpdateFormNames={DBFieldNames}
+                      {CollectionName}
+                      DeleteID={Object.values(row)}
+                      {inputs}
+                    />
+                  </td>
+                {/if}
+              </tr>
+            {/if}
           {/each}
         {/if}
       </tbody>
     </table>
   </div>
 </div>
+<div
+  style="height: 10%;"
+  class="relative flex justify-center items-center min-w-0 break-words w-full shadow-lg bg-blueGray-600 text-white"
+>
+  <div
+    on:click={archiveTableScrollerLeft}
+    style="left: 0px; bottom: 0px;"
+    class="archiveTableScroller bg-gray-600 cursor-pointer w-1/2 h-full absolute shadow"
+  />
+  <div
+    on:click={archiveTableScrollerRight}
+    style="right: 0px; bottom: 0px;"
+    class="archiveTableScroller bg-gray-600 cursor-pointer w-1/2 h-full absolute shadow"
+  />
+  <h3>
+    Results {rangeStart}-{rangeEnd} of {data.length}
+  </h3>
+</div>
+
+<style>
+  .archiveTableScroller:hover {
+    background-color: rgb(100 116 139);
+    opacity: 0.3;
+  }
+</style>

@@ -73,6 +73,7 @@
                 let initialPos = j$(e).offset().top;
                 let movePos = moveEv.pageY;
                 let addHeight = movePos - initialPos;
+                j$("body").css("cursor", "ns-resize");
                 if (j$(parent).innerHeight() >= 600) {
                     if (j$(parent).innerHeight() + addHeight < 600) {
                         j$(parent).innerHeight(600);
@@ -85,6 +86,7 @@
             });
             j$(window).mouseup(function () {
                 j$(window).unbind("mousemove");
+                j$("body").css("cursor", "");
             });
         });
     }
@@ -106,7 +108,10 @@
             : undefined}
     />
     {#each Object.entries(DataSettings) as section}
-        <div class={navItems[openTab] === section[0] ? "block" : "hidden"}>
+        <div
+            class={navItems[openTab] === section[0] ? "block" : "hidden"}
+            id="TableHiddenBlockContainer"
+        >
             <HeaderStats
                 id={section[0]}
                 cards={section[1].Cards}
@@ -129,12 +134,16 @@
             >
                 <div class="flex flex-wrap ml-8 w-full">
                     <div
-                        class="w-full relative h-600-px bg-blueGray-700 mt-12 mb-12 flex justify-center items-center p-6"
+                        class="w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
                     >
                         <div
                             use:archiveTableSliderStyling
-                            id="testSliderDiv"
                             style="right: -4px; bottom: -4px; cursor: ns-resize;"
+                            class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
+                        />
+                        <div
+                            use:archiveTableSliderStyling
+                            style="left: -4px; bottom: -4px; cursor: ns-resize;"
                             class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
                         />
                         <CardTable
