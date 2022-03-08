@@ -133,7 +133,8 @@
   // Variable for controlling which range of documents to draw up in DOM
   let totalRange = 25;
   let rangeStart = 1;
-  let rangeEnd = data.length < totalRange ? data.length : totalRange;
+  let rangeEnd;
+  $: rangeEnd = data.length < totalRange ? data.length : totalRange; // Make reactive so it updates if we do a search
 </script>
 
 <div
