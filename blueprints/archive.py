@@ -740,14 +740,23 @@ def create_uploaded_table():
                 temp = temp.lower().replace(" ", "_")
                 if(temp in insert_json):
                     # print(insert_json)
+                    # print()
+                    # If a key is missing from a document, 
+                    # put an empty string in instead of null
+                    for field in json_selected_fields:
+                        if(field not in insert_json):
+                            insert_json[field] = ""
                     col.insert_one(insert_json)
                     insert_json = {}
                     insert_json[temp] = str(flat_json[key])
                 else:
-                    # print(insert_json)
-                    insert_json[temp] = str(flat_json[key])
+                    # If it is a list lets turn it into a string
+                    if(type(flat_json[key]) == list):
+                        insert_json[temp] = ', '.join(flat_json[key])
+                    else:
+                        insert_json[temp] = str(flat_json[key])
         # Insert last value
-        col.insert_one(insert_json)
+        col.insert_one(insert_json) 
 
         # We just created the new table and inserted the documents into it.
         # Now lets put this into the archive collection settings tables
@@ -795,5 +804,5 @@ def create_uploaded_table():
     
     except Exception as e:
         return '', 404
-
+    
     return ''
