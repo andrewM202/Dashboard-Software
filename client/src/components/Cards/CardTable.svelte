@@ -90,9 +90,38 @@
     a.click();
   }
 
+  function archiveTableScrollerRight(e) {
+    if (rangeEnd + totalRange > data.length) {
+      rangeEnd = data.length;
+      if (rangeEnd - totalRange < 1) {
+        rangeStart = 1;
+      } else {
+        rangeStart = rangeEnd - totalRange;
+      }
+    } else {
+      rangeStart += totalRange;
+      rangeEnd += totalRange;
+    }
+  }
+
+  function archiveTableScrollerLeft(e) {
+    if (rangeStart - totalRange < 1) {
+      rangeStart = 1;
+      if (rangeStart + totalRange > data.length) {
+        rangeEnd = data.length;
+      } else {
+        rangeEnd = totalRange;
+      }
+    } else {
+      rangeStart -= totalRange;
+      rangeEnd -= totalRange;
+    }
+  }
+
   // Variable for controlling which range of documents to draw up in DOM
   let rangeStart = 1;
   let rangeEnd = data.length < 50 ? data.length : 50;
+  let totalRange = 50;
 </script>
 
 <div
@@ -288,21 +317,23 @@
   class="relative flex justify-center items-center min-w-0 break-words w-full shadow-lg bg-blueGray-600 text-white"
 >
   <div
-    id="test"
+    on:click={archiveTableScrollerLeft}
     style="left: 0px; bottom: 0px;"
-    class="bg-gray-500 cursor-pointer w-1/2 h-full absolute shadow hover:bg-gray-500"
+    class="archiveTableScroller bg-gray-600 cursor-pointer w-1/2 h-full absolute shadow"
   />
   <div
+    on:click={archiveTableScrollerRight}
     style="right: 0px; bottom: 0px;"
-    class="bg-gray-600 cursor-pointer w-1/2 h-full absolute shadow hover:bg-gray-500"
+    class="archiveTableScroller bg-gray-600 cursor-pointer w-1/2 h-full absolute shadow"
   />
   <h3>
     Results {rangeStart}-{rangeEnd} of {data.length}
   </h3>
 </div>
 
-<style lang="css">
-  div#test {
-    background-color: green;
+<style>
+  .archiveTableScroller:hover {
+    background-color: rgb(100 116 139);
+    opacity: 0.3;
   }
 </style>
