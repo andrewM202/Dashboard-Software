@@ -90,7 +90,7 @@
     a.click();
   }
 
-  function archiveTableScrollerRight(e) {
+  function archiveTableScrollerRight() {
     if (rangeEnd + totalRange > data.length) {
       rangeEnd = data.length;
       if (rangeEnd - totalRange < 1) {
@@ -102,9 +102,15 @@
       rangeStart += totalRange;
       rangeEnd += totalRange;
     }
+    // If we are changing range we have to recolor
+    // the rows in the table
+    setTimeout(function () {
+      j$("table > tbody > tr").removeClass("bg-red-600");
+      j$("table > tbody > tr:even").addClass("bg-red-600");
+    }, 150);
   }
 
-  function archiveTableScrollerLeft(e) {
+  function archiveTableScrollerLeft() {
     if (rangeStart - totalRange < 1) {
       rangeStart = 1;
       if (rangeStart + totalRange > data.length) {
@@ -116,6 +122,12 @@
       rangeStart -= totalRange;
       rangeEnd -= totalRange;
     }
+    // If we are changing range we have to recolor
+    // the rows in the table
+    setTimeout(function () {
+      j$("table > tbody > tr").removeClass("bg-red-600");
+      j$("table > tbody > tr:even").addClass("bg-red-600");
+    }, 150);
   }
 
   // Variable for controlling which range of documents to draw up in DOM
