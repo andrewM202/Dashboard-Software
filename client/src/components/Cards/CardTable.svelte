@@ -288,8 +288,9 @@
   class="relative flex justify-center items-center min-w-0 break-words w-full shadow-lg bg-blueGray-600 text-white"
 >
   <div
+    id="test"
     style="left: 0px; bottom: 0px;"
-    class="bg-gray-600 cursor-pointer w-1/2 h-full absolute shadow hover:bg-gray-500"
+    class="bg-gray-500 cursor-pointer w-1/2 h-full absolute shadow hover:bg-gray-500"
   />
   <div
     style="right: 0px; bottom: 0px;"
@@ -299,3 +300,9 @@
     Results {rangeStart}-{rangeEnd} of {data.length}
   </h3>
 </div>
+
+<style lang="css">
+  div#test {
+    background-color: green;
+  }
+</style>
