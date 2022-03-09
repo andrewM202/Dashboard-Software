@@ -326,7 +326,7 @@
   </div>
 </div>
 <div
-  style="height: 10%;"
+  style="height: 10%; max-height: 80px;"
   class="relative flex justify-center items-center min-w-0 break-words w-full shadow-lg bg-blueGray-600 text-white"
 >
   <div

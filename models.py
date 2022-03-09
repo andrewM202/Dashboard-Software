@@ -5,7 +5,9 @@ from flask_security import RoleMixin, MongoEngineUserDatastore
 from passlib.context import CryptContext # Password hashing
 
 # Connect to MongoDB
+# mongodb_uri = 'mongodb://' + os.environ['MONGODB_USERNAME'] + ':' + os.environ['MONGODB_PASSWORD'] + '@' + os.environ['MONGODB_HOSTNAME'] + ':27017/' + os.environ['MONGODB_DATABASE']
 db = connect(host = environ['MONGODB_HOST'])   
+# db = connect(host=mongodb_uri)   
 
 # flask-login initialization
 login = LoginManager()
