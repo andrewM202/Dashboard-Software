@@ -12,6 +12,7 @@ services:
     # so it auto-updates container when updating locally
     volumes:
       - ./flask_app:/app
+
   proxy:
     build: nginx
     container_name: nginx-flask
