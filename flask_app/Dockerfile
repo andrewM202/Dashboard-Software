@@ -1,9 +1,9 @@
-FROM python:3
+FROM python:3.9.7
 # FROM python:3.7-alpine
 
 LABEL MAINTAINER="Andrew Matt <andrewm1246@gmail.com>"
 
-ENV MONGODB_HOST="host.docker.internal" \
+ENV MONGODB_HOST="mongodb://host.docker.internal:27017/politic" \
     #MONGODB_HOST="mongodb://127.0.0.1:27017/politic" \ 
     FLASK_DEBUG=1 \ 
     FLASK_ENV=development \ 
@@ -13,14 +13,13 @@ ENV MONGODB_HOST="host.docker.internal" \
 RUN mkdir /app
 WORKDIR /app
 
-# Copy all files
+# Copy all files into our app working directory
 COPY . /app
 ADD . /app
-COPY gunicorn.sh /app
 
 RUN pip install -r requirements.txt
 
 # ENTRYPOINT ["python", "./app.py"]
+# Run our gunicorn web server
 CMD ["gunicorn", "-w 4", "-b", "0.0.0.0:8000", "app:app"]
 # CMD [ "python", "./app.py" ]
-# CMD ["/bin/bash", "./gunicorn.sh"]

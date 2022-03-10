@@ -347,6 +347,7 @@
 <style>
   .archiveTableScroller:hover {
     background-color: rgb(100 116 139);
+    /* background-color: green; */
     opacity: 0.3;
   }
 </style>
