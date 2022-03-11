@@ -20,6 +20,7 @@ WORKDIR /app
 # Copy all files into our app working directory
 COPY . /app
 ADD . /app
+COPY . .
 
 # Install our requirements.txt
 RUN pip install -r requirements.txt
