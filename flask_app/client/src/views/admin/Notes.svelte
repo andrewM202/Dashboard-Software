@@ -1,5 +1,8 @@
 <script>
     import HeaderStats from "components/Headers/HeaderStats.svelte";
+    // import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+    import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
+    console.log(DecoupledEditor);
     // core components
 
     /*
@@ -339,15 +342,28 @@
                                 });
 
                                 // CKEditor
+                                // j$("#noteText")
+                                //     .html(`<div class="document-editor">
+                                //         <div class="document-editor__toolbar"></div>
+                                //         <div class="document-editor__editable-container">
+                                //             <div class="document-editor__editable">
+                                //                 ${j$("#noteText").html()}
+                                //             </div>
+                                //         </div>
+                                //     </div>`);
+
                                 j$("#noteText")
                                     .html(`<div class="document-editor">
                                         <div class="document-editor__toolbar"></div>
                                         <div class="document-editor__editable-container">
                                             <div class="document-editor__editable">
-                                                ${j$("#noteText").html()}
                                             </div>
                                         </div>
                                     </div>`);
+
+                                // console.log(DecoupledEditor.instances);
+
+                                // DecoupledEditor.create(j$("#noteText div")[0]);
 
                                 // Prevent tabbing in the editor
                                 j$("#noteText").keydown(function (e) {
@@ -379,7 +395,12 @@
                                     document.querySelector(
                                         ".document-editor__editable"
                                     ),
-                                    {}
+                                    {
+                                        initialData: node.data.text,
+                                        mediaEmbed: {
+                                            previewsInData: true,
+                                        },
+                                    }
                                 )
                                     .then((editor) => {
                                         const toolbarContainer =
@@ -412,9 +433,20 @@
                                     value: "Edit Note",
                                 });
 
-                                let noteTextValue = j$(
-                                    "#noteText .document-editor__editable"
-                                ).html();
+                                // let noteTextValue = j$(
+                                //     "#noteText .document-editor__editable"
+                                // ).html();
+                                // A reference to the editor editable element in the DOM.
+                                const domEditableElement =
+                                    document.querySelector(
+                                        ".ck-editor__editable"
+                                    );
+
+                                // Get the editor instance from the editable element.
+                                const editorInstance =
+                                    domEditableElement.ckeditorInstance;
+                                let noteTextValue = editorInstance.getData();
+
                                 node.data.text = noteTextValue;
                                 j$("#noteText").html(noteTextValue);
 
@@ -709,5 +741,7 @@
         class="w-full p-4 overflow-x-auto border-8 border-blueGray-200 h-auto ck ck-content"
         style="border-radius: 8px; min-height: 500px;"
         contenteditable="false"
-    />
+    >
+        <div />
+    </div>
 </div>

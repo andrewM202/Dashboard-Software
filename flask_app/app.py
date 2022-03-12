@@ -18,7 +18,7 @@ app.config.update(
     SECURITY_CONFIRMABLE = True,
     SECURITY_REGISTERABLE = True,
     SECURITY_UNIFIED_SIGNIN = True,
-    # enforce CSRF protection for session / browser - but allow token-based
+    # Enforce CSRF protection for session / browser - but allow token-based
     # API calls to go through
     SECURITY_CSRF_PROTECT_MECHANISMS = ["session", "basic"],
     SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True,
