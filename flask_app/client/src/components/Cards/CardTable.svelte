@@ -74,6 +74,63 @@
     a.click();
   }
 
+  class popover {
+    constructor(btnRef, popoverRef) {
+      this.popoverShow = false;
+      this.btnRef = btnRef;
+      this.popoverRef = popoverRef;
+    }
+    toggleTooltip() {
+      if (this.popoverShow) {
+        this.popoverShow = false;
+      } else {
+        this.popoverShow = true;
+        createPopper(this.btnRef, this.popoverRef, {
+          placement: "top",
+          // Modifer to give padding to popover
+          modifiers: [
+            {
+              name: "preventOverflow",
+              options: {
+                padding: 50,
+              },
+            },
+          ],
+        });
+      }
+    }
+  }
+
+  function detectOverflow(e) {
+    // Detect if a <td> is overflowing in the card table.
+    // If it is, add a hover to see the entire text
+    if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+      j$(e).append(`<div
+                        class="hidden archive-creation-info-div bg-orange-500 border-0 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg"
+                      >
+                        <div>
+                          <div
+                            class="bg-rose-400 text-white opacity-75 font-semibold p-3 uppercase rounded-t-lg"
+                          >
+                            ${j$(e).text()}
+                          </div>
+                        </div>
+                      </div>`);
+      let pop = new popover(e, j$(e).find("div")[0]);
+      j$(e).mouseenter(function () {
+        pop.toggleTooltip();
+        j$(e).find("div").removeClass("hidden");
+        j$(e).find("div").addClass("block");
+        console.log("Hover Overflow Detected");
+      });
+      j$(e).mouseleave(function () {
+        pop.toggleTooltip();
+        j$(e).find("div").addClass("hidden");
+        j$(e).find("div").removeClass("block");
+      });
+    }
+  }
+
   function archiveTableScrollerRight() {
     if (rangeEnd + totalRange > data.length) {
       rangeEnd = data.length;
@@ -271,6 +328,7 @@
                       </td>
                     {:else}
                       <td
+                        use:detectOverflow
                         class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                       >
                         {entry[1]}
