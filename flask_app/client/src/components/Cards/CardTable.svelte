@@ -2,8 +2,8 @@
   // core components
   import TableDropdown from "components/Dropdowns/TableDropdown.svelte";
   // Popover Stuff Start
-  import { createPopper, detectOverflow } from "@popperjs/core";
-  import { onMount } from "svelte";
+  import { createPopper } from "@popperjs/core";
+  import { onMount, tick } from "svelte";
 
   let popoverShow = false;
   let btnRef;
@@ -121,7 +121,7 @@
                     >
                       <span>${j$(e).text()}</span>
                     </div>`);
-          let pop = new popover(e, j$(e).find("div")[0]);
+          let pop = new popover(e, j$(e).children("div")[0]);
           j$(e).mouseenter(function () {
             pop.toggleTooltip();
             j$(e).find("div").removeClass("hidden");
@@ -150,34 +150,36 @@
       // detectOverflowLater = overflowCopy;
     });
   });
-  function detectCellOverflow(e) {
+  async function detectCellOverflow(e) {
+    await tick();
     // Detect if a <td> is overflowing in the card table.
     // If it is, add a hover to see the entire text
-    if (j$(e)[0].scrollWidth === 0) {
-      detectOverflowLater.push({
-        event: j$(e),
-        remove: false,
-      });
-    }
-    if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
-      j$(e).append(`<div
+    setTimeout(function () {
+      if (j$(e)[0].scrollWidth === 0) {
+        detectOverflowLater.push({
+          event: j$(e),
+          remove: false,
+        });
+      } else if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+        j$(e).append(`<div
                       style="white-space: normal; max-width: 500px; height: auto;"
                       class="bg-rose-400 hidden z-50 text-white font-semibold p-3 uppercase rounded-t-lg"
                     >
                       <span>${j$(e).text()}</span>
                     </div>`);
-      let pop = new popover(e, j$(e).children("div")[0]);
-      j$(e).mouseenter(function () {
-        pop.toggleTooltip();
-        j$(e).find("*").removeClass("hidden");
-        j$(e).find("*").addClass("block");
-      });
-      j$(e).mouseleave(function () {
-        pop.toggleTooltip();
-        j$(e).find("*").addClass("hidden");
-        j$(e).find("*").removeClass("block");
-      });
-    }
+        let pop = new popover(e, j$(e).children("div")[0]);
+        j$(e).mouseenter(function () {
+          pop.toggleTooltip();
+          j$(e).find("*").removeClass("hidden");
+          j$(e).find("*").addClass("block");
+        });
+        j$(e).mouseleave(function () {
+          pop.toggleTooltip();
+          j$(e).find("*").addClass("hidden");
+          j$(e).find("*").removeClass("block");
+        });
+      }
+    }, 300);
   }
 
   function archiveTableScrollerRight() {
