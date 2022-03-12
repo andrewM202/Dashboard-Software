@@ -2,8 +2,8 @@
   // core components
   import TableDropdown from "components/Dropdowns/TableDropdown.svelte";
   // Popover Stuff Start
-  import { createPopper } from "@popperjs/core";
-  import { tick } from "svelte";
+  import { createPopper, detectOverflow } from "@popperjs/core";
+  import { onMount } from "svelte";
 
   let popoverShow = false;
   let btnRef;
@@ -28,6 +28,33 @@
         popoverShow2 = true;
         createPopper(btnRef2, popoverRef2, {
           placement: "left",
+        });
+      }
+    }
+  }
+
+  class popover {
+    constructor(btnRef, popoverRef) {
+      this.popoverShow = false;
+      this.btnRef = btnRef;
+      this.popoverRef = popoverRef;
+    }
+    toggleTooltip() {
+      if (this.popoverShow) {
+        this.popoverShow = false;
+      } else {
+        this.popoverShow = true;
+        createPopper(this.btnRef, this.popoverRef, {
+          placement: "top",
+          // Modifer to give padding to popover
+          modifiers: [
+            {
+              name: "preventOverflow",
+              options: {
+                padding: 50,
+              },
+            },
+          ],
         });
       }
     }
@@ -74,59 +101,81 @@
     a.click();
   }
 
-  class popover {
-    constructor(btnRef, popoverRef) {
-      this.popoverShow = false;
-      this.btnRef = btnRef;
-      this.popoverRef = popoverRef;
-    }
-    toggleTooltip() {
-      if (this.popoverShow) {
-        this.popoverShow = false;
-      } else {
-        this.popoverShow = true;
-        createPopper(this.btnRef, this.popoverRef, {
-          placement: "top",
-          // Modifer to give padding to popover
-          modifiers: [
-            {
-              name: "preventOverflow",
-              options: {
-                padding: 50,
-              },
-            },
-          ],
-        });
+  // On page load, svelte loads all elements for all tables
+  // but they are not visible. This makes it so scrollWidth is 0
+  // but innerWidth() is > 0. We need to wait until the scrollWidth is
+  // not zero (when the table is clicked on and displayed) to check if it
+  // should have the overflow popper applied to it
+  let detectOverflowLater = [];
+  onMount(() => {
+    j$("nav").click(function () {
+      for (let i = 0; i < detectOverflowLater.length; i++) {
+        let e = j$(detectOverflowLater[i].event)[0];
+        if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+          // This element is now found to be overflown, remove it from
+          // detectOverflowLater
+          detectOverflowLater[i].remove = true;
+          j$(e).append(`<div
+                      style="white-space: normal; max-width: 500px; height: auto;"
+                      class="bg-rose-400 hidden z-50 text-white font-semibold p-3 uppercase rounded-t-lg"
+                    >
+                      <span>${j$(e).text()}</span>
+                    </div>`);
+          let pop = new popover(e, j$(e).find("div")[0]);
+          j$(e).mouseenter(function () {
+            pop.toggleTooltip();
+            j$(e).find("div").removeClass("hidden");
+            j$(e).find("div").addClass("block");
+          });
+          j$(e).mouseleave(function () {
+            pop.toggleTooltip();
+            j$(e).find("div").addClass("hidden");
+            j$(e).find("div").removeClass("block");
+          });
+        } else if (
+          j$(e)[0].scrollWidth !== 0 &&
+          j$(e)[0].scrollWidth === Math.ceil(j$(e).innerWidth())
+        ) {
+          // This element is not found to be overflown, remove it from
+          // detectOverflowLater
+          detectOverflowLater[i].remove = true;
+        }
       }
-    }
-  }
-
-  function detectOverflow(e) {
+      // let overflowCopy = [];
+      // for (let i = 0; i < detectOverflowLater.length; i++) {
+      //   if (!detectOverflowLater[i].remove) {
+      //     overflowCopy.push(detectOverflowLater[i]);
+      //   }
+      // }
+      // detectOverflowLater = overflowCopy;
+    });
+  });
+  function detectCellOverflow(e) {
     // Detect if a <td> is overflowing in the card table.
     // If it is, add a hover to see the entire text
+    if (j$(e)[0].scrollWidth === 0) {
+      detectOverflowLater.push({
+        event: j$(e),
+        remove: false,
+      });
+    }
     if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
       j$(e).append(`<div
-                        class="hidden archive-creation-info-div bg-orange-500 border-0 block z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg"
-                      >
-                        <div>
-                          <div
-                            class="bg-rose-400 text-white opacity-75 font-semibold p-3 uppercase rounded-t-lg"
-                          >
-                            ${j$(e).text()}
-                          </div>
-                        </div>
-                      </div>`);
-      let pop = new popover(e, j$(e).find("div")[0]);
+                      style="white-space: normal; max-width: 500px; height: auto;"
+                      class="bg-rose-400 hidden z-50 text-white font-semibold p-3 uppercase rounded-t-lg"
+                    >
+                      <span>${j$(e).text()}</span>
+                    </div>`);
+      let pop = new popover(e, j$(e).children("div")[0]);
       j$(e).mouseenter(function () {
         pop.toggleTooltip();
-        j$(e).find("div").removeClass("hidden");
-        j$(e).find("div").addClass("block");
-        console.log("Hover Overflow Detected");
+        j$(e).find("*").removeClass("hidden");
+        j$(e).find("*").addClass("block");
       });
       j$(e).mouseleave(function () {
         pop.toggleTooltip();
-        j$(e).find("div").addClass("hidden");
-        j$(e).find("div").removeClass("block");
+        j$(e).find("*").addClass("hidden");
+        j$(e).find("*").removeClass("block");
       });
     }
   }
@@ -328,7 +377,7 @@
                       </td>
                     {:else}
                       <td
-                        use:detectOverflow
+                        use:detectCellOverflow
                         class="datacell break-words w-56 border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                       >
                         {entry[1]}

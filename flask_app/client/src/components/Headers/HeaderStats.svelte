@@ -135,7 +135,7 @@
                                 </div>
                             {/each}
                             <div
-                                class="w-full lg:w-6/12 py-2 px-4 pt-6"
+                                class="w-full lg:w-6/12 py-2 px-4 pt-8"
                                 id={submitID}
                             >
                                 <div class="relative w-full mb-3">

@@ -103,10 +103,12 @@
         // Check each input
         for (let input of inputs) {
             if (input.type !== "Submit") {
-                let value = j$("#" + input.name).val();
+                let value = j$(
+                    "#rawArchiveTableContainer " + "#" + input.name
+                ).val();
                 if (value === "" && input.required === true) {
                     error = "Please Fill All Required Fields.";
-                    j$("#" + input.name).attr(
+                    j$("#rawArchiveTableContainer " + "#" + input.name).attr(
                         "placeholder",
                         `${input.placeholder} Is Required!`
                     );
