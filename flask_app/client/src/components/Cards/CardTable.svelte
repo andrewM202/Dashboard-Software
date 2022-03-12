@@ -58,22 +58,6 @@
     tableIndexing = tableIndexing === true ? false : true;
   }
 
-  // Reactive so it recolors the rows whenever
-  // data is changed
-  $: if (data) {
-    async function makeOddRowsRed() {
-      await tick();
-      if (tableAltColor !== undefined) {
-        j$("table > tbody > tr").css("background-color", undefined);
-        j$("table > tbody > tr:even").css("background-color", tableAltColor);
-      } else {
-        j$("table > tbody > tr").removeClass("bg-red-600");
-        j$("table > tbody > tr:even").addClass("bg-red-600");
-      }
-    }
-    makeOddRowsRed();
-  }
-
   function downloadData() {
     const name = `${CollectionName}.json`;
     const saveData = JSON.stringify(data, undefined, 2);
@@ -102,12 +86,6 @@
       rangeStart += totalRange;
       rangeEnd += totalRange;
     }
-    // If we are changing range we have to recolor
-    // the rows in the table
-    setTimeout(function () {
-      j$("table > tbody > tr").removeClass("bg-red-600");
-      j$("table > tbody > tr:even").addClass("bg-red-600");
-    }, 150);
   }
 
   function archiveTableScrollerLeft() {
@@ -122,12 +100,6 @@
       rangeStart -= totalRange;
       rangeEnd -= totalRange;
     }
-    // If we are changing range we have to recolor
-    // the rows in the table
-    setTimeout(function () {
-      j$("table > tbody > tr").removeClass("bg-red-600");
-      j$("table > tbody > tr:even").addClass("bg-red-600");
-    }, 150);
   }
 
   // Variable for controlling which range of documents to draw up in DOM
@@ -267,7 +239,13 @@
         {#if data !== undefined}
           {#each data as row, rowNum}
             {#if rowNum + 1 >= rangeStart && rowNum < rangeEnd}
-              <tr>
+              <tr
+                class={rowNum % 2 === 0
+                  ? tableAltColor === undefined
+                    ? "bg-red-600"
+                    : tableAltColor
+                  : ""}
+              >
                 {#if tableIndexing === true}
                   <!-- <td
                   class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-s p-4"
@@ -348,5 +326,12 @@
   .archiveTableScroller:hover {
     background-color: rgb(100 116 139);
     opacity: 0.3;
+  }
+  td {
+    max-width: 14rem;
+    /* max-width: 50ch; */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 </style>

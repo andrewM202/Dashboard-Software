@@ -40,7 +40,6 @@
 
   function deleteRow(e) {
     e.preventDefault();
-    console.log(DeleteID);
     let data = j$("#" + DeleteID).serialize();
     j$.ajax({
       type: "POST",
