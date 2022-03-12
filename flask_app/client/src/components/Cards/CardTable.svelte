@@ -141,13 +141,13 @@
           detectOverflowLater[i].remove = true;
         }
       }
-      // let overflowCopy = [];
-      // for (let i = 0; i < detectOverflowLater.length; i++) {
-      //   if (!detectOverflowLater[i].remove) {
-      //     overflowCopy.push(detectOverflowLater[i]);
-      //   }
-      // }
-      // detectOverflowLater = overflowCopy;
+      let overflowCopy = [];
+      for (let i = 0; i < detectOverflowLater.length; i++) {
+        if (!detectOverflowLater[i].remove) {
+          overflowCopy.push(detectOverflowLater[i]);
+        }
+      }
+      detectOverflowLater = overflowCopy;
     });
   });
   async function detectCellOverflow(e) {
