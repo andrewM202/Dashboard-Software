@@ -11,7 +11,7 @@ services:
     # Bind to our local file system with volume 
     # so it auto-updates container when updating locally
     volumes:
-      - ./flask_app:/app
+      - ./flask_app:/app:ro
 
   proxy:
     build: nginx
