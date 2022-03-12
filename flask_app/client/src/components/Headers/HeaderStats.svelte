@@ -63,26 +63,28 @@
                 </h3>
             {/if}
             <!-- Card stats -->
-            <div class="flex flex-wrap justify-center py-4">
-                {#if cards !== undefined}
-                    {#each cards as card}
-                        <div class="w-full lg:w-6/12 xl:w-3/12 px-4 py-2">
-                            <CardStats
-                                statSubtitle={card.subtitle}
-                                statTitle={card.amount}
-                                statArrow="up"
-                                statPercent={card.increase}
-                                statPercentColor={card.increase >= 0
-                                    ? "text-emerald-500"
-                                    : "text-red-500"}
-                                statDescripiron="Since {card.description}"
-                                statIconName="far fa-chart-bar"
-                                statIconColor="bg-red-500"
-                            />
-                        </div>
-                    {/each}
+            {#if cards !== undefined}
+                {#if cards.length > 0}
+                    <div class="flex flex-wrap justify-center py-4">
+                        {#each cards as card}
+                            <div class="w-full lg:w-6/12 xl:w-3/12 px-4 py-2">
+                                <CardStats
+                                    statSubtitle={card.subtitle}
+                                    statTitle={card.amount}
+                                    statArrow="up"
+                                    statPercent={card.increase}
+                                    statPercentColor={card.increase >= 0
+                                        ? "text-emerald-500"
+                                        : "text-red-500"}
+                                    statDescripiron="Since {card.description}"
+                                    statIconName="far fa-chart-bar"
+                                    statIconColor="bg-red-500"
+                                />
+                            </div>
+                        {/each}
+                    </div>
                 {/if}
-            </div>
+            {/if}
             <!-- Inputs -->
             {#if inputs !== undefined}
                 <div class="flex-auto py-10 pt-0">
@@ -94,8 +96,13 @@
                         />
                         <div class="flex flex-wrap">
                             {#each inputs as input}
-                                <div class="w-full lg:w-6/12 py-2 px-4">
+                                <div class="w-full lg:w-6/12 py-1 px-4">
                                     <div class="relative w-full mb-3">
+                                        <label
+                                            class="w-full font-semibold text-lg text-center form-check-label inline-block text-gray-800"
+                                            for={input.name}
+                                            >{input.placeholder}</label
+                                        >
                                         {#if input.flexdatalistdata !== undefined}
                                             <input
                                                 use:styleFlexData
@@ -114,6 +121,7 @@
                                             </datalist>
                                         {:else}
                                             <input
+                                                id={input.name}
                                                 type={input.type}
                                                 placeholder={input.placeholder}
                                                 name={input.name}
@@ -127,7 +135,7 @@
                                 </div>
                             {/each}
                             <div
-                                class="w-full lg:w-6/12 py-2 px-4"
+                                class="w-full lg:w-6/12 py-2 px-4 pt-6"
                                 id={submitID}
                             >
                                 <div class="relative w-full mb-3">

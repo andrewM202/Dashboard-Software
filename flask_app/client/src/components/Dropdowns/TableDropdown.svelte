@@ -142,6 +142,7 @@
       if (type.toLowerCase() === "color") {
         j$(child).html(
           `<input name='${UpdateFormNames[index]}'
+          style='min-width: 5rem;'
         type="${type}"
         value='${j$(
           child
@@ -150,6 +151,7 @@
       } else {
         j$(child).html(
           `<input name='${UpdateFormNames[index]}'
+          style='min-width: 5rem;'
         type="${type}"
         value='${j$(
           child
