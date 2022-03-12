@@ -24,6 +24,8 @@ ADD . /app
 # Install our requirements.txt
 RUN pip install -r requirements.txt
 
+# Copy all again after installing requirements.txt so we do not
+# have to download dependencies after rebuilding container again
 COPY . .
 
 # ENTRYPOINT ["python", "./app.py"]

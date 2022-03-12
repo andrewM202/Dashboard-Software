@@ -5,7 +5,7 @@ services:
   app:
     build: ./flask_app
     container_name: flask_app
-    restart: always
+    restart: unless-stopped
     ports:
       - "8000:8000"
     # Bind to our local file system with volume 
@@ -16,9 +16,10 @@ services:
   proxy:
     build: nginx
     container_name: nginx-flask
-    restart: always
+    restart: unless-stopped
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - app
 volumes:
