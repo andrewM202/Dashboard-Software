@@ -18,7 +18,14 @@ services:
     container_name: nginx-flask
     restart: always
     ports:
+      # 80 is HTTP port, 443 is HTTPS port 
       - 80:80
+      - 443:443
+    # Add a volume for our self-signed certs
+    volumes:
+      - ./nginx/self_signed_certs:/etc/nginx/certs
+    environment:
+      NGINX_HOST: localhost
     depends_on:
       - app
 volumes:
