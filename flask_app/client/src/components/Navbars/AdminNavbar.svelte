@@ -32,21 +32,6 @@
         <!-- <a href="#{navItem}" class="pl-4 text-white text-sm uppercase"
           >{navItem}</a>
         > -->
-        <!-- <p
-          on:click={() => (openTab = i)}
-          class="cursor-pointer pl-4 text-white text-sm uppercase"
-        > -->
-        <!-- <p
-          on:click={() => (openTab = i)}
-          style="margin: 5px; width: calc({navItems.length === 1
-            ? '100'
-            : navItems.length === 2
-            ? '50'
-            : navItems.length === 3
-            ? '33'
-            : '25'}% - 30px); background-color: white; color: black; padding: 10px; border-radius: 5px;"
-          class="nav-item cursor-pointer text-sm uppercase text-center"
-        > -->
         <p
           on:click={() => (openTab = i)}
           style="margin: 5px; background-color: white; color: black; padding: 10px; border-radius: 5px;"
