@@ -3,8 +3,9 @@ from config import Config
 from models import login, user_datastore
 from flask_security import Security
 from flask_paranoid import Paranoid
+# Generate CSRF tokens with flask_wtf
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-import flask, gzip
+# import flask, gzip
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
