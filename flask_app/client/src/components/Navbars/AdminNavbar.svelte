@@ -9,7 +9,7 @@
 <!-- Navbar -->
 <nav
   style={navBarBGColor}
-  class="bg-red-500 block w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start items-center p-4"
+  class="bg-red-500 block w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start items-center"
 >
   {#if title !== undefined}
     <div class="md:block hidden md:pr-10 px-4 w-40">
@@ -23,7 +23,7 @@
     </div>
   {/if}
   <div
-    class="w-full mx-autp items-center flex justify-around flex-wrap md:flex-wrap md:px-10 px-4"
+    class="w-full mx-auto items-center flex justify-center flex-wrap md:flex-wrap py-4"
   >
     <!-- Brand -->
 
@@ -32,9 +32,25 @@
         <!-- <a href="#{navItem}" class="pl-4 text-white text-sm uppercase"
           >{navItem}</a>
         > -->
-        <p
+        <!-- <p
           on:click={() => (openTab = i)}
           class="cursor-pointer pl-4 text-white text-sm uppercase"
+        > -->
+        <!-- <p
+          on:click={() => (openTab = i)}
+          style="margin: 5px; width: calc({navItems.length === 1
+            ? '100'
+            : navItems.length === 2
+            ? '50'
+            : navItems.length === 3
+            ? '33'
+            : '25'}% - 30px); background-color: white; color: black; padding: 10px; border-radius: 5px;"
+          class="nav-item cursor-pointer text-sm uppercase text-center"
+        > -->
+        <p
+          on:click={() => (openTab = i)}
+          style="margin: 5px; background-color: white; color: black; padding: 10px; border-radius: 5px;"
+          class="nav-item cursor-pointer text-sm uppercase text-center"
         >
           {navItem}
         </p>
@@ -59,4 +75,39 @@
     </form> -->
   </div>
 </nav>
+
+{#if navItems.length === 1}
+  <style>
+  </style>
+{:else if navItems.length === 2}
+  <style>
+    @media (min-width: 1024px) {
+      p.nav-item {
+        width: calc(50% - 30px) !important;
+      }
+    }
+  </style>
+{:else if navItems.length === 3}
+  <style>
+    @media (min-width: 1024px) {
+      p.nav-item {
+        width: calc(33% - 30px) !important;
+      }
+    }
+  </style>
+{:else}
+  <style>
+    @media (min-width: 1024px) {
+      p.nav-item {
+        width: calc(25% - 30px) !important;
+      }
+    }
+  </style>
+{/if}
+
 <!-- End Navbar -->
+<style>
+  p.nav-item {
+    width: calc(100% - 30px);
+  }
+</style>
