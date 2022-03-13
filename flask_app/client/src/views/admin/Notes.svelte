@@ -2,7 +2,6 @@
     import HeaderStats from "components/Headers/HeaderStats.svelte";
     // import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
     import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
-    console.log(DecoupledEditor);
     // core components
 
     /*
@@ -341,17 +340,6 @@
                                     value: "Save Edit",
                                 });
 
-                                // CKEditor
-                                // j$("#noteText")
-                                //     .html(`<div class="document-editor">
-                                //         <div class="document-editor__toolbar"></div>
-                                //         <div class="document-editor__editable-container">
-                                //             <div class="document-editor__editable">
-                                //                 ${j$("#noteText").html()}
-                                //             </div>
-                                //         </div>
-                                //     </div>`);
-
                                 j$("#noteText")
                                     .html(`<div class="document-editor">
                                         <div class="document-editor__toolbar"></div>
@@ -360,10 +348,6 @@
                                             </div>
                                         </div>
                                     </div>`);
-
-                                // console.log(DecoupledEditor.instances);
-
-                                // DecoupledEditor.create(j$("#noteText div")[0]);
 
                                 // Prevent tabbing in the editor
                                 j$("#noteText").keydown(function (e) {
