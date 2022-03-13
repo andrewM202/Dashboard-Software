@@ -35,7 +35,7 @@
         <p
           on:click={() => (openTab = i)}
           style="margin: 5px; background-color: white; color: black; padding: 10px; border-radius: 5px;"
-          class="nav-item cursor-pointer text-sm uppercase text-center"
+          class="truncate nav-item cursor-pointer text-sm uppercase text-center"
         >
           {navItem}
         </p>
