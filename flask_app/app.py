@@ -20,8 +20,8 @@ app.config.update(
     SECURITY_UNIFIED_SIGNIN = True,
     # Enforce CSRF protection for session / browser - but allow token-based
     # API calls to go through
-    SECURITY_CSRF_PROTECT_MECHANISMS = ["session", "basic"],
-    SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True,
+    # SECURITY_CSRF_PROTECT_MECHANISMS = ["session", "basic"],
+    # SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True,
 )
 
 # Register Routes / Import Blueprints

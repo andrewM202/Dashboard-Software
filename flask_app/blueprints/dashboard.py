@@ -24,6 +24,11 @@ def people_dashboard():
 def tables():
     return send_from_directory('client/public', 'index.html')
 
+@bp.route("/admin/dashboard-reviser")
+@login_required
+def dashboard_reviser():
+    return send_from_directory('client/public', 'index.html')
+
 @bp.route("/admin/dashboard-designer")
 @login_required
 def dashboard_designer():

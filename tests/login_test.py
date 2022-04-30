@@ -12,7 +12,7 @@ def test_login():
     s = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=s)
     # driver.maximize_window()
-    driver.get("http://127.0.0.1:5000/")
+    driver.get("http://127.0.0.1:8000/")
     # Click on demo pages
     driver.find_element(by=By.XPATH, value=('//*[@id="example-navbar-warning"]/ul[2]/li[1]/div/a')).click()
     # Click on login

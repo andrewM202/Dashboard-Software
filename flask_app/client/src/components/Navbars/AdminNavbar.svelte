@@ -29,13 +29,12 @@
 
     {#if navItems !== undefined}
       {#each navItems as navItem, i}
-        <!-- <a href="#{navItem}" class="pl-4 text-white text-sm uppercase"
-          >{navItem}</a>
-        > -->
         <p
           on:click={() => (openTab = i)}
-          style="margin: 5px; background-color: white; color: black; padding: 10px; border-radius: 5px;"
-          class="truncate nav-item cursor-pointer text-sm uppercase text-center"
+          style="margin: 5px; color: black; padding: 10px; border-radius: 5px;"
+          class="{openTab === i
+            ? 'bg-gray-200'
+            : 'bg-white'} truncate nav-item cursor-pointer text-sm uppercase text-center"
         >
           {navItem}
         </p>

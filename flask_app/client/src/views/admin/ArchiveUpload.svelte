@@ -310,7 +310,7 @@
 {:else if openTab === 1}
     <HeaderStats
         title={"Archive Upload"}
-        titleFontSize={"text-6xl"}
+        titleFontSize={"text-6xl pb-8"}
         titleColor={"text-black"}
     />
 

@@ -14,7 +14,7 @@
   import RawArchive from "views/admin/RawArchive.svelte";
   import ArchiveDesigner from "views/admin/ArchiveDesigner.svelte";
   import ArchiveUpload from "views/admin/ArchiveUpload.svelte";
-  import DashboardDesigner from "views/admin/DashboardDesigner.svelte";
+  import DashboardReviser from "views/admin/DashboardReviser.svelte";
   import ChartDesigner from "views/admin/ChartDesigner.svelte";
   import Notes from "views/admin/Notes.svelte";
   import Dashboard from "views/admin/Dashboard.svelte";
@@ -57,7 +57,7 @@
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
           <Route path="archive-upload" component={ArchiveUpload} />
-          <Route path="dashboard-designer" component={DashboardDesigner} />
+          <Route path="dashboard-reviser" component={DashboardReviser} />
           <Route path="chart-designer" component={ChartDesigner} />
         </Router>
         {#if UserSettings !== undefined}
@@ -105,7 +105,7 @@
           <Route path="notes" component={Notes} />
           <Route path="archive-designer" component={ArchiveDesigner} />
           <Route path="archive-upload" component={ArchiveUpload} />
-          <Route path="dashboard-designer" component={DashboardDesigner} />
+          <Route path="dashboard-reviser" component={DashboardReviser} />
           <Route path="chart-designer" component={ChartDesigner} />
         </Router>
         {#if UserSettings !== undefined}

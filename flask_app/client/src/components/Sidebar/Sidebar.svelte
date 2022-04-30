@@ -239,27 +239,6 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/dictionary"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/dictionary'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-book-open mr-2 text-sm {location.href.indexOf(
-                '/admin/dictionary'
-              ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Dictionary
-          </a>
-        </li>
-
-        <li class="items-center">
-          <a
-            use:link
             href="/admin/chart-designer"
             class="text-xs uppercase py-3 font-bold block {location.pathname ===
             '/admin/chart-designer'
@@ -272,7 +251,7 @@
                 ? 'opacity-75'
                 : 'text-blueGray-300'}"
             />
-            Chart Designer
+            Chart Creator
           </a>
         </li>
 
@@ -294,186 +273,205 @@
             Dashboard Designer
           </a>
         </li>
-      </ul>
 
-      <!-- Divider -->
-      <hr class="my-4 md:min-w-full" />
-      <!-- Heading -->
-      <h6
-        class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
-      >
-        Archive
-      </h6>
-      <!-- Navigation -->
-      <ul
-        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
-      >
         <li class="items-center">
           <a
             use:link
-            href="/admin/raw-archive"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/raw-archive'
-            ) !== -1
+            href="/admin/dashboard-reviser"
+            class="text-xs uppercase py-3 font-bold block {location.pathname ===
+            '/admin/dashboard-reviser'
               ? 'text-red-500 hover:text-red-600'
               : 'text-blueGray-700 hover:text-blueGray-500'}"
           >
             <i
-              class="fas fa-file-archive mr-2 text-sm {location.href.indexOf(
+              class="fas fa-edit mr-2 text-sm {location.pathname ===
+              '/admin/dashboard-reviser'
+                ? 'opacity-75'
+                : 'text-blueGray-300'}"
+            />
+            Dashboard Reviser
+          </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="my-4 md:min-w-full" />
+        <!-- Heading -->
+        <h6
+          class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
+        >
+          Archive
+        </h6>
+        <!-- Navigation -->
+        <ul
+          class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
+        >
+          <li class="items-center">
+            <a
+              use:link
+              href="/admin/raw-archive"
+              class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
                 '/admin/raw-archive'
               ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Raw Archive
-          </a>
-        </li>
+                ? 'text-red-500 hover:text-red-600'
+                : 'text-blueGray-700 hover:text-blueGray-500'}"
+            >
+              <i
+                class="fas fa-file-archive mr-2 text-sm {location.href.indexOf(
+                  '/admin/raw-archive'
+                ) !== -1
+                  ? 'opacity-75'
+                  : 'text-blueGray-300'}"
+              />
+              Raw Archive
+            </a>
+          </li>
 
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/archive-designer"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/archive-designer'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-file-archive mr-2 text-sm {location.href.indexOf(
+          <li class="items-center">
+            <a
+              use:link
+              href="/admin/archive-designer"
+              class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
                 '/admin/archive-designer'
               ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Archive Designer
-          </a>
-        </li>
+                ? 'text-red-500 hover:text-red-600'
+                : 'text-blueGray-700 hover:text-blueGray-500'}"
+            >
+              <i
+                class="fas fa-file-archive mr-2 text-sm {location.href.indexOf(
+                  '/admin/archive-designer'
+                ) !== -1
+                  ? 'opacity-75'
+                  : 'text-blueGray-300'}"
+              />
+              Archive Designer
+            </a>
+          </li>
 
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/archive-upload"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/archive-upload'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-database mr-2 text-sm {location.href.indexOf(
+          <li class="items-center">
+            <a
+              use:link
+              href="/admin/archive-upload"
+              class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
                 '/admin/archive-upload'
               ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Archive Upload
-          </a>
-        </li>
+                ? 'text-red-500 hover:text-red-600'
+                : 'text-blueGray-700 hover:text-blueGray-500'}"
+            >
+              <i
+                class="fas fa-database mr-2 text-sm {location.href.indexOf(
+                  '/admin/archive-upload'
+                ) !== -1
+                  ? 'opacity-75'
+                  : 'text-blueGray-300'}"
+              />
+              Archive Upload
+            </a>
+          </li>
 
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/notes"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/notes'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-sticky-note mr-2 text-sm {location.href.indexOf(
+          <li class="items-center">
+            <a
+              use:link
+              href="/admin/notes"
+              class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
                 '/admin/notes'
               ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Notes
-          </a>
-        </li>
-      </ul>
+                ? 'text-red-500 hover:text-red-600'
+                : 'text-blueGray-700 hover:text-blueGray-500'}"
+            >
+              <i
+                class="fas fa-sticky-note mr-2 text-sm {location.href.indexOf(
+                  '/admin/notes'
+                ) !== -1
+                  ? 'opacity-75'
+                  : 'text-blueGray-300'}"
+              />
+              Notes
+            </a>
+          </li>
+        </ul>
 
-      <!-- Divider -->
-      <hr class="my-4 md:min-w-full" />
-      <!-- Heading -->
-      <h6
-        class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
-      >
-        Authentication
-      </h6>
-      <!-- Navigation -->
+        <!-- Divider -->
+        <hr class="my-4 md:min-w-full" />
+        <!-- Heading -->
+        <h6
+          class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
+        >
+          Authentication
+        </h6>
+        <!-- Navigation -->
 
-      <ul
-        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
-      >
-        <li class="items-center">
-          <a
-            on:click={logoutUser}
-            use:link
-            class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/auth/login"
-          >
-            <i class="fas fa-sign-out-alt text-blueGray-300 mr-2 text-sm" />
-            Logout
-          </a>
-        </li>
-      </ul>
+        <ul
+          class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
+        >
+          <li class="items-center">
+            <a
+              on:click={logoutUser}
+              use:link
+              class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
+              href="/auth/login"
+            >
+              <i class="fas fa-sign-out-alt text-blueGray-300 mr-2 text-sm" />
+              Logout
+            </a>
+          </li>
+        </ul>
 
-      <!-- Divider -->
-      <hr class="my-4 md:min-w-full" />
-      <!-- Heading -->
-      <h6
-        class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
-      >
-        No Layout Pages
-      </h6>
-      <!-- Navigation -->
+        <!-- Divider -->
+        <hr class="my-4 md:min-w-full" />
+        <!-- Heading -->
+        <h6
+          class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
+        >
+          No Layout Pages
+        </h6>
+        <!-- Navigation -->
 
-      <ul
-        class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
-      >
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/settings"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
-              '/admin/settings'
-            ) !== -1
-              ? 'text-red-500 hover:text-red-600'
-              : 'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-tv mr-2 text-sm {location.href.indexOf(
+        <ul
+          class="sidebar-list md:flex-col md:min-w-full flex flex-col list-none md:mb-4"
+        >
+          <li class="items-center">
+            <a
+              use:link
+              href="/admin/settings"
+              class="text-xs uppercase py-3 font-bold block {location.href.indexOf(
                 '/admin/settings'
               ) !== -1
-                ? 'opacity-75'
-                : 'text-blueGray-300'}"
-            />
-            Settings
-          </a>
-        </li>
+                ? 'text-red-500 hover:text-red-600'
+                : 'text-blueGray-700 hover:text-blueGray-500'}"
+            >
+              <i
+                class="fas fa-tv mr-2 text-sm {location.href.indexOf(
+                  '/admin/settings'
+                ) !== -1
+                  ? 'opacity-75'
+                  : 'text-blueGray-300'}"
+              />
+              Settings
+            </a>
+          </li>
 
-        <li class="items-center">
-          <a
-            use:link
-            class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/landing"
-          >
-            <i class="fas fa-newspaper text-blueGray-300 mr-2 text-sm" />
-            Landing Page
-          </a>
-        </li>
+          <li class="items-center">
+            <a
+              use:link
+              class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
+              href="/landing"
+            >
+              <i class="fas fa-newspaper text-blueGray-300 mr-2 text-sm" />
+              Landing Page
+            </a>
+          </li>
 
-        <li class="items-center">
-          <a
-            use:link
-            class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/profile"
-          >
-            <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm" />
-            Profile Page
-          </a>
-        </li>
+          <li class="items-center">
+            <a
+              use:link
+              class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
+              href="/profile"
+            >
+              <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm" />
+              Profile Page
+            </a>
+          </li>
+        </ul>
       </ul>
     </div>
   </div>
