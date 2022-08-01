@@ -35,11 +35,13 @@
     function createChart(event) {
         // Create a div where clicked
         j$("#DashboardDesignerContainer").append(
-            `<div id="chart${chartsCreated}" style="top: ${
-                event.pageY - parentOffset.top
-            }px; left: ${
-                event.pageX - parentOffset.left
-            }px; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
+            `<div id="chart${chartsCreated}" style="top: ${j$(
+                "#DashboardDesignerContainer > #DashboardDesignerActionBar"
+            ).css("top")}; left: ${j$(
+                "#DashboardDesignerContainer > #DashboardDesignerActionBar"
+            ).css(
+                "left"
+            )}; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
                 <div class="chart-icon-container flex justify-between">
                     <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer chart-mover" aria-hidden="true"></i>
                     <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer chart-settings" aria-hidden="true"></i>
