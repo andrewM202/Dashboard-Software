@@ -39,7 +39,7 @@
             }px; left: ${
                 event.pageX - parentOffset.left
             }px; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
-                <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars" aria-hidden="true"></i>
+                <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer" aria-hidden="true"></i>
                 <h1 class="text-4xl text-white text-center">Chart Title</h1>
                 <div
                     style="right: -4px; bottom: -4px; cursor: ns-resize;"
@@ -94,6 +94,19 @@
             });
         });
 
+        // Event listener for moving the chart around
+        j$(`#chart${chartsCreated} i`).mousedown(function (downEv) {
+            j$(window).mousemove(function (moveEv) {
+                j$(parent).css({
+                    top: moveEv.pageY - parentOffset.top + "px",
+                    left: moveEv.pageX - parentOffset.left + "px",
+                });
+            });
+            j$(window).mouseup(function () {
+                j$(window).unbind("mousemove");
+            });
+        });
+
         // Resize the dashboard chart container if the new chart we are creating
         // goes outside of the dashboard chart container
         if (
@@ -143,7 +156,7 @@
             href="#pablo"
             class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
         >
-            Separated link
+            Create Text
         </a>
     </div>
 </div>
