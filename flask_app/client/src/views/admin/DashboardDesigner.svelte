@@ -39,14 +39,17 @@
             }px; left: ${
                 event.pageX - parentOffset.left
             }px; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
-                <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer" aria-hidden="true"></i>
+                <div class="chart-icon-container flex justify-between">
+                    <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer chart-mover" aria-hidden="true"></i>
+                    <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer" aria-hidden="true"></i>
+                </div>
                 <h1 class="text-4xl text-white text-center">Chart Title</h1>
                 <div
-                    style="right: -4px; bottom: -4px; cursor: ns-resize;"
+                    style="right: -4px; bottom: -4px; cursor: move;"
                     class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
                 ></div>
                 <div
-                    style="left: -4px; bottom: -4px; cursor: ns-resize;"
+                    style="left: -4px; bottom: -4px; cursor: move;"
                     class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
                 ></div>
             </div>`
@@ -56,13 +59,31 @@
         // the chart
         let parent = j$(`#chart${chartsCreated}`);
         let minParentHeight = 250;
+        let minParentWidth = 250;
         j$(`#chart${chartsCreated} div`).mousedown(function (downEv) {
             downEv.preventDefault();
             j$(window).mousemove(function (moveEv) {
-                let initialPos = j$(downEv.target).offset().top;
-                let movePos = moveEv.pageY;
-                let addHeight = movePos - initialPos;
-                j$("body").css("cursor", "ns-resize");
+                let initialPosY = j$(downEv.target).offset().top;
+                let movePosY = moveEv.pageY;
+                let addHeight = movePosY - initialPosY;
+
+                let initialPosX = j$(downEv.target).offset().left;
+                let movePosX = moveEv.pageX;
+                let addWidth = movePosX - initialPosX;
+
+                j$("body").css("cursor", "move");
+
+                // Add the difference in width to the parent element
+                if (j$(parent).innerWidth() >= minParentHeight) {
+                    if (j$(parent).innerWidth() + addWidth < minParentWidth) {
+                        j$(parent).innerWidth(minParentWidth);
+                    } else {
+                        j$(parent).innerWidth(
+                            j$(parent).innerWidth() + addWidth
+                        );
+                    }
+                }
+
                 // Add the difference in height to the parent element
                 if (j$(parent).innerHeight() >= minParentHeight) {
                     if (
@@ -95,7 +116,7 @@
         });
 
         // Event listener for moving the chart around
-        j$(`#chart${chartsCreated} i`).mousedown(function (downEv) {
+        j$(`#chart${chartsCreated} i.chart-mover`).mousedown(function (downEv) {
             j$(window).mousemove(function (moveEv) {
                 j$(parent).css({
                     top: moveEv.pageY - parentOffset.top + "px",
