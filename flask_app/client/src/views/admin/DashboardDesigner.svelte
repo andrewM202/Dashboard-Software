@@ -1,8 +1,14 @@
 <script>
+    import Chart from "chart.js";
+
     let showActionBar = false;
     let parentOffset;
     let chartsCreated = 0;
     let textCreated = 0;
+
+    // function createChartConfig() {
+
+    // }
 
     // onLoad contains event listeners needing to be attached
     // when #DashboardDesignerContainer is loaded
@@ -55,7 +61,56 @@
                     style="left: -4px; bottom: -4px; cursor: move;"
                     class="resizer bg-rose-400 h-4 w-4 absolute rounded-full px-2"
                 ></div>
+                <div class="p-4" style="height: calc(100% - 83px)">
+                    <canvas id="bar-chart" />
+                </div>
             </div>`
+        );
+
+        // Initialize a new chart.js chart
+        let xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+
+        new Chart(
+            document
+                .querySelector(`#chart${chartsCreated} canvas#bar-chart`)
+                .getContext("2d"),
+            {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [
+                        {
+                            data: [
+                                860, 1140, 1060, 1060, 1070, 1110, 1330, 2210,
+                                7830, 2478,
+                            ],
+                            borderColor: "red",
+                            fill: false,
+                        },
+                        {
+                            data: [
+                                1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000,
+                                6000, 7000,
+                            ],
+                            borderColor: "green",
+                            fill: false,
+                        },
+                        {
+                            data: [
+                                300, 700, 2000, 5000, 6000, 4000, 2000, 1000,
+                                200, 100,
+                            ],
+                            borderColor: "blue",
+                            fill: false,
+                        },
+                    ],
+                },
+                options: {
+                    legend: { display: false },
+                    maintainAspectRatio: false,
+                    responsive: true,
+                },
+            }
         );
 
         // Add event listeners to resizers, so we can resize
@@ -144,9 +199,21 @@
             >
                 <a
                     href="#pablo"
-                    class="text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                    class="change-title-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
                 >
-                    Create Chart
+                    Change Title
+                </a>
+                <a
+                    href="#pablo"
+                    class="change-type-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                >
+                    Chart Type
+                </a>
+                <a
+                    href="#pablo"
+                    class="delete-chart-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                >
+                    Delete Chart
                 </a>
             </div>
             `);
@@ -155,6 +222,15 @@
         // toggles the chart settings menu when the user clicks on the
         // chart settings icon.
         j$(`#chart${chartsCreated} i.chart-settings`).click(function () {
+            // Adjust the left attribute of the chart settings menu
+            // incase the chart has beeen resized, so it still shows up
+            // at the right location under the settings cog icon
+            j$(
+                `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
+            ).css({
+                left: j$(`#chart${chartsIconNumber}`).width() - 200,
+            });
+            // Toggle the hide/show attribute of the chart settings menu
             j$(
                 `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
             ).toggle();
@@ -164,6 +240,8 @@
         // disables the Chart Action Bar if anyone clicks outside of the
         // settings cog
         j$("#DashboardDesignerContainer").click(function (event) {
+            // If the target is not the settings cog icon itself
+            // we want to hide the settings menu
             if (
                 event.target !=
                 j$(`#chart${chartsIconNumber} i.chart-settings`)[0]
@@ -172,6 +250,19 @@
                     `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
                 ).hide();
             }
+        });
+
+        // Event listener for deleting a chart from click the delete
+        // settings menu item
+        j$(
+            `#chart${chartsIconNumber} i.chart-settings #ChartActionBar .delete-chart-button`
+        ).click(function (event) {
+            j$(event.target)
+                .parent()
+                .parent()
+                .parent()
+                .parent(`#chart${chartsIconNumber}`)
+                .remove();
         });
 
         // Resize the dashboard chart container if the new chart we are creating
