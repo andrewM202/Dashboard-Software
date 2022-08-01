@@ -312,14 +312,67 @@
     function createText(event) {
         // Create a text node where clicked
         j$("#DashboardDesignerContainer").append(`
-            <h1 id="text${textCreated}" style="top: ${j$(
+            <div id="text${textCreated}" style="top: ${j$(
             "#DashboardDesignerContainer > #DashboardDesignerActionBar"
         ).css("top")}; left: ${j$(
             "#DashboardDesignerContainer > #DashboardDesignerActionBar"
         ).css("left")};"
-            class="absolute"
-            >Text
-            </h1>`);
+        class="absolute"
+        ">
+                <div class="chart-icon-container flex justify-between">
+                    <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer text-mover" aria-hidden="true"></i>
+                    <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer text-settings" aria-hidden="true"></i>
+                </div>
+                <h1 style="font-size: 1.6rem;"
+                class="relative"
+                >Text
+                </h1>
+            </div>`);
+
+        // Event listener for moving the text around
+        let textCreatedNumber = textCreated;
+        j$(`#text${textCreatedNumber} i.text-mover`).mousedown(function (
+            downEv
+        ) {
+            j$(window).mousemove(function (moveEv) {
+                j$(`#text${textCreatedNumber}`).css({
+                    top: moveEv.pageY - parentOffset.top + "px",
+                    left: moveEv.pageX - parentOffset.left + "px",
+                });
+            });
+            j$(window).mouseup(function () {
+                j$(window).unbind("mousemove");
+            });
+        });
+
+        // Event listener for changing the title of the text
+        j$(`#text${textCreatedNumber} h1`).dblclick(function () {
+            // console.log("test");
+            let h1Text = j$(`#text${textCreatedNumber} h1`).text().trim();
+            j$(`#text${textCreatedNumber}`).append(`
+                <input type="text" value="${h1Text}" style="width: ${j$(`#text${textCreatedNumber}`).width() + 50}px;">
+            `);
+
+            j$(`#text${textCreatedNumber} h1`).toggle();
+
+            j$(window).keyup(function (event) {
+                // If they press the return button
+                if (event.key === "Enter") {
+                    // If there is actual text in the input
+                    if (j$(`#text${textCreatedNumber} input`).val() !== "") {
+                        // Put the h1 tag with the input's text
+                        j$(`#text${textCreatedNumber} h1`).text(
+                            j$(`#text${textCreatedNumber} input`).val()
+                        );
+                        j$(`#text${textCreatedNumber} h1`).toggle();
+                        j$(`#text${textCreatedNumber} input`).remove();
+
+                        // Remove this event listener now that editing is done
+                        j$(window).unbind("keyup");
+                    }
+                }
+            });
+        });
 
         textCreated++;
     } // createText() end
@@ -328,7 +381,7 @@
 <div
     use:onLoad
     id="DashboardDesignerContainer"
-    class="h-auto min-h-screen w-screen"
+    class="h-auto min-h-screen w-screen border-solid border-blueGray-100 border-r border-b"
 >
     <div
         id="DashboardDesignerActionBar"
