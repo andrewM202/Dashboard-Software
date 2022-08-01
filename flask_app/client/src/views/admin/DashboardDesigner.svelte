@@ -26,7 +26,7 @@
                         "#DashboardDesignerContainer > #DashboardDesignerActionBar"
                     ).css({
                         top: event.pageY - parentOffset.top + "px",
-                        left: event.pageX - parentOffset.left + "px",
+                        right: j$(window).width() - event.pageX + "px",
                     });
                 }
             }
@@ -43,11 +43,13 @@
         j$("#DashboardDesignerContainer").append(
             `<div id="chart${chartsCreated}" style="top: ${j$(
                 "#DashboardDesignerContainer > #DashboardDesignerActionBar"
-            ).css("top")}; left: ${j$(
-                "#DashboardDesignerContainer > #DashboardDesignerActionBar"
-            ).css(
-                "left"
-            )}; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
+            ).css("top")}; right: ${
+                parseInt(
+                    j$(
+                        "#DashboardDesignerContainer > #DashboardDesignerActionBar"
+                    ).css("right")
+                ) - 500
+            }px; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
                 <div class="chart-icon-container flex justify-between">
                     <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer chart-mover" aria-hidden="true"></i>
                     <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer chart-settings" aria-hidden="true"></i>
@@ -139,6 +141,8 @@
             }
         );
 
+        let chartsNumber = chartsCreated;
+
         // Add event listeners to resizers, so we can resize
         // the chart
         let parent = j$(`#chart${chartsCreated}`);
@@ -157,6 +161,8 @@
 
                 j$("body").css("cursor", "move");
 
+                console.log("Parent innerWidth: " + j$(parent).innerWidth());
+
                 // Add the difference in width to the parent element
                 if (j$(parent).innerWidth() >= minParentHeight) {
                     if (j$(parent).innerWidth() + addWidth < minParentWidth) {
@@ -164,6 +170,10 @@
                     } else {
                         j$(parent).innerWidth(
                             j$(parent).innerWidth() + addWidth
+                        );
+                        j$(parent).css(
+                            "right",
+                            parseInt(j$(parent).css("right")) - addWidth
                         );
                     }
                 }
@@ -198,13 +208,17 @@
                 j$("body").css("cursor", "");
             });
         });
-
+        j$(window).width();
         // Event listener for moving the chart around
-        j$(`#chart${chartsCreated} i.chart-mover`).mousedown(function (downEv) {
+        j$(`#chart${chartsNumber} i.chart-mover`).mousedown(function (downEv) {
             j$(window).mousemove(function (moveEv) {
                 j$(parent).css({
                     top: moveEv.pageY - parentOffset.top + "px",
-                    left: moveEv.pageX - parentOffset.left + "px",
+                    right:
+                        j$(window).width() -
+                        moveEv.pageX -
+                        j$(`#chart${chartsNumber}`).width() +
+                        "px",
                 });
             });
             j$(window).mouseup(function () {
@@ -214,14 +228,11 @@
 
         // Chart settings part 1. Append the settings cog to the chart so we can
         // have a settings menu for the chart
-        let chartsIconNumber = chartsCreated;
-        j$(`#chart${chartsIconNumber} i.chart-settings`).append(`
+        j$(`#chart${chartsNumber} i.chart-settings`).append(`
             <div
                 id="ChartActionBar"
                 class="hidden absolute bg-orange-500 text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
-                style="left: ${
-                    j$(`#chart${chartsIconNumber}`).width() - 200
-                }px;"
+                style="left: ${j$(`#chart${chartsNumber}`).width() - 200}px;"
             >
                 <a
                     href="#pablo"
@@ -251,14 +262,12 @@
             // Adjust the left attribute of the chart settings menu
             // incase the chart has beeen resized, so it still shows up
             // at the right location under the settings cog icon
-            j$(
-                `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
-            ).css({
-                left: j$(`#chart${chartsIconNumber}`).width() - 200,
+            j$(`#chart${chartsNumber} i.chart-settings #ChartActionBar`).css({
+                left: j$(`#chart${chartsNumber}`).width() - 200,
             });
             // Toggle the hide/show attribute of the chart settings menu
             j$(
-                `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
+                `#chart${chartsNumber} i.chart-settings #ChartActionBar`
             ).toggle();
         });
 
@@ -269,11 +278,10 @@
             // If the target is not the settings cog icon itself
             // we want to hide the settings menu
             if (
-                event.target !=
-                j$(`#chart${chartsIconNumber} i.chart-settings`)[0]
+                event.target != j$(`#chart${chartsNumber} i.chart-settings`)[0]
             ) {
                 j$(
-                    `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
+                    `#chart${chartsNumber} i.chart-settings #ChartActionBar`
                 ).hide();
             }
         });
@@ -281,13 +289,13 @@
         // Event listener for deleting a chart from click the delete
         // settings menu item
         j$(
-            `#chart${chartsIconNumber} i.chart-settings #ChartActionBar .delete-chart-button`
+            `#chart${chartsNumber} i.chart-settings #ChartActionBar .delete-chart-button`
         ).click(function (event) {
             j$(event.target)
                 .parent()
                 .parent()
                 .parent()
-                .parent(`#chart${chartsIconNumber}`)
+                .parent(`#chart${chartsNumber}`)
                 .remove();
         });
 
@@ -314,9 +322,10 @@
         j$("#DashboardDesignerContainer").append(`
             <div id="text${textCreated}" style="top: ${j$(
             "#DashboardDesignerContainer > #DashboardDesignerActionBar"
-        ).css("top")}; left: ${j$(
+        ).css("top")}; right: ${j$(
             "#DashboardDesignerContainer > #DashboardDesignerActionBar"
-        ).css("left")};"
+        ).css("right")};
+        z-index: 10;"
         class="absolute"
         ">
                 <div class="chart-icon-container flex justify-between">
@@ -337,7 +346,12 @@
             j$(window).mousemove(function (moveEv) {
                 j$(`#text${textCreatedNumber}`).css({
                     top: moveEv.pageY - parentOffset.top + "px",
-                    left: moveEv.pageX - parentOffset.left + "px",
+                    // left: moveEv.pageX - parentOffset.left + "px",
+                    right:
+                        j$(window).width() -
+                        moveEv.pageX -
+                        j$(`#text${textCreatedNumber}`).width() +
+                        "px",
                 });
             });
             j$(window).mouseup(function () {
@@ -345,14 +359,16 @@
             });
         });
 
-        // Event listener for changing the title of the text
+        // Event listener for changing the title of the h1 tag
         j$(`#text${textCreatedNumber} h1`).dblclick(function () {
-            // console.log("test");
+            // Get the text/title of the h1
             let h1Text = j$(`#text${textCreatedNumber} h1`).text().trim();
+            // Add an input to change the h1's text
             j$(`#text${textCreatedNumber}`).append(`
                 <input type="text" value="${h1Text}" style="width: ${j$(`#text${textCreatedNumber}`).width() + 50}px;">
             `);
 
+            // Make the h1 tag invisible while editing
             j$(`#text${textCreatedNumber} h1`).toggle();
 
             j$(window).keyup(function (event) {
