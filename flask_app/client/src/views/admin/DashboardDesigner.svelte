@@ -109,6 +109,32 @@
                     legend: { display: false },
                     maintainAspectRatio: false,
                     responsive: true,
+                    scales: {
+                        xAxes: [
+                            {
+                                ticks: {
+                                    fontColor: "rgba(255,255,255,.7)",
+                                },
+                                scaleLabel: {
+                                    display: false,
+                                    labelString: "Month",
+                                    fontColor: "white",
+                                },
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    fontColor: "rgba(255,255,255,.7)",
+                                },
+                                scaleLabel: {
+                                    display: false,
+                                    labelString: "Month",
+                                    fontColor: "white",
+                                },
+                            },
+                        ],
+                    },
                 },
             }
         );
@@ -338,6 +364,16 @@
             class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
         >
             Create Text
+        </a>
+        <div
+            class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25"
+        />
+        <a
+            on:click={createText}
+            href="#pablo"
+            class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+        >
+            Create Decorative Box
         </a>
     </div>
 </div>

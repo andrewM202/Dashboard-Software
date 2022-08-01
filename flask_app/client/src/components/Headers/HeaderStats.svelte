@@ -45,6 +45,10 @@
             }
         }, 10);
     }
+
+    function HeaderStatsInputToggle() {
+        j$("#HeaderStatsInputContainer form").toggle();
+    }
 </script>
 
 <!-- Header -->
@@ -56,11 +60,23 @@
     <div class="px-4 md:px-10 mx-auto w-full">
         <div>
             {#if title !== undefined}
-                <h3
-                    class="{titleColor} {titleFontSize} z-50 text-center font-normal leading-normal mt-0 mb-2"
+                <div
+                    on:click={HeaderStatsInputToggle}
+                    id="HeaderStatsTitleContainer"
+                    class="flex justify-center w-full"
                 >
-                    {title}
-                </h3>
+                    <h3
+                        class="{titleColor} {titleFontSize} z-50 text-center font-normal leading-normal mt-0 mb-2"
+                    >
+                        {title}
+                    </h3>
+                    <!-- Icon for toggling search inputs -->
+                    <i
+                        style="align-self: center"
+                        class="fa fa-search px-4 cursor-pointer"
+                        aria-hidden="true"
+                    />
+                </div>
             {/if}
             <!-- Card stats -->
             {#if cards !== undefined}
@@ -87,7 +103,10 @@
             {/if}
             <!-- Inputs -->
             {#if inputs !== undefined}
-                <div class="flex-auto py-10 pt-0">
+                <div
+                    id="HeaderStatsInputContainer"
+                    class="flex-auto py-10 pt-0"
+                >
                     <form>
                         <input
                             type="hidden"
