@@ -65,6 +65,7 @@
     }
 
     // Function for raw archive data table slider
+    // This function is for resizing the parent div
     function archiveTableSliderStyling(e) {
         let parent = j$(e).parent()[0];
         j$(e).mousedown(function (downEv) {
