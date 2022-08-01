@@ -29,7 +29,7 @@
         j$("#DashboardDesignerContainer").on("click", function () {
             showActionBar = false;
         });
-    }
+    } // onLoad() end
 
     // Event listener for creating a chart
     function createChart(event) {
@@ -131,22 +131,47 @@
             });
         });
 
-        // Event listener for chart settings
-        j$(`#chart${chartsCreated} i.chart-settings`).click(function () {
-            console.log("chart settings clicked");
-            j$(`#chart${chartsCreated}`).append(`
+        // Chart settings part 1. Append the settings cog to the chart so we can
+        // have a settings menu for the chart
+        let chartsIconNumber = chartsCreated;
+        j$(`#chart${chartsIconNumber} i.chart-settings`).append(`
             <div
-                id="DashboardDesignerActionBar"
-                class="absolute bg-orange-500 text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
+                id="ChartActionBar"
+                class="hidden absolute bg-orange-500 text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
+                style="left: ${
+                    j$(`#chart${chartsIconNumber}`).width() - 200
+                }px;"
             >
                 <a
                     href="#pablo"
-                    class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                    class="text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
                 >
                     Create Chart
                 </a>
             </div>
             `);
+
+        // Event listener for chart settings part 2. This event listener
+        // toggles the chart settings menu when the user clicks on the
+        // chart settings icon.
+        j$(`#chart${chartsCreated} i.chart-settings`).click(function () {
+            j$(
+                `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
+            ).toggle();
+        });
+
+        // Event listener for chart settings part 3. This event listener
+        // disables the Chart Action Bar if anyone clicks outside of the
+        // settings cog
+        j$("#DashboardDesignerContainer").click(function (event) {
+            if (
+                event.target !=
+                j$(`#chart${chartsIconNumber} i.chart-settings`)[0]
+            ) {
+                j$(
+                    `#chart${chartsIconNumber} i.chart-settings #ChartActionBar`
+                ).hide();
+            }
         });
 
         // Resize the dashboard chart container if the new chart we are creating
@@ -164,7 +189,7 @@
 
         // Increment the chartsCreated variable now that a new chart is created
         chartsCreated++;
-    }
+    } // createChart() end
 
     // Function for creating text
     function createText(event) {
@@ -180,7 +205,7 @@
             </h1>`);
 
         textCreated++;
-    }
+    } // createText() end
 </script>
 
 <div
