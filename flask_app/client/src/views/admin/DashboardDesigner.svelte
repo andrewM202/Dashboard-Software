@@ -236,7 +236,7 @@
             >
                 <a
                     href="#pablo"
-                    class="change-type-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                    class="change-settings-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
                 >
                     Chart Settings
                 </a>
@@ -248,6 +248,82 @@
                 </a>
             </div>
             `);
+        j$(
+            `#chart${chartsNumber} i.chart-settings #ChartActionBar a.change-settings-button`
+        ).click(function () {
+            j$("body").append(`
+                <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
+                z-index: 10000000000;
+                width: ${j$("body").width()}px;
+                height: ${j$("body").height()}px;
+                background-color: rgb(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                ">
+                    <div id="chart-settings-container" class="relative bg-white rounded shadow-lg p-4">
+                        <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
+                        class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
+                        <h1 class="text-xl font-bold mb-4">Chart Settings</h1>
+                        <div class="flex justify-between">
+                            <div class="w-1/2">
+                                <label class="block text-sm font-bold mb-2" for="text-color">
+                                    Chart Background Color
+                                </label>
+                                <input
+                                    style="height: 30px; margin-right: 10px;"
+                                    class="picker-input w-full"
+                                    id="text-color"
+                                    type="color"
+                                    value="#000000"
+                                />
+                            </div>
+                            <div class="w-1/2">
+                                <label style="margin-left: 10px;" class="block text-sm font-bold mb-2" for="text-size">
+                                    Chart Text Size
+                                </label>
+                                <input
+                                    style="height: 30px; margin-left: 10px;"
+                                    class="picker-input w-full"
+                                    id="text-size"
+                                    type="number"
+                                    value="1.6rem"
+                                />
+                            </div>
+                        </div>
+                        <div class="flex justify-between">
+                            <div class="w-1/2">
+                                <label class="block text-sm font-bold mb-2" for="text-font">
+                                    Chart Text Font
+                                </label>
+                                <select
+                                    class="picker-input w-full"
+                                    id="text-font"
+                                    type="text"
+                                    value="Arial"
+                                >
+                                    <option value="Arial">Arial</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Helvetica">Helvetica</option>
+                                    <option value="Courier New">Courier New</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Verdana">Verdana</option>
+                                    <option value="Tahoma">Tahoma</option>
+                                    <option value="Palatino">Palatino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            `);
+
+            // Add event listener for closing the settings
+            j$(`#chart-settings-container #DashboardSettingsCloseIcon`).click(
+                function () {
+                    j$("#temporary-background-gray").remove();
+                }
+            );
+        });
 
         // Event listener for chart settings part 2. This event listener
         // toggles the chart settings menu when the user clicks on the
