@@ -236,15 +236,9 @@
             >
                 <a
                     href="#pablo"
-                    class="change-title-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
-                >
-                    Change Title
-                </a>
-                <a
-                    href="#pablo"
                     class="change-type-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
                 >
-                    Chart Type
+                    Chart Settings
                 </a>
                 <a
                     href="#pablo"
@@ -388,6 +382,76 @@
                     }
                 }
             });
+        });
+
+        // Chart settings part 1. Append the settings cog to the chart so we can
+        // have a settings menu for the chart
+        j$(`#text${textCreatedNumber} i.text-settings`).append(`
+            <div
+                id="TextActionBar"
+                class="hidden absolute bg-orange-500 text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
+                style="left: ${
+                    j$(`#text${textCreatedNumber}`).width() - 200
+                }px;"
+            >
+                <a
+                    href="#pablo"
+                    class="text-settings-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                >
+                    Text Settings
+                </a>
+                <a
+                    href="#pablo"
+                    class="delete-text-button text-xl py-1 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+                >
+                    Delete Text
+                </a>
+            </div>
+            `);
+
+        // Event listener for chart settings part 2. This event listener
+        // toggles the chart settings menu when the user clicks on the
+        // chart settings icon.
+        j$(`#text${textCreatedNumber} i.text-settings`).click(function () {
+            // Adjust the left attribute of the chart settings menu
+            // incase the chart has beeen resized, so it still shows up
+            // at the right location under the settings cog icon
+            j$(`#text${textCreatedNumber} i.text-settings #TextActionBar`).css({
+                left: j$(`#text${textCreatedNumber}`).width() - 200,
+            });
+            // Toggle the hide/show attribute of the chart settings menu
+            j$(
+                `#text${textCreatedNumber} i.text-settings #TextActionBar`
+            ).toggle();
+        });
+
+        // Event listener for chart settings part 3. This event listener
+        // disables the Chart Action Bar if anyone clicks outside of the
+        // settings cog
+        j$("#DashboardDesignerContainer").click(function (event) {
+            // If the target is not the settings cog icon itself
+            // we want to hide the settings menu
+            if (
+                event.target !=
+                j$(`#text${textCreatedNumber} i.text-settings`)[0]
+            ) {
+                j$(
+                    `#text${textCreatedNumber} i.text-settings #TextActionBar`
+                ).hide();
+            }
+        });
+
+        // Event listener for deleting a chart from click the delete
+        // settings menu item
+        j$(
+            `#text${textCreatedNumber} i.text-settings #TextActionBar .delete-text-button`
+        ).click(function (event) {
+            j$(event.target)
+                .parent()
+                .parent()
+                .parent()
+                .parent(`#text${textCreatedNumber}`)
+                .remove();
         });
 
         textCreated++;
