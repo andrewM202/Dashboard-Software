@@ -6,10 +6,6 @@
     let chartsCreated = 0;
     let textCreated = 0;
 
-    // function createChartConfig() {
-
-    // }
-
     // onLoad contains event listeners needing to be attached
     // when #DashboardDesignerContainer is loaded
     function onLoad() {
@@ -652,15 +648,23 @@
         >
             Create Text
         </a>
-        <div
-            class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25"
-        />
         <a
-            on:click={createText}
             href="#pablo"
             class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
         >
             Create Decorative Box
+        </a>
+        <a
+            href="#pablo"
+            class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+        >
+            Create Image
+        </a>
+        <a
+            href="#pablo"
+            class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
+        >
+            Create Table
         </a>
     </div>
 </div>

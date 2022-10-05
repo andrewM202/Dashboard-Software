@@ -476,3 +476,9 @@
     </div>
   </div>
 </nav>
+
+<style>
+  #SideBarNav {
+    border-right: 3px solid #e3e6f0;
+  }
+</style>
