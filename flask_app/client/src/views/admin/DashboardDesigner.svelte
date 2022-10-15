@@ -51,7 +51,7 @@
                 topPercentage
             }%; right: ${
                 rightPercentage
-            }%; width: 50%; height: 50%;" class="absolute bg-blueGray-700 text-white">
+            }%; width: 50%; height: 50%; background-color: #334155;" class="absolute text-white">
                 <div class="chart-icon-container flex justify-between">
                     <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer chart-mover" aria-hidden="true"></i>
                     <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer chart-settings" aria-hidden="true"></i>
@@ -74,7 +74,7 @@
         // Initialize a new chart.js chart
         let xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
 
-        new Chart(
+        let chart = new Chart(
             document
                 .querySelector(`#chart${chartsCreated} canvas#bar-chart`)
                 .getContext("2d"),
@@ -160,7 +160,6 @@
                 let heightPercentage = (parent.height() + addHeight) / j$("#DashboardDesignerContainer").height() * 100;
                 let rightPercentage = (parseInt(j$(parent).css("right")) - addWidth) / j$("#DashboardDesignerContainer").width() * 100
                 let widthPercentage = parseFloat(j$(parent)[0].style["width"].replace("%", "")) + (previousRightPercentage - rightPercentage);
-                console.log(rightPercentage - previousRightPercentage)
 
                 previousRightPercentage = rightPercentage;
 
@@ -235,14 +234,28 @@
                 </a>
             </div>
             `);
+
+        // Convert the chart's RGB color to hex code
+        function rgb2hex(rgb) {
+            if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
+
+            rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            function hex(x) {
+                return ("0" + parseInt(x).toString(16)).slice(-2);
+            }
+            return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+        }
+        
+        let chart_color = rgb2hex(j$(`#chart${chartsNumber}`).css("background-color"));
+
         j$(
             `#chart${chartsNumber} i.chart-settings #ChartActionBar a.change-settings-button`
         ).click(function () {
             j$("body").append(`
                 <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
                 z-index: 10000000000;
-                width: ${j$("body").width()}px;
-                height: ${j$("body").height()}px;
+                width: 100vw;
+                height: 100vh;
                 background-color: rgb(0, 0, 0, 0.5);
                 display: flex;
                 justify-content: center;
@@ -252,62 +265,127 @@
                         <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
                         class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
                         <h1 class="text-xl font-bold mb-4">Chart Settings</h1>
-                        <div class="flex justify-between">
-                            <div class="w-1/2">
-                                <label class="block text-sm font-bold mb-2" for="text-color">
-                                    Chart Background Color
-                                </label>
-                                <input
-                                    style="height: 30px; margin-right: 10px;"
-                                    class="picker-input w-full"
-                                    id="text-color"
-                                    type="color"
-                                    value="#000000"
-                                />
+                        <form>
+                            <div class="flex justify-between">
+                                <div class="w-1/2" style="margin-right: 10px;">
+                                    <label class="block text-sm font-bold mb-2" for="text-color">
+                                        Chart Background Color
+                                    </label>
+                                    <input
+                                        style="height: 30px;"
+                                        class="picker-input w-full"
+                                        id="text-color"
+                                        type="color"
+                                        value="${chart_color}"
+                                    />
+                                </div>
+                                <div class="w-1/2" margin-left: 10px;>
+                                    <label style="margin-left: 10px;" class="block text-sm font-bold mb-2" for="text-size">
+                                        Chart Text Size
+                                    </label>
+                                    <input
+                                        style="height: 30px;"
+                                        class="picker-input w-full"
+                                        id="text-size"
+                                        type="number"
+                                        value="${j$(`#chart${chartsNumber} h1`).css("font-size").replace("px", "")}"
+                                    />
+                                </div>
                             </div>
-                            <div class="w-1/2">
-                                <label style="margin-left: 10px;" class="block text-sm font-bold mb-2" for="text-size">
-                                    Chart Text Size
-                                </label>
-                                <input
-                                    style="height: 30px; margin-left: 10px;"
-                                    class="picker-input w-full"
-                                    id="text-size"
-                                    type="number"
-                                    value="1.6rem"
-                                />
+                            <div class="flex justify-between" style="margin-top: 10px;">
+                                <div class="w-1/2" style="margin-right: 10px;">
+                                    <label class="block text-sm font-bold mb-2" for="text-font">
+                                        Chart Text Font
+                                    </label>
+                                    <select
+                                        style="height: 40px;"
+                                        class="picker-input w-full"
+                                        id="text-font"
+                                        type="text"
+                                        value="Arial"
+                                    >
+                                        <option value="Arial">Arial</option>
+                                        <option value="Times New Roman">Times New Roman</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Courier New">Courier New</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Tahoma">Tahoma</option>
+                                        <option value="Palatino">Palatino</option>
+                                    </select>
+                                </div>
+                                <div class="w-1/2" style="margin-left: 10px;">
+                                    <label class="block text-sm font-bold mb-2" for="chart-title">
+                                        Chart Title
+                                    </label>
+                                    <input
+                                        style="height: 40px;"
+                                        class="picker-input w-full"
+                                        id="chart-title"
+                                        type="text"
+                                        value="${j$(`#chart${chartsNumber} h1`).text()}"
+                                        placeholder="Chart Title"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex justify-between">
-                            <div class="w-1/2">
-                                <label class="block text-sm font-bold mb-2" for="text-font">
-                                    Chart Text Font
-                                </label>
-                                <select
-                                    class="picker-input w-full"
-                                    id="text-font"
-                                    type="text"
-                                    value="Arial"
-                                >
-                                    <option value="Arial">Arial</option>
-                                    <option value="Times New Roman">Times New Roman</option>
-                                    <option value="Helvetica">Helvetica</option>
-                                    <option value="Courier New">Courier New</option>
-                                    <option value="Georgia">Georgia</option>
-                                    <option value="Verdana">Verdana</option>
-                                    <option value="Tahoma">Tahoma</option>
-                                    <option value="Palatino">Palatino</option>
-                                </select>
+                            <div class="flex justify-between" style="margin-top: 10px;">
+                                <div class="w-1/2" style="margin-right: 10px;">
+                                    <label class="block text-sm font-bold mb-2" for="chart-type">
+                                        Chart Type
+                                    </label>
+                                    <select
+                                        style="height: 40px;"
+                                        class="picker-input w-full"
+                                        id="chart-type"
+                                        type="text"
+                                    >
+                                        <option ${chart.config.type == "line" ? "selected" : ""} value="line">Line Chart</option>
+                                        <option ${chart.config.type == "scatter" ? "selected" : ""} value="scatter">Scatter Chart</option>
+                                        <option ${chart.config.type == "pie" ? "selected" : ""} value="pie">Pie Chart</option>
+                                        <option ${chart.config.type == "doughnut" ? "selected" : ""} value="doughnut">Donut Chart</option>
+                                        <option ${chart.config.type == "bar" ? "selected" : ""} value="bar">Bar Chart</option>
+                                    </select>
+                                </div>
+                                <div class="w-1/2" style="margin-left: 10px;">
+                                </div>
                             </div>
-                        </div>
+                            <div class="w-full" style="margin-right: 10px; margin-left: 10px; margin-top: 10px;">
+                                <label class="block text-center text-sm font-bold mb-2" for="chart-type">
+                                    Confirm Values
+                                </label>
+                                <input type="submit" value="Submit" style="background-color: rgb(0, 0, 0, 0.2)" class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                            </div>
+                        </form>
                     </div>    
                 </div>
             `);
+
+            // Event listener for clicking the submit button
+            // and enacting all the settings
+            j$("input[type=submit]").click(function (e) {
+                e.preventDefault();
+                j$(`#chart${chartsNumber} h1`).text(j$("#chart-title").val());
+                j$(`#chart${chartsNumber}`).css("background-color", j$("#text-color").val());
+                j$(`#chart${chartsNumber} h1`).css("font-size", j$("#text-size").val() + "px");
+                j$(`#chart${chartsNumber} h1`).css("font-family", j$("#text-font").val());
+                // Set chart type
+                chart.config.type = j$("#chart-type").val();
+                chart.update();
+                j$("#temporary-background-gray").remove();
+            });
 
             // Add event listener for closing the settings
             j$(`#chart-settings-container #DashboardSettingsCloseIcon`).click(
                 function () {
                     j$("#temporary-background-gray").remove();
+                }
+            );
+            j$("#temporary-background-gray").click(
+                function (ev) {
+                    // Only close if we click on the background, and ignore clicks on the settings
+                    if(j$(ev.target).is(j$("#temporary-background-gray"))){
+                        j$("#temporary-background-gray").remove();
+                    }
                 }
             );
         });
