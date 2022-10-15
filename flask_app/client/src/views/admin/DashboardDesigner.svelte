@@ -152,15 +152,17 @@
         let minParentWidth = 250;
         j$(`#chart${chartsCreated} div.resizer`).mousedown(function (downEv) {
             downEv.preventDefault();
+            let previousRightPercentage = parseFloat(j$(parent)[0].style["right"].replace("%", ""))//parseInt(j$(parent).css("right"))
             j$(window).mousemove(function (moveEv) {
-                let initialPosY = j$(downEv.target).offset().top;
-                let movePosY = moveEv.pageY;
-                let addHeight = movePosY - initialPosY;
+                let addHeight = moveEv.pageY - j$(downEv.target).offset().top;
                 let addWidth = moveEv.pageX - j$(downEv.target).offset().left;
 
                 let heightPercentage = (parent.height() + addHeight) / j$("#DashboardDesignerContainer").height() * 100;
-                let widthPercentage = (parent.width() + addWidth * 0.92) / j$("#DashboardDesignerContainer").width() * 100;
                 let rightPercentage = (parseInt(j$(parent).css("right")) - addWidth) / j$("#DashboardDesignerContainer").width() * 100
+                let widthPercentage = parseFloat(j$(parent)[0].style["width"].replace("%", "")) + (previousRightPercentage - rightPercentage);
+                console.log(rightPercentage - previousRightPercentage)
+
+                previousRightPercentage = rightPercentage;
 
                 j$("body").css("cursor", "move");
 
