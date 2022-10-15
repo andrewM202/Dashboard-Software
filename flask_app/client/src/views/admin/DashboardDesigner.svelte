@@ -1,10 +1,14 @@
 <script>
     import Chart from "chart.js";
+    import { onDestroy } from 'svelte';
 
     let showActionBar = false;
     let parentOffset;
     let chartsCreated = 0;
     let textCreated = 0;
+
+    onDestroy(() => // Remove the overflow property from HTML element on destruction
+        j$("html").css("overflow", ""));
 
     // onLoad contains event listeners needing to be attached
     // when #DashboardDesignerContainer is loaded
@@ -31,6 +35,9 @@
         j$("#DashboardDesignerContainer").on("click", function () {
             showActionBar = false;
         });
+
+        // Make the HTML have no overflow
+        j$("html").css("overflow", "hidden");
     } // onLoad() end
 
     // Event listener for creating a chart
@@ -365,16 +372,16 @@
 
         // Resize the dashboard chart container if the new chart we are creating
         // goes outside of the dashboard chart container
-        if (
-            j$("#DashboardDesignerContainer").height() <
-            j$(`#chart${chartsCreated}`).height() +
-                j$(`#chart${chartsCreated}`).offset().top
-        ) {
-            j$("#DashboardDesignerContainer").height(
-                j$(`#chart${chartsCreated}`).height() +
-                    j$(`#chart${chartsCreated}`).offset().top
-            );
-        }
+        // if (
+        //     j$("#DashboardDesignerContainer").height() <
+        //     j$(`#chart${chartsCreated}`).height() +
+        //         j$(`#chart${chartsCreated}`).offset().top
+        // ) {
+        //     j$("#DashboardDesignerContainer").height(
+        //         j$(`#chart${chartsCreated}`).height() +
+        //             j$(`#chart${chartsCreated}`).offset().top
+        //     );
+        // }
 
         // Increment the chartsCreated variable now that a new chart is created
         chartsCreated++;
@@ -609,7 +616,7 @@
 <div
     use:onLoad
     id="DashboardDesignerContainer"
-    class="h-auto min-h-screen w-screen border-solid border-blueGray-100 border-r border-b"
+    class="h-screen w-screen border-solid border-blueGray-100 border-r border-b"
 >
     <div
         id="DashboardDesignerActionBar"
