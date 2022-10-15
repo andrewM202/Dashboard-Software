@@ -47,7 +47,8 @@
     }
 
     function formLoad() {
-        // Initialize localStorage for whether the header search is toggled by default
+        // Initialize localStorage for whether the header search is toggled by default.
+        // If its already initialized, then enact the setting
         if(localStorage.getItem("searchToggle") == null) {
             localStorage.setItem("searchToggle", "false")
         } else if(localStorage.getItem("searchToggle") == "true") {
