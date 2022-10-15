@@ -156,26 +156,23 @@
                 let initialPosY = j$(downEv.target).offset().top;
                 let movePosY = moveEv.pageY;
                 let addHeight = movePosY - initialPosY;
+                let addWidth = moveEv.pageX - j$(downEv.target).offset().left;
 
-                let initialPosX = j$(downEv.target).offset().left;
-                let movePosX = moveEv.pageX;
-                let addWidth = movePosX - initialPosX;
+                let heightPercentage = (parent.height() + addHeight * 0.94) / j$("#DashboardDesignerContainer").height() * 100;
+                let widthPercentage = (parent.width() + addWidth * 0.92) / j$("#DashboardDesignerContainer").width() * 100;
+                let rightPercentage = (parseInt(j$(parent).css("right")) - addWidth) / j$("#DashboardDesignerContainer").width() * 100
 
                 j$("body").css("cursor", "move");
-
-                console.log("Parent innerWidth: " + j$(parent).innerWidth());
 
                 // Add the difference in width to the parent element
                 if (j$(parent).innerWidth() >= minParentHeight) {
                     if (j$(parent).innerWidth() + addWidth < minParentWidth) {
                         j$(parent).innerWidth(minParentWidth);
                     } else {
-                        j$(parent).innerWidth(
-                            j$(parent).innerWidth() + addWidth
-                        );
+                        j$(parent).css("width", widthPercentage + "%");
                         j$(parent).css(
                             "right",
-                            parseInt(j$(parent).css("right")) - addWidth
+                            rightPercentage + "%"
                         );
                     }
                 }
@@ -188,21 +185,8 @@
                     ) {
                         j$(parent).innerHeight(minParentHeight);
                     } else {
-                        j$(parent).innerHeight(
-                            j$(parent).innerHeight() + addHeight
-                        );
+                        j$(parent).css("height", heightPercentage + "%");
                     }
-
-                    // Resize parent element too if the resizer makes it go
-                    // out of bounds
-                    // if (
-                    //     j$("#DashboardDesignerContainer").height() <
-                    //     j$(parent).height() + j$(parent).offset().top
-                    // ) {
-                    //     j$("#DashboardDesignerContainer").height(
-                    //         j$(parent).height() + j$(parent).offset().top
-                    //     );
-                    // }
                 }
             });
             j$(window).mouseup(function () {
