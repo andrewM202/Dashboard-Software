@@ -158,7 +158,7 @@
                 let addHeight = movePosY - initialPosY;
                 let addWidth = moveEv.pageX - j$(downEv.target).offset().left;
 
-                let heightPercentage = (parent.height() + addHeight * 0.94) / j$("#DashboardDesignerContainer").height() * 100;
+                let heightPercentage = (parent.height() + addHeight) / j$("#DashboardDesignerContainer").height() * 100;
                 let widthPercentage = (parent.width() + addWidth * 0.92) / j$("#DashboardDesignerContainer").width() * 100;
                 let rightPercentage = (parseInt(j$(parent).css("right")) - addWidth) / j$("#DashboardDesignerContainer").width() * 100
 
@@ -346,26 +346,8 @@
         j$(
             `#chart${chartsNumber} i.chart-settings #ChartActionBar .delete-chart-button`
         ).click(function (event) {
-            j$(event.target)
-                .parent()
-                .parent()
-                .parent()
-                .parent(`#chart${chartsNumber}`)
-                .remove();
+            j$(event.target).parentsUntil(`#chart${chartsNumber}`).parent().remove()
         });
-
-        // Resize the dashboard chart container if the new chart we are creating
-        // goes outside of the dashboard chart container
-        // if (
-        //     j$("#DashboardDesignerContainer").height() <
-        //     j$(`#chart${chartsCreated}`).height() +
-        //         j$(`#chart${chartsCreated}`).offset().top
-        // ) {
-        //     j$("#DashboardDesignerContainer").height(
-        //         j$(`#chart${chartsCreated}`).height() +
-        //             j$(`#chart${chartsCreated}`).offset().top
-        //     );
-        // }
 
         // Increment the chartsCreated variable now that a new chart is created
         chartsCreated++;
@@ -585,12 +567,7 @@
         j$(
             `#text${textCreatedNumber} i.text-settings #TextActionBar .delete-text-button`
         ).click(function (event) {
-            j$(event.target)
-                .parent()
-                .parent()
-                .parent()
-                .parent(`#text${textCreatedNumber}`)
-                .remove();
+            j$(event.target).parentsUntil(`#text${textCreatedNumber}`).parent().remove()
         });
 
         textCreated++;
