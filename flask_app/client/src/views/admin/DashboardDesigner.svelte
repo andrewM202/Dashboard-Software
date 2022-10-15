@@ -50,8 +50,8 @@
             `<div id="chart${chartsCreated}" style="top: ${
                 topPercentage
             }%; right: ${
-                rightPercentage
-            }%; width: 50%; height: 50%; background-color: #334155;" class="absolute text-white">
+                rightPercentage + 20.5
+            }%; width: 30%; height: 30%; background-color: #334155;" class="absolute text-white">
                 <div class="chart-icon-container flex justify-between">
                     <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer chart-mover" aria-hidden="true"></i>
                     <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer chart-settings" aria-hidden="true"></i>
@@ -251,6 +251,7 @@
         j$(
             `#chart${chartsNumber} i.chart-settings #ChartActionBar a.change-settings-button`
         ).click(function () {
+            chart_color = rgb2hex(j$(`#chart${chartsNumber}`).css("background-color"));
             j$("body").append(`
                 <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
                 z-index: 10000000000;
@@ -671,18 +672,6 @@
             class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
         >
             Create Chart
-        </a>
-        <a
-            href="#pablo"
-            class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
-        >
-            Delete Selected Charts
-        </a>
-        <a
-            href="#pablo"
-            class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
-        >
-            Group Selected Charts
         </a>
         <div
             class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25"

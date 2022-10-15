@@ -66,7 +66,7 @@
 </script>
 
 <HeaderStats
-    title={"Dashboard Designer barg"}
+    title={"Dashboard Reviser"}
     titleFontSize={"text-6xl"}
     titleColor={"text-black"}
     inputs={titleSearchInputs}

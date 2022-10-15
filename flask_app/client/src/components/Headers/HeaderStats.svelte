@@ -46,8 +46,26 @@
         }, 10);
     }
 
+    function formLoad() {
+        // Initialize localStorage for whether the header search is toggled by default
+        if(localStorage.getItem("searchToggle") == null) {
+            localStorage.setItem("searchToggle", "false")
+        } else if(localStorage.getItem("searchToggle") == "true") {
+            j$("#HeaderStatsInputContainer form").css("display", "inherit");
+        } else if(localStorage.getItem("searchToggle") == "false") {
+            j$("#HeaderStatsInputContainer form").css("display", "none");
+        }
+    }
+
     function HeaderStatsInputToggle() {
-        j$("#HeaderStatsInputContainer form").toggle();
+        j$("#HeaderStatsInputContainer form").animate({
+            height: 'toggle'
+        });
+        if(localStorage.getItem("searchToggle") == "true") {
+            localStorage.setItem("searchToggle", "false")
+        } else if(localStorage.getItem("searchToggle") == "false") {
+            localStorage.setItem("searchToggle", "true")
+        }
     }
 </script>
 
@@ -61,7 +79,6 @@
         <div>
             {#if title !== undefined}
                 <div
-                    on:click={HeaderStatsInputToggle}
                     id="HeaderStatsTitleContainer"
                     class="flex justify-center w-full"
                 >
@@ -72,6 +89,7 @@
                     </h3>
                     <!-- Icon for toggling search inputs -->
                     <i
+                        on:click={HeaderStatsInputToggle}
                         style="align-self: center"
                         class="fa fa-search px-4 cursor-pointer"
                         aria-hidden="true"
@@ -107,7 +125,7 @@
                     id="HeaderStatsInputContainer"
                     class="flex-auto py-10 pt-0"
                 >
-                    <form>
+                    <form style="display: none;" use:formLoad>
                         <input
                             type="hidden"
                             name="CollectionName"
