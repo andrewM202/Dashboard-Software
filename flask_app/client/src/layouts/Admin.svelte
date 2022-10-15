@@ -62,15 +62,18 @@
           <Route path="dashboard-reviser" component={DashboardReviser} />
           <Route path="chart-designer" component={ChartDesigner} />
         </Router>
-        {#if UserSettings !== undefined}
-          <FooterAdmin
-            footerBGColor={UserSettings[0].footer_color !== undefined &&
-            UserSettings[0].footer_color !== null
-              ? `Background-color: ${UserSettings[0].footer_color}`
-              : undefined}
-          />
-        {:else}
-          <FooterAdmin />
+        <!-- The dashboard designer does not get a footer as it obstructs the dashboard building space -->
+        {#if location.pathname !== "/admin/dashboard-designer"}
+          {#if UserSettings !== undefined}
+            <FooterAdmin
+              footerBGColor={UserSettings[0].footer_color !== undefined &&
+              UserSettings[0].footer_color !== null
+                ? `Background-color: ${UserSettings[0].footer_color}`
+                : undefined}
+            />
+          {:else}
+            <FooterAdmin />
+          {/if}
         {/if}
       </div>
     </div>
@@ -111,15 +114,18 @@
           <Route path="dashboard-reviser" component={DashboardReviser} />
           <Route path="chart-designer" component={ChartDesigner} />
         </Router>
-        {#if UserSettings !== undefined}
-          <FooterAdmin
-            footerBGColor={UserSettings[0].footer_color !== undefined &&
-            UserSettings[0].footer_color !== null
-              ? `Background-color: ${UserSettings[0].footer_color}`
-              : undefined}
-          />
-        {:else}
-          <FooterAdmin />
+        <!-- The dashboard designer does not get a footer as it obstructs the dashboard building space -->
+        {#if location.pathname !== "/admin/dashboard-designer"} 
+          {#if UserSettings !== undefined}
+            <FooterAdmin
+              footerBGColor={UserSettings[0].footer_color !== undefined &&
+              UserSettings[0].footer_color !== null
+                ? `Background-color: ${UserSettings[0].footer_color}`
+                : undefined}
+            />
+          {:else}
+            <FooterAdmin />
+          {/if}
         {/if}
       </div>
     </div>

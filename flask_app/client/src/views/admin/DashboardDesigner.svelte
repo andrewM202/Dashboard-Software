@@ -35,17 +35,16 @@
 
     // Event listener for creating a chart
     function createChart(event) {
+        // Calculate the percentage to put the new dashboard chart from the right
+        let topPercentage = (parseInt(j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").css("top"))) / j$("#DashboardDesignerContainer").height() * 100;
+        let rightPercentage = (parseInt(j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").css("right")) - j$("#DashboardDesignerContainer").width() / 2) / j$("#DashboardDesignerContainer").width() * 100;
         // Create a div where clicked
         j$("#DashboardDesignerContainer").append(
-            `<div id="chart${chartsCreated}" style="top: ${j$(
-                "#DashboardDesignerContainer > #DashboardDesignerActionBar"
-            ).css("top")}; right: ${
-                parseInt(
-                    j$(
-                        "#DashboardDesignerContainer > #DashboardDesignerActionBar"
-                    ).css("right")
-                ) - 500
-            }px; width: 500px; height: 500px;" class="absolute bg-blueGray-700 text-white">
+            `<div id="chart${chartsCreated}" style="top: ${
+                topPercentage
+            }%; right: ${
+                rightPercentage
+            }%; width: 50%; height: 50%;" class="absolute bg-blueGray-700 text-white">
                 <div class="chart-icon-container flex justify-between">
                     <i style="padding-left: 7px; padding-top: 7px;" class="fa fa-bars cursor-pointer chart-mover" aria-hidden="true"></i>
                     <i style="padding-right: 7px; padding-top: 7px;" class="fa fa-cog cursor-pointer chart-settings" aria-hidden="true"></i>
@@ -189,14 +188,14 @@
 
                     // Resize parent element too if the resizer makes it go
                     // out of bounds
-                    if (
-                        j$("#DashboardDesignerContainer").height() <
-                        j$(parent).height() + j$(parent).offset().top
-                    ) {
-                        j$("#DashboardDesignerContainer").height(
-                            j$(parent).height() + j$(parent).offset().top
-                        );
-                    }
+                    // if (
+                    //     j$("#DashboardDesignerContainer").height() <
+                    //     j$(parent).height() + j$(parent).offset().top
+                    // ) {
+                    //     j$("#DashboardDesignerContainer").height(
+                    //         j$(parent).height() + j$(parent).offset().top
+                    //     );
+                    // }
                 }
             });
             j$(window).mouseup(function () {
@@ -208,13 +207,12 @@
         // Event listener for moving the chart around
         j$(`#chart${chartsNumber} i.chart-mover`).mousedown(function (downEv) {
             j$(window).mousemove(function (moveEv) {
+                // Calculate the percentages top and right for moving the chart around
+                let topPercentage = (moveEv.pageY - parentOffset.top) / j$("#DashboardDesignerContainer").height() * 100;//(moveEv.pageY - parentOffset.top);
+                let rightPercentage = (j$(window).width() - moveEv.pageX - j$(`#chart${chartsNumber}`).width()) / j$("#DashboardDesignerContainer").width() * 100;
                 j$(parent).css({
-                    top: moveEv.pageY - parentOffset.top + "px",
-                    right:
-                        j$(window).width() -
-                        moveEv.pageX -
-                        j$(`#chart${chartsNumber}`).width() +
-                        "px",
+                    top: topPercentage + "%",
+                    right: rightPercentage + "%",
                 });
             });
             j$(window).mouseup(function () {
