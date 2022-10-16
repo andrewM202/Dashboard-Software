@@ -657,11 +657,15 @@
     } // createText() end
 
     // Event listener for enabling dashboard settings
-    function dashboardSettingsEnable() {
-        console.log("YAY!")
+    function dashboardSettingsEnable(evt) {
         j$("div#DashboardSettingsContainer").animate({
             width: 'toggle'
         });
+        if(j$(this).css("background-color") == 'rgba(239, 68, 68, 0.5)') {
+            j$(this).css("background-color", "rgba(68, 239, 128, 0.5)");
+        } else {
+            j$(this).css("background-color", "rgba(239, 68, 68, 0.5)");
+        }
     }
 </script>
 
@@ -726,11 +730,12 @@
     .dashboard-settings-triangle {
         width: 100px;
         height: 100px;
-        background-color: rgb(239, 68, 68, 0.5);
+        background-color: rgba(239, 68, 68, 0.5);
         transform: rotate(135deg) translate(-71%,0);
         position: absolute;
         right: 0;
         top: 0;
+        z-index: 51;
     }
     div#DashboardSettingsContainer {
         position: absolute;
@@ -741,5 +746,6 @@
         background-color: white;
         display: none;
         border-left: 3px solid #e3e6f0;
+        z-index: 50;
     }
 </style>

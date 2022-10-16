@@ -218,9 +218,8 @@
 </script>
 
 <div
-  style={(tableBGColor, "height: 90%;")}
-  class="flex flex-col min-w-0 break-words w-full shadow-lg rounded {color ===
-  'light'
+  style={(tableBGColor), "height: 90%;"}
+  class="flex flex-col min-w-0 break-words w-full shadow-lg rounded {color === 'light'
     ? 'bg-white'
     : 'bg-red-500 text-white'}"
 >
@@ -348,16 +347,13 @@
           {#each data as row, rowNum}
             {#if rowNum + 1 >= rangeStart && rowNum < rangeEnd}
               <tr
-                class={rowNum % 2 === 0
+                class={(rowNum % 25) % 2 === 0
                   ? tableAltColor === undefined
                     ? "bg-red-600"
                     : tableAltColor
                   : ""}
               >
                 {#if tableIndexing === true}
-                  <!-- <td
-                  class="w-full flex text-center justify-center border-t-0 align-middle border-l-0 border-r-0 text-s p-4"
-                > -->
                   <td
                     class="break-words w-16 text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-s p-4"
                   >
