@@ -25,8 +25,9 @@
         position: "absolute",
         right: "0",
         width: "100vw",
-        // top: "-26px",
       });
+      // Remove the margin left from the main content section
+      j$("div#adminMarginLeftDiv").removeClass("md:ml-64");
       j$("#AdminMainContentContainer").addClass("bg-blueGray-100");
       j$("#AdminMainContentContainer").prepend(j$("#ReOpenSideBarIcon"));
       j$("#ReOpenSideBarIcon").toggle();
@@ -37,6 +38,7 @@
         position: "-webkit-sticky",
       });
       navBarCollapseShow = false;
+      localStorage.setItem("navToggle", "false")
     } else {
       j$("#SideBarNav").toggle();
       j$("#AdminMainContentContainer").css({
@@ -45,6 +47,8 @@
         width: "auto",
         top: "0",
       });
+      // Add margin left to the the main content section
+      j$("div#adminMarginLeftDiv").addClass("md:ml-64");
       j$("#AdminMainContentContainer").removeClass("bg-blueGray-100");
       j$("#ReOpenSideBarIcon").css({
         "z-index": 0,
@@ -52,6 +56,7 @@
       j$("#ReOpenSideBarIcon").toggle();
       j$("#app > div").append(j$("#ReOpenSideBarIcon"));
       navBarCollapseShow = true;
+      localStorage.setItem("navToggle", "true")
     }
   }
 
@@ -77,6 +82,35 @@
     // Change the location back to the logout screen
     window.location.href = `${location.origin}/auth/logout`;
   }
+
+  function navLoad() {
+    // Check if user has set the nav bar to be hidden
+    // by default
+    if(localStorage.getItem("navToggle") == null) {
+        localStorage.setItem("navToggle", "true")
+    } 
+    if(localStorage.getItem("navToggle") == "false") {
+      // Make main content whole width
+      j$("#AdminMainContentContainer").css({
+        position: "absolute",
+        right: "0",
+        width: "100%",
+      });
+      // Hide side bar
+      j$("#SideBarNav").hide();
+      
+      j$("#AdminMainContentContainer").addClass("bg-blueGray-100");
+      j$("#AdminMainContentContainer").prepend(j$("#ReOpenSideBarIcon"));
+      j$("#ReOpenSideBarIcon").show();
+      // Make second button visible
+      j$("#ReOpenSideBarIcon").css({
+        "z-index": 500000,
+        top: "10px",
+        position: "-webkit-sticky",
+      });
+      navBarCollapseShow = false;
+    }
+  }
 </script>
 
 <i
@@ -90,6 +124,7 @@
   class="z-50 md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
 >
   <div
+    use:navLoad
     class="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto"
   >
     <i

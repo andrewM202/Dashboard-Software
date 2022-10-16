@@ -46,7 +46,7 @@
     <div class="relative md:ml-64 bg-blueGray-100">
       <div
         id="AdminMainContentContainer"
-        style="min-height: 100vh;"
+        style="min-height: 100vh; "
         class="px-4 md:px-10 mx-auto w-full m-24"
       >
         <Router url="admin">
@@ -95,7 +95,7 @@
     {:else}
       <Sidebar {location} />
     {/if}
-    <div class="relative md:ml-64 bg-blueGray-100">
+    <div id="adminMarginLeftDiv" class={localStorage.getItem("navToggle") == "false" ? "relative bg-blueGray-100" : "relative md:ml-64 bg-blueGray-100"}>
       <div
         id="AdminMainContentContainer"
         style="min-height: 100vh;"
