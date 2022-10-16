@@ -88,7 +88,7 @@
                                 860, 1140, 1060, 1060, 1070, 1110, 1330, 2210,
                                 7830, 2478,
                             ],
-                            borderColor: "red",
+                            borderColor: "#b91d47",
                             fill: false,
                         },
                         {
@@ -96,7 +96,7 @@
                                 1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000,
                                 6000, 7000,
                             ],
-                            borderColor: "green",
+                            borderColor: "#00aba9",
                             fill: false,
                         },
                         {
@@ -104,7 +104,7 @@
                                 300, 700, 2000, 5000, 6000, 4000, 2000, 1000,
                                 200, 100,
                             ],
-                            borderColor: "blue",
+                            borderColor: "#2b5797",
                             fill: false,
                         },
                     ],
@@ -217,8 +217,8 @@
         j$(`#chart${chartsNumber} i.chart-settings`).append(`
             <div
                 id="ChartActionBar"
-                class="hidden absolute bg-orange-500 text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
-                style="left: ${j$(`#chart${chartsNumber}`).width() - 200}px;"
+                class="hidden absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
+                style="left: ${j$(`#chart${chartsNumber}`).width() - 200}px; background-color: rgb(239, 68, 68, 1.0)"
             >
                 <a
                     href="#pablo"
@@ -345,6 +345,8 @@
                                         <option ${chart.config.type == "pie" ? "selected" : ""} value="pie">Pie Chart</option>
                                         <option ${chart.config.type == "doughnut" ? "selected" : ""} value="doughnut">Donut Chart</option>
                                         <option ${chart.config.type == "bar" ? "selected" : ""} value="bar">Bar Chart</option>
+                                        <option value="network">Network Graph</option>
+                                        <option value="timeline">Timeline</option>
                                     </select>
                                 </div>
                                 <div class="w-1/2" style="margin-left: 10px;">
@@ -655,81 +657,11 @@
     } // createText() end
 
     // Event listener for enabling dashboard settings
-    function dashboardSettingsToggle() {
-            j$("body").append(`
-                <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
-                z-index: 10000000000;
-                width: 100vw;
-                height: 100vh;
-                background-color: rgb(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                ">
-                    <div id="dashboard-settings-container" class="relative bg-white rounded shadow-lg p-4">
-                        <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
-                        class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
-                        <h1 class="text-xl font-bold mb-4">Dashboard Settings</h1>
-                        <form>
-                            <div class="flex justify-between">
-                                <div class="w-1/2" style="margin-right: 10px;">
-                                    <label class="block text-sm font-bold mb-2" for="dashboard-color">
-                                        Dashboard Background Color
-                                    </label>
-                                    <input
-                                        style="height: 30px;"
-                                        class="picker-input w-full"
-                                        id="dashboard-color"
-                                        type="color"
-                                        value=""
-                                    />
-                                </div>
-                                <div class="w-1/2" style="margin-left: 10px;">
-                                    <label class="block text-sm font-bold mb-2" for="dashboard-title">
-                                        Dashboard Title
-                                    </label>
-                                    <input
-                                        style="height: 40px;"
-                                        class="picker-input w-full"
-                                        id="dashboard-title"
-                                        type="text"
-                                        value=""
-                                        placeholder="Dashboard Title"
-                                    />
-                                </div>
-                            </div>
-                            <div class="w-full" style="margin-right: 10px; margin-left: 10px; margin-top: 10px;">
-                                <label class="block text-center text-sm font-bold mb-2" for="chart-type">
-                                    Confirm Values
-                                </label>
-                                <input type="submit" value="Submit" style="background-color: rgb(0, 0, 0, 0.2)" class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                            </div>
-                        </form>
-                    </div>    
-                </div>
-            `);
-
-            // Event listener for clicking the submit button
-            // and enacting all the settings
-            j$("input[type=submit]").click(function (e) {
-                e.preventDefault();
-                j$("#temporary-background-gray").remove();
-            });
-
-            // Add event listener for closing the settings
-            j$(`#dashboard-settings-container #DashboardSettingsCloseIcon`).click(
-                function () {
-                    j$("#temporary-background-gray").remove();
-                }
-            );
-            j$("#temporary-background-gray").click(
-                function (ev) {
-                    // Only close if we click on the background, and ignore clicks on the settings
-                    if(j$(ev.target).is(j$("#temporary-background-gray"))){
-                        j$("#temporary-background-gray").remove();
-                    }
-                }
-            );
+    function dashboardSettingsEnable() {
+        console.log("YAY!")
+        j$("div#DashboardSettingsContainer").animate({
+            width: 'toggle'
+        });
     }
 </script>
 
@@ -738,10 +670,17 @@
     id="DashboardDesignerContainer"
     class="h-screen w-screen border-solid border-blueGray-100 border-r border-b"
 >
-    <div on:click={dashboardSettingsToggle} class="dashboard-settings-triangle cursor-pointer"></div>
+    <div
+        class="shadow-xl bg-white h-16 w-full flex justify-between items-center px-4"
+        id="DashboardSettingsContainer"
+    >
+        hi
+    </div>
+    <div on:click={dashboardSettingsEnable} class="dashboard-settings-triangle cursor-pointer"></div>
     <div
         id="DashboardDesignerActionBar"
-        class="absolute bg-orange-500 text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 {showActionBar
+        style="background-color: rgb(239, 68, 68, 0.85);"
+        class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 {showActionBar
             ? 'block'
             : 'hidden'}"
     >
@@ -792,5 +731,15 @@
         position: absolute;
         right: 0;
         top: 0;
+    }
+    div#DashboardSettingsContainer {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 200px;
+        height: 100vh;
+        background-color: white;
+        display: none;
+        border-left: 3px solid #e3e6f0;
     }
 </style>
