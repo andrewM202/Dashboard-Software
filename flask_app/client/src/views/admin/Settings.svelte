@@ -3,6 +3,7 @@
 	import CardSettings from "components/Cards/CardSettings.svelte";
 	import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
 	import AuthTable from "components/Cards/AuthTable.svelte";
+	import SettingsBar from "components/Headers/SettingsBar.svelte";
 	import {
 		userSettingsStore,
 		unapprovedUsersStore,
@@ -296,12 +297,7 @@
 	let navItems = ["General", "Admin"];
 </script>
 
-<div
-	class="flex justify-end items-center align-center"
-	style="background: rgb(210,207,207);
-    background: linear-gradient(90deg, rgba(210,207,207,1) 0%, rgba(249,249,249,1) 50%, rgba(209,208,208,1) 100%);
-    width: 100%; height: 30px; filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));"
-/>
+<SettingsBar KeyIconDisabled={true} CogsIconDisabled={true} />
 {#if settingsConfig !== undefined}
 	<AdminNavbar
 		bind:openTab

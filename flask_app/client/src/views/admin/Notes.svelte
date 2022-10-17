@@ -1,5 +1,6 @@
 <script>
 	import HeaderStats from "components/Headers/HeaderStats.svelte";
+	import SettingsBar from "components/Headers/SettingsBar.svelte";
 	// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 	import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 	// core components
@@ -645,12 +646,7 @@
 
 <!-- <Tree /> -->
 
-<div
-	class="flex justify-end items-center align-center"
-	style="background: rgb(210,207,207);
-    background: linear-gradient(90deg, rgba(210,207,207,1) 0%, rgba(249,249,249,1) 50%, rgba(209,208,208,1) 100%);
-    width: 100%; height: 30px; filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));"
-/>
+<SettingsBar KeyIconDisabled={true} CogsIconDisabled={true} />
 <HeaderStats
 	title={"Notes"}
 	titleFontSize={"text-6xl"}

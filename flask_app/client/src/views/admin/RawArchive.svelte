@@ -4,6 +4,7 @@
 	import HeaderStats from "components/Headers/HeaderStats.svelte";
 	import CardTable from "components/Cards/CardTable.svelte";
 	import DataCreationCard from "components/Cards/DataCreationCard.svelte";
+	import SettingsBar from "components/Headers/SettingsBar.svelte";
 	import { dataSettingsStore, userSettingsStore } from "../../stores.js";
 
 	// Defines input buttons for HeaderStats
@@ -228,19 +229,7 @@
 	let openTab = 0;
 </script>
 
-<div
-	class="flex justify-end items-center align-center"
-	style="background: rgb(210,207,207);
-    background: linear-gradient(90deg, rgba(210,207,207,1) 0%, rgba(249,249,249,1) 50%, rgba(209,208,208,1) 100%);
-    width: 100%; height: 30px; filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));"
->
-	<i class="fa fa-key mr-4 cursor-pointer" aria-hidden="true" />
-	<i
-		use:loadSettingsEvent
-		class="fa fa-cogs mr-4 cursor-pointer"
-		aria-hidden="true"
-	/>
-</div>
+<SettingsBar SettingsFunction={loadSettingsEvent} />
 {#if DataSettings !== undefined && UserSettings !== undefined}
 	<AdminNavbar
 		bind:openTab
