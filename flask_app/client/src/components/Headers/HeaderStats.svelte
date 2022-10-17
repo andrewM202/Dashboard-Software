@@ -68,6 +68,12 @@
 			localStorage.setItem("searchToggle", "true");
 		}
 	}
+
+	// Function to set query filtering capabilities
+	// to the filter icons in input fields
+	function FilterFunction(evt) {
+		console.log(evt);
+	}
 </script>
 
 <!-- Header -->
@@ -167,6 +173,12 @@
 													? input.placeholder
 													: ""}
 												class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+											/>
+											<i
+												on:click={FilterFunction}
+												style="top: 60%; right: 3%;"
+												class="cursor-pointer absolute fa fa-filter"
+												aria-hidden="true"
 											/>
 										{/if}
 									</div>
