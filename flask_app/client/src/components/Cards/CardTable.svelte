@@ -347,7 +347,7 @@
           {#each data as row, rowNum}
             {#if rowNum + 1 >= rangeStart && rowNum < rangeEnd}
               <tr
-                class={(rowNum % 25) % 2 === 0
+                class={(rowNum % totalRange) % 2 === 0
                   ? tableAltColor === undefined
                     ? "bg-red-600"
                     : tableAltColor
