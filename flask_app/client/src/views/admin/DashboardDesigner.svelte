@@ -8,6 +8,7 @@
 	import { onDestroy } from "svelte";
 
 	let showActionBar = false;
+	let parentOffset;
 
 	onDestroy(() =>
 		// Remove the overflow property from HTML element on destruction
