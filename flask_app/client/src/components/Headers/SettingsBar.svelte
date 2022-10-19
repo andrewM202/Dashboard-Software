@@ -5,6 +5,7 @@
 </script>
 
 <div
+	id="SettingsBarContainer"
 	class="flex justify-end items-center align-center"
 	style="background: rgb(210,207,207);
     background: linear-gradient(90deg, rgba(210,207,207,1) 0%, rgba(249,249,249,1) 50%, rgba(209,208,208,1) 100%);

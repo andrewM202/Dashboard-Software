@@ -216,4 +216,10 @@
 		flex-direction: column;
 		justify-content: space-around;
 	}
+	/* Move the increment and decrement button over
+    so we can see the icon in the number input field */
+	input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button {
+		transform: translateX(-75%);
+	}
 </style>

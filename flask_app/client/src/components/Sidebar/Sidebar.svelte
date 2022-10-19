@@ -25,6 +25,7 @@
 				position: "absolute",
 				right: "0",
 				width: "100vw",
+				top: (-1 * j$("#SettingsBarContainer").height()) / 2,
 			});
 			// Remove the margin left from the main content section
 			j$("div#adminMarginLeftDiv").removeClass("md:ml-64");
@@ -46,6 +47,7 @@
 				right: "0",
 				width: "auto",
 				top: "0",
+				// top: "0",
 			});
 			// Add margin left to the the main content section
 			j$("div#adminMarginLeftDiv").addClass("md:ml-64");
@@ -95,6 +97,7 @@
 				position: "absolute",
 				right: "0",
 				width: "100%",
+				top: (-1 * j$("#SettingsBarContainer").height()) / 2,
 			});
 			// Hide side bar
 			j$("#SideBarNav").hide();
