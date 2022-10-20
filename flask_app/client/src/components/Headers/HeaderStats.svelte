@@ -97,8 +97,18 @@
 					<!-- Icon for toggling search inputs -->
 					<i
 						on:click={HeaderStatsInputToggle}
-						style="align-self: center"
-						class="fa fa-search px-4 cursor-pointer"
+						style="align-self: center; font-size: 20px;"
+						class="fa fa-search mx-4 cursor-pointer"
+						aria-hidden="true"
+					/>
+					<i
+						style="align-self: center; font-size: 20px;"
+						class="fa fa-wrench mx-4 cursor-pointer"
+						aria-hidden="true"
+					/>
+					<i
+						style="align-self: center; font-size: 20px;"
+						class="fa fa-trash mx-4 cursor-pointer"
 						aria-hidden="true"
 					/>
 				</div>
