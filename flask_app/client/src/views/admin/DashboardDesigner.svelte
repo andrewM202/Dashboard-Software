@@ -5,6 +5,8 @@
 	} from "../../../scripts/DashboardDesigner/DashboardSettings.js";
 	import { createText } from "../../../scripts/DashboardDesigner/CreateText.js";
 	import { createChart } from "../../../scripts/DashboardDesigner/CreateChart.js";
+	import { createImage } from "../../../scripts/DashboardDesigner/CreateImage.js";
+	import { createTable } from "../../../scripts/DashboardDesigner/CreateTable.js";
 	import { onDestroy } from "svelte";
 
 	let showActionBar = false;
@@ -172,12 +174,14 @@
 			Create Text
 		</a>
 		<a
+			on:click={createImage}
 			href="#pablo"
 			class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
 		>
 			Create Image
 		</a>
 		<a
+			on:click={createTable}
 			href="#pablo"
 			class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
 		>
