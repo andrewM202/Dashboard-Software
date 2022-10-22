@@ -10,9 +10,12 @@
 	let showActionBar = false;
 	let parentOffset;
 
-	onDestroy(() =>
-		// Remove the overflow property from HTML element on destruction
-		j$("html").css("overflow", "")
+	onDestroy(
+		// Remove added dashboard properties from the HTML element on destruction
+		function() {
+			j$("html").css("overflow", "")
+			j$("html").css("background-color", "")
+		}
 	);
 
 	// onLoad contains event listeners needing to be attached
@@ -43,6 +46,7 @@
 
 		// Make the HTML have no overflow
 		j$("html").css("overflow", "hidden");
+		j$("html").css("background-color", "rgb(241, 245, 249)");
 	} // onLoad() end
 </script>
 
@@ -171,12 +175,6 @@
 			href="#pablo"
 			class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
 		>
-			Create Decorative Box
-		</a>
-		<a
-			href="#pablo"
-			class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"
-		>
 			Create Image
 		</a>
 		<a
@@ -198,7 +196,7 @@
 		height: 100px;
 		background-color: rgba(239, 68, 68, 0.5);
 		transform: rotate(135deg) translate(-71%, 0);
-		position: absolute;
+		position: fixed;
 		right: 0;
 		top: 0;
 		z-index: 51;
