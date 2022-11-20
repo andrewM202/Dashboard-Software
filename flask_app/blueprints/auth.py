@@ -19,6 +19,10 @@ def register_page():
 def redirect_security_login():
     return redirect('/auth/login')
 
+@bp.route("/auth/login-status")
+def login_status():
+    return str(current_user.is_authenticated)
+
 @bp.route('/auth/login', methods=['GET', 'POST'])
 def login():
     """ Login as owner """

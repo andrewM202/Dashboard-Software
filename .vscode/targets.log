@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Sat Oct 15 12:47:49 2022
+# Make data base, printed on Sun Nov 20 13:43:43 2022
 
 # Variables
 
@@ -42,11 +42,13 @@ LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
 SPACESHIP_VERSION = 3.11.2
 # environment
+LaunchInstanceID = 8C2CA519-AC3F-43D2-9FAB-B721FECC071E
+# environment
 ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.v9TaN6ryoe/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.CQTGhxGY29/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -60,7 +62,7 @@ HOME = /Users/andrewmatt
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/andrewmatt/Library/Application Support/Code/CachedData/d045a5eda657f4d7b676dedbfa7aab8207f8a075
+VSCODE_CODE_CACHE_PATH = /Users/andrewmatt/Library/Application Support/Code/CachedData/6261075646f055b99068d3688932416f2346dd3b
 # environment
 LOGNAME = andrewmatt
 # environment
@@ -98,7 +100,7 @@ TMPDIR = /var/folders/dn/hwcz3m_14c1f9l8237vbbzj80000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/andrewmatt/Library/Application Support/Code/1.72.2-main.sock
+VSCODE_IPC_HOOK = /Users/andrewmatt/Library/Application Support/Code/1.73.1-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -108,7 +110,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.75827727.75827733
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.77783419.77783425
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -128,6 +130,8 @@ PAGER = less
 # environment
 LC_ALL = C
 # environment
+SECURITYSESSIONID = 186a6
+# environment
 SPACESHIP_ROOT = /Users/andrewmatt/.oh-my-zsh/custom/themes/spaceship-prompt
 # automatic
 ^F = $(notdir $^)
@@ -140,9 +144,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 74094
+VSCODE_PID = 495
 # variable set hash-table stats:
-# Load=65/1024=6%, Rehash=0, Collisions=1/86=1%
+# Load=67/1024=7%, Rehash=0, Collisions=1/88=1%
 
 # Pattern-specific Variable Values
 
@@ -150,7 +154,7 @@ VSCODE_PID = 74094
 
 # Directories
 
-# . (device 16777225, inode 72162019): 14 files, no impossibilities.
+# . (device 16777222, inode 72162019): 14 files, no impossibilities.
 
 # 14 files, no impossibilities in 1 directories.
 
@@ -224,7 +228,7 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# Finished Make data base on Sat Oct 15 12:47:49 2022
+# Finished Make data base on Sun Nov 20 13:43:43 2022
 
  
 make: *** No rule to make target `all'.  Stop.
