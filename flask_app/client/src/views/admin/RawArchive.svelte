@@ -36,7 +36,6 @@
 				break;
 			}
 		}
-		// console.log(selector);
 		// Get data from form
 		let data = j$(formSelector).serialize(); //j$(`form#${formID}`).serialize();
 		// Clear form
@@ -227,10 +226,6 @@
 		});
 	}
 
-	$: if (DataSettings !== undefined && DataSettings !== null) {
-		console.log(Object.entries(DataSettings));
-	}
-
 	function makeDataTable(evt) {
 		let table;
 
@@ -260,7 +255,7 @@
 							);
 
 							const a = document.createElement("a");
-							const type = name.split(".").pop();
+							// const type = name.split(".").pop();
 							a.href = URL.createObjectURL(
 								new Blob([saveData], {
 									// type: `text/${type === "txt" ? "plain" : type}`,
@@ -281,7 +276,7 @@
 										.length - 1
 								]
 							)
-								// .parent()
+								.parent()
 								.fullScreen(true);
 						},
 					},
@@ -291,10 +286,10 @@
 				rowReorder: {
 					selector: "td:nth-child(1)",
 				},
+				fixedColumns: true,
 				scrollY: "auto",
-				// scrollX: true,
+				scrollX: true,
 				scrollCollapse: true,
-				// paging: false,
 				fixedHeader: {
 					header: true,
 					footer: true,

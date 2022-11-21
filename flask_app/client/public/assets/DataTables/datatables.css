@@ -4,10 +4,10 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#dt/jszip-2.5.0/pdfmake-0.1.36/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fh-3.3.1/kt-2.8.0/rr-1.3.1/sb-1.4.0/sl-1.5.0
+ *   https://datatables.net/download/#dt/jszip-2.5.0/pdfmake-0.1.36/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fc-4.2.1/fh-3.3.1/kt-2.8.0/rr-1.3.1/sb-1.4.0/sl-1.5.0
  *
  * Included libraries:
- *   JSZip 2.5.0, pdfmake 0.1.36, DataTables 1.13.1, AutoFill 2.5.1, Buttons 2.3.3, Column visibility 2.3.3, HTML5 export 2.3.3, Print view 2.3.3, ColReorder 1.6.1, DateTime 1.2.0, FixedHeader 3.3.1, KeyTable 2.8.0, RowReorder 1.3.1, SearchBuilder 1.4.0, Select 1.5.0
+ *   JSZip 2.5.0, pdfmake 0.1.36, DataTables 1.13.1, AutoFill 2.5.1, Buttons 2.3.3, Column visibility 2.3.3, HTML5 export 2.3.3, Print view 2.3.3, ColReorder 1.6.1, DateTime 1.2.0, FixedColumns 4.2.1, FixedHeader 3.3.1, KeyTable 2.8.0, RowReorder 1.3.1, SearchBuilder 1.4.0, Select 1.5.0
  */
 
 @charset "UTF-8";
@@ -1394,6 +1394,27 @@ div.dt-datetime-error {
   text-align: center;
   color: #b11f1f;
 }
+
+table.dataTable thead tr > .dtfc-fixed-left,
+table.dataTable thead tr > .dtfc-fixed-right,
+table.dataTable tfoot tr > .dtfc-fixed-left,
+table.dataTable tfoot tr > .dtfc-fixed-right {
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  background-color: white;
+}
+table.dataTable tbody tr > .dtfc-fixed-left,
+table.dataTable tbody tr > .dtfc-fixed-right {
+  z-index: 1;
+  background-color: white;
+}
+
+div.dtfc-left-top-blocker,
+div.dtfc-right-top-blocker {
+  background-color: white;
+}
+
 
 table.fixedHeader-floating {
   background-color: white;
