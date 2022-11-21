@@ -227,14 +227,28 @@
 		// Initialize datatable if its not already initialized
 		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
 			table = new DataTable(`#${j$(evt)[0].id}`, {
-				dom: "QBfrtip",
+				dom: "QBlfrtip",
 				buttons: ["copy", "csv", "excel", "pdf", "print"],
 				searchBuilder: {},
 				colReorder: true,
-				rowReorder: true,
+				rowReorder: {
+					selector: "td:nth-child(1)",
+				},
+				// scrollY: 300,
+				scrollX: true,
+				// scrollCollapse: true,
+				// paging: false,
+				fixedHeader: {
+					header: true,
+					footer: true,
+				},
+				columnDefs: [{ targets: 0, visible: false }],
 				keys: true,
-				responsive: true,
+				select: true,
 				drawCallback: function () {
+					// Make the page number of results (i.e. 10 results per page)
+					// be 75px wide so the icon does not go over the number
+					j$(".dataTables_length select").css("width", "75px");
 					// j$("#archiveTestTable_wrapper span").css({
 					// 	color: "white",
 					// });
@@ -303,25 +317,32 @@
 							style="left: -4px; bottom: -4px; cursor: ns-resize;"
 							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
 						/>
-						<div class="w-full bg-red-500" style="height: auto;">
+						<div
+							class="w-full bg-white p-4 overflow-x-auto"
+							style="height: auto;"
+						>
 							<table use:makeDataTable id="archiveDataTable{i}">
 								<thead>
 									<tr>
-										<th>Column 1</th>
-										<th>Column 2</th>
+										{#each section[1].Table.Headers as header}
+											<th>{header}</th>
+										{/each}
 									</tr>
 								</thead>
 								<tbody>
-									{#each Array(20) as _, i}
-										<tr>
-											<td>Row {i}</td>
-											<td>Row {i}</td>
-										</tr>
-									{/each}
-									<tr>
-										<td>Row 2 Data 1</td>
-										<td>garggarg</td>
-									</tr>
+									{#if section[1].Table.Data[0] !== undefined}
+										{#each section[1].Table.Data[0] as row}
+											<tr>
+												{#each Object.entries(row) as entry, entryNum}
+													{#if section[1].Table.DBFieldNames.includes(entry[0])}
+														{#if entryNum !== 0}
+															<td>{entry[1]}</td>
+														{/if}
+													{/if}
+												{/each}
+											</tr>
+										{/each}
+									{/if}
 								</tbody>
 							</table>
 						</div>
@@ -381,3 +402,13 @@
 		</div>
 	{/each}
 {/if}
+
+<style>
+	td {
+		max-width: 14rem;
+		/* max-width: 50ch; */
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+</style>
