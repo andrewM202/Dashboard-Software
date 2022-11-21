@@ -1,32 +1,31 @@
 version: "3.7"
 
 services:
+    app:
+        build: ./flask_app
+        container_name: flask_app
+        restart: always
+        ports:
+            - "8000:8000"
+        # Bind to our local file system with volume
+        # so it auto-updates container when updating locally
+        volumes:
+            - ./flask_app:/app
 
-  app:
-    build: ./flask_app
-    container_name: flask_app
-    restart: always
-    ports:
-      - "8000:8000"
-    # Bind to our local file system with volume 
-    # so it auto-updates container when updating locally
-    volumes:
-      - ./flask_app:/app
-
-  proxy:
-    build: nginx
-    container_name: nginx-flask
-    restart: always
-    ports:
-      # 80 is HTTP port, 443 is HTTPS port 
-      - 80:80
-      - 443:443
-    # Add a volume for our self-signed certs
-    volumes:
-      - ./nginx/self_signed_certs:/etc/nginx/certs
-    environment:
-      NGINX_HOST: localhost
-    depends_on:
-      - app
+    proxy:
+        build: nginx
+        container_name: nginx-flask
+        restart: always
+        ports:
+            # 80 is HTTP port, 443 is HTTPS port
+            - 80:80
+            - 443:443
+        # Add a volume for our self-signed certs
+        volumes:
+            - ./nginx/self_signed_certs:/etc/nginx/certs
+        environment:
+            NGINX_HOST: localhost
+        depends_on:
+            - app
 volumes:
-  app:
+    app:
