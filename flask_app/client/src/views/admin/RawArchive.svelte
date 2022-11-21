@@ -85,6 +85,11 @@
 						);
 					}
 				}
+				// Adjust the height of the archive table too so it resizes with its parent
+				j$("#archiveDataTable0")
+					.closest(".dataTables_scrollBody")
+					.css("height", j$(parent).innerHeight() - 310);
+				j$("#archiveDataTable0").DataTable().draw();
 			});
 			j$(window).mouseup(function () {
 				j$(window).unbind("mousemove");
@@ -224,6 +229,7 @@
 
 	function makeDataTable(evt) {
 		let table;
+
 		// Initialize datatable if its not already initialized
 		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
 			table = new DataTable(`#${j$(evt)[0].id}`, {
@@ -234,9 +240,10 @@
 				rowReorder: {
 					selector: "td:nth-child(1)",
 				},
-				// scrollY: 300,
+				scrollY: "auto",
+				// scrollY: j$(evt).parent().height() - 50,
 				scrollX: true,
-				// scrollCollapse: true,
+				scrollCollapse: true,
 				// paging: false,
 				fixedHeader: {
 					header: true,
@@ -254,7 +261,7 @@
 					// });
 					// j$("#archiveTestTable_wrapper button").css({
 					// 	color: "white",
-					// });
+					// });s
 				},
 			});
 		}
@@ -268,7 +275,7 @@
 </script>
 
 <SettingsBar SettingsFunction={loadSettingsEvent} />
-{#if DataSettings !== undefined && UserSettings !== undefined}
+{#if DataSettings !== undefined && UserSettings !== undefined && DataSettings != null && UserSettings != null}
 	<AdminNavbar
 		bind:openTab
 		{navItems}
@@ -318,7 +325,7 @@
 							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
 						/>
 						<div
-							class="w-full bg-white p-4 overflow-x-auto"
+							class="dataTableContainer w-full bg-white p-4 overflow-x-auto"
 							style="height: auto;"
 						>
 							<table use:makeDataTable id="archiveDataTable{i}">
