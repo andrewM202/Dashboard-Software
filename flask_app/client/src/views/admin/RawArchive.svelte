@@ -227,6 +227,10 @@
 		});
 	}
 
+	$: if (DataSettings !== undefined && DataSettings !== null) {
+		console.log(Object.entries(DataSettings));
+	}
+
 	function makeDataTable(evt) {
 		let table;
 
@@ -234,15 +238,61 @@
 		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
 			table = new DataTable(`#${j$(evt)[0].id}`, {
 				dom: "QBlfrtip",
-				buttons: ["copy", "csv", "excel", "pdf", "print"],
+				buttons: [
+					"copy",
+					"csv",
+					"excel",
+					"pdf",
+					"print",
+					{
+						// Button to download as JSON
+						text: "Json",
+						action: function (e, dt, node, config) {
+							const name = `${
+								Object.entries(DataSettings)[openTab][1]
+									.CollectionName
+							}.json`;
+							const saveData = JSON.stringify(
+								Object.entries(DataSettings)[openTab][1].Table
+									.Data[0],
+								undefined,
+								2
+							);
+
+							const a = document.createElement("a");
+							const type = name.split(".").pop();
+							a.href = URL.createObjectURL(
+								new Blob([saveData], {
+									// type: `text/${type === "txt" ? "plain" : type}`,
+									type: "json",
+								})
+							);
+							a.download = name;
+							a.click();
+						},
+					},
+					{
+						// Fullscreen button
+						text: "Fullscreen",
+						action: function (e, dt, node, config) {
+							j$(
+								j$(e.target).parentsUntil(".tableBorder")[
+									j$(e.target).parentsUntil(".tableBorder")
+										.length - 1
+								]
+							)
+								// .parent()
+								.fullScreen(true);
+						},
+					},
+				],
 				searchBuilder: {},
 				colReorder: true,
 				rowReorder: {
 					selector: "td:nth-child(1)",
 				},
 				scrollY: "auto",
-				// scrollY: j$(evt).parent().height() - 50,
-				scrollX: true,
+				// scrollX: true,
 				scrollCollapse: true,
 				// paging: false,
 				fixedHeader: {
@@ -312,7 +362,7 @@
 				<div class="flex flex-wrap ml-8 w-full">
 					<div
 						style="height: auto;"
-						class="w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
+						class="tableBorder w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
 					>
 						<div
 							use:archiveTableSliderStyling
