@@ -222,6 +222,30 @@
 		});
 	}
 
+	function makeDataTable(evt) {
+		let table;
+		// Initialize datatable if its not already initialized
+		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
+			table = new DataTable(`#${j$(evt)[0].id}`, {
+				dom: "QBfrtip",
+				buttons: ["copy", "csv", "excel", "pdf", "print"],
+				searchBuilder: {},
+				colReorder: true,
+				rowReorder: true,
+				keys: true,
+				responsive: true,
+				drawCallback: function () {
+					// j$("#archiveTestTable_wrapper span").css({
+					// 	color: "white",
+					// });
+					// j$("#archiveTestTable_wrapper button").css({
+					// 	color: "white",
+					// });
+				},
+			});
+		}
+	}
+
 	// Create a mapping for the table so we know
 	// form input -> input type
 
@@ -239,7 +263,7 @@
 			? `Background-color: ${UserSettings[0].navigation_color}`
 			: undefined}
 	/>
-	{#each Object.entries(DataSettings) as section}
+	{#each Object.entries(DataSettings) as section, i}
 		<div
 			class={navItems[openTab] === section[0] ? "block" : "hidden"}
 			id="TableHiddenBlockContainer"
@@ -266,6 +290,7 @@
 			>
 				<div class="flex flex-wrap ml-8 w-full">
 					<div
+						style="height: auto;"
 						class="w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
 					>
 						<div
@@ -278,7 +303,29 @@
 							style="left: -4px; bottom: -4px; cursor: ns-resize;"
 							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
 						/>
-						<CardTable
+						<div class="w-full bg-red-500" style="height: auto;">
+							<table use:makeDataTable id="archiveDataTable{i}">
+								<thead>
+									<tr>
+										<th>Column 1</th>
+										<th>Column 2</th>
+									</tr>
+								</thead>
+								<tbody>
+									{#each Array(20) as _, i}
+										<tr>
+											<td>Row {i}</td>
+											<td>Row {i}</td>
+										</tr>
+									{/each}
+									<tr>
+										<td>Row 2 Data 1</td>
+										<td>garggarg</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- <CardTable
 							color="dark"
 							data={section[1].Table.Data[0]}
 							CollectionName={section[1].CollectionName}
@@ -301,7 +348,7 @@
 								? UserSettings[0].archive_table_alt_color
 								: undefined}
 							inputs={section[1].CreationCard.Inputs}
-						/>
+						/> -->
 					</div>
 				</div>
 			</div>
