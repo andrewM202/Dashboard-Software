@@ -289,6 +289,7 @@
 	// This function is called for the very first data table only.
 	function makeDataTableInitial(evt) {
 		let table;
+		let tableCreated = false;
 
 		// Initialize datatable if its not already initialized
 		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
@@ -373,6 +374,7 @@
 				columnDefs: [{ targets: 0, visible: false }],
 				keys: true,
 				select: true,
+				// initComplete called once in table lifespan when its created
 				drawCallback: function () {
 					// Make the page number of results (i.e. 10 results per page)
 					// be 75px wide so the icon does not go over the number
@@ -471,6 +473,20 @@
 						columnDefs: [{ targets: 0, visible: false }],
 						keys: true,
 						select: true,
+						// initComplete called once in table lifespan when its created
+						initComplete: function () {
+							// Make the page number of results (i.e. 10 results per page)
+							// be 75px wide so the icon does not go over the number
+							j$(".dataTables_length select").css(
+								"width",
+								"75px"
+							);
+							// Detect cell overflow for each table entry
+							// now that we have completed creating the datatable
+							for (let event of j$(`#${dataTable.id} td`)) {
+								detectCellOverflow(event);
+							}
+						},
 						drawCallback: function () {
 							// Make the page number of results (i.e. 10 results per page)
 							// be 75px wide so the icon does not go over the number
@@ -483,7 +499,6 @@
 							for (let event of j$(`#${dataTable.id} td`)) {
 								detectCellOverflow(event);
 							}
-							console.log("Drawn");
 						},
 					});
 				}
@@ -502,7 +517,10 @@
 		j$("nav").click(function () {
 			for (let i = 0; i < detectOverflowLater.length; i++) {
 				let e = j$(detectOverflowLater[i].event)[0];
-				if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+				if (
+					j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth()) &&
+					j$(e).children().length === 0
+				) {
 					// This element is now found to be overflown, remove it from
 					// detectOverflowLater
 					detectOverflowLater[i].remove = true;
@@ -551,7 +569,10 @@
 					event: j$(e),
 					remove: false,
 				});
-			} else if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+			} else if (
+				j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth()) &&
+				j$(e).children().length === 0
+			) {
 				j$(e).append(`<div
                       style="background-color: rgb(251 113 133); white-space: normal; max-width: 500px; height: auto;"
                       class="hidden z-50 text-white font-semibold p-3 rounded-t-lg"
