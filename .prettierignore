@@ -1,4 +1,4 @@
 # Ignore formatting min files
 *.min.js
-tailwind.css
+tailwind.min.css
 index.html

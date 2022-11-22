@@ -425,14 +425,14 @@
 				rowReorder: {
 					selector: "td:nth-child(1)",
 				},
-				fixedColumns: true,
-				scrollY: "auto",
-				scrollX: true,
-				scrollCollapse: true,
-				fixedHeader: {
-					header: true,
-					footer: true,
-				},
+				// fixedColumns: true,
+				// scrollY: "auto",
+				// scrollX: true,
+				// scrollCollapse: true,
+				// fixedHeader: {
+				// 	header: true,
+				// 	footer: true,
+				// },
 				columnDefs: [{ targets: 0, visible: false }],
 				keys: true,
 				select: true,
@@ -446,6 +446,12 @@
 					for (let event of j$(`#${j$(evt)[0].id} td`)) {
 						detectCellOverflow(event);
 					}
+					// Make the header row sticky
+					j$(".archiveDataTable thead").css({
+						position: "sticky",
+						top: "-18px",
+						"background-color": "white",
+					});
 				},
 			});
 		}
@@ -594,6 +600,12 @@
 							for (let event of j$(`#${dataTable.id} td`)) {
 								detectCellOverflow(event);
 							}
+							// Make the header row sticky
+							j$(".archiveDataTable thead").css({
+								position: "sticky",
+								top: "-18px",
+								"background-color": "white",
+							});
 						},
 					});
 				}
@@ -735,7 +747,7 @@
 			>
 				<div class="flex flex-wrap ml-8 w-full">
 					<div
-						style="height: auto;"
+						style="height: 650px;"
 						class="tableBorder w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
 					>
 						<div
