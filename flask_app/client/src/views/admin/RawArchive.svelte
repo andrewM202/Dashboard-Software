@@ -286,6 +286,30 @@
 		});
 	}
 
+	// Use this variables and event listeners
+	// to detect when we go out of fullscreen.
+	// When we do set the datatable's height back to its normal
+	// non-auto auto
+	let datatableHeight = null;
+	let datatableElem;
+	document.addEventListener("fullscreenchange", exitHandler, false);
+	document.addEventListener("mozfullscreenchange", exitHandler, false);
+	document.addEventListener("MSFullscreenChange", exitHandler, false);
+	document.addEventListener("webkitfullscreenchange", exitHandler, false);
+
+	function exitHandler() {
+		if (
+			!document.webkitIsFullScreen &&
+			!document.mozFullScreen &&
+			!document.msFullscreenElement
+		) {
+			// Make the datatable's height back to what it was
+			// before it was fullscreen
+			j$(datatableElem).css("height", datatableHeight);
+			datatableHeight = null;
+		}
+	}
+
 	// This function is called for the very first data table only.
 	function makeDataTableInitial(evt) {
 		let table;
@@ -347,14 +371,52 @@
 						// Fullscreen button
 						text: "Fullscreen",
 						action: function (e, dt, node, config) {
-							j$(
-								j$(e.target).parentsUntil(".tableBorder")[
-									j$(e.target).parentsUntil(".tableBorder")
-										.length - 1
-								]
-							)
-								.parent()
-								.fullScreen(true);
+							// Make the datatable have an auto height while
+							// we are in full screen mode so the datatable
+							// fits the full screen
+							if (datatableHeight === null) {
+								datatableHeight = j$(
+									j$(e.target).parentsUntil(
+										"div.tableBorder"
+									)[
+										j$(e.target).parentsUntil(
+											"div.tableBorder"
+										).length - 1
+									]
+								)
+									.parent()
+									.css("height");
+
+								j$(
+									j$(e.target).parentsUntil(
+										"div.tableBorder"
+									)[
+										j$(e.target).parentsUntil(
+											"div.tableBorder"
+										).length - 1
+									]
+								)
+									.parent()
+									.css("height", "auto");
+								datatableElem = j$(
+									j$(e.target).parentsUntil(
+										"div.tableBorder"
+									)[
+										j$(e.target).parentsUntil(
+											"div.tableBorder"
+										).length - 1
+									]
+								).parent();
+								j$(
+									j$(e.target).parentsUntil(".tableBorder")[
+										j$(e.target).parentsUntil(
+											".tableBorder"
+										).length - 1
+									]
+								)
+									.parent()
+									.fullScreen(true);
+							}
 						},
 					},
 				],
@@ -443,17 +505,54 @@
 								// Fullscreen button
 								text: "Fullscreen",
 								action: function (e, dt, node, config) {
-									j$(
-										j$(e.target).parentsUntil(
-											".tableBorder"
-										)[
+									// Make the datatable have an auto height while
+									// we are in full screen mode so the datatable
+									// fits the full screen
+									if (datatableHeight === null) {
+										datatableHeight = j$(
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											)[
+												j$(e.target).parentsUntil(
+													"div.tableBorder"
+												).length - 1
+											]
+										)
+											.parent()
+											.css("height");
+
+										j$(
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											)[
+												j$(e.target).parentsUntil(
+													"div.tableBorder"
+												).length - 1
+											]
+										)
+											.parent()
+											.css("height", "auto");
+										datatableElem = j$(
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											)[
+												j$(e.target).parentsUntil(
+													"div.tableBorder"
+												).length - 1
+											]
+										).parent();
+										j$(
 											j$(e.target).parentsUntil(
 												".tableBorder"
-											).length - 1
-										]
-									)
-										.parent()
-										.fullScreen(true);
+											)[
+												j$(e.target).parentsUntil(
+													".tableBorder"
+												).length - 1
+											]
+										)
+											.parent()
+											.fullScreen(true);
+									}
 								},
 							},
 						],
@@ -462,15 +561,11 @@
 						rowReorder: {
 							selector: "td:nth-child(1)",
 						},
-						fixedColumns: true,
-						scrollY: "auto",
-						scrollX: true,
-						scrollCollapse: true,
-						fixedHeader: {
-							header: true,
-							footer: true,
-						},
-						columnDefs: [{ targets: 0, visible: false }],
+						// fixedColumns: true,
+						// scrollY: "auto",
+						// scrollX: true,
+						// scrollCollapse: true,
+						// columnDefs: [{ targets: 0, visible: false }],
 						keys: true,
 						select: true,
 						// initComplete called once in table lifespan when its created
