@@ -7,6 +7,66 @@
 	import SettingsBar from "components/Headers/SettingsBar.svelte";
 	import { dataSettingsStore, userSettingsStore } from "../../stores.js";
 
+	// Popover Stuff Start
+	import { createPopper } from "@popperjs/core";
+	import { onMount, tick } from "svelte";
+
+	let popoverShow = false;
+	let btnRef;
+	let popoverRef;
+
+	let btnRef2;
+	let popoverRef2;
+	let popoverShow2 = false;
+
+	function toggleTooltip(btnref, popref, popShow) {
+		if (popShow === "popoverShow" && popoverShow === true) {
+			popoverShow = false;
+		} else if (popShow === "popoverShow2" && popoverShow2 === true) {
+			popoverShow2 = false;
+		} else {
+			if (popShow === "popoverShow") {
+				popoverShow = true;
+				createPopper(btnRef, popoverRef, {
+					placement: "left",
+				});
+			} else if (popShow === "popoverShow2") {
+				popoverShow2 = true;
+				createPopper(btnRef2, popoverRef2, {
+					placement: "left",
+				});
+			}
+		}
+	}
+
+	class popover {
+		constructor(btnRef, popoverRef) {
+			this.popoverShow = false;
+			this.btnRef = btnRef;
+			this.popoverRef = popoverRef;
+		}
+		toggleTooltip() {
+			if (this.popoverShow) {
+				this.popoverShow = false;
+			} else {
+				this.popoverShow = true;
+				createPopper(this.btnRef, this.popoverRef, {
+					placement: "top",
+					// Modifer to give padding to popover
+					modifiers: [
+						{
+							name: "preventOverflow",
+							options: {
+								padding: 50,
+							},
+						},
+					],
+				});
+			}
+		}
+	}
+	// Popover Stuff End
+
 	// Defines input buttons for HeaderStats
 	let DataSettings, UserSettings;
 
@@ -226,7 +286,8 @@
 		});
 	}
 
-	function makeDataTable(evt) {
+	// This function is called for the very first data table only.
+	function makeDataTableInitial(evt) {
 		let table;
 
 		// Initialize datatable if its not already initialized
@@ -234,11 +295,26 @@
 			table = new DataTable(`#${j$(evt)[0].id}`, {
 				dom: "QBlfrtip",
 				buttons: [
-					"copy",
-					"csv",
-					"excel",
-					"pdf",
-					"print",
+					{
+						text: "copy",
+						className: "cursor-pointer",
+					},
+					{
+						text: "csv",
+						className: "cursor-pointer",
+					},
+					{
+						text: "excel",
+						className: "cursor-pointer",
+					},
+					{
+						text: "pdf",
+						className: "cursor-pointer",
+					},
+					{
+						text: "print",
+						className: "cursor-pointer",
+					},
 					{
 						// Button to download as JSON
 						text: "Json",
@@ -301,15 +377,200 @@
 					// Make the page number of results (i.e. 10 results per page)
 					// be 75px wide so the icon does not go over the number
 					j$(".dataTables_length select").css("width", "75px");
-					// j$("#archiveTestTable_wrapper span").css({
-					// 	color: "white",
-					// });
-					// j$("#archiveTestTable_wrapper button").css({
-					// 	color: "white",
-					// });s
+					// Detect cell overflow for each table entry
+					// now that we have completed creating the datatable
+					for (let event of j$(`#${j$(evt)[0].id} td`)) {
+						detectCellOverflow(event);
+					}
 				},
 			});
 		}
+	}
+
+	// This function is called every time the openTab variable is changed,
+	// to see if we need to generate the datatable for this tab
+	// because we only want to load the datatable when its visible. This also
+	// allows the overflow popovers to generate correctly because if the element is hidden
+	// it will never generate the overflow popover otherwise
+	function makeDataTable() {
+		let table;
+
+		for (let dataTable of j$(".archiveDataTable")) {
+			if (
+				dataTable.id.split("archiveDataTable")[1] == openTab &&
+				dataTable.id.split("archiveDataTable")[1] !== 0
+			) {
+				// Initialize datatable if its not already initialized
+				if (!j$.fn.dataTable.isDataTable(`#${dataTable.id}`)) {
+					table = new DataTable(`#${dataTable.id}`, {
+						dom: "QBlfrtip",
+						buttons: [
+							"copy",
+							"csv",
+							"excel",
+							"pdf",
+							"print",
+							{
+								// Button to download as JSON
+								text: "Json",
+								action: function (e, dt, node, config) {
+									const name = `${
+										Object.entries(DataSettings)[openTab][1]
+											.CollectionName
+									}.json`;
+									const saveData = JSON.stringify(
+										Object.entries(DataSettings)[openTab][1]
+											.Table.Data[0],
+										undefined,
+										2
+									);
+
+									const a = document.createElement("a");
+									// const type = name.split(".").pop();
+									a.href = URL.createObjectURL(
+										new Blob([saveData], {
+											// type: `text/${type === "txt" ? "plain" : type}`,
+											type: "json",
+										})
+									);
+									a.download = name;
+									a.click();
+								},
+							},
+							{
+								// Fullscreen button
+								text: "Fullscreen",
+								action: function (e, dt, node, config) {
+									j$(
+										j$(e.target).parentsUntil(
+											".tableBorder"
+										)[
+											j$(e.target).parentsUntil(
+												".tableBorder"
+											).length - 1
+										]
+									)
+										.parent()
+										.fullScreen(true);
+								},
+							},
+						],
+						searchBuilder: {},
+						colReorder: true,
+						rowReorder: {
+							selector: "td:nth-child(1)",
+						},
+						fixedColumns: true,
+						scrollY: "auto",
+						scrollX: true,
+						scrollCollapse: true,
+						fixedHeader: {
+							header: true,
+							footer: true,
+						},
+						columnDefs: [{ targets: 0, visible: false }],
+						keys: true,
+						select: true,
+						drawCallback: function () {
+							// Make the page number of results (i.e. 10 results per page)
+							// be 75px wide so the icon does not go over the number
+							j$(".dataTables_length select").css(
+								"width",
+								"75px"
+							);
+							// Detect cell overflow for each table entry
+							// now that we have completed creating the datatable
+							for (let event of j$(`#${dataTable.id} td`)) {
+								detectCellOverflow(event);
+							}
+							console.log("Drawn");
+						},
+					});
+				}
+			}
+		}
+	}
+
+	// On page load, svelte loads all elements for all tables
+	// but they are not visible. This makes it so scrollWidth is 0
+	// but innerWidth() is > 0. We need to wait until the scrollWidth is
+	// not zero (when the table is clicked on and displayed) to check if it
+	// should have the overflow popper applied to it
+	let detectOverflowLater = [];
+
+	onMount(() => {
+		j$("nav").click(function () {
+			for (let i = 0; i < detectOverflowLater.length; i++) {
+				let e = j$(detectOverflowLater[i].event)[0];
+				if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+					// This element is now found to be overflown, remove it from
+					// detectOverflowLater
+					detectOverflowLater[i].remove = true;
+					j$(e).append(`<div
+                      style="background-color: rgb(251 113 133); white-space: normal; max-width: 500px; height: auto;"
+                      class="hidden z-50 text-white font-semibold p-3 uppercase rounded-t-lg"
+                    >
+                      <span>${j$(e).text()}</span>
+                    </div>`);
+					let pop = new popover(e, j$(e).children("div")[0]);
+					j$(e).mouseenter(function () {
+						pop.toggleTooltip();
+						j$(e).find("div").removeClass("hidden");
+						j$(e).find("div").addClass("block");
+					});
+					j$(e).mouseleave(function () {
+						pop.toggleTooltip();
+						j$(e).find("div").addClass("hidden");
+						j$(e).find("div").removeClass("block");
+					});
+				} else if (
+					j$(e)[0].scrollWidth !== 0 &&
+					j$(e)[0].scrollWidth === Math.ceil(j$(e).innerWidth())
+				) {
+					// This element is not found to be overflown, remove it from
+					// detectOverflowLater
+					detectOverflowLater[i].remove = true;
+				}
+			}
+			let overflowCopy = [];
+			for (let i = 0; i < detectOverflowLater.length; i++) {
+				if (!detectOverflowLater[i].remove) {
+					overflowCopy.push(detectOverflowLater[i]);
+				}
+			}
+			detectOverflowLater = overflowCopy;
+		});
+	});
+	async function detectCellOverflow(e) {
+		await tick();
+		// Detect if a <td> is overflowing in the card table.
+		// If it is, add a hover to see the entire text
+		setTimeout(function () {
+			if (j$(e)[0].scrollWidth === 0) {
+				detectOverflowLater.push({
+					event: j$(e),
+					remove: false,
+				});
+			} else if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth())) {
+				j$(e).append(`<div
+                      style="background-color: rgb(251 113 133); white-space: normal; max-width: 500px; height: auto;"
+                      class="hidden z-50 text-white font-semibold p-3 rounded-t-lg"
+                    >
+                      <span>${j$(e).text()}</span>
+                    </div>`);
+				let pop = new popover(e, j$(e).children("div")[0]);
+				j$(e).mouseenter(function () {
+					pop.toggleTooltip();
+					j$(e).find("*").removeClass("hidden");
+					j$(e).find("*").addClass("block");
+				});
+				j$(e).mouseleave(function () {
+					pop.toggleTooltip();
+					j$(e).find("*").addClass("hidden");
+					j$(e).find("*").removeClass("block");
+				});
+			}
+		}, 300);
 	}
 
 	// Create a mapping for the table so we know
@@ -317,6 +578,8 @@
 
 	// Bind openTab to AdminNavbar component
 	let openTab = 0;
+
+	$: openTab, makeDataTable();
 </script>
 
 <SettingsBar SettingsFunction={loadSettingsEvent} />
@@ -362,66 +625,80 @@
 						<div
 							use:archiveTableSliderStyling
 							style="right: -4px; bottom: -4px; cursor: ns-resize;"
-							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
+							class="slider h-4 w-4 absolute rounded-full px-2"
 						/>
 						<div
 							use:archiveTableSliderStyling
 							style="left: -4px; bottom: -4px; cursor: ns-resize;"
-							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
+							class="slider h-4 w-4 absolute rounded-full px-2"
 						/>
 						<div
 							class="dataTableContainer w-full bg-white p-4 overflow-x-auto"
 							style="height: auto;"
 						>
-							<table use:makeDataTable id="archiveDataTable{i}">
-								<thead>
-									<tr>
-										{#each section[1].Table.Headers as header}
-											<th>{header}</th>
-										{/each}
-									</tr>
-								</thead>
-								<tbody>
-									{#if section[1].Table.Data[0] !== undefined}
-										{#each section[1].Table.Data[0] as row}
-											<tr>
-												{#each Object.entries(row) as entry, entryNum}
-													{#if section[1].Table.DBFieldNames.includes(entry[0])}
-														{#if entryNum !== 0}
-															<td>{entry[1]}</td>
+							{#if i === 0}
+								<table
+									use:makeDataTableInitial
+									class="archiveDataTable"
+									id="archiveDataTable{i}"
+								>
+									<thead>
+										<tr>
+											{#each section[1].Table.Headers as header}
+												<th>{header}</th>
+											{/each}
+										</tr>
+									</thead>
+									<tbody>
+										{#if section[1].Table.Data[0] !== undefined}
+											{#each section[1].Table.Data[0] as row}
+												<tr>
+													{#each Object.entries(row) as entry, entryNum}
+														{#if section[1].Table.DBFieldNames.includes(entry[0])}
+															{#if entryNum !== 0}
+																<td
+																	>{entry[1]}</td
+																>
+															{/if}
 														{/if}
-													{/if}
-												{/each}
-											</tr>
-										{/each}
-									{/if}
-								</tbody>
-							</table>
+													{/each}
+												</tr>
+											{/each}
+										{/if}
+									</tbody>
+								</table>
+							{:else}
+								<table
+									class="archiveDataTable"
+									id="archiveDataTable{i}"
+								>
+									<thead>
+										<tr>
+											{#each section[1].Table.Headers as header}
+												<th>{header}</th>
+											{/each}
+										</tr>
+									</thead>
+									<tbody>
+										{#if section[1].Table.Data[0] !== undefined}
+											{#each section[1].Table.Data[0] as row}
+												<tr>
+													{#each Object.entries(row) as entry, entryNum}
+														{#if section[1].Table.DBFieldNames.includes(entry[0])}
+															{#if entryNum !== 0}
+																<td
+																	>{entry[1]}</td
+																>
+															{/if}
+														{/if}
+													{/each}
+												</tr>
+											{/each}
+										{/if}
+									</tbody>
+								</table>
+							{/if}
 						</div>
-						<!-- <CardTable
-							color="dark"
-							data={section[1].Table.Data[0]}
-							CollectionName={section[1].CollectionName}
-							headers={section[1].Table.Headers}
-							DBFieldNames={section[1].Table.DBFieldNames}
-							title={section[1].Table.Title}
-							tableBGColor={UserSettings[0]
-								.archive_table_color !== undefined &&
-							UserSettings[0].archive_table_color !== null
-								? `Background-color: ${UserSettings[0].archive_table_color}`
-								: undefined}
-							tableHeaderColor={UserSettings[0]
-								.archive_table_header_color !== undefined &&
-							UserSettings[0].archive_table_header_color !== null
-								? `Background-color: ${UserSettings[0].archive_table_header_color}`
-								: undefined}
-							tableAltColor={UserSettings[0]
-								.archive_table_alt_color !== undefined &&
-							UserSettings[0].archive_table_alt_color !== null
-								? UserSettings[0].archive_table_alt_color
-								: undefined}
-							inputs={section[1].CreationCard.Inputs}
-						/> -->
 					</div>
 				</div>
 			</div>
@@ -462,5 +739,8 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
+	}
+	.slider {
+		background-color: rgb(251 113 133);
 	}
 </style>
