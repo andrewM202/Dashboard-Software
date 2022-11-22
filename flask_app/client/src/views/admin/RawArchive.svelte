@@ -473,7 +473,6 @@
 					footer: true,
 				},
 				aaSorting: [], // This allows by default no sorting, but can still click on header to sort
-				columnDefs: [{ targets: 0, visible: false }],
 				keys: true,
 				select: true,
 				// initComplete called once in table lifespan when its created
