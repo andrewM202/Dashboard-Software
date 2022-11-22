@@ -350,24 +350,29 @@
 						},
 					},
 					{
-						text: "copy",
-						className: "cursor-pointer capitalize downloadButton",
+						extend: "copy",
+						text: "Copy",
+						className: "cursor-pointer downloadButton",
 					},
 					{
-						text: "csv",
-						className: "cursor-pointer capitalize downloadButton",
+						extend: "csv",
+						text: "Csv",
+						className: "cursor-pointer downloadButton",
 					},
 					{
-						text: "excel",
-						className: "cursor-pointer capitalize downloadButton",
+						extend: "excel",
+						text: "Excel",
+						className: "cursor-pointer downloadButton",
 					},
 					{
-						text: "pdf",
-						className: "cursor-pointer capitalize downloadButton",
+						extend: "pdf",
+						text: "Pdf",
+						className: "cursor-pointer downloadButton",
 					},
 					{
-						text: "print",
-						className: "cursor-pointer capitalize downloadButton",
+						extend: "print",
+						text: "Print",
+						className: "cursor-pointer downloadButton",
 					},
 					{
 						// Button to download as JSON
@@ -465,9 +470,9 @@
 					selector: "td:nth-child(1)",
 				},
 				fixedColumns: true,
-				scrollY: "auto",
-				scrollX: true,
-				scrollCollapse: true,
+				// scrollY: "auto",
+				// scrollX: true,
+				// scrollCollapse: true,
 				fixedHeader: {
 					header: true,
 					footer: true,
@@ -556,29 +561,29 @@
 								},
 							},
 							{
-								text: "copy",
-								className:
-									"cursor-pointer capitalize downloadButton",
+								extend: "copy",
+								text: "Copy",
+								className: "cursor-pointer downloadButton",
 							},
 							{
-								text: "csv",
-								className:
-									"cursor-pointer capitalize downloadButton",
+								extend: "csv",
+								text: "Csv",
+								className: "cursor-pointer downloadButton",
 							},
 							{
-								text: "excel",
-								className:
-									"cursor-pointer capitalize downloadButton",
+								extend: "excel",
+								text: "Excel",
+								className: "cursor-pointer downloadButton",
 							},
 							{
-								text: "pdf",
-								className:
-									"cursor-pointer capitalize downloadButton",
+								extend: "pdf",
+								text: "Pdf",
+								className: "cursor-pointer downloadButton",
 							},
 							{
-								text: "print",
-								className:
-									"cursor-pointer capitalize downloadButton",
+								extend: "print",
+								text: "Print",
+								className: "cursor-pointer downloadButton",
 							},
 							{
 								// Button to download as JSON
@@ -680,9 +685,9 @@
 						keys: true,
 						select: true,
 						fixedColumns: true,
-						scrollY: "auto",
-						scrollX: true,
-						scrollCollapse: true,
+						// scrollY: "auto",
+						// scrollX: true,
+						// scrollCollapse: true,
 						fixedHeader: {
 							header: true,
 							footer: true,
