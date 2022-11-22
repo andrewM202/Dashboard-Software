@@ -340,12 +340,13 @@
 						className: "cursor-pointer",
 						action: function (e, dt, node, config) {
 							if (
-								table.rows().data().length ===
+								table.rows({ search: "applied" }).data()
+									.length ===
 								table.rows(".selected").data().length
 							) {
 								table.rows().deselect();
 							} else {
-								table.rows().select();
+								table.rows({ search: "applied" }).select();
 							}
 						},
 					},
@@ -470,9 +471,6 @@
 					selector: "td:nth-child(1)",
 				},
 				fixedColumns: true,
-				// scrollY: "auto",
-				// scrollX: true,
-				// scrollCollapse: true,
 				fixedHeader: {
 					header: true,
 					footer: true,
@@ -551,12 +549,15 @@
 								className: "cursor-pointer",
 								action: function (e, dt, node, config) {
 									if (
-										table.rows().data().length ===
+										table.rows({ search: "applied" }).data()
+											.length ===
 										table.rows(".selected").data().length
 									) {
 										table.rows().deselect();
 									} else {
-										table.rows().select();
+										table
+											.rows({ search: "applied" })
+											.select();
 									}
 								},
 							},
