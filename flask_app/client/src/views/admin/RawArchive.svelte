@@ -321,28 +321,58 @@
 				dom: "QBlfrtip",
 				buttons: [
 					{
-						text: "copy",
+						text: "New",
+						className: "newButton cursor-pointer",
+						action: function (e, dt, node, config) {},
+					},
+					{
+						text: "Edit",
+						className: "editButton cursor-pointer",
+						action: function (e, dt, node, config) {},
+					},
+					{
+						text: "Delete",
+						className: "deleteButton cursor-pointer",
+						action: function (e, dt, node, config) {},
+					},
+					{
+						text: "Select All",
 						className: "cursor-pointer",
+						action: function (e, dt, node, config) {
+							if (
+								table.rows().data().length ===
+								table.rows(".selected").data().length
+							) {
+								table.rows().deselect();
+							} else {
+								table.rows().select();
+							}
+						},
+					},
+					{
+						text: "copy",
+						className: "cursor-pointer capitalize downloadButton",
 					},
 					{
 						text: "csv",
-						className: "cursor-pointer",
+						className: "cursor-pointer capitalize downloadButton",
 					},
 					{
 						text: "excel",
-						className: "cursor-pointer",
+						className: "cursor-pointer capitalize downloadButton",
 					},
 					{
 						text: "pdf",
-						className: "cursor-pointer",
+						className: "cursor-pointer capitalize downloadButton",
 					},
 					{
 						text: "print",
-						className: "cursor-pointer",
+						className: "cursor-pointer capitalize downloadButton",
 					},
 					{
 						// Button to download as JSON
 						text: "Json",
+						className: "cursor-pointer downloadButton",
 						action: function (e, dt, node, config) {
 							const name = `${
 								Object.entries(DataSettings)[openTab][1]
@@ -371,6 +401,15 @@
 						// Fullscreen button
 						text: "Fullscreen",
 						action: function (e, dt, node, config) {
+							// If the user hits the fullscreen button a second
+							// time, it will go out of fullscreen
+							if (document.webkitIsFullScreen) {
+								document.webkitExitFullscreen();
+							} else if (document.mozFullScreen) {
+								document.exitFullscreen();
+							} else if (document.msFullscreenElement) {
+								document.msExitFullscreen();
+							}
 							// Make the datatable have an auto height while
 							// we are in full screen mode so the datatable
 							// fits the full screen
@@ -425,14 +464,15 @@
 				rowReorder: {
 					selector: "td:nth-child(1)",
 				},
-				// fixedColumns: true,
-				// scrollY: "auto",
-				// scrollX: true,
-				// scrollCollapse: true,
-				// fixedHeader: {
-				// 	header: true,
-				// 	footer: true,
-				// },
+				fixedColumns: true,
+				scrollY: "auto",
+				scrollX: true,
+				scrollCollapse: true,
+				fixedHeader: {
+					header: true,
+					footer: true,
+				},
+				aaSorting: [], // This allows by default no sorting, but can still click on header to sort
 				columnDefs: [{ targets: 0, visible: false }],
 				keys: true,
 				select: true,
@@ -451,6 +491,18 @@
 						position: "sticky",
 						top: "-18px",
 						"background-color": "white",
+					});
+					j$(".deleteButton").css({
+						"background-color": "rgb(251 113 133)", // Red
+					});
+					j$(".editButton").css({
+						"background-color": "#FFE15D", // Yellow
+					});
+					j$(".newButton").css({
+						"background-color": "#ADE792", // Green
+					});
+					j$(".downloadButton").css({
+						"background-color": "rgb(199 210 254)", // Indigo
 					});
 				},
 			});
@@ -475,14 +527,64 @@
 					table = new DataTable(`#${dataTable.id}`, {
 						dom: "QBlfrtip",
 						buttons: [
-							"copy",
-							"csv",
-							"excel",
-							"pdf",
-							"print",
+							{
+								text: "New",
+								className: "newButton cursor-pointer",
+								action: function (e, dt, node, config) {},
+							},
+							{
+								text: "Edit",
+								className: "editButton cursor-pointer",
+								action: function (e, dt, node, config) {},
+							},
+							{
+								text: "Delete",
+								className: "deleteButton cursor-pointer",
+								action: function (e, dt, node, config) {},
+							},
+							{
+								text: "Select All",
+								className: "cursor-pointer",
+								action: function (e, dt, node, config) {
+									if (
+										table.rows().data().length ===
+										table.rows(".selected").data().length
+									) {
+										table.rows().deselect();
+									} else {
+										table.rows().select();
+									}
+								},
+							},
+							{
+								text: "copy",
+								className:
+									"cursor-pointer capitalize downloadButton",
+							},
+							{
+								text: "csv",
+								className:
+									"cursor-pointer capitalize downloadButton",
+							},
+							{
+								text: "excel",
+								className:
+									"cursor-pointer capitalize downloadButton",
+							},
+							{
+								text: "pdf",
+								className:
+									"cursor-pointer capitalize downloadButton",
+							},
+							{
+								text: "print",
+								className:
+									"cursor-pointer capitalize downloadButton",
+							},
 							{
 								// Button to download as JSON
 								text: "Json",
+								className: "cursor-pointer downloadButton",
 								action: function (e, dt, node, config) {
 									const name = `${
 										Object.entries(DataSettings)[openTab][1]
@@ -511,6 +613,15 @@
 								// Fullscreen button
 								text: "Fullscreen",
 								action: function (e, dt, node, config) {
+									// If the user hits the fullscreen button a second
+									// time, it will go out of fullscreen
+									if (document.webkitIsFullScreen) {
+										document.webkitExitFullscreen();
+									} else if (document.mozFullScreen) {
+										document.exitFullscreen();
+									} else if (document.msFullscreenElement) {
+										document.msExitFullscreen();
+									}
 									// Make the datatable have an auto height while
 									// we are in full screen mode so the datatable
 									// fits the full screen
@@ -567,13 +678,17 @@
 						rowReorder: {
 							selector: "td:nth-child(1)",
 						},
-						// fixedColumns: true,
-						// scrollY: "auto",
-						// scrollX: true,
-						// scrollCollapse: true,
-						// columnDefs: [{ targets: 0, visible: false }],
 						keys: true,
 						select: true,
+						fixedColumns: true,
+						scrollY: "auto",
+						scrollX: true,
+						scrollCollapse: true,
+						fixedHeader: {
+							header: true,
+							footer: true,
+						},
+						aaSorting: [], // This allows by default no sorting, but can still click on header to sort
 						// initComplete called once in table lifespan when its created
 						initComplete: function () {
 							// Make the page number of results (i.e. 10 results per page)
@@ -605,6 +720,18 @@
 								position: "sticky",
 								top: "-18px",
 								"background-color": "white",
+							});
+							j$(".deleteButton").css({
+								"background-color": "rgb(251 113 133)", // Red
+							});
+							j$(".editButton").css({
+								"background-color": "#FFE15D", // Yellow
+							});
+							j$(".newButton").css({
+								"background-color": "#ADE792", // Green
+							});
+							j$(".downloadButton").css({
+								"background-color": "rgb(199 210 254)", // Indigo
 							});
 						},
 					});
@@ -753,12 +880,12 @@
 						<div
 							use:archiveTableSliderStyling
 							style="right: -4px; bottom: -4px; cursor: ns-resize;"
-							class="slider h-4 w-4 absolute rounded-full px-2"
+							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
 						/>
 						<div
 							use:archiveTableSliderStyling
 							style="left: -4px; bottom: -4px; cursor: ns-resize;"
-							class="slider h-4 w-4 absolute rounded-full px-2"
+							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
 						/>
 						<div
 							class="dataTableContainer w-full bg-white p-4 overflow-x-auto"
@@ -867,8 +994,5 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
-	}
-	.slider {
-		background-color: rgb(251 113 133);
 	}
 </style>
