@@ -2,42 +2,15 @@
 	// core components
 	import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
 	import HeaderStats from "components/Headers/HeaderStats.svelte";
-	import CardTable from "components/Cards/CardTable.svelte";
 	import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 	import SettingsBar from "components/Headers/SettingsBar.svelte";
 	import { dataSettingsStore, userSettingsStore } from "../../stores.js";
+	import { newTableEntry } from "../../../scripts/RawArchive/NewTableEntry.js";
+	import { loadSettingsEvent } from "../../../scripts/RawArchive/CollectionWideSettings.js";
 
 	// Popover Stuff Start
 	import { createPopper } from "@popperjs/core";
 	import { onMount, tick } from "svelte";
-
-	let popoverShow = false;
-	let btnRef;
-	let popoverRef;
-
-	let btnRef2;
-	let popoverRef2;
-	let popoverShow2 = false;
-
-	function toggleTooltip(btnref, popref, popShow) {
-		if (popShow === "popoverShow" && popoverShow === true) {
-			popoverShow = false;
-		} else if (popShow === "popoverShow2" && popoverShow2 === true) {
-			popoverShow2 = false;
-		} else {
-			if (popShow === "popoverShow") {
-				popoverShow = true;
-				createPopper(btnRef, popoverRef, {
-					placement: "left",
-				});
-			} else if (popShow === "popoverShow2") {
-				popoverShow2 = true;
-				createPopper(btnRef2, popoverRef2, {
-					placement: "left",
-				});
-			}
-		}
-	}
 
 	class popover {
 		constructor(btnRef, popoverRef) {
@@ -97,9 +70,9 @@
 			}
 		}
 		// Get data from form
-		let data = j$(formSelector).serialize(); //j$(`form#${formID}`).serialize();
+		let data = j$(formSelector).serialize();
 		// Clear form
-		j$(formSelector).trigger("reset"); // j$(`form#${formID}`).trigger("reset");
+		j$(formSelector).trigger("reset");
 		// Get search results for collection
 		j$.ajax({
 			type: "POST",
@@ -144,144 +117,10 @@
 						);
 					}
 				}
-				// Adjust the height of the archive table too so it resizes with its parent
-				j$("#archiveDataTable0")
-					.closest(".dataTables_scrollBody")
-					.css("height", j$(parent).innerHeight() - 310);
-				j$("#archiveDataTable0").DataTable().draw();
 			});
 			j$(window).mouseup(function () {
 				j$(window).unbind("mousemove");
 				j$("body").css("cursor", "");
-			});
-		});
-	}
-
-	function loadSettingsEvent(event) {
-		j$(event).click(function () {
-			j$("body").append(`
-                <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
-                z-index: 10000000000;
-                width: 100vw;
-                height: 100vh;
-                background-color: rgb(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                ">
-                    <div id="chart-settings-container" class="relative bg-white rounded shadow-lg p-4">
-                        <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
-                        class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
-                        <h1 class="text-xl font-bold mb-4">Chart Settings</h1>
-                        <form>
-                            <div class="flex justify-between">
-                                <div class="w-1/2" style="margin-right: 10px;">
-                                    <label class="block text-sm font-bold mb-2" for="text-color">
-                                        Chart Background Color
-                                    </label>
-                                    <input
-                                        style="height: 30px;"
-                                        class="picker-input w-full"
-                                        id="text-color"
-                                        type="color"
-                                        value="#000000"
-                                    />
-                                </div>
-                                <div class="w-1/2" margin-left: 10px;>
-                                    <label style="margin-left: 10px;" class="block text-sm font-bold mb-2" for="text-size">
-                                        Chart Text Size
-                                    </label>
-                                    <input
-                                        style="height: 30px;"
-                                        class="picker-input w-full"
-                                        id="text-size"
-                                        type="number"
-                                        value="4"
-                                    />
-                                </div>
-                            </div>
-                            <div class="flex justify-between" style="margin-top: 10px;">
-                                <div class="w-1/2" style="margin-right: 10px;">
-                                    <label class="block text-sm font-bold mb-2" for="text-font">
-                                        Chart Text Font
-                                    </label>
-                                    <select
-                                        style="height: 40px;"
-                                        class="picker-input w-full"
-                                        id="text-font"
-                                        type="text"
-                                        value="Arial"
-                                    >
-                                        <option value="Arial">Arial</option>
-                                        <option value="Times New Roman">Times New Roman</option>
-                                        <option value="Helvetica">Helvetica</option>
-                                        <option value="Courier New">Courier New</option>
-                                        <option value="Georgia">Georgia</option>
-                                        <option value="Verdana">Verdana</option>
-                                        <option value="Tahoma">Tahoma</option>
-                                        <option value="Palatino">Palatino</option>
-                                    </select>
-                                </div>
-                                <div class="w-1/2" style="margin-left: 10px;">
-                                    <label class="block text-sm font-bold mb-2" for="chart-title">
-                                        Chart Title
-                                    </label>
-                                    <input
-                                        style="height: 40px;"
-                                        class="picker-input w-full"
-                                        id="chart-title"
-                                        type="text"
-                                        value="test"
-                                        placeholder="Chart Title"
-                                    />
-                                </div>
-                            </div>
-                            <div class="flex justify-between" style="margin-top: 10px;">
-                                <div class="w-1/2" style="margin-right: 10px;">
-                                    <label class="block text-sm font-bold mb-2" for="chart-type">
-                                        Chart Type
-                                    </label>
-                                    <select
-                                        style="height: 40px;"
-                                        class="picker-input w-full"
-                                        id="chart-type"
-                                        type="text"
-                                    > 
-                                        <option value="network">Network Graph</option>
-                                        <option value="timeline">Timeline</option>
-                                    </select>
-                                </div>
-                                <div class="w-1/2" style="margin-left: 10px;">
-                                </div>
-                            </div>
-                            <div class="w-full" style="margin-right: 10px; margin-left: 10px; margin-top: 10px;">
-                                <label class="block text-center text-sm font-bold mb-2" for="chart-type">
-                                    Confirm Values
-                                </label>
-                                <input type="submit" value="Submit" style="background-color: rgb(0, 0, 0, 0.2)" class="cursor-pointer border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                            </div>
-                        </form>
-                    </div>    
-                </div>
-            `);
-
-			// Event listener for clicking the submit button
-			// and enacting all the settings
-			j$("input[type=submit]").click(function (e) {
-				e.preventDefault();
-			});
-
-			// Add event listener for closing the settings
-			j$(`#chart-settings-container #DashboardSettingsCloseIcon`).click(
-				function () {
-					j$("#temporary-background-gray").remove();
-				}
-			);
-			j$("#temporary-background-gray").click(function (ev) {
-				// Only close if we click on the background, and ignore clicks on the settings
-				if (j$(ev.target).is(j$("#temporary-background-gray"))) {
-					j$("#temporary-background-gray").remove();
-				}
 			});
 		});
 	}
@@ -310,437 +149,257 @@
 		}
 	}
 
-	// This function is called for the very first data table only.
-	function makeDataTableInitial(evt) {
-		let table;
-		let tableCreated = false;
-
-		// Initialize datatable if its not already initialized
-		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
-			table = new DataTable(`#${j$(evt)[0].id}`, {
-				dom: "QBlfrtip",
-				buttons: [
-					{
-						text: "New",
-						className: "newButton cursor-pointer",
-						action: function (e, dt, node, config) {},
-					},
-					{
-						text: "Edit",
-						className: "editButton cursor-pointer",
-						action: function (e, dt, node, config) {},
-					},
-					{
-						text: "Delete",
-						className: "deleteButton cursor-pointer",
-						action: function (e, dt, node, config) {},
-					},
-					{
-						text: "Select All",
-						className: "cursor-pointer",
-						action: function (e, dt, node, config) {
-							if (
-								table.rows({ search: "applied" }).data()
-									.length ===
-								table.rows(".selected").data().length
-							) {
-								table.rows().deselect();
-							} else {
-								table.rows({ search: "applied" }).select();
-							}
-						},
-					},
-					{
-						extend: "copy",
-						text: "Copy",
-						className: "cursor-pointer downloadButton",
-					},
-					{
-						extend: "csv",
-						text: "Csv",
-						className: "cursor-pointer downloadButton",
-					},
-					{
-						extend: "excel",
-						text: "Excel",
-						className: "cursor-pointer downloadButton",
-					},
-					{
-						extend: "pdf",
-						text: "Pdf",
-						className: "cursor-pointer downloadButton",
-					},
-					{
-						extend: "print",
-						text: "Print",
-						className: "cursor-pointer downloadButton",
-					},
-					{
-						// Button to download as JSON
-						text: "Json",
-						className: "cursor-pointer downloadButton",
-						action: function (e, dt, node, config) {
-							const name = `${
-								Object.entries(DataSettings)[openTab][1]
-									.CollectionName
-							}.json`;
-							const saveData = JSON.stringify(
-								Object.entries(DataSettings)[openTab][1].Table
-									.Data[0],
-								undefined,
-								2
-							);
-
-							const a = document.createElement("a");
-							// const type = name.split(".").pop();
-							a.href = URL.createObjectURL(
-								new Blob([saveData], {
-									// type: `text/${type === "txt" ? "plain" : type}`,
-									type: "json",
-								})
-							);
-							a.download = name;
-							a.click();
-						},
-					},
-					{
-						// Fullscreen button
-						text: "Fullscreen",
-						action: function (e, dt, node, config) {
-							// If the user hits the fullscreen button a second
-							// time, it will go out of fullscreen
-							if (document.webkitIsFullScreen) {
-								document.webkitExitFullscreen();
-							} else if (document.mozFullScreen) {
-								document.exitFullscreen();
-							} else if (document.msFullscreenElement) {
-								document.msExitFullscreen();
-							}
-							// Make the datatable have an auto height while
-							// we are in full screen mode so the datatable
-							// fits the full screen
-							if (datatableHeight === null) {
-								datatableHeight = j$(
-									j$(e.target).parentsUntil(
-										"div.tableBorder"
-									)[
-										j$(e.target).parentsUntil(
-											"div.tableBorder"
-										).length - 1
-									]
-								)
-									.parent()
-									.css("height");
-
-								j$(
-									j$(e.target).parentsUntil(
-										"div.tableBorder"
-									)[
-										j$(e.target).parentsUntil(
-											"div.tableBorder"
-										).length - 1
-									]
-								)
-									.parent()
-									.css("height", "auto");
-								datatableElem = j$(
-									j$(e.target).parentsUntil(
-										"div.tableBorder"
-									)[
-										j$(e.target).parentsUntil(
-											"div.tableBorder"
-										).length - 1
-									]
-								).parent();
-								j$(
-									j$(e.target).parentsUntil(".tableBorder")[
-										j$(e.target).parentsUntil(
-											".tableBorder"
-										).length - 1
-									]
-								)
-									.parent()
-									.fullScreen(true);
-							}
-						},
-					},
-				],
-				searchBuilder: {},
-				colReorder: true,
-				rowReorder: {
-					selector: "td:nth-child(1)",
-				},
-				fixedColumns: true,
-				fixedHeader: {
-					header: true,
-					footer: true,
-				},
-				aaSorting: [], // This allows by default no sorting, but can still click on header to sort
-				keys: true,
-				select: true,
-				// initComplete called once in table lifespan when its created
-				drawCallback: function () {
-					// Make the page number of results (i.e. 10 results per page)
-					// be 75px wide so the icon does not go over the number
-					j$(".dataTables_length select").css("width", "75px");
-					// Detect cell overflow for each table entry
-					// now that we have completed creating the datatable
-					for (let event of j$(`#${j$(evt)[0].id} td`)) {
-						detectCellOverflow(event);
-					}
-					// Make the header row sticky
-					j$(".archiveDataTable thead").css({
-						position: "sticky",
-						top: "-18px",
-						"background-color": "white",
-					});
-					j$(".deleteButton").css({
-						"background-color": "rgb(251 113 133)", // Red
-					});
-					j$(".editButton").css({
-						"background-color": "#FFE15D", // Yellow
-					});
-					j$(".newButton").css({
-						"background-color": "#ADE792", // Green
-					});
-					j$(".downloadButton").css({
-						"background-color": "rgb(199 210 254)", // Indigo
-					});
-				},
-			});
-		}
-	}
-
 	// This function is called every time the openTab variable is changed,
 	// to see if we need to generate the datatable for this tab
 	// because we only want to load the datatable when its visible. This also
 	// allows the overflow popovers to generate correctly because if the element is hidden
 	// it will never generate the overflow popover otherwise
-	function makeDataTable() {
+	function makeDataTable(evt) {
 		let table;
 
-		for (let dataTable of j$(".archiveDataTable")) {
-			if (
-				dataTable.id.split("archiveDataTable")[1] == openTab &&
-				dataTable.id.split("archiveDataTable")[1] !== 0
-			) {
-				// Initialize datatable if its not already initialized
-				if (!j$.fn.dataTable.isDataTable(`#${dataTable.id}`)) {
-					table = new DataTable(`#${dataTable.id}`, {
-						dom: "QBlfrtip",
-						buttons: [
-							{
-								text: "New",
-								className: "newButton cursor-pointer",
-								action: function (e, dt, node, config) {},
-							},
-							{
-								text: "Edit",
-								className: "editButton cursor-pointer",
-								action: function (e, dt, node, config) {},
-							},
-							{
-								text: "Delete",
-								className: "deleteButton cursor-pointer",
-								action: function (e, dt, node, config) {},
-							},
-							{
-								text: "Select All",
-								className: "cursor-pointer",
-								action: function (e, dt, node, config) {
-									if (
-										table.rows({ search: "applied" }).data()
-											.length ===
-										table.rows(".selected").data().length
-									) {
-										table.rows().deselect();
-									} else {
-										table
-											.rows({ search: "applied" })
-											.select();
-									}
-								},
-							},
-							{
-								extend: "copy",
-								text: "Copy",
-								className: "cursor-pointer downloadButton",
-							},
-							{
-								extend: "csv",
-								text: "Csv",
-								className: "cursor-pointer downloadButton",
-							},
-							{
-								extend: "excel",
-								text: "Excel",
-								className: "cursor-pointer downloadButton",
-							},
-							{
-								extend: "pdf",
-								text: "Pdf",
-								className: "cursor-pointer downloadButton",
-							},
-							{
-								extend: "print",
-								text: "Print",
-								className: "cursor-pointer downloadButton",
-							},
-							{
-								// Button to download as JSON
-								text: "Json",
-								className: "cursor-pointer downloadButton",
-								action: function (e, dt, node, config) {
-									const name = `${
-										Object.entries(DataSettings)[openTab][1]
-											.CollectionName
-									}.json`;
-									const saveData = JSON.stringify(
-										Object.entries(DataSettings)[openTab][1]
-											.Table.Data[0],
-										undefined,
-										2
-									);
-
-									const a = document.createElement("a");
-									// const type = name.split(".").pop();
-									a.href = URL.createObjectURL(
-										new Blob([saveData], {
-											// type: `text/${type === "txt" ? "plain" : type}`,
-											type: "json",
-										})
-									);
-									a.download = name;
-									a.click();
-								},
-							},
-							{
-								// Fullscreen button
-								text: "Fullscreen",
-								action: function (e, dt, node, config) {
-									// If the user hits the fullscreen button a second
-									// time, it will go out of fullscreen
-									if (document.webkitIsFullScreen) {
-										document.webkitExitFullscreen();
-									} else if (document.mozFullScreen) {
-										document.exitFullscreen();
-									} else if (document.msFullscreenElement) {
-										document.msExitFullscreen();
-									}
-									// Make the datatable have an auto height while
-									// we are in full screen mode so the datatable
-									// fits the full screen
-									if (datatableHeight === null) {
-										datatableHeight = j$(
-											j$(e.target).parentsUntil(
-												"div.tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													"div.tableBorder"
-												).length - 1
-											]
-										)
-											.parent()
-											.css("height");
-
-										j$(
-											j$(e.target).parentsUntil(
-												"div.tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													"div.tableBorder"
-												).length - 1
-											]
-										)
-											.parent()
-											.css("height", "auto");
-										datatableElem = j$(
-											j$(e.target).parentsUntil(
-												"div.tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													"div.tableBorder"
-												).length - 1
-											]
-										).parent();
-										j$(
-											j$(e.target).parentsUntil(
-												".tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													".tableBorder"
-												).length - 1
-											]
-										)
-											.parent()
-											.fullScreen(true);
-									}
-								},
-							},
-						],
-						searchBuilder: {},
-						colReorder: true,
-						rowReorder: {
-							selector: "td:nth-child(1)",
-						},
-						keys: true,
-						select: true,
-						fixedColumns: true,
-						// scrollY: "auto",
-						// scrollX: true,
-						// scrollCollapse: true,
-						fixedHeader: {
-							header: true,
-							footer: true,
-						},
-						aaSorting: [], // This allows by default no sorting, but can still click on header to sort
-						// initComplete called once in table lifespan when its created
-						initComplete: function () {
-							// Make the page number of results (i.e. 10 results per page)
-							// be 75px wide so the icon does not go over the number
-							j$(".dataTables_length select").css(
-								"width",
-								"75px"
-							);
-							// Detect cell overflow for each table entry
-							// now that we have completed creating the datatable
-							for (let event of j$(`#${dataTable.id} td`)) {
-								detectCellOverflow(event);
-							}
-						},
-						drawCallback: function () {
-							// Make the page number of results (i.e. 10 results per page)
-							// be 75px wide so the icon does not go over the number
-							j$(".dataTables_length select").css(
-								"width",
-								"75px"
-							);
-							// Detect cell overflow for each table entry
-							// now that we have completed creating the datatable
-							for (let event of j$(`#${dataTable.id} td`)) {
-								detectCellOverflow(event);
-							}
-							// Make the header row sticky
-							j$(".archiveDataTable thead").css({
-								position: "sticky",
-								top: "-18px",
-								"background-color": "white",
-							});
-							j$(".deleteButton").css({
-								"background-color": "rgb(251 113 133)", // Red
-							});
-							j$(".editButton").css({
-								"background-color": "#FFE15D", // Yellow
-							});
-							j$(".newButton").css({
-								"background-color": "#ADE792", // Green
-							});
-							j$(".downloadButton").css({
-								"background-color": "rgb(199 210 254)", // Indigo
-							});
-						},
+		if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
+			let tempInterval = setInterval(function () {
+				if (j$(`#${j$(evt)[0].id}`).is(":visible")) {
+					clearInterval(tempInterval);
+					j$(
+						j$(`#${j$(evt)[0].id}`)
+							.parentsUntil(".tableBorder")
+							.parent()[0]
+					).css({
+						height: j$(
+							j$(`#${j$(evt)[0].id}`)
+								.parentsUntil(".tableBorder")
+								.parent()[0]
+						).innerHeight(),
 					});
 				}
+			}, 10);
+			// Initialize datatable if its not already initialized
+			if (!j$.fn.dataTable.isDataTable(`#${j$(evt)[0].id}`)) {
+				table = new DataTable(`#${j$(evt)[0].id}`, {
+					dom: "QBlfrtip",
+					buttons: [
+						{
+							text: "New",
+							className: "newButton cursor-pointer",
+							action: function (e, dt, node, config) {
+								newTableEntry(e);
+								console.log(
+									table.rows({ selected: true }).data()
+								);
+								// These db field names match up with the data in table.rows().data()
+								let tableHeaders =
+									Object.entries(DataSettings)[
+										j$(evt)[0].id.split(
+											"archiveDataTable"
+										)[1]
+									][1].Table.Headers;
+								let dbFieldNames =
+									Object.entries(DataSettings)[
+										j$(evt)[0].id.split(
+											"archiveDataTable"
+										)[1]
+									][1].Table.DBFieldNames;
+								console.log(dbFieldNames);
+								console.log(tableHeaders);
+							},
+						},
+						{
+							text: "Edit",
+							className: "editButton cursor-pointer",
+							action: function (e, dt, node, config) {},
+						},
+						{
+							text: "Delete",
+							className: "deleteButton cursor-pointer",
+							action: function (e, dt, node, config) {},
+						},
+						{
+							text: "Select All",
+							className: "cursor-pointer",
+							action: function (e, dt, node, config) {
+								if (
+									table.rows({ search: "applied" }).data()
+										.length ===
+									table.rows(".selected").data().length
+								) {
+									table.rows().deselect();
+								} else {
+									table.rows({ search: "applied" }).select();
+								}
+							},
+						},
+						{
+							extend: "copy",
+							text: "Copy",
+							className: "cursor-pointer downloadButton",
+						},
+						{
+							extend: "csv",
+							text: "Csv",
+							className: "cursor-pointer downloadButton",
+						},
+						{
+							extend: "excel",
+							text: "Excel",
+							className: "cursor-pointer downloadButton",
+						},
+						{
+							extend: "pdf",
+							text: "Pdf",
+							className: "cursor-pointer downloadButton",
+						},
+						{
+							extend: "print",
+							text: "Print",
+							className: "cursor-pointer downloadButton",
+						},
+						{
+							// Button to download as JSON
+							text: "Json",
+							className: "cursor-pointer downloadButton",
+							action: function (e, dt, node, config) {
+								const name = `${
+									Object.entries(DataSettings)[openTab][1]
+										.CollectionName
+								}.json`;
+								const saveData = JSON.stringify(
+									Object.entries(DataSettings)[openTab][1]
+										.Table.Data[0],
+									undefined,
+									2
+								);
+
+								const a = document.createElement("a");
+								// const type = name.split(".").pop();
+								a.href = URL.createObjectURL(
+									new Blob([saveData], {
+										// type: `text/${type === "txt" ? "plain" : type}`,
+										type: "json",
+									})
+								);
+								a.download = name;
+								a.click();
+							},
+						},
+						{
+							// Fullscreen button
+							text: "Fullscreen",
+							action: function (e, dt, node, config) {
+								// If the user hits the fullscreen button a second
+								// time, it will go out of fullscreen
+								if (document.webkitIsFullScreen) {
+									document.webkitExitFullscreen();
+								} else if (document.mozFullScreen) {
+									document.exitFullscreen();
+								} else if (document.msFullscreenElement) {
+									document.msExitFullscreen();
+								}
+								// Make the datatable have an auto height while
+								// we are in full screen mode so the datatable
+								// fits the full screen
+								if (datatableHeight === null) {
+									datatableHeight = j$(
+										j$(e.target).parentsUntil(
+											"div.tableBorder"
+										)[
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											).length - 1
+										]
+									)
+										.parent()
+										.css("height");
+
+									j$(
+										j$(e.target).parentsUntil(
+											"div.tableBorder"
+										)[
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											).length - 1
+										]
+									)
+										.parent()
+										.css("height", "auto");
+									datatableElem = j$(
+										j$(e.target).parentsUntil(
+											"div.tableBorder"
+										)[
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											).length - 1
+										]
+									).parent();
+									j$(
+										j$(e.target).parentsUntil(
+											".tableBorder"
+										)[
+											j$(e.target).parentsUntil(
+												".tableBorder"
+											).length - 1
+										]
+									)
+										.parent()
+										.fullScreen(true);
+								}
+							},
+						},
+					],
+					searchBuilder: {},
+					colReorder: true,
+					rowReorder: {
+						selector: "td:nth-child(1)",
+					},
+					keys: true,
+					select: {
+						style: "multi",
+					},
+					aaSorting: [], // This allows by default no sorting, but can still click on header to sort
+					// initComplete called once in table lifespan when its created
+					initComplete: function () {
+						// Make the page number of results (i.e. 10 results per page)
+						// be 75px wide so the icon does not go over the number
+						j$(".dataTables_length select").css("width", "75px");
+						// Detect cell overflow for each table entry
+						// now that we have completed creating the datatable
+						for (let event of j$(`#${j$(evt)[0].id} td`)) {
+							detectCellOverflow(event);
+						}
+						// Add an x-overflow so that the table itself can scroll,
+						// but not the header or footer
+						j$(`#${j$(evt)[0].id}`).wrap(
+							"<div class='x-overflow-auto' style='max-width: 100%; width: 100%; overflow-x: auto;'></div>"
+						);
+					},
+					drawCallback: function () {
+						// Make the page number of results (i.e. 10 results per page)
+						// be 75px wide so the icon does not go over the number
+						j$(".dataTables_length select").css("width", "75px");
+						// Detect cell overflow for each table entry
+						// now that we have completed creating the datatable
+						for (let event of j$(`#${j$(evt)[0].id} td`)) {
+							detectCellOverflow(event);
+						}
+						j$(".deleteButton").css({
+							"background-color": "rgb(251 113 133)", // Red
+						});
+						j$(".editButton").css({
+							"background-color": "#FFE15D", // Yellow
+						});
+						j$(".newButton").css({
+							"background-color": "#ADE792", // Green
+						});
+						j$(".downloadButton").css({
+							"background-color": "rgb(199 210 254)", // Indigo
+						});
+					},
+				});
+				// Event listener to see which header is clicked
+				j$(`#${j$(evt)[0].id} thead`).on("click", "th", function () {
+					let index = table.column(this).index();
+					console.log(index);
+				});
 			}
 		}
 	}
@@ -798,6 +457,7 @@
 			detectOverflowLater = overflowCopy;
 		});
 	});
+
 	async function detectCellOverflow(e) {
 		await tick();
 		// Detect if a <td> is overflowing in the card table.
@@ -833,13 +493,8 @@
 		}, 300);
 	}
 
-	// Create a mapping for the table so we know
-	// form input -> input type
-
 	// Bind openTab to AdminNavbar component
 	let openTab = 0;
-
-	$: openTab, makeDataTable();
 </script>
 
 <SettingsBar SettingsFunction={loadSettingsEvent} />
@@ -853,54 +508,57 @@
 			: undefined}
 	/>
 	{#each Object.entries(DataSettings) as section, i}
-		<div
+		{#if openTab == i}
+			<!-- <div
 			class={navItems[openTab] === section[0] ? "block" : "hidden"}
 			id="TableHiddenBlockContainer"
-		>
-			<HeaderStats
-				id={section[0]}
-				cards={section[1].Cards}
-				title={navItems[openTab]}
-				titleFontSize={"text-4xl"}
-				inputs={section[1].HeaderSearchInputs}
-				CollectionName={section[1].CollectionName}
-				SearchFunction={SearchResults}
-				headerBGColor={UserSettings[0].archive_header_color !==
-					undefined && UserSettings[0].archive_header_color !== null
-					? `Background-color: ${UserSettings[0].archive_header_color}`
-					: undefined}
-			/>
-			<div
-				style={UserSettings[0].background_color !== undefined &&
-				UserSettings[0].background_color !== null
-					? `Background-color: ${UserSettings[0].background_color}`
-					: undefined}
-				class="block lg:px-10 mx-auto w-full my-12"
-			>
-				<div class="flex flex-wrap ml-8 w-full">
-					<div
-						style="height: 650px;"
-						class="tableBorder w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
-					>
+		> -->
+			<div id="TableHiddenBlockContainer">
+				<HeaderStats
+					id={section[0]}
+					cards={section[1].Cards}
+					title={navItems[openTab]}
+					titleFontSize={"text-4xl"}
+					inputs={section[1].HeaderSearchInputs}
+					CollectionName={section[1].CollectionName}
+					SearchFunction={SearchResults}
+					headerBGColor={UserSettings[0].archive_header_color !==
+						undefined &&
+					UserSettings[0].archive_header_color !== null
+						? `Background-color: ${UserSettings[0].archive_header_color}`
+						: undefined}
+				/>
+				<div
+					style={UserSettings[0].background_color !== undefined &&
+					UserSettings[0].background_color !== null
+						? `Background-color: ${UserSettings[0].background_color}`
+						: undefined}
+					class="block lg:px-10 mx-auto w-full my-12"
+				>
+					<div class="flex flex-wrap ml-8 w-full">
 						<div
-							use:archiveTableSliderStyling
-							style="right: -4px; bottom: -4px; cursor: ns-resize;"
-							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
-						/>
-						<div
-							use:archiveTableSliderStyling
-							style="left: -4px; bottom: -4px; cursor: ns-resize;"
-							class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
-						/>
-						<div
-							class="dataTableContainer w-full bg-white p-4 overflow-x-auto"
 							style="height: auto;"
+							class="tableBorder w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
 						>
-							{#if i === 0}
+							<div
+								use:archiveTableSliderStyling
+								style="right: -4px; bottom: -4px; cursor: ns-resize;"
+								class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
+							/>
+							<div
+								use:archiveTableSliderStyling
+								style="left: -4px; bottom: -4px; cursor: ns-resize;"
+								class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
+							/>
+							<div
+								class="dataTableContainer w-full bg-white p-4"
+								style="height: auto; overflow-y: scroll;"
+							>
 								<table
-									use:makeDataTableInitial
+									use:makeDataTable
 									class="archiveDataTable"
 									id="archiveDataTable{i}"
+									collectionName={section[1].collectionName}
 								>
 									<thead>
 										<tr>
@@ -927,68 +585,39 @@
 										{/if}
 									</tbody>
 								</table>
-							{:else}
-								<table
-									class="archiveDataTable"
-									id="archiveDataTable{i}"
-								>
-									<thead>
-										<tr>
-											{#each section[1].Table.Headers as header}
-												<th>{header}</th>
-											{/each}
-										</tr>
-									</thead>
-									<tbody>
-										{#if section[1].Table.Data[0] !== undefined}
-											{#each section[1].Table.Data[0] as row}
-												<tr>
-													{#each Object.entries(row) as entry, entryNum}
-														{#if section[1].Table.DBFieldNames.includes(entry[0])}
-															{#if entryNum !== 0}
-																<td
-																	>{entry[1]}</td
-																>
-															{/if}
-														{/if}
-													{/each}
-												</tr>
-											{/each}
-										{/if}
-									</tbody>
-								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div
+					style={UserSettings[0].background_color !== undefined &&
+					UserSettings[0].background_color !== null
+						? `Background-color: ${UserSettings[0].background_color}`
+						: undefined}
+					class="lg:px-10 mx-auto w-full"
+				>
+					<div class="flex flex-wrap ml-8">
+						<div class="w-full h-auto bg-blueGray-700 mb-12 p-6">
+							{#if section[1].CreationCard !== undefined}
+								<DataCreationCard
+									CollectionName={section[1].CollectionName}
+									flexdata={section[1].CreationCard
+										.Flexdatalistdata}
+									title={section[1].CreationCard.Title}
+									inputs={section[1].CreationCard.Inputs}
+									creationColor={UserSettings[0]
+										.archive_creation_color !== undefined &&
+									UserSettings[0].archive_creation_color !==
+										null
+										? `Background-color: ${UserSettings[0].archive_creation_color}`
+										: undefined}
+								/>
 							{/if}
 						</div>
 					</div>
 				</div>
 			</div>
-			<div
-				style={UserSettings[0].background_color !== undefined &&
-				UserSettings[0].background_color !== null
-					? `Background-color: ${UserSettings[0].background_color}`
-					: undefined}
-				class="lg:px-10 mx-auto w-full"
-			>
-				<div class="flex flex-wrap ml-8">
-					<div class="w-full h-auto bg-blueGray-700 mb-12 p-6">
-						{#if section[1].CreationCard !== undefined}
-							<DataCreationCard
-								CollectionName={section[1].CollectionName}
-								flexdata={section[1].CreationCard
-									.Flexdatalistdata}
-								title={section[1].CreationCard.Title}
-								inputs={section[1].CreationCard.Inputs}
-								creationColor={UserSettings[0]
-									.archive_creation_color !== undefined &&
-								UserSettings[0].archive_creation_color !== null
-									? `Background-color: ${UserSettings[0].archive_creation_color}`
-									: undefined}
-							/>
-						{/if}
-					</div>
-				</div>
-			</div>
-		</div>
+		{/if}
 	{/each}
 {/if}
 
