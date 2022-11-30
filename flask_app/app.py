@@ -5,6 +5,7 @@ from flask_security import Security
 from flask_paranoid import Paranoid
 # Generate CSRF tokens with flask_wtf
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+from os import environ
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
@@ -62,4 +63,4 @@ paranoid.redirect_view = 'auth.login'
 csrf = CSRFProtect(app)
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host=environ['FLASK_HOST'])

@@ -1,0 +1,3 @@
+([('app',
+   '/Users/andrewmatt/code/python-content/news-scraper-ultimate/flask_app/dist/app',
+   'EXECUTABLE')],)
