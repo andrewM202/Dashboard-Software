@@ -354,6 +354,21 @@ def delete_collection():
 
     return redirect('/admin/archive-designer')
 
+@bp.route("/admin/collection/<collection_name>", methods=["GET"])
+@login_required
+def get_collection_data(collection_name):
+    archive_settings = ArchiveCollectionSettings.objects()
+
+    return_settings = {"data": []}
+    for collection in archive_settings:
+        if(collection["collection_title"] == collection_name):
+            # return json_util.dumps(db.get_database(db_name).get_collection(collection["collection_name"]).find({}, {"_id":0}))
+            print(db.get_database(db_name).get_collection(collection["collection_name"]).find())
+            return_settings["data"]= db.get_database(db_name).get_collection(collection["collection_name"]).find({}, {"_id":0})
+            return json_util.dumps(return_settings)
+            
+    return 'test'
+
 @bp.route("/admin/archive-configuration/<collection_name>", methods=["GET"])
 @login_required
 def retrieve_single_archive_configuration(collection_name):

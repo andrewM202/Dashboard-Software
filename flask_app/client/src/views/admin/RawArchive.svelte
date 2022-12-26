@@ -4,11 +4,7 @@
 	import HeaderStats from "components/Headers/HeaderStats.svelte";
 	import DataCreationCard from "components/Cards/DataCreationCard.svelte";
 	import SettingsBar from "components/Headers/SettingsBar.svelte";
-	import {
-		dataSettingsStore,
-		userSettingsStore,
-		collectionTitlesStore,
-	} from "../../stores.js";
+	import { userSettingsStore, collectionTitlesStore } from "../../stores.js";
 	import { newTableEntry } from "../../../scripts/RawArchive/NewTableEntry.js";
 	import { loadSettingsEvent } from "../../../scripts/RawArchive/CollectionWideSettings.js";
 
@@ -60,6 +56,7 @@
 				url: `/admin/archive-configuration/${navItems[openTab]}`,
 				success: function (data) {
 					DataSettings = Object.entries(JSON.parse(data))[0];
+					console.log(DataSettings);
 				},
 				error: function (error) {
 					console.log("Error");
@@ -96,11 +93,11 @@
 				// On success, replace the correlating collection
 				// data in the dataSettingsStore to the updated,
 				// filtered data
-				for (let entry of Object.entries($dataSettingsStore)) {
-					if (entry[1].CollectionName === data.CollectionName) {
-						$dataSettingsStore[entry[0]].Table.Data = [data.data];
-					}
-				}
+				// for (let entry of Object.entries($dataSettingsStore)) {
+				// 	if (entry[1].CollectionName === data.CollectionName) {
+				// 		$dataSettingsStore[entry[0]].Table.Data = [data.data];
+				// 	}
+				// }
 			},
 			error: function (error) {
 				console.log("Error");
@@ -169,10 +166,12 @@
 	function makeDataTable() {
 		let table;
 
+		// If the datatable is already created, destroy it
+		// so we can make a new one
 		if (j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
-			j$(`.archiveDataTable`).DataTable().destroy();
-			// console.log("destroy");
+			j$(`.archiveDataTable`).DataTable().clear().destroy();
 		}
+		// Make our new data table
 		if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
 			let tempInterval = setInterval(function () {
 				if (j$(`.archiveDataTable`).is(":visible")) {
@@ -189,9 +188,27 @@
 					// 			.parent()[0]
 					// 	).innerHeight(),
 					// });
+
+					//Get all the columns for the table
+					let columns = [];
+					for (let header of DataSettings[1].Table.DBFieldNames) {
+						columns.push({ data: header });
+					}
 					// Initialize datatable if its not already initialized
 					if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
 						table = new DataTable(`.archiveDataTable`, {
+							ajax: {
+								url: `/admin/collection/${navItems[openTab]}`,
+							},
+							// Show a loading option while we are getting
+							// ajax data
+							processing: true,
+							language: {
+								loadingRecords: "&nbsp;",
+								processing: "Loading...",
+							},
+							deferRender: true,
+							columns: columns,
 							dom: "QBlfrtip",
 							buttons: [
 								{
@@ -376,6 +393,13 @@
 									"width",
 									"75px"
 								);
+								j$("td").css({
+									"max-width": "14rem",
+									/* max-width: 50ch; */
+									"white-space": "nowrap",
+									"text-overflow": "ellipsis",
+									overflow: "hidden",
+								});
 								// Detect cell overflow for each table entry
 								// now that we have completed creating the datatable
 								for (let event of j$(`.archiveDataTable td`)) {
@@ -394,6 +418,13 @@
 									"width",
 									"75px"
 								);
+								j$("td").css({
+									"max-width": "14rem",
+									/* max-width: 50ch; */
+									"white-space": "nowrap",
+									"text-overflow": "ellipsis",
+									overflow: "hidden",
+								});
 								// Detect cell overflow for each table entry
 								// now that we have completed creating the datatable
 								for (let event of j$(`.archiveDataTable td`)) {
@@ -589,21 +620,6 @@
 									{/each}
 								</tr>
 							</thead>
-							<tbody>
-								{#if DataSettings[1].Table.Data[0] !== undefined}
-									{#each DataSettings[1].Table.Data[0] as row}
-										<tr>
-											{#each Object.entries(row) as entry, entryNum}
-												{#if DataSettings[1].Table.DBFieldNames.includes(entry[0])}
-													{#if entryNum !== 0}
-														<td>{entry[1]}</td>
-													{/if}
-												{/if}
-											{/each}
-										</tr>
-									{/each}
-								{/if}
-							</tbody>
 						</table>
 					</div>
 				</div>
