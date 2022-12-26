@@ -11,6 +11,8 @@ services:
         # so it auto-updates container when updating locally
         volumes:
             - ./flask_app:/app
+        environment:
+            - PYTHONUNBUFFERED=1
 
     proxy:
         build: nginx

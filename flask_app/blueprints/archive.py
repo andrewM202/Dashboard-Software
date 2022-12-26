@@ -354,6 +354,73 @@ def delete_collection():
 
     return redirect('/admin/archive-designer')
 
+@bp.route("/admin/archive-configuration/<collection_name>", methods=["GET"])
+@login_required
+def retrieve_single_archive_configuration(collection_name):
+    """ Returns configuration JSON for the archive 
+    for an individual collection """
+    archive_settings = ArchiveCollectionSettings.objects()
+
+    return_settings = {}
+    for collection in archive_settings:
+        if(collection["collection_title"] == collection_name):
+            dict_collection = dict(collection.to_mongo())
+            dict_collection_keys = dict_collection.keys()
+            ######### Collection Name #########
+            return_settings[collection["collection_title"]] = {
+                "CollectionName": collection["collection_name"],
+                "HeaderSearchInputs": [], 
+                "Cards": [], 
+                "Table": {}, 
+                "CreationCard": {}
+            }
+            ######### Header #########
+            # All header search input fields should be same length
+            for i in range(0, len(collection.header_search_input_types)):
+                if(collection.header_search_enabled[i] in ["True", "true", True]):
+                    return_settings[collection["collection_title"]]["HeaderSearchInputs"].append({ 
+                        "type": collection.header_search_input_types[i], 
+                        "placeholder": collection.header_search_input_placeholders[i], 
+                        "name": collection.header_search_input_names[i] 
+                    })
+            # All card input fields should be same length
+            for i in range(0, len(collection.header_card_subtitles)):
+                return_settings[collection["collection_title"]]["Cards"].append({ 
+                    "subtitle": collection.header_card_subtitles[i], 
+                    "amount": collection.header_card_amounts[i], 
+                    "increase": collection.header_card_increases[i], 
+                    "description": collection.header_card_descriptions[i] 
+                })
+            ######### Table #########
+            return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
+            for i in range(0, len(collection.table_db_field_names)):
+                return_settings[collection["collection_title"]]["Table"]["Headers"] = sorted([i.title().replace("_", " ") for i in collection.table_db_field_names])
+                return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = sorted([i.lower().replace(' ', '_') for i in collection.table_db_field_names]) 
+                return_settings[collection["collection_title"]]["Table"]["Title"] = collection.table_title
+            ######### Creation Card #########
+            return_settings[collection["collection_title"]]["CreationCard"]["Title"] = collection.creationcard_title
+            return_settings[collection["collection_title"]]["CreationCard"]["Inputs"] = []
+            for i in range(0, len(collection.creationcard_input_types)):
+                if collection.creationcard_flexdatalistdata[i] == "gen_none" or collection.creationcard_flexdatalistdata[i] == "None":
+                    return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ 
+                        "type": collection.creationcard_input_types[i], 
+                        "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), 
+                        "name": collection.table_db_field_names[i].lower().replace(' ', '_'), 
+                        "required": collection.creationcard_required_field[i] == "true" 
+                    })
+                else:
+                    return_settings[collection["collection_title"]]["CreationCard"]["Inputs"].append({ 
+                        "type": collection.creationcard_input_types[i], 
+                        "placeholder": collection.creationcard_input_placeholders[i].title().replace("_", " "), 
+                        "name": collection.table_db_field_names[i].lower().replace(' ', '_'), 
+                        "required": collection.creationcard_required_field[i] == "true", 
+                        "flexdatalistdata": (db.get_database(db_name).get_collection(collection.creationcard_flexdatalistdata[i]).find({}, { f"{collection.creationcard_flexdatalistfield[i]}": 1}) ), 
+                        "flexdatafields": collection.creationcard_flexdatalistfield[i], 
+                        "flexdataid": str(uuid1()) 
+                    })
+    return json_util.dumps(return_settings, indent=4, sort_keys=True)
+    
+
 @bp.route("/admin/archive-configuration")
 @login_required
 def retrieve_archive_configuration():
@@ -362,6 +429,7 @@ def retrieve_archive_configuration():
 
     return_settings = {}
     for collection in archive_settings:
+        print(collection)
         dict_collection = dict(collection.to_mongo())
         dict_collection_keys = dict_collection.keys()
         ######### Collection Name #########
@@ -472,7 +540,10 @@ def retrieve_collection_titles():
     for name in collection_names:
         col_title = ArchiveCollectionSettings.objects(collection_name=name).only('collection_title')[0]
         collection_titles.append(col_title.collection_title)
-
+        
+    # Sort the titles into ascending order
+    collection_titles.sort()
+        
     return json_util.dumps(collection_titles)
 
 @bp.route("/admin/archive-data/update", methods=["POST"])

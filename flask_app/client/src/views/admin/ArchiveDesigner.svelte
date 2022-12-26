@@ -23,15 +23,9 @@
 
 	function HeaderSearchFunction(e) {
 		e.preventDefault();
-		let form;
+		let form = j$(e).parentsUntil("form").parent();
 		// Instead of hard coding form selector, find first form element
 		// and set that as selector
-		for (let i = 0; i < e.path.length; i++) {
-			if (e.path[i].tagName === "FORM") {
-				form = e.path[i];
-				break;
-			}
-		}
 
 		let formData = j$(form)
 			.find("input[name=flexdatalist-CollectionName]")
