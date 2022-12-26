@@ -56,7 +56,6 @@
 				url: `/admin/archive-configuration/${navItems[openTab]}`,
 				success: function (data) {
 					DataSettings = Object.entries(JSON.parse(data))[0];
-					console.log(DataSettings);
 				},
 				error: function (error) {
 					console.log("Error");
@@ -238,7 +237,13 @@
 								{
 									text: "Delete",
 									className: "deleteButton cursor-pointer",
-									action: function (e, dt, node, config) {},
+									action: function (e, dt, node, config) {
+										// Delete all the selected rows from the data table
+										table
+											.rows({ selected: true })
+											.remove()
+											.draw();
+									},
 								},
 								{
 									text: "Select All",
@@ -246,15 +251,34 @@
 									action: function (e, dt, node, config) {
 										if (
 											table
-												.rows({ search: "applied" })
+												.rows({ selected: true })
 												.data().length ===
-											table.rows(".selected").data()
-												.length
+											table.rows().data().length
 										) {
 											table.rows().deselect();
 										} else {
 											table
 												.rows({ search: "applied" })
+												.select();
+										}
+									},
+								},
+								{
+									text: "Select Page",
+									className: "cursor-pointer",
+									action: function (e, dt, node, config) {
+										if (
+											table
+												.rows({ page: "current" })
+												.data().length ===
+											table
+												.rows({ selected: true })
+												.data().length
+										) {
+											table.rows().deselect();
+										} else {
+											table
+												.rows({ page: "current" })
 												.select();
 										}
 									},
@@ -378,6 +402,7 @@
 							colReorder: true,
 							rowReorder: {
 								selector: "td:nth-child(1)",
+								update: false, // Add update false or else row reorder reverts right away
 							},
 							keys: true,
 							select: {
@@ -609,7 +634,6 @@
 					>
 						<table
 							class="archiveDataTable"
-							id="archiveDataTable{openTab}"
 							collectionName={DataSettings[0][1].collectionName}
 						>
 							<thead>

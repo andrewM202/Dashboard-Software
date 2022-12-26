@@ -407,7 +407,7 @@ def retrieve_single_archive_configuration(collection_name):
                     "description": collection.header_card_descriptions[i] 
                 })
             ######### Table #########
-            return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
+            # return_settings[collection["collection_title"]]["Table"]["Data"] = [db.get_database(db_name).get_collection(collection["collection_name"]).find()]
             for i in range(0, len(collection.table_db_field_names)):
                 return_settings[collection["collection_title"]]["Table"]["Headers"] = sorted([i.title().replace("_", " ") for i in collection.table_db_field_names])
                 return_settings[collection["collection_title"]]["Table"]["DBFieldNames"] = sorted([i.lower().replace(' ', '_') for i in collection.table_db_field_names]) 
