@@ -289,10 +289,9 @@
 									text: "Json",
 									className: "cursor-pointer downloadButton",
 									action: function (e, dt, node, config) {
-										const name = `${DataSettings[openTab][1].CollectionName}.json`;
+										const name = `${navItems[openTab]}.json`;
 										const saveData = JSON.stringify(
-											DataSettings[openTab][1].Table
-												.Data[0],
+											table.data().toArray(),
 											undefined,
 											2
 										);
