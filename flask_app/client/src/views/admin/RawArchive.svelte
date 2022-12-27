@@ -626,6 +626,11 @@
 	let openTab = 0;
 
 	$: openTab, setDataSettings();
+	$: openTab, deleteFlexdatalists();
+
+	function deleteFlexdatalists() {
+		j$("ul.flexdatalist-multiple").remove();
+	}
 
 	$: if (DataSettings !== undefined) {
 		makeDataTable();

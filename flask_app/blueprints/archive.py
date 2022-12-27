@@ -447,7 +447,6 @@ def retrieve_archive_configuration():
 
     return_settings = {}
     for collection in archive_settings:
-        print(collection)
         dict_collection = dict(collection.to_mongo())
         dict_collection_keys = dict_collection.keys()
         ######### Collection Name #########
@@ -611,8 +610,6 @@ def update_many_archive_data():
         col.update_one({"_id": objectid.ObjectId(id)}, update_json)
         # Reset the update_json for the next loop
         update_json = {"$set": {} }
-    print("Request data:")
-    print(request_dict)
     
     return 'Update Success'
 
@@ -622,7 +619,6 @@ def delete_many_archive_data():
     """ Delete many archive data 
     Takes the collection and id data is in
     """
-    print("Request dict keys:")
     # Get the data from our request
     request_data = request.get_json()
     # First index has the collection name
@@ -695,7 +691,6 @@ def search_archive():
     # Can't return plain list as it will return empty list (glitch?)
     return_obj = {"data": []}
     for data in filtered_data:
-        # print(data)
         # Sort the results alphabetically so they match table headers
         data = {key: val for key, val in sorted(data.items(), key = lambda ele: ele[0])}
         return_obj["data"].append(data)
@@ -719,12 +714,9 @@ def archive_file_upload():
 
     # Turn json string into python data structure
     json_obj = loads(json)
-    # print(json_obj)
 
     # # Flatten the JSON and get all the keys
     flat_json = flatten_json(json_obj)
-    # print(json_obj)
-    # print(flat_json)
     unique_keys = []
     nums = "0123456789"
     for key in flat_json:
@@ -742,10 +734,6 @@ def archive_file_upload():
             temp = "".join(l)
         if(temp not in unique_keys):
             unique_keys.append(temp)
-        # print(f"Key: {key} Value: {flat_json[key]}")
-
-    # print(unique_keys)
-    # print(len(unique_keys))
 
     return jsonify(unique_keys)
     
@@ -788,8 +776,6 @@ def create_uploaded_table():
         json_selected_fields = request.form['json_fields'].split(","),
         for json_list in json_selected_fields:
             json_selected_fields = json_list
-        # for field in json_selected_fields:
-        #     print(field)
 
         # Lets create the new collection
         collection_name = "gen_" + request.form['table_name'].lower().replace(" ", "_")
@@ -824,13 +810,8 @@ def create_uploaded_table():
                 l[:-1] = ""
                 temp = "".join(l)
             if(temp in json_selected_fields):
-                # print(temp)
-                # print(flat_json[key])
-                # print()
                 temp = temp.lower().replace(" ", "_")
                 if(temp in insert_json):
-                    # print(insert_json)
-                    # print()
                     # If a key is missing from a document, 
                     # put an empty string in instead of null
                     for field in json_selected_fields:
