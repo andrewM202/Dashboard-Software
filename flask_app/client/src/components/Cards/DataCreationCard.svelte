@@ -368,11 +368,16 @@
 	});
 
 	function styleFlexData(e) {
+		// Allow multiple values and duplicates for
+		// the flexdatalist input
 		j$(e).flexdatalist({
 			allowDuplicateValues: true,
 			multiple: true,
 			searchContain: true,
 		});
+		// Make sure there is a min-height on the flexdatalist input
+		// so it looks nice
+		j$(e).css("min-height", "3rem");
 	}
 </script>
 
