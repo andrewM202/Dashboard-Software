@@ -250,6 +250,7 @@
 										table.rows({ selected: true }).data()
 											.length > 0
 									) {
+										console.log(DataSettings[1]);
 										// These db field names match up with the data in table.rows().data()
 										editTableEntry(
 											e,
@@ -629,6 +630,9 @@
 	$: openTab, deleteFlexdatalists();
 
 	function deleteFlexdatalists() {
+		// Delete flexdatalists whenever the openTab changes, because
+		// apparently svelte won't change them if the flexdatalist
+		// is initialized with javascript for unknown reasons
 		j$("ul.flexdatalist-multiple").remove();
 	}
 
