@@ -582,21 +582,6 @@ def update_specific_archive_data():
     col.update_one({"_id": objectid.ObjectId(updateid)}, update_json)
     return redirect('/admin/raw-archive')
 
-@bp.route("/admin/archive-data/delete", methods=["POST"])
-@login_required
-def delete_specific_archive_data():
-    """ Delete a specific archive data 
-    Takes the collection and id data is in
-    """
-    collection = request.form['CollectionName']
-    id = request.form['DeletionID']
-    col = db.get_database(db_name).get_collection(collection)
-    if col.count() > 1:
-        col.delete_one({'_id': objectid.ObjectId(id)})
-    else: 
-        return abort(Response("Cannot delete last value in collection"))
-    return redirect('/admin/raw-archive')
-
 @bp.route("/admin/archive-data/delete-many", methods=["GET", "POST"])
 @login_required
 def delete_many_archive_data():
@@ -621,6 +606,8 @@ def delete_many_archive_data():
             if col.count() > 1: 
                 # Find and delete the entry with the ID we have
                 col.delete_one({'_id': objectid.ObjectId(id)})
+            else: 
+                return abort(Response("Cannot delete last value in collection"))
                 
     return 'Deletion Success'
 

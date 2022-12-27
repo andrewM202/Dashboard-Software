@@ -168,13 +168,36 @@
 		// If the datatable is already created, destroy it
 		// so we can make a new one
 		if (j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
-			j$(`.archiveDataTable`).DataTable().clear().destroy();
+			// Option true is here to destroy the entire HTML of the table
+			j$(`.archiveDataTable`).DataTable().clear().destroy(true);
 		}
+
+		j$(`.archiveDataTable thead tr`).append(`<th>ID</th>`);
 		// Make our new data table
 		if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
 			let tempInterval = setInterval(function () {
-				if (j$(`.archiveDataTable`).is(":visible")) {
+				if (j$(`.dataTableContainer`).is(":visible")) {
 					clearInterval(tempInterval);
+
+					// Re-add the table HTML because for some reason
+					// if we do not create the datatable from scratch it gives
+					// an error
+					j$(".dataTableContainer").append(`<table
+							class="archiveDataTable"
+							collectionName=${DataSettings[0][1].collectionName}
+						>
+							<thead>
+								<tr></tr>
+							</thead>
+						</table>`);
+					DataSettings[1].Table.Headers.forEach((header) => {
+						console.log(header);
+						j$(`.archiveDataTable thead tr`).append(
+							`<th>${header}</th>`
+						);
+					});
+
+					console.log(j$(`.archiveDataTable`).html());
 
 					//Get all the columns for the table
 					let columns = [];
@@ -189,320 +212,309 @@
 						searchable: false,
 					});
 					// Initialize datatable if its not already initialized
-					if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
-						table = new DataTable(`.archiveDataTable`, {
-							ajax: {
-								url: `/admin/collection/${navItems[openTab]}`,
-							},
-							// Show a loading option while we are getting
-							// ajax data
-							processing: true,
-							language: {
-								loadingRecords: "&nbsp;",
-								processing: "Loading...",
-							},
-							deferRender: true,
-							columns: columns,
-							dom: "QBlfrtip",
-							buttons: [
-								{
-									text: "New",
-									className: "newButton cursor-pointer",
-									action: function (e, dt, node, config) {
-										newTableEntry(e);
-										console.log(
-											table
-												.rows({ selected: true })
-												.data()
-										);
-										// These db field names match up with the data in table.rows().data()
-										let tableHeaders =
-											DataSettings[1].Table.Headers;
-										let dbFieldNames =
-											DataSettings[1].Table.DBFieldNames;
-										console.log(dbFieldNames);
-										console.log(tableHeaders);
-									},
+					table = new DataTable(`.archiveDataTable`, {
+						ajax: {
+							url: `/admin/collection/${navItems[openTab]}`,
+						},
+						// Show a loading option while we are getting
+						// ajax data
+						processing: true,
+						language: {
+							loadingRecords: "&nbsp;",
+							processing: "Loading...",
+						},
+						deferRender: true,
+						columns: columns,
+						dom: "QBlfrtip",
+						buttons: [
+							{
+								text: "New",
+								className: "newButton cursor-pointer",
+								action: function (e, dt, node, config) {
+									newTableEntry(e);
+									console.log(
+										table.rows({ selected: true }).data()
+									);
+									// These db field names match up with the data in table.rows().data()
+									let tableHeaders =
+										DataSettings[1].Table.Headers;
+									let dbFieldNames =
+										DataSettings[1].Table.DBFieldNames;
+									console.log(dbFieldNames);
+									console.log(tableHeaders);
 								},
-								{
-									text: "Edit",
-									className: "editButton cursor-pointer",
-									action: function (e, dt, node, config) {},
-								},
-								{
-									text: "Delete",
-									className: "deleteButton cursor-pointer",
-									action: function (e, dt, node, config) {
-										let data = //JSON.stringify(
-											table
-												.rows({ selected: true })
-												.data()
-												.toArray();
-										//);
-										data.unshift({
-											collection:
-												DataSettings[1].CollectionName,
-										});
-										data = JSON.stringify(data);
-										console.log(
-											DataSettings[1].CollectionName
-										);
-										console.log(data);
-										j$.ajax({
-											type: "POST",
-											url: "/admin/archive-data/delete-many",
-											data: data,
-											contentType:
-												"application/json; charset=utf-8",
-											success: function (data) {
-												// Print the success message
-												console.log(data);
-											},
-											error: function (error) {
-												console.log("Error");
-												console.log(error);
-											},
-										});
-										// Delete all the selected rows from the data table / UI
+							},
+							{
+								text: "Edit",
+								className: "editButton cursor-pointer",
+								action: function (e, dt, node, config) {},
+							},
+							{
+								text: "Delete",
+								className: "deleteButton cursor-pointer",
+								action: function (e, dt, node, config) {
+									let data = //JSON.stringify(
 										table
 											.rows({ selected: true })
-											.remove()
-											.draw();
-									},
+											.data()
+											.toArray();
+									//);
+									data.unshift({
+										collection:
+											DataSettings[1].CollectionName,
+									});
+									data = JSON.stringify(data);
+									console.log(DataSettings[1].CollectionName);
+									console.log(data);
+									j$.ajax({
+										type: "POST",
+										url: "/admin/archive-data/delete-many",
+										data: data,
+										contentType:
+											"application/json; charset=utf-8",
+										success: function (data) {
+											// Print the success message
+											console.log(data);
+										},
+										error: function (error) {
+											console.log("Error");
+											console.log(error);
+										},
+									});
+									// Delete all the selected rows from the data table / UI
+									table
+										.rows({ selected: true })
+										.remove()
+										.draw();
 								},
-								{
-									text: "Select All",
-									className: "cursor-pointer",
-									action: function (e, dt, node, config) {
-										if (
-											table
-												.rows({ selected: true })
-												.data().length ===
-											table.rows().data().length
-										) {
-											table.rows().deselect();
-										} else {
-											table
-												.rows({ search: "applied" })
-												.select();
-										}
-									},
+							},
+							{
+								text: "Select All",
+								className: "cursor-pointer",
+								action: function (e, dt, node, config) {
+									if (
+										table.rows({ selected: true }).data()
+											.length ===
+										table.rows().data().length
+									) {
+										table.rows().deselect();
+									} else {
+										table
+											.rows({ search: "applied" })
+											.select();
+									}
 								},
-								{
-									text: "Select Page",
-									className: "cursor-pointer",
-									action: function (e, dt, node, config) {
-										if (
-											table
-												.rows({ page: "current" })
-												.data().length ===
-											table
-												.rows({ selected: true })
-												.data().length
-										) {
-											table.rows().deselect();
-										} else {
-											table
-												.rows({ page: "current" })
-												.select();
-										}
-									},
+							},
+							{
+								text: "Select Page",
+								className: "cursor-pointer",
+								action: function (e, dt, node, config) {
+									if (
+										table.rows({ page: "current" }).data()
+											.length ===
+										table.rows({ selected: true }).data()
+											.length
+									) {
+										table.rows().deselect();
+									} else {
+										table
+											.rows({ page: "current" })
+											.select();
+									}
 								},
-								{
-									extend: "copy",
-									text: "Copy",
-									className: "cursor-pointer downloadButton",
-								},
-								{
-									extend: "csv",
-									text: "Csv",
-									className: "cursor-pointer downloadButton",
-								},
-								{
-									extend: "excel",
-									text: "Excel",
-									className: "cursor-pointer downloadButton",
-								},
-								{
-									extend: "pdf",
-									text: "Pdf",
-									className: "cursor-pointer downloadButton",
-								},
-								{
-									extend: "print",
-									text: "Print",
-									className: "cursor-pointer downloadButton",
-								},
-								{
-									// Button to download as JSON
-									text: "Json",
-									className: "cursor-pointer downloadButton",
-									action: function (e, dt, node, config) {
-										const name = `${navItems[openTab]}.json`;
-										const saveData = JSON.stringify(
-											table.data().toArray(),
-											undefined,
-											2
-										);
+							},
+							{
+								extend: "copy",
+								text: "Copy",
+								className: "cursor-pointer downloadButton",
+							},
+							{
+								extend: "csv",
+								text: "Csv",
+								className: "cursor-pointer downloadButton",
+							},
+							{
+								extend: "excel",
+								text: "Excel",
+								className: "cursor-pointer downloadButton",
+							},
+							{
+								extend: "pdf",
+								text: "Pdf",
+								className: "cursor-pointer downloadButton",
+							},
+							{
+								extend: "print",
+								text: "Print",
+								className: "cursor-pointer downloadButton",
+							},
+							{
+								// Button to download as JSON
+								text: "Json",
+								className: "cursor-pointer downloadButton",
+								action: function (e, dt, node, config) {
+									const name = `${navItems[openTab]}.json`;
+									const saveData = JSON.stringify(
+										table.data().toArray(),
+										undefined,
+										2
+									);
 
-										const a = document.createElement("a");
-										// const type = name.split(".").pop();
-										a.href = URL.createObjectURL(
-											new Blob([saveData], {
-												// type: `text/${type === "txt" ? "plain" : type}`,
-												type: "json",
-											})
-										);
-										a.download = name;
-										a.click();
-									},
+									const a = document.createElement("a");
+									// const type = name.split(".").pop();
+									a.href = URL.createObjectURL(
+										new Blob([saveData], {
+											// type: `text/${type === "txt" ? "plain" : type}`,
+											type: "json",
+										})
+									);
+									a.download = name;
+									a.click();
 								},
-								{
-									// Fullscreen button
-									text: "Fullscreen",
-									action: function (e, dt, node, config) {
-										// If the user hits the fullscreen button a second
-										// time, it will go out of fullscreen
-										if (document.webkitIsFullScreen) {
-											document.webkitExitFullscreen();
-										} else if (document.mozFullScreen) {
-											document.exitFullscreen();
-										} else if (
-											document.msFullscreenElement
-										) {
-											document.msExitFullscreen();
-										}
-										// Make the datatable have an auto height while
-										// we are in full screen mode so the datatable
-										// fits the full screen
-										if (datatableHeight === null) {
-											datatableHeight = j$(
+							},
+							{
+								// Fullscreen button
+								text: "Fullscreen",
+								action: function (e, dt, node, config) {
+									// If the user hits the fullscreen button a second
+									// time, it will go out of fullscreen
+									if (document.webkitIsFullScreen) {
+										document.webkitExitFullscreen();
+									} else if (document.mozFullScreen) {
+										document.exitFullscreen();
+									} else if (document.msFullscreenElement) {
+										document.msExitFullscreen();
+									}
+									// Make the datatable have an auto height while
+									// we are in full screen mode so the datatable
+									// fits the full screen
+									if (datatableHeight === null) {
+										datatableHeight = j$(
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											)[
 												j$(e.target).parentsUntil(
 													"div.tableBorder"
-												)[
-													j$(e.target).parentsUntil(
-														"div.tableBorder"
-													).length - 1
-												]
-											)
-												.parent()
-												.css("height");
+												).length - 1
+											]
+										)
+											.parent()
+											.css("height");
 
-											j$(
+										j$(
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											)[
 												j$(e.target).parentsUntil(
 													"div.tableBorder"
-												)[
-													j$(e.target).parentsUntil(
-														"div.tableBorder"
-													).length - 1
-												]
-											)
-												.parent()
-												.css("height", "auto");
-											datatableElem = j$(
+												).length - 1
+											]
+										)
+											.parent()
+											.css("height", "auto");
+										datatableElem = j$(
+											j$(e.target).parentsUntil(
+												"div.tableBorder"
+											)[
 												j$(e.target).parentsUntil(
 													"div.tableBorder"
-												)[
-													j$(e.target).parentsUntil(
-														"div.tableBorder"
-													).length - 1
-												]
-											).parent();
-											j$(
+												).length - 1
+											]
+										).parent();
+										j$(
+											j$(e.target).parentsUntil(
+												".tableBorder"
+											)[
 												j$(e.target).parentsUntil(
 													".tableBorder"
-												)[
-													j$(e.target).parentsUntil(
-														".tableBorder"
-													).length - 1
-												]
-											)
-												.parent()
-												.fullScreen(true);
-										}
-									},
+												).length - 1
+											]
+										)
+											.parent()
+											.fullScreen(true);
+									}
 								},
-							],
-							searchBuilder: {},
-							colReorder: true,
-							rowReorder: {
-								selector: "td:nth-child(1)",
-								update: false, // Add update false or else row reorder reverts right away
 							},
-							keys: true,
-							select: {
-								style: "multi",
-							},
-							aaSorting: [], // This allows by default no sorting, but can still click on header to sort
-							// initComplete called once in table lifespan when its created
-							initComplete: function () {
-								// Make the page number of results (i.e. 10 results per page)
-								// be 75px wide so the icon does not go over the number
-								j$(".dataTables_length select").css(
-									"width",
-									"75px"
-								);
-								j$("td").css({
-									"max-width": "14rem",
-									/* max-width: 50ch; */
-									"white-space": "nowrap",
-									"text-overflow": "ellipsis",
-									overflow: "hidden",
-								});
-								// Detect cell overflow for each table entry
-								// now that we have completed creating the datatable
-								for (let event of j$(`.archiveDataTable td`)) {
-									detectCellOverflow(event);
-								}
-								// Add an x-overflow so that the table itself can scroll,
-								// but not the header or footer
-								j$(`.archiveDataTable`).wrap(
-									"<div class='x-overflow-auto' style='max-width: 100%; width: 100%; overflow-x: auto;'></div>"
-								);
-							},
-							drawCallback: function () {
-								// Make the page number of results (i.e. 10 results per page)
-								// be 75px wide so the icon does not go over the number
-								j$(".dataTables_length select").css(
-									"width",
-									"75px"
-								);
-								j$("td").css({
-									"max-width": "14rem",
-									/* max-width: 50ch; */
-									"white-space": "nowrap",
-									"text-overflow": "ellipsis",
-									overflow: "hidden",
-								});
-								// Detect cell overflow for each table entry
-								// now that we have completed creating the datatable
-								for (let event of j$(`.archiveDataTable td`)) {
-									detectCellOverflow(event);
-								}
-								j$(".deleteButton").css({
-									"background-color": "rgb(251 113 133)", // Red
-								});
-								j$(".editButton").css({
-									"background-color": "#FFE15D", // Yellow
-								});
-								j$(".newButton").css({
-									"background-color": "#ADE792", // Green
-								});
-								j$(".downloadButton").css({
-									"background-color": "rgb(199 210 254)", // Indigo
-								});
-							},
-						});
-						// Event listener to see which header is clicked
-						j$(`.archiveDataTable thead`).on(
-							"click",
-							"th",
-							function () {
-								let index = table.column(this).index();
-								console.log(index);
+						],
+						searchBuilder: {},
+						colReorder: true,
+						rowReorder: {
+							selector: "td:nth-child(1)",
+							update: false, // Add update false or else row reorder reverts right away
+						},
+						keys: true,
+						select: {
+							style: "multi",
+						},
+						aaSorting: [], // This allows by default no sorting, but can still click on header to sort
+						// initComplete called once in table lifespan when its created
+						initComplete: function () {
+							// Make the page number of results (i.e. 10 results per page)
+							// be 75px wide so the icon does not go over the number
+							j$(".dataTables_length select").css(
+								"width",
+								"75px"
+							);
+							j$("td").css({
+								"max-width": "14rem",
+								/* max-width: 50ch; */
+								"white-space": "nowrap",
+								"text-overflow": "ellipsis",
+								overflow: "hidden",
+							});
+							// Detect cell overflow for each table entry
+							// now that we have completed creating the datatable
+							for (let event of j$(`.archiveDataTable td`)) {
+								detectCellOverflow(event);
 							}
-						);
-					}
+							// Add an x-overflow so that the table itself can scroll,
+							// but not the header or footer
+							j$(`.archiveDataTable`).wrap(
+								"<div class='x-overflow-auto' style='max-width: 100%; width: 100%; overflow-x: auto;'></div>"
+							);
+						},
+						drawCallback: function () {
+							// Make the page number of results (i.e. 10 results per page)
+							// be 75px wide so the icon does not go over the number
+							j$(".dataTables_length select").css(
+								"width",
+								"75px"
+							);
+							j$("td").css({
+								"max-width": "14rem",
+								/* max-width: 50ch; */
+								"white-space": "nowrap",
+								"text-overflow": "ellipsis",
+								overflow: "hidden",
+							});
+							// Detect cell overflow for each table entry
+							// now that we have completed creating the datatable
+							for (let event of j$(`.archiveDataTable td`)) {
+								detectCellOverflow(event);
+							}
+							j$(".deleteButton").css({
+								"background-color": "rgb(251 113 133)", // Red
+							});
+							j$(".editButton").css({
+								"background-color": "#FFE15D", // Yellow
+							});
+							j$(".newButton").css({
+								"background-color": "#ADE792", // Green
+							});
+							j$(".downloadButton").css({
+								"background-color": "rgb(199 210 254)", // Indigo
+							});
+						},
+					});
+					// Event listener to see which header is clicked
+					j$(`.archiveDataTable thead`).on(
+						"click",
+						"th",
+						function () {
+							let index = table.column(this).index();
+							console.log(index);
+						}
+					);
 				}
 			}, 10);
 		}
@@ -656,21 +668,7 @@
 					<div
 						class="dataTableContainer w-full bg-white p-4"
 						style="height: auto; overflow-y: scroll;"
-					>
-						<table
-							class="archiveDataTable"
-							collectionName={DataSettings[0][1].collectionName}
-						>
-							<thead>
-								<tr>
-									{#each DataSettings[1].Table.Headers as header}
-										<th>{header}</th>
-									{/each}
-									<th>ID</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
+					/>
 				</div>
 			</div>
 		</div>
