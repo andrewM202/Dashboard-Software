@@ -619,6 +619,7 @@ def create_specific_archive_data():
     """
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
+    print(request_dict)
     collection = request.form['CollectionName']
     col = db.get_database(db_name).get_collection(collection)
 

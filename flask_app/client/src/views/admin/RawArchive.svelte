@@ -172,7 +172,6 @@
 			j$(`.archiveDataTable`).DataTable().clear().destroy(true);
 		}
 
-		j$(`.archiveDataTable thead tr`).append(`<th>ID</th>`);
 		// Make our new data table
 		if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
 			let tempInterval = setInterval(function () {
@@ -190,14 +189,15 @@
 								<tr></tr>
 							</thead>
 						</table>`);
+					// Add our headers to the table
 					DataSettings[1].Table.Headers.forEach((header) => {
-						console.log(header);
 						j$(`.archiveDataTable thead tr`).append(
 							`<th>${header}</th>`
 						);
 					});
-
-					console.log(j$(`.archiveDataTable`).html());
+					// Add the final ID column we can use to delete the entry
+					// server side
+					j$(`.archiveDataTable thead tr`).append(`<th>ID</th>`);
 
 					//Get all the columns for the table
 					let columns = [];
@@ -231,17 +231,16 @@
 								text: "New",
 								className: "newButton cursor-pointer",
 								action: function (e, dt, node, config) {
-									newTableEntry(e);
 									console.log(
 										table.rows({ selected: true }).data()
 									);
 									// These db field names match up with the data in table.rows().data()
-									let tableHeaders =
-										DataSettings[1].Table.Headers;
-									let dbFieldNames =
-										DataSettings[1].Table.DBFieldNames;
-									console.log(dbFieldNames);
-									console.log(tableHeaders);
+									newTableEntry(
+										e,
+										DataSettings[1].CreationCard.Inputs,
+										DataSettings[1].CollectionName
+									);
+									console.log(DataSettings[1]);
 								},
 							},
 							{
