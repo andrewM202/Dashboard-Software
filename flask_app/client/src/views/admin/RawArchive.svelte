@@ -176,23 +176,18 @@
 				if (j$(`.archiveDataTable`).is(":visible")) {
 					clearInterval(tempInterval);
 
-					// j$(
-					// 	j$(`.archiveDataTable`)
-					// 		.parentsUntil(".tableBorder")
-					// 		.parent()[0]
-					// ).css({
-					// 	height: j$(
-					// 		j$(`.archiveDataTable`)
-					// 			.parentsUntil(".tableBorder")
-					// 			.parent()[0]
-					// 	).innerHeight(),
-					// });
-
 					//Get all the columns for the table
 					let columns = [];
 					for (let header of DataSettings[1].Table.DBFieldNames) {
 						columns.push({ data: header });
 					}
+					// Add a hidden id column so we can search for this entry
+					// in database
+					columns.push({
+						data: "_id.$oid",
+						visible: false,
+						searchable: false,
+					});
 					// Initialize datatable if its not already initialized
 					if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
 						table = new DataTable(`.archiveDataTable`, {
@@ -238,7 +233,37 @@
 									text: "Delete",
 									className: "deleteButton cursor-pointer",
 									action: function (e, dt, node, config) {
-										// Delete all the selected rows from the data table
+										let data = //JSON.stringify(
+											table
+												.rows({ selected: true })
+												.data()
+												.toArray();
+										//);
+										data.unshift({
+											collection:
+												DataSettings[1].CollectionName,
+										});
+										data = JSON.stringify(data);
+										console.log(
+											DataSettings[1].CollectionName
+										);
+										console.log(data);
+										j$.ajax({
+											type: "POST",
+											url: "/admin/archive-data/delete-many",
+											data: data,
+											contentType:
+												"application/json; charset=utf-8",
+											success: function (data) {
+												// Print the success message
+												console.log(data);
+											},
+											error: function (error) {
+												console.log("Error");
+												console.log(error);
+											},
+										});
+										// Delete all the selected rows from the data table / UI
 										table
 											.rows({ selected: true })
 											.remove()
@@ -641,6 +666,7 @@
 									{#each DataSettings[1].Table.Headers as header}
 										<th>{header}</th>
 									{/each}
+									<th>ID</th>
 								</tr>
 							</thead>
 						</table>

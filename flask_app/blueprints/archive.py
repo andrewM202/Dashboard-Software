@@ -361,13 +361,16 @@ def get_collection_data(collection_name):
 
     return_settings = {"data": []}
     for collection in archive_settings:
+        # We found our collection
         if(collection["collection_title"] == collection_name):
-            # return json_util.dumps(db.get_database(db_name).get_collection(collection["collection_name"]).find({}, {"_id":0}))
-            print(db.get_database(db_name).get_collection(collection["collection_name"]).find())
-            return_settings["data"]= db.get_database(db_name).get_collection(collection["collection_name"]).find({}, {"_id":0})
-            return json_util.dumps(return_settings)
+            # Get the data in our collection
+            return_settings["data"]= db.get_database(db_name).get_collection(collection["collection_name"]).find()
+            # return_settings["data"]= db.get_database(db_name).get_collection(collection["collection_name"]).find({}, {"_id":0})
+            break
+        
+    # Return collection data
+    return json_util.dumps(return_settings)
             
-    return 'test'
 
 @bp.route("/admin/archive-configuration/<collection_name>", methods=["GET"])
 @login_required
@@ -501,7 +504,6 @@ def retrieve_archive_configuration():
                 })
     return json_util.dumps(return_settings, indent=4, sort_keys=True)
 
-# Temp route to return archive_settings, will delete after testing finished
 @bp.route("/admin/archive-config-collection")
 @login_required
 def testing_route():
@@ -594,6 +596,33 @@ def delete_specific_archive_data():
     else: 
         return abort(Response("Cannot delete last value in collection"))
     return redirect('/admin/raw-archive')
+
+@bp.route("/admin/archive-data/delete-many", methods=["GET", "POST"])
+@login_required
+def delete_many_archive_data():
+    """ Delete many archive data 
+    Takes the collection and id data is in
+    """
+    print("Request dict keys:")
+    # Get the data from our request
+    request_data = request.get_json()
+    # First index has the collection name
+    collection = request_data[0]['collection']
+    # Get our database collection
+    col = db.get_database(db_name).get_collection(collection)
+    
+    # Loop through all the values we want to delete
+    for i in range(len(request_data)):
+        # First index has the collection name so skip it
+        if(i != 0):
+            # Get the ID of the entry we want to delete
+            id = request_data[i]['_id']['$oid']
+            # If there are entries in the collection at all
+            if col.count() > 1: 
+                # Find and delete the entry with the ID we have
+                col.delete_one({'_id': objectid.ObjectId(id)})
+                
+    return 'Deletion Success'
 
 @bp.route("/admin/archive-data/create", methods=["POST"])
 @login_required
