@@ -366,6 +366,14 @@
 				});
 		}
 	});
+
+	function styleFlexData(e) {
+		j$(e).flexdatalist({
+			allowDuplicateValues: true,
+			multiple: true,
+			searchContain: true,
+		});
+	}
 </script>
 
 <div style={creationColor} class="w-full h-full bg-white">
@@ -407,10 +415,11 @@
 								<!-- Flexdatalist Inputs -->
 								{#if input.flexdataid !== undefined && input.flexdatalistdata !== undefined}
 									<input
+										use:styleFlexData
 										id={input.name}
 										list={input.flexdataid}
-										multiple
-										type={input.type}
+										multiple="multiple"
+										type="text"
 										placeholder={input.placeholder}
 										name={input.name}
 										value=""

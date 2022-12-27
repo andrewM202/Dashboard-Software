@@ -6,6 +6,7 @@
 	import SettingsBar from "components/Headers/SettingsBar.svelte";
 	import { userSettingsStore, collectionTitlesStore } from "../../stores.js";
 	import { newTableEntry } from "../../../scripts/RawArchive/NewTableEntry.js";
+	import { editTableEntry } from "../../../scripts/RawArchive/EditTableEntry.js";
 	import { loadSettingsEvent } from "../../../scripts/RawArchive/CollectionWideSettings.js";
 
 	// Popover Stuff Start
@@ -231,40 +232,52 @@
 								text: "New",
 								className: "newButton cursor-pointer",
 								action: function (e, dt, node, config) {
-									console.log(
-										table.rows({ selected: true }).data()
-									);
 									// These db field names match up with the data in table.rows().data()
 									newTableEntry(
 										e,
 										DataSettings[1].CreationCard.Inputs,
 										DataSettings[1].CollectionName
 									);
-									console.log(DataSettings[1]);
 								},
 							},
 							{
 								text: "Edit",
 								className: "editButton cursor-pointer",
-								action: function (e, dt, node, config) {},
+								action: function (e, dt, node, config) {
+									// If there are any selected rows to edit
+									if (
+										table.rows({ selected: true }).data()
+											.length > 0
+									) {
+										// These db field names match up with the data in table.rows().data()
+										editTableEntry(
+											e,
+											DataSettings[1].CreationCard.Inputs,
+											DataSettings[1].CollectionName,
+											table
+												.rows({ selected: true })
+												.data()
+												.toArray()
+										);
+									}
+								},
 							},
 							{
 								text: "Delete",
 								className: "deleteButton cursor-pointer",
 								action: function (e, dt, node, config) {
-									let data = //JSON.stringify(
-										table
-											.rows({ selected: true })
-											.data()
-											.toArray();
-									//);
+									// Get our selected table data
+									let data = table
+										.rows({ selected: true })
+										.data()
+										.toArray();
+									// Add the collection name as the last entry
 									data.unshift({
 										collection:
 											DataSettings[1].CollectionName,
 									});
+									// Stringify the data so it can be posted
 									data = JSON.stringify(data);
-									console.log(DataSettings[1].CollectionName);
-									console.log(data);
 									j$.ajax({
 										type: "POST",
 										url: "/admin/archive-data/delete-many",
@@ -511,7 +524,7 @@
 						"th",
 						function () {
 							let index = table.column(this).index();
-							console.log(index);
+							// console.log(index);
 						}
 					);
 				}

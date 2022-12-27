@@ -582,6 +582,42 @@ def update_specific_archive_data():
     col.update_one({"_id": objectid.ObjectId(updateid)}, update_json)
     return redirect('/admin/raw-archive')
 
+@bp.route("/admin/archive-data/update-many", methods=["POST"])
+@login_required
+def update_many_archive_data():
+    """ Updates many entries in a collection at once
+    Takes the collection and id data is in, as well as data
+    in the form of a serialized array
+    """
+    collection = request.form['CollectionName']
+    request_dict = request.form.to_dict()
+    request_keys = request_dict.keys()
+    
+    update_json = {"$set": {} }
+    
+    collectionUpdateIDs = request_dict['CollectionIDs'].split(',')
+    
+    col = db.get_database(db_name).get_collection(collection)
+    
+    # Make the update change for each ID
+    for id in collectionUpdateIDs:
+        # Loop through all the fields
+        for field in request_keys:
+            # If its an empty field ignore it, and if its the collection name or id ignore it
+            if field != "CollectionName" and field != "CollectionIDs" and (request_dict[field] != '' or len(collectionUpdateIDs) == 1):
+                update_json["$set"][field] = request_dict[field]
+        
+        # Perform the actual update now that we created the update json
+        col.update_one({"_id": objectid.ObjectId(id)}, update_json)
+        # Reset the update_json for the next loop
+        update_json = {"$set": {} }
+    print("Request data:")
+    print(request_dict)
+    
+    # col = db.get_database(db_name).get_collection(collection)
+    
+    return 'test'
+
 @bp.route("/admin/archive-data/delete-many", methods=["GET", "POST"])
 @login_required
 def delete_many_archive_data():
@@ -619,7 +655,7 @@ def create_specific_archive_data():
     """
     request_dict = request.form.to_dict()
     request_keys = request_dict.keys()
-    print(request_dict)
+    
     collection = request.form['CollectionName']
     col = db.get_database(db_name).get_collection(collection)
 
