@@ -90,14 +90,11 @@
 			success: function (data) {
 				// Data returns as string, turn into JSON
 				data = Object.entries(JSON.parse(data));
-				// On success, replace the correlating collection
-				// data in the dataSettingsStore to the updated,
-				// filtered data
-				// for (let entry of Object.entries($dataSettingsStore)) {
-				// 	if (entry[1].CollectionName === data.CollectionName) {
-				// 		$dataSettingsStore[entry[0]].Table.Data = [data.data];
-				// 	}
-				// }
+
+				// Update the data table with the newly searched data
+				j$(".archiveDataTable").DataTable().clear();
+				j$(".archiveDataTable").DataTable().rows.add(data[0][1]);
+				j$(".archiveDataTable").DataTable().draw();
 			},
 			error: function (error) {
 				console.log("Error");
@@ -285,6 +282,11 @@
 										contentType:
 											"application/json; charset=utf-8",
 										success: function (data) {
+											// Delete all the selected rows from the data table / UI
+											table
+												.rows({ selected: true })
+												.remove()
+												.draw();
 											// Print the success message
 											console.log(data);
 										},
@@ -293,11 +295,6 @@
 											console.log(error);
 										},
 									});
-									// Delete all the selected rows from the data table / UI
-									table
-										.rows({ selected: true })
-										.remove()
-										.draw();
 								},
 							},
 							{
@@ -712,13 +709,3 @@
 		</div>
 	</div>
 {/if}
-
-<style>
-	td {
-		max-width: 14rem;
-		/* max-width: 50ch; */
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
-</style>

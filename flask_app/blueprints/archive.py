@@ -614,9 +614,7 @@ def update_many_archive_data():
     print("Request data:")
     print(request_dict)
     
-    # col = db.get_database(db_name).get_collection(collection)
-    
-    return 'test'
+    return 'Update Success'
 
 @bp.route("/admin/archive-data/delete-many", methods=["GET", "POST"])
 @login_required
@@ -692,20 +690,18 @@ def search_archive():
                 }
             })
 
-    # print(filter_json)
-
     filtered_data = col.find(filter_json)
 
     # Can't return plain list as it will return empty list (glitch?)
-    return_obj = {"data": [], "CollectionName": request.form['CollectionName']}
+    return_obj = {"data": []}
     for data in filtered_data:
         # print(data)
         # Sort the results alphabetically so they match table headers
         data = {key: val for key, val in sorted(data.items(), key = lambda ele: ele[0])}
         return_obj["data"].append(data)
-
+        
     return json_util.dumps(return_obj)
-    
+
 ########################### Archive Upload #####################################
 
 @bp.route("/admin/archive-upload")
