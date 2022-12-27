@@ -2,3 +2,4 @@
 *.min.js
 tailwind.min.css
 index.html
+Flexdata.svelte
