@@ -23,7 +23,7 @@
 
 	function HeaderSearchFunction(e) {
 		e.preventDefault();
-		let form = j$(e).parentsUntil("form").parent();
+		let form = j$(e.target).parentsUntil("form").parent();
 		// Instead of hard coding form selector, find first form element
 		// and set that as selector
 

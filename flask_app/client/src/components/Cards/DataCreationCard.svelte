@@ -423,7 +423,8 @@
 										placeholder={input.placeholder}
 										name={input.name}
 										value=""
-										class="flexdatalist h-12 border-0 px-3 py-3  text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+										style="border-color: rgb(251 113 133); min-height: 3rem;"
+										class="flexdatalist h-12 px-3 py-3 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
 										data-min-length="0"
 									/>
 									<datalist id={input.flexdataid}>
