@@ -170,6 +170,9 @@
 			j$(`.archiveDataTable`).DataTable().clear().destroy(true);
 		}
 
+		// Disable error reporting
+		// j$.fn.dataTable.ext.errMode = "none";
+
 		// Make our new data table
 		if (!j$.fn.dataTable.isDataTable(`.archiveDataTable`)) {
 			let tempInterval = setInterval(function () {
@@ -217,6 +220,7 @@
 						// Show a loading option while we are getting
 						// ajax data
 						processing: true,
+						retrieve: true,
 						language: {
 							loadingRecords: "&nbsp;",
 							processing: "Loading...",
