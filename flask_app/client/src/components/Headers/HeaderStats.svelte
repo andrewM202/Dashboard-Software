@@ -14,22 +14,29 @@
 	export let submitValue; // Value of the submit button
 	export let headerBGColor;
 
-	// let id = Math.random().toString(36).substr(2, 8); // Generate random string
-	let submitButtonID = Math.random().toString(36).substr(2, 8);
+	let submitButtonID = Math.random().toString(36).substring(2, 8);
 	let submitID = Math.random().toString(36).substring(2, 8);
 
-	async function positionSearchBar() {
+	async function positionSearchBar(e = j$(`#${submitID}`)) {
 		await tick();
 		if (inputs !== undefined) {
 			if (inputs.length % 2 === 0) {
-				j$(`#${submitID}`).css({
+				j$(e).css({
 					width: "100%",
 				});
+				j$(e).removeClass("lg:w-6/12");
+			} else {
+				j$(e).css({
+					width: "",
+				});
+				j$(e).addClass("lg:w-6/12");
 			}
 		}
 	}
 
-	positionSearchBar();
+	// Check to see if we want to make the search bar
+	// full width whenever we change the selected collection
+	$: inputs, positionSearchBar();
 
 	async function styleFlexData() {
 		await tick();

@@ -51,6 +51,10 @@
 			j$(`div#rawArchiveTableContainer div#${submitID}:last-child`).css({
 				width: "100%",
 			});
+		} else {
+			j$(`div#rawArchiveTableContainer div#${submitID}:last-child`).css({
+				width: "",
+			});
 		}
 		// Run interval until flexdatalist loads,
 		// and then clear interval when its loaded
@@ -97,7 +101,10 @@
 			}
 		}, 10);
 	}
-	runPreJS();
+
+	// Check to see if we want to make the search bar
+	// full width and run other checks whenever we change the selected collection
+	$: inputs, runPreJS();
 
 	function validateData() {
 		// Check each input
@@ -449,7 +456,7 @@
 										name={input.name}
 										type={input.type}
 										placeholder=""
-										class="h-12 border-0 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+										class="h-12 placeholder-blueGray-400 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
 										value={input.value}
 									/>
 									<!-- Any Input Not A Flexdatalist -->
@@ -460,7 +467,7 @@
 										placeholder={input.placeholder}
 										name={input.name}
 										value=""
-										class="h-12 border-0 px-3 py-3  text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+										class="h-12 px-3 py-3 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
 									/>
 								{/if}
 							</div>
@@ -476,7 +483,7 @@
 								value="Submit"
 								class="{inputs.length % 2 === 1
 									? 'mt-2'
-									: ''} cursor-pointer h-12 border-0 px-3 py-3  text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+									: ''} cursor-pointer h-12 px-3 py-3 text-blueGray-600 bg-white hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
 							/>
 						</div>
 					</div>
@@ -490,6 +497,8 @@
 
 <style>
 	input {
-		--tw-shadow: 0 1px 3px 0 rgb(251 113 133), 0 1px 2px 0 rgb(251 113 133);
+		/* --tw-shadow: 0 1px 3px 0 rgb(251 113 133), 0 1px 2px 0 rgb(251 113 133); */
+		border-color: rgb(251 113 133);
+		border-width: 2px;
 	}
 </style>
