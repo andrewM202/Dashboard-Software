@@ -300,6 +300,9 @@
 		title={"Archive Upload"}
 		titleFontSize={"text-6xl pb-8"}
 		titleColor={"text-black"}
+		enableSearchIcon={false}
+		enableWrenchIcon={false}
+		enableTrashIcon={false}
 	/>
 
 	<div class="mt-4 w-full md:w-11/12 h-auto px-4">
@@ -314,6 +317,9 @@
 		title={"Archive Upload"}
 		titleFontSize={"text-6xl pb-8"}
 		titleColor={"text-black"}
+		enableSearchIcon={false}
+		enableWrenchIcon={false}
+		enableTrashIcon={false}
 	/>
 
 	<div class="mt-4 w-full md:w-11/12 h-auto px-4">

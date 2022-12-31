@@ -389,13 +389,17 @@
 		inputs={titleSearchInputs}
 		submitValue={headerSubmitValue}
 		SearchFunction={HeaderSearchFunction}
-		AlwaysEnableHeaderInputs={true}
+		DefaultEnableHeaderInputs={true}
+		enableWrenchIcon={false}
+		enableTrashIcon={false}
 	/>
 {:else}
 	<HeaderStats
 		title={"Archive Designer"}
 		titleFontSize={"text-6xl"}
 		titleColor={"text-black"}
+		enableWrenchIcon={false}
+		enableTrashIcon={false}
 	/>
 {/if}
 

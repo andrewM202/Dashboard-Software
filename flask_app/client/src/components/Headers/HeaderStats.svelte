@@ -13,7 +13,10 @@
 	export let SearchFunction; // Pass in the search function for the form
 	export let submitValue; // Value of the submit button
 	export let headerBGColor;
-	export let AlwaysEnableHeaderInputs = false;
+	export let DefaultEnableHeaderInputs = false;
+	export let enableSearchIcon = true;
+	export let enableWrenchIcon = true;
+	export let enableTrashIcon = true;
 
 	let submitButtonID = Math.random().toString(36).substring(2, 8);
 	let submitID = Math.random().toString(36).substring(2, 8);
@@ -57,7 +60,7 @@
 	function formLoad() {
 		// Initialize localStorage for whether the header search is toggled by default.
 		// If its already initialized, then enact the setting
-		if (AlwaysEnableHeaderInputs) {
+		if (DefaultEnableHeaderInputs) {
 			j$("#HeaderStatsInputContainer form").css("display", "inherit");
 		} else {
 			if (localStorage.getItem("searchToggle") == null) {
@@ -109,17 +112,23 @@
 					<!-- Icon for toggling search inputs -->
 					<i
 						on:click={HeaderStatsInputToggle}
-						style="align-self: center; font-size: 20px;"
+						style="{enableSearchIcon == false
+							? 'display: none;'
+							: ''} align-self: center; font-size: 20px;"
 						class="fa fa-search mx-4 cursor-pointer"
 						aria-hidden="true"
 					/>
 					<i
-						style="align-self: center; font-size: 20px;"
+						style="{enableWrenchIcon == false
+							? 'display: none;'
+							: ''} align-self: center; font-size: 20px;"
 						class="fa fa-wrench mx-4 cursor-pointer"
 						aria-hidden="true"
 					/>
 					<i
-						style="align-self: center; font-size: 20px;"
+						style="{enableTrashIcon == false
+							? 'display: none;'
+							: ''} align-self: center; font-size: 20px;"
 						class="fa fa-trash mx-4 cursor-pointer"
 						aria-hidden="true"
 					/>

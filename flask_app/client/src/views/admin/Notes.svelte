@@ -654,6 +654,8 @@
 	inputs={titleSearchInputs}
 	SearchFunction={HeaderSearchFunction}
 	submitValue={"Search Notes"}
+	enableWrenchIcon={false}
+	enableTrashIcon={false}
 />
 <div class="w-full h-auto">
 	<!-- Add a <table> element where the tree should appear: -->
