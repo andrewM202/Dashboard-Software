@@ -625,9 +625,12 @@
 
 	// Bind openTab to AdminNavbar component
 	let openTab = 0;
+	// Varible to determine when the selected collection is changed
+	let selectedCollectionChangeDetection;
+	$: selectedCollectionChangeDetection = openTab;
 
-	$: openTab, setDataSettings();
-	$: openTab, deleteFlexdatalists();
+	$: selectedCollectionChangeDetection, setDataSettings();
+	$: selectedCollectionChangeDetection, deleteFlexdatalists();
 
 	function deleteFlexdatalists() {
 		// Delete flexdatalists whenever the openTab changes, because
