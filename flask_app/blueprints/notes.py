@@ -42,7 +42,7 @@ def load_notes():
             note_config = {
                 "title": note.title,
                 "desc": note.description,
-                "folder": note.folder,
+                "folder": True if len(note.sub_nodes) > 0 else False, #note.folder,
                 "text": note.text,
                 "key": note.key,
             }
@@ -56,7 +56,7 @@ def load_notes():
                         child_note = {
                         "title": curr_node.title,
                         "desc": curr_node.description,
-                        "folder": curr_node.folder,
+                        "folder": True,#curr_node.folder,
                         "text": curr_node.text,
                         "key": curr_node.key,
                         "children": parse_child_nodes(curr_node)

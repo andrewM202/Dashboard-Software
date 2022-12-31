@@ -13,6 +13,7 @@
 	export let SearchFunction; // Pass in the search function for the form
 	export let submitValue; // Value of the submit button
 	export let headerBGColor;
+	export let AlwaysEnableHeaderInputs = false;
 
 	let submitButtonID = Math.random().toString(36).substring(2, 8);
 	let submitID = Math.random().toString(36).substring(2, 8);
@@ -56,12 +57,16 @@
 	function formLoad() {
 		// Initialize localStorage for whether the header search is toggled by default.
 		// If its already initialized, then enact the setting
-		if (localStorage.getItem("searchToggle") == null) {
-			localStorage.setItem("searchToggle", "false");
-		} else if (localStorage.getItem("searchToggle") == "true") {
+		if (AlwaysEnableHeaderInputs) {
 			j$("#HeaderStatsInputContainer form").css("display", "inherit");
-		} else if (localStorage.getItem("searchToggle") == "false") {
-			j$("#HeaderStatsInputContainer form").css("display", "none");
+		} else {
+			if (localStorage.getItem("searchToggle") == null) {
+				localStorage.setItem("searchToggle", "false");
+			} else if (localStorage.getItem("searchToggle") == "true") {
+				j$("#HeaderStatsInputContainer form").css("display", "inherit");
+			} else if (localStorage.getItem("searchToggle") == "false") {
+				j$("#HeaderStatsInputContainer form").css("display", "none");
+			}
 		}
 	}
 

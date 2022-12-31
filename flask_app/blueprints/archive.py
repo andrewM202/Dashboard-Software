@@ -810,7 +810,6 @@ def create_uploaded_table():
                 l[:-1] = ""
                 temp = "".join(l)
             if(temp in json_selected_fields):
-                temp = temp.lower().replace(" ", "_")
                 if(temp in insert_json):
                     # If a key is missing from a document, 
                     # put an empty string in instead of null
@@ -829,7 +828,7 @@ def create_uploaded_table():
         # Insert last value
         for field in json_selected_fields:
             if(field not in insert_json):
-                insert_json[field] = ""
+                insert_json[field] = "" #.lower().replace(" ", "_")
         col.insert_one(insert_json) 
 
         # We just created the new table and inserted the documents into it.

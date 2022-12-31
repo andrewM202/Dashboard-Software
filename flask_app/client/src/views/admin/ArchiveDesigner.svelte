@@ -389,6 +389,7 @@
 		inputs={titleSearchInputs}
 		submitValue={headerSubmitValue}
 		SearchFunction={HeaderSearchFunction}
+		AlwaysEnableHeaderInputs={true}
 	/>
 {:else}
 	<HeaderStats

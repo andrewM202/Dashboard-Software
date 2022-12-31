@@ -718,16 +718,17 @@
 	</table>
 </div>
 
-<div class="mt-8 w-full overflow-x-auto md:w-11/12 h-auto px-4">
-	<h1 class="text-2xl text-center font-medium text-base font-semibold">
+<div class="w-full overflow-x-auto h-auto">
+	<!-- <h1 class="text-2xl text-center font-medium text-base font-semibold">
 		Note Text
-	</h1>
+	</h1> -->
 	<div
 		id="noteText"
-		class="w-full p-4 overflow-x-auto border-8 border-blueGray-200 h-auto ck ck-content"
+		class="w-full p-4 overflow-x-auto h-auto ck ck-content"
 		style="border-radius: 8px; min-height: 500px;"
 		contenteditable="false"
 	>
+		<center style="margin-top: 15%;">No Note Selected</center>
 		<div />
 	</div>
 </div>
