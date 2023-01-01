@@ -390,6 +390,7 @@
 		submitValue={headerSubmitValue}
 		SearchFunction={HeaderSearchFunction}
 		DefaultEnableHeaderInputs={true}
+		enableSearchIcon={false}
 		enableWrenchIcon={false}
 		enableTrashIcon={false}
 	/>
@@ -398,6 +399,7 @@
 		title={"Archive Designer"}
 		titleFontSize={"text-6xl"}
 		titleColor={"text-black"}
+		enableSearchIcon={false}
 		enableWrenchIcon={false}
 		enableTrashIcon={false}
 	/>

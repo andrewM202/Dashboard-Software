@@ -14,9 +14,9 @@
 
 	onDestroy(
 		// Remove added dashboard properties from the HTML element on destruction
-		function() {
-			j$("html").css("overflow", "")
-			j$("html").css("background-color", "")
+		function () {
+			j$("html").css("overflow", "");
+			j$("html").css("background-color", "");
 		}
 	);
 
@@ -39,6 +39,9 @@
 						right: j$(window).width() - event.pageX + "px",
 					});
 				}
+				// If the center text exists remove it, as it is just used
+				// as an initial guide
+				j$("#DashboardDesignerContainer > center").remove();
 			}
 		);
 		// Make the action bar disappear when left clicking
@@ -57,6 +60,9 @@
 	id="DashboardDesignerContainer"
 	class="h-screen w-screen border-solid border-blueGray-100 border-r border-b"
 >
+	<center style="font-size: 1.2rem; font-weight: bold;"
+		>Right Click to Create Chart</center
+	>
 	<div
 		class="shadow-xl bg-white w-full flex flex-column justify-between items-center px-4"
 		id="DashboardSettingsContainer"
