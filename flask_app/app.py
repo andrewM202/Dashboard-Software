@@ -8,8 +8,14 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 from os import environ
 
 app = Flask(__name__)
+
+# Variable to determine if we want to launch as a desktop app or not.
+# If so then run as python3 app.py
+use_desktop = True
+
 app.config.from_object('config.DevelopmentConfig')
 app.config.update(
+    DEBUG=True,
     SESSION_COOKIE_HTTPONLY=True,
     REMEMBER_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Strict",
@@ -63,4 +69,9 @@ paranoid.redirect_view = 'auth.login'
 csrf = CSRFProtect(app)
 
 if __name__ == "__main__":
-    app.run(debug=True, host=environ['FLASK_HOST'])
+    if use_desktop == True:
+        # Import flask-desktop's WebUI class
+        from webui import WebUI 
+        WebUI(app, debug=True).run()
+    else:
+        app.run(debug=True, host=environ['FLASK_HOST'])

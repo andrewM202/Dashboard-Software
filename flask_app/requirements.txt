@@ -44,10 +44,12 @@ pyinstaller==5.6.2
 pyinstaller-hooks-contrib==2022.13
 pymongo==3.12.1
 pyparsing==3.0.6
+PySide2==5.15.2.1
 python-dotenv==0.19.2
 pytz==2021.3
 requests==2.26.0
 scipy==1.7.2
+shiboken2==5.15.2.1
 six==1.16.0
 smart-open==5.2.1
 soupsieve==2.3.1
