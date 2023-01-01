@@ -29,6 +29,6 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # ENTRYPOINT ["python", "./app.py"]
-# Run our gunicorn web server
-CMD ["gunicorn", "-w 4", "-b", "0.0.0.0:8000", "app:app", "--reload"]
+# Run our gunicorn web server with 8 web workers
+CMD ["gunicorn", "-w 8", "-b", "0.0.0.0:8000", "app:app", "--reload"]
 # CMD [ "python", "./app.py" ]

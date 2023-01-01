@@ -160,7 +160,17 @@
 	// because we only want to load the datatable when its visible. This also
 	// allows the overflow popovers to generate correctly because if the element is hidden
 	// it will never generate the overflow popover otherwise
+	let makingDataTable = false;
 	function makeDataTable() {
+		// If we are already making a datatable, do not make another one.
+		// This is to prevent multiple datatables from being made at once
+		// on the page load by coincidence - essentially solve concurrency problems
+		if (makingDataTable) {
+			return;
+		}
+		makingDataTable = true;
+
+		// Variable to store our data table
 		let table;
 
 		// If the datatable is already created, destroy it
@@ -486,6 +496,10 @@
 							j$(`.archiveDataTable`).wrap(
 								"<div class='x-overflow-auto' style='max-width: 100%; width: 100%; overflow-x: auto;'></div>"
 							);
+
+							// We have finished making our data table so set the variable
+							// to false so that we can make another one if needed
+							makingDataTable = false;
 						},
 						drawCallback: function () {
 							// Make the page number of results (i.e. 10 results per page)
