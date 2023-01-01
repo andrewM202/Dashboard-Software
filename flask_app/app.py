@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Variable to determine if we want to launch as a desktop app or not.
 # If so then run as python3 app.py
-use_desktop = True
+use_desktop = False
 
 app.config.from_object('config.DevelopmentConfig')
 app.config.update(
