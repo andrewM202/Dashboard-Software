@@ -6,6 +6,7 @@
 	import { tick } from "svelte";
 	// D3 Imports
 	import { createBarChart } from "components/DesignerCharts/BarChart.svelte";
+	import { createChart } from "../../../scripts/DashboardDesigner/CreateChart.js";
 
 	$: collectionPairs = $collectionPairsStore;
 
@@ -79,37 +80,18 @@
 		},
 	];
 
-	// async function createBarChart(connectionNodeID, settings) {
-	//     await tick();
-	//     let data = [4, 8, 15, 16, 23, 42, 12];
-	//     const div = d3
-	//         .create("div")
-	//         .style("font", "20px sans-serif")
-	//         .style("text-align", "right")
-	//         .style("color", "white")
-	//         .style("height", "100%")
-	//         .style("overflow", "auto");
-
-	//     div.selectAll("div")
-	//         .data(data)
-	//         .join("div")
-	//         .style("background", "steelblue")
-	//         .style("padding", "3px")
-	//         .style("margin", "1px")
-	//         .style("width", (d) => `${d * 20}px`)
-	//         .style("height", (d) => `50px`)
-	//         .text((d) => d);
-
-	//     j$(`#${connectionNodeID}`).append(div.node());
-	// }
 	async function createCharts() {
 		await tick();
-		createBarChart(j$("#ChartCreationContainer"), "test");
+		// createBarChart(j$("#ChartCreationContainer"), "test");
 	}
 	createCharts();
 
 	function HeaderSearchFunction(e) {
 		e.preventDefault();
+	}
+
+	function test() {
+		console.log("test");
 	}
 </script>
 
@@ -141,10 +123,15 @@
 	</div>
 {/if}
 
-<div class="mt-4 w-full overflow-x-auto md:w-11/12 h-auto px-4">
-	<div
-		id="ChartCreationContainer"
-		class="w-full overflow-x-auto border-8 border-blueGray-200"
-		style="border-radius: 8px; "
-	/>
+<div use:createChart id="AdminMainContentContainer">
+	<div class="mt-4 w-full overflow-x-auto md:w-11/12 h-auto px-4 relative">
+		<div
+			id="DashboardDesignerContainer"
+			class="w-full overflow-x-auto border-8 border-blueGray-200 h-auto"
+			style="border-radius: 8px; min-height: 300px; height: 500px;"
+		>
+			<!-- <div id="#AdminMainContentContainer" class="w-full h-full" /> -->
+		</div>
+		<div id="DashboardDesignerActionBar" />
+	</div>
 </div>
