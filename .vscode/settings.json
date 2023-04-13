@@ -1,4 +1,5 @@
 {
 	"makefile.extensionOutputFolder": "./.vscode",
-	"git.ignoreLimitWarning": true
+	"git.ignoreLimitWarning": true,
+	"prettier.printWidth": 500
 }
