@@ -1,6 +1,7 @@
-from flask import render_template, Blueprint, send_from_directory
+from flask import render_template, Blueprint, send_from_directory, request
 from flask_login import  current_user
 from flask_security import login_required
+from models import SavedDashboards
 
 bp = Blueprint("dashboard", __name__)
 
@@ -38,3 +39,88 @@ def dashboard_designer():
 @login_required
 def chart_designer():
     return send_from_directory('client/public', 'index.html')
+
+@bp.route("/admin/save-chart", methods=['POST'])
+@login_required
+def save_chart():
+    data = request.form.to_dict()
+    
+    # Check if this chart already exists
+    # If it does, update otherwise save
+    if len(SavedDashboards.objects(dashboard_id=data['dashboard_id'])) > 0:
+        # Update dashboard
+        SavedDashboards.objects(dashboard_id=data['dashboard_id']).update(   
+            background_color = data['background_color']
+
+            ,chart_type = data['chart_type']
+            ,legend_enabled = data['legend_enabled']
+            
+            ,yaxes_scale_label = data['yaxes_scale_label']
+            ,xaxes_scale_label = data['xaxes_scale_label']
+            
+            ,yaxes_scale_label_enabled = data['yaxes_scale_label_enabled']
+            ,xaxes_scale_label_enabled = data['xaxes_scale_label_enabled']
+
+            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
+            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
+            
+            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
+            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
+            
+            ,legend_font_color = data['legend_font_color']
+            
+            ,yaxes_tick_color = data['yaxes_tick_color']
+            ,xaxes_tick_color = data['xaxes_tick_color']
+            
+            ,yaxes_gridline_enabled = data['yaxes_gridline_enabled']
+            ,xaxes_gridline_enabled = data['xaxes_gridline_enabled']
+            
+            ,title_fontsize = data['title_fontsize']
+            ,title_fontcolor = data['title_fontcolor']
+            ,title_text = data['title_text']
+            ,title_enabled = data['title_enabled']
+            
+            ,default_font_family = data['default_font_family']
+            
+            ,chart_padding = data['chart_padding']
+        )
+    else:
+        # Store data in database
+        SavedDashboards(  
+            dashboard_id = data['dashboard_id']
+            ,background_color = data['background_color']
+
+            ,chart_type = data['chart_type']
+            ,legend_enabled = data['legend_enabled']
+            
+            ,yaxes_scale_label = data['yaxes_scale_label']
+            ,xaxes_scale_label = data['xaxes_scale_label']
+            
+            ,yaxes_scale_label_enabled = data['yaxes_scale_label_enabled']
+            ,xaxes_scale_label_enabled = data['xaxes_scale_label_enabled']
+
+            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
+            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
+            
+            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
+            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
+            
+            ,legend_font_color = data['legend_font_color']
+            
+            ,yaxes_tick_color = data['yaxes_tick_color']
+            ,xaxes_tick_color = data['xaxes_tick_color']
+            
+            ,yaxes_gridline_enabled = data['yaxes_gridline_enabled']
+            ,xaxes_gridline_enabled = data['xaxes_gridline_enabled']
+            
+            ,title_fontsize = data['title_fontsize']
+            ,title_fontcolor = data['title_fontcolor']
+            ,title_text = data['title_text']
+            ,title_enabled = data['title_enabled']
+            
+            ,default_font_family = data['default_font_family']
+            
+            ,chart_padding = data['chart_padding']
+        ).save()
+    
+    return 'yay'

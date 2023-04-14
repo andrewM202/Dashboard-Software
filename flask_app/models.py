@@ -147,3 +147,43 @@ class Notes(Document):
     text = StringField()
     sub_nodes = ListField() # Whether this node has children or not
     parent_node = StringField() # StringField instead of ListField because a single node can only have 1 parent
+    
+########################### Dashboard #####################################
+
+class SavedDashboards(Document):
+    """ Holds all of the saved dashboards """
+    dashboard_id = StringField()
+    background_color = StringField()
+    
+    chart_type = StringField()
+    legend_enabled = StringField()
+    
+    yaxes_scale_label = StringField()
+    xaxes_scale_label = StringField()
+    
+    yaxes_scale_label_enabled = StringField()
+    xaxes_scale_label_enabled = StringField()
+ 
+    yaxes_gridlines_color = StringField()   
+    xaxes_gridlines_color = StringField()
+    
+    yaxes_scalelabel_color = StringField()
+    xaxes_scalelabel_color = StringField()
+    
+    legend_font_color = StringField()
+    
+    yaxes_tick_color = StringField()
+    xaxes_tick_color = StringField()
+    
+    yaxes_gridline_enabled = StringField()
+    xaxes_gridline_enabled = StringField()
+    
+    title_fontsize = StringField()
+    title_fontcolor = StringField()
+    title_text = StringField()
+    title_enabled = StringField()
+    
+    default_font_family = StringField()
+    
+    chart_padding = StringField()
+    
