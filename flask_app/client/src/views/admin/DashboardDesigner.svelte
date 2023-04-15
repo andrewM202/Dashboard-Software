@@ -43,8 +43,13 @@
 		});
 
 		// Make the HTML have no overflow
-		j$("html").css("overflow", "hidden");
 		j$("html").css("background-color", "rgb(241, 245, 249)");
+
+		j$(document).scroll(function () {
+			j$("div#DashboardSettingsContainer").css({
+				top: j$(document).scrollTop(),
+			});
+		});
 	} // onLoad() end
 </script>
 
