@@ -123,4 +123,9 @@ def save_chart():
             ,chart_padding = data['chart_padding']
         ).save()
     
-    return 'yay'
+    return 'Success'
+
+@bp.route("/admin/charts", methods=["GET"])
+@login_required
+def get_charts():
+    return SavedDashboards.objects.to_json()
