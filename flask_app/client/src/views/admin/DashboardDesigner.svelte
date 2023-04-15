@@ -116,9 +116,9 @@
 		position: absolute;
 		right: 0;
 		top: 0;
-		width: 200px;
+		width: 300px;
 		height: 100vh;
-		background-color: white;
+		background-color: rgb(255, 255, 255, 0.9);
 		display: none;
 		border-left: 3px solid #e3e6f0;
 		z-index: 50;
