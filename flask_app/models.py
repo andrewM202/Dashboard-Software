@@ -150,9 +150,9 @@ class Notes(Document):
     
 ########################### Dashboard #####################################
 
-class SavedDashboards(Document):
+class SavedCharts(Document):
     """ Holds all of the saved dashboards """
-    dashboard_id = StringField()
+    chart_id = StringField()
     background_color = StringField()
     
     chart_type = StringField()
@@ -186,4 +186,15 @@ class SavedDashboards(Document):
     default_font_family = StringField()
     
     chart_padding = StringField()
+    
+    width = StringField()
+    height = StringField()
+    top = StringField()
+    right = StringField()
+    
+class SavedDashboards(Document):
+    """ Holds all of the saved dashboards """
+    dashboard_height = StringField()
+    dashboard_title = StringField()
+    dashboard_charts = ListField(ReferenceField(SavedCharts))
     

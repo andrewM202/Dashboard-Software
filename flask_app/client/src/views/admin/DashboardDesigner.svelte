@@ -4,11 +4,12 @@
 	import { createChart } from "../../../scripts/DashboardDesigner/CreateChart.js";
 	import { createImage } from "../../../scripts/DashboardDesigner/CreateImage.js";
 	import { createTable } from "../../../scripts/DashboardDesigner/CreateTable.js";
-	import { loadChart } from "../../../scripts/DashboardDesigner/LoadChart.js";
 	import { onDestroy } from "svelte";
+	import { retrieveChartSettings } from "../../../scripts/DashboardDesigner/RetrieveChartSettings.js";
 
 	let showActionBar = false;
 	let parentOffset;
+	let charts_in_dashboard = [];
 
 	onDestroy(
 		// Remove added dashboard properties from the HTML element on destruction
@@ -17,6 +18,86 @@
 			j$("html").css("background-color", "");
 		}
 	);
+
+	function loadChart() {
+		j$("body").append(`
+            <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
+            z-index: 10000000000;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgb(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            ">
+                <div id="chart-settings-container" 
+                    style="width: 75%; min-width: 400px;" 
+                    class="relative bg-white rounded shadow-lg p-4"
+                >
+                    <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
+                    class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
+                    <h1 class="text-xl font-bold mb-4">Load Existing Chart</h1>
+                    <form id="load-chart-container" class="flex" style="justify-content: center;">
+                    </form>
+                </div>    
+            </div>
+        `);
+
+		// Add event listener for closing the settings
+		j$(`#chart-settings-container #DashboardSettingsCloseIcon`).click(function () {
+			j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+				j$(this).remove();
+			});
+		});
+		// Add event listener for closing the settings
+		j$("#temporary-background-gray").click(function (ev) {
+			// Only close if we click on the background, and ignore clicks on the settings
+			if (j$(ev.target).is(j$("#temporary-background-gray"))) {
+				j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+					j$(this).remove();
+				});
+			}
+		});
+
+		function displayChartsToPick(charts) {
+			charts.forEach((chart) => {
+				j$("#load-chart-container").append(`
+            <div id="${chart["dashboard_id"]}" class="chart-to-load" 
+                style="margin-right: 10px; width: calc(33% - 25px); height: 150px; display: flex; justify-content: center; align-items: center;
+                border-radius: 15px; border: 5px solid black;
+                background-color: rgba(239, 68, 68, 0.5);
+                cursor: pointer;"
+            >
+                <h2 style="font-size: 1.5rem;" class="font-bold">${chart["title_text"]}</h2>
+            </div>
+            `);
+
+				j$(`div#${chart["dashboard_id"]}`).click(function () {
+					// Remove the background
+					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+						j$(this).remove();
+						// Load the chart
+						let newChart = createChart({}, chart);
+						// Return the chart
+						charts_in_dashboard.push(newChart);
+					});
+				});
+			});
+		}
+
+		// Get charts
+		j$.ajax({
+			type: "GET",
+			url: "/admin/charts",
+			success: function (data) {
+				// Display charts to load
+				displayChartsToPick(JSON.parse(data));
+			},
+			error: function (err) {
+				console.log(err);
+			},
+		});
+	}
 
 	// onLoad contains event listeners needing to be attached
 	// when #DashboardDesignerContainer is loaded
@@ -50,50 +131,231 @@
 				top: j$(document).scrollTop(),
 			});
 		});
+
+		j$("#create-chart-button").click(function () {
+			let chart = createChart();
+			charts_in_dashboard.push(chart);
+		});
+
+		j$("#dashboard-save-button").click(function () {
+			let data = {
+				dashboard_title: j$("#dashboard-title").val(),
+				dashboard_height: j$("#DashboardDesignerContainer")[0].style["height"],
+				charts: [],
+			};
+			for (let chart of charts_in_dashboard) {
+				try {
+					let chart_settings = {
+						height: j$(`#chart${chart.id}`)[0].style["height"],
+						width: j$(`#chart${chart.id}`)[0].style["width"],
+						top: j$(`#chart${chart.id}`)[0].style["top"],
+						right: j$(`#chart${chart.id}`)[0].style["right"],
+						data: retrieveChartSettings(chart, j$(`#chart${chart.id}`)),
+					};
+					data.charts.push(chart_settings);
+				} catch {
+					console.log("Error, likely due to chart being deleted");
+				}
+			}
+			console.log(data);
+			j$.ajax({
+				type: "POST",
+				url: `${location.origin}/admin/save-dashboard`,
+				data: JSON.stringify(data),
+				success: function () {
+					console.log("Dashboard Successfully Saved");
+				},
+				error: function (e) {
+					error = "Server Error During Creation.";
+					// Error logging
+					console.log(e.statusText);
+					console.log(e.responseText);
+				},
+			});
+		});
 	} // onLoad() end
+
+	const loadDashboard = function () {
+		j$("body").append(`
+            <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
+            z-index: 10000000000;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgb(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            ">
+                <div id="dashboard-settings-container" 
+                    style="width: 75%; min-width: 400px;" 
+                    class="relative bg-white rounded shadow-lg p-4"
+                >
+                    <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
+                    class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
+                    <h1 class="text-xl font-bold mb-4">Load Existing Dashboard</h1>
+                    <form id="load-dashboard-container" class="flex" style="justify-content: center;">
+                    </form>
+                </div>    
+            </div>
+        `);
+
+		// Add event listener for closing the settings
+		j$(`#dashboard-settings-container #DashboardSettingsCloseIcon`).click(function () {
+			j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+				j$(this).remove();
+			});
+		});
+		// Add event listener for closing the settings
+		j$("#temporary-background-gray").click(function (ev) {
+			// Only close if we click on the background, and ignore clicks on the settings
+			if (j$(ev.target).is(j$("#temporary-background-gray"))) {
+				j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+					j$(this).remove();
+				});
+			}
+		});
+
+		function displayDashboardsToPick(dashboards) {
+			dashboards.forEach((dashboard) => {
+				j$("#load-dashboard-container").append(`
+					<div id="${dashboard["_id"]["$oid"]}" class="dashboard-to-load" 
+						style="margin-right: 10px; width: calc(33% - 25px); height: 150px; display: flex; justify-content: center; align-items: center;
+						border-radius: 15px; border: 5px solid black;
+						background-color: rgba(239, 68, 68, 0.5);
+						cursor: pointer;"
+					>
+						<h2 style="font-size: 1.5rem;" class="font-bold">${dashboard["dashboard_title"]}</h2>
+					</div>
+				`);
+
+				j$(`div#${dashboard["_id"]["$oid"]}`).click(function () {
+					// Remove the background
+					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+						// We are loading a new dashboard so we want to empty all the old ones out
+						charts_in_dashboard = [];
+						j$(this).remove();
+						// Remove existing charts
+						j$("#DashboardDesignerContainer div.chart").remove();
+						console.log(dashboard);
+						// Set data for dashboard
+						j$("input#dashboard-title").val(dashboard["dashboard_title"]);
+						j$("input#dashboard-height").val(dashboard["dashboard_height"].replace("vh", ""));
+						j$("#DashboardDesignerContainer").css("height", dashboard["dashboard_height"]);
+						// Get the data for the dashboard's charts
+						j$.ajax({
+							type: "GET",
+							url: `/admin/charts/get_charts_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
+							success: function (data) {
+								// Display dashboards to load
+								const charts = JSON.parse(data);
+								console.log(charts);
+								charts.forEach((chart) => {
+									// Add chart to the dashboard
+									let data = {
+										// ID
+										dashboard_id: chart.chart_id,
+										// Background color
+										background_color: chart.background_color,
+										// Chart type
+										chart_type: chart.chart_type,
+										// Chart legend
+										legend_enabled: chart.legend_enabled,
+										// Scale labels
+										yaxes_scale_label: chart.yaxes_scale_label,
+										xaxes_scale_label: chart.xaxes_scale_label,
+										// Scale labels enabled
+										xaxes_scale_label_enabled: chart.xaxes_scale_label_enabled,
+										yaxes_scale_label_enabled: chart.yaxes_scale_label_enabled,
+										// Grid color
+										xaxes_gridlines_color: chart.xaxes_gridlines_color,
+										yaxes_gridlines_color: chart.yaxes_gridlines_color,
+										// Scale label color
+										yaxes_scalelabel_color: chart.yaxes_scalelabel_color,
+										xaxes_scalelabel_color: chart.xaxes_scalelabel_color,
+										// Legend font color
+										legend_font_color: chart.legend_font_color,
+										// Ticks font color
+										xaxes_tick_color: chart.xaxes_tick_color,
+										yaxes_tick_color: chart.yaxes_tick_color,
+										// Grid enabled
+										yaxes_gridline_enabled: chart.yaxes_gridline_enabled,
+										xaxes_gridline_enabled: chart.xaxes_gridline_enabled,
+										// Chart tite configuration
+										title_fontsize: Number(chart.title_fontsize),
+										title_fontcolor: chart.title_fontcolor,
+										title_text: chart.title_text,
+										title_enabled: chart.title_enabled,
+										// Default font family
+										default_font_family: chart.default_font_family,
+										// Chart padding
+										chart_padding: chart.chart_padding,
+										width: chart.width,
+										height: chart.height,
+										top: chart.top,
+										right: chart.right,
+									};
+									let result = createChart({}, data);
+									// Add chart to the dashboard
+									charts_in_dashboard.push(result);
+								});
+							},
+						});
+					});
+				});
+			});
+		}
+
+		// Get dashboards
+		j$.ajax({
+			type: "GET",
+			url: "/admin/dashboards/get_all_dashboards",
+			success: function (data) {
+				// Display dashboards to load
+				displayDashboardsToPick(JSON.parse(data));
+			},
+			error: function (err) {
+				console.log(err);
+			},
+		});
+	};
 </script>
 
-<div use:onLoad id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
+<div use:onLoad style="height: 100vh;" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
 	<center style="font-size: 1.2rem; font-weight: bold;">Right Click to Create Chart</center>
 	<div class="shadow-xl bg-white w-full flex flex-column justify-between items-center px-4" id="DashboardSettingsContainer">
-		<form on:submit={DashboardSave}>
-			<div class="w-full" style="margin-top: 100px;">
-				<label class="block text-sm font-bold mb-2" for="dashboard-title"> Dashboard Title </label>
+		<form style="height: 80%; display: flex; flex-direction: column;">
+			<div class="w-full">
+				<label class="text-s uppercase py-3 font-bold block text-blueGray-700" for="dashboard-title"> Dashboard Title </label>
 				<input style="height: 30px;" class="picker-input w-full" id="dashboard-title" type="text" value="Dashboard Title" name="dashboard_title" />
 			</div>
-			<div class="w-full" style="margin-top: 100px;">
-				<label class="block text-sm font-bold mb-2" for="dashboard-height"> Dashboard Height (% Screenheight) </label>
+			<div class="w-full" style="">
+				<label class="text-s uppercase py-3 font-bold block text-blueGray-700" for="dashboard-height"> Dashboard Height (% Screenheight) </label>
 				<div class="relative input-icon-container">
 					<input style="height: 30px;" class="picker-input w-full" id="dashboard-height" type="number" value="100" name="dashboard_height" />
 					<span class="absolute">%</span>
 				</div>
 			</div>
 			<div class="w-full" style="margin-top: 25px;">
-				<input style="height: 30px; " class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Save Dashboard" name="submit" />
+				<input on:click={DashboardSave} style="height: 30px; " class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Save Settings" name="submit" />
+			</div>
+			<div class="w-full" style="align-self: flex-end;height: 100%;order: 1;display: flex;justify-content: flex-end;flex-direction: column;">
+				<input id="dashboard-save-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Save Dashboard" name="submit" />
 			</div>
 		</form>
-		<hr class="my-4 md:min-w-full" style="background-color: rgb(51, 65, 85); height: 2px;" />
-		<div>
-			<div class="w-full">
-				<label class="block text-sm font-bold mb-2" for="dashboard-title"> Dashboard To Edit </label>
-				<select class="picker-input w-full" id="dashboard-title" value="Mimic Value">
-					<option value="mimic_value">Current Dashboard</option>
-				</select>
-			</div>
-			<div class="w-full" style="margin-top: 25px;">
-				<input style="height: 30px; " class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Edit Dashboard" />
-			</div>
+		<hr class="my-4 md:min-w-full" />
+		<div style="height: 20%; width: 100%; display: flex; justify-content: flex-end; flex-direction: column;">
+			<input on:click={loadDashboard} id="dashboard-load-button" style="height: 30px; margin-bottom: 20px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Load Dashboard" name="submit" />
 		</div>
 	</div>
 	<div on:click={dashboardSettingsEnable} class="dashboard-settings-triangle cursor-pointer" />
 	<div id="DashboardDesignerActionBar" style="background-color: rgb(239, 68, 68, 0.85);" class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 {showActionBar ? 'block' : 'hidden'}">
-		<a on:click={createChart} href="#pablo" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Chart </a>
+		<a id="create-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Chart </a>
 		<!-- Load an existing chart instead of creating a new one -->
-		<a on:click={loadChart} href="#pablo" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
+		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
 		<div class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
-		<a on:click={createText} href="#pablo" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
-		<a on:click={createImage} href="#pablo" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
-		<a on:click={createTable} href="#pablo" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
+		<a on:click={createText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
+		<a on:click={createImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
+		<a on:click={createTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
 	</div>
 </div>
 
