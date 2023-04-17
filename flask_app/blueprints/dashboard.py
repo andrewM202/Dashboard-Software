@@ -55,6 +55,7 @@ def update_save_chart():
     # Check if this chart already exists
     # If it does, update otherwise save
     if len(SavedCharts.objects(chart_id=data['chart_id'])) > 0:
+        print("Save chart")
         # Update dashboard
         SavedCharts.objects(chart_id=data['chart_id']).update(   
             background_color = data['background_color']
@@ -90,6 +91,7 @@ def update_save_chart():
             ,default_font_family = data['default_font_family']
             
             ,chart_padding = data['chart_padding']
+            ,deleted = False
         )
     else:
         # Store data in database
@@ -128,6 +130,8 @@ def update_save_chart():
             ,default_font_family = data['default_font_family']
             
             ,chart_padding = data['chart_padding']
+            
+            ,deleted = False
         ).save()
     
     return 'Success'
@@ -137,7 +141,7 @@ def update_save_chart():
 @bp.route("/admin/charts", methods=["GET"])
 @login_required
 def get_charts():
-    return SavedCharts.objects.to_json()
+    return SavedCharts.objects.filter(deleted=False).to_json()
 
 
 
@@ -151,7 +155,6 @@ def save_chart(data):
     data = data["data"]
     if len(SavedCharts.objects(chart_id=data['chart_id'])) == 0:
         # Store data in database
-        print(data)
         SavedCharts(  
             chart_id = data['chart_id']
             ,background_color = data['background_color']
@@ -192,6 +195,8 @@ def save_chart(data):
             ,height = str(height)
             ,top = str(top)
             ,right = str(right)
+            
+            ,deleted = False
         ).save()
         return "Chart Saved"
     return "Chart Already Exists"
@@ -272,9 +277,45 @@ def delete_chart():
         data = loads(string)
         # Get data
         chart_id = data["chart_id"]
-        # Delete our chart
-        SavedCharts.objects(chart_id=chart_id).delete()
-        return "Success"
+        # Delete our chart if it is not used in any dashboards
+        for dashboard in SavedDashboards.objects:
+            for chart in dashboard["dashboard_charts"]:
+                charts = SavedCharts.objects(id=chart.id)
+                if len(charts) > 0:
+                    chart = charts[0]
+                    if chart.chart_id == chart_id:
+                        # Chart is in use, just mark is for deletion later 
+                        # when the dashboard is used
+                        print("Marking for deletion")
+                        SavedCharts.objects(chart_id=chart_id).update(
+                            deleted = True
+                        )
+                        return "Success"
+     
+    print("Regular deleted")
+    # If we don't find the chart in any dashboards, delete it   
+    SavedCharts.objects(chart_id=chart_id).delete()
     
     return 'Success'
     
+
+
+@bp.route("/admin/delete-dashboard", methods=["DELETE"])
+@login_required
+def delete_dashboard():
+    data = request.form.to_dict()
+    for string in data:
+        # Data is sent as a string inside an object, parse it
+        data = loads(string)
+        # Get data
+        dashboard_id = data["dashboard_id"]
+        # Delete charts in our dashboard if they were previously marked for deleted. 
+        # Right now if a user delete a chart, it isn't actually deleted from the database, 
+        # just marked for deletion until the dashboard it is used in is deleted.
+        for chart in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_charts"]:
+            SavedCharts.objects(id=chart.id, deleted=True).delete()
+        # Delete our dashboard
+        SavedDashboards.objects(id=dashboard_id).delete()
+        return "Success"
+    
+    return 'Success'

@@ -306,11 +306,79 @@
 						style="margin-right: 10px; min-width: 30%; margin: 10px; height: 150px; display: flex; justify-content: center; align-items: center;
 						border-radius: 15px; border: 5px solid black;
 						background-color: rgba(239, 68, 68, 0.5);
-						cursor: pointer;"
+						cursor: pointer; position: relative;"
 					>
+						<div class="delete-dashboard-button" 
+							style="height: 30px; width: 30px; border-radius: 50%;
+							background-color: white; border: 5px solid black; position: absolute; 
+							top: -15px; right: -15px; cursor: pointer; display: flex;
+							justify-content: center; align-items: center;
+						">
+							<i style="width: 10px; height: 10px; margin-bottom: 5px;" class="fas fa-times cursor-pointer"></i>
+						</div>
 						<h2 style="font-size: 1.5rem; padding: 10px 10px;" class="font-bold">${dashboard["dashboard_title"]}</h2>
+						
 					</div>
 				`);
+
+				j$(`div#${dashboard["_id"]["$oid"]} div.delete-dashboard-button`).click(function (event) {
+					event.stopPropagation();
+					// Confirm they want to delete
+					j$(`body`).append(`
+					<div id="temp-background-gray" class="leave-window-button" style="position: absolute; left: 0; top: 0;
+						z-index: 10000000000;
+						width: 100vw;
+						height: 100vh;
+						background-color: rgb(0, 0, 0, 0.5);
+						display: flex;
+						justify-content: center;
+						align-items: center;
+					">
+						<div class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex" style="margin: 0px; left: 50%; bottom: 25%; transform: translate(-50%, -50%);">
+							<div class="relative w-auto my-6 max-w-sm">
+								<div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+									<div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+										<h3 class="text-3xl font-semibold">Deletion</h3>
+										<button class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"><span class="leave-window-button bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span></button>
+									</div>
+									<div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+										<button class="leave-window-button text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">Close</button>
+										<button class="confirm-delete-button bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">Confirm delete</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					`);
+
+					j$(".leave-window-button").click(function () {
+						j$("#temp-background-gray").fadeOut(400, "swing", function () {
+							j$(this).remove();
+						});
+					});
+
+					j$("button.confirm-delete-button").click(function () {
+						j$.ajax({
+							type: "DELETE",
+							data: JSON.stringify({ dashboard_id: dashboard["_id"]["$oid"] }),
+							url: `/admin/delete-dashboard`,
+							success: function (response) {
+								if (response.toLowerCase() === "success") {
+									j$(`div#${dashboard["_id"]["$oid"]}`).remove();
+								}
+							},
+						});
+					});
+				});
+
+				j$(`div#${dashboard["_id"]["$oid"]} div.delete-dashboard-button`).hover(
+					function () {
+						j$(this).css("background-color", "rgba(239, 68, 68, 1.0)");
+					},
+					function () {
+						j$(this).css("background-color", "white");
+					}
+				);
 
 				j$(`div#${dashboard["_id"]["$oid"]}`).hover(
 					function () {

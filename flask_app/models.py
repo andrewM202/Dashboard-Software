@@ -192,6 +192,9 @@ class SavedCharts(Document):
     top = StringField()
     right = StringField()
     
+    # whether the chart is deleted or not
+    deleted = BooleanField(default=False)
+    
 class SavedDashboards(Document):
     """ Holds all of the saved dashboards """
     dashboard_height = StringField()
