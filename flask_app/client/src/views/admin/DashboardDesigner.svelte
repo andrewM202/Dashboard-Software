@@ -221,10 +221,12 @@
 			charts_in_dashboard.push(chart);
 		});
 
-		j$("#dashboard-save-button").click(function () {
+		j$("#dashboard-save-existing-button").click(function () {
+			DashboardSave();
 			let data = {
 				dashboard_title: j$("#dashboard-title").val(),
 				dashboard_height: j$("#DashboardDesignerContainer")[0].style["height"],
+				dashboard_id: j$("#DashboardDesignerContainer").attr("dashboard-id"),
 				charts: [],
 			};
 			for (let chart of charts_in_dashboard) {
@@ -406,14 +408,17 @@
 							type: "GET",
 							url: `/admin/charts/get_charts_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
 							success: function (data) {
+								// Remove the chart creation hint
+								j$("center#chart-creation-hint").remove();
+								// Set the dashboard ID
+								j$("div#DashboardDesignerContainer").attr("dashboard-id", dashboard["_id"]["$oid"]);
 								// Display dashboards to load
 								const charts = JSON.parse(data);
-								console.log(charts);
 								charts.forEach((chart) => {
 									// Add chart to the dashboard
 									let data = {
 										// ID
-										dashboard_id: chart.chart_id,
+										chart_id: chart.chart_id,
 										// Background color
 										background_color: chart.background_color,
 										// Chart type
@@ -480,8 +485,8 @@
 	};
 </script>
 
-<div use:onLoad style="height: 100vh;" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
-	<center style="font-size: 1.2rem; font-weight: bold;">Right Click to Create Chart</center>
+<div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
+	<center id="chart-creation-hint" style="font-size: 1.2rem; font-weight: bold;">Right Click to Create Chart</center>
 	<div class="shadow-xl bg-white w-full flex flex-column justify-between items-center px-4" id="DashboardSettingsContainer">
 		<form style="height: 80%; display: flex; flex-direction: column;">
 			<div class="w-full">
@@ -495,11 +500,9 @@
 					<span class="absolute">%</span>
 				</div>
 			</div>
-			<div class="w-full" style="margin-top: 25px;">
-				<input on:click={DashboardSave} style="height: 30px; " class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Settings" name="submit" />
-			</div>
 			<div class="w-full" style="align-self: flex-end;height: 100%;order: 1;display: flex;justify-content: flex-end;flex-direction: column;">
-				<input id="dashboard-save-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Dashboard" name="submit" />
+				<input id="dashboard-save-new-button" style="height: 30px;" class="my-4 picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save as New Dashboard" name="submit" />
+				<input id="dashboard-save-existing-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Existing Dashboard" name="submit" />
 			</div>
 		</form>
 		<hr class="my-4 md:min-w-full" />

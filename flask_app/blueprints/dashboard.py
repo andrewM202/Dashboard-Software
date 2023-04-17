@@ -199,7 +199,51 @@ def save_chart(data):
             ,deleted = False
         ).save()
         return "Chart Saved"
-    return "Chart Already Exists"
+    else:
+        # Store data in database
+        SavedCharts.objects(chart_id=data['chart_id']).update(  
+            background_color = data['background_color']
+
+            ,chart_type = data['chart_type']
+            ,legend_enabled = str(data['legend_enabled'])
+            
+            ,yaxes_scale_label = data['yaxes_scale_label']
+            ,xaxes_scale_label = data['xaxes_scale_label']
+            
+            ,yaxes_scale_label_enabled = str(data['yaxes_scale_label_enabled'])
+            ,xaxes_scale_label_enabled = str(data['xaxes_scale_label_enabled'])
+
+            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
+            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
+            
+            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
+            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
+            
+            ,legend_font_color = data['legend_font_color']
+            
+            ,yaxes_tick_color = data['yaxes_tick_color']
+            ,xaxes_tick_color = data['xaxes_tick_color']
+            
+            ,yaxes_gridline_enabled = str(data['yaxes_gridline_enabled'])
+            ,xaxes_gridline_enabled = str(data['xaxes_gridline_enabled'])
+            
+            ,title_fontsize = str(data['title_fontsize'])
+            ,title_fontcolor = data['title_fontcolor']
+            ,title_text = data['title_text']
+            ,title_enabled = str(data['title_enabled'])
+            
+            ,default_font_family = data['default_font_family']
+            
+            ,chart_padding = str(data['chart_padding'])
+            
+            ,width = str(width)
+            ,height = str(height)
+            ,top = str(top)
+            ,right = str(right)
+            
+            ,deleted = False
+        )
+        return "Chart Updated"
 
 
 
@@ -211,10 +255,10 @@ def save_dashboard():
     for string in data:
         # Data is sent as a string inside an object, parse it
         data = loads(string)
-        print(data)
         # Get data
         dashboard_title = data["dashboard_title"]
         dashboard_height = data["dashboard_height"]
+        dashboard_id = data["dashboard_id"]
         
         chart_ids = []
         
@@ -227,13 +271,28 @@ def save_dashboard():
             
         # Check if dashboard already exists
         # Save our dashboard
-        if len(SavedDashboards.objects(dashboard_title=dashboard_title)) == 0:
+        if dashboard_id == "":
             SavedDashboards(
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
             ).save()
             return "Dashboard Saved"
+        if len(SavedDashboards.objects(id=dashboard_id)) == 0:
+            SavedDashboards(
+                dashboard_title = dashboard_title
+                ,dashboard_height = dashboard_height
+                ,dashboard_charts = chart_ids
+            ).save()
+            return "Dashboard Saved"
+        else:
+            # Othewise update our dashboard
+            print("Updating Dashboard")
+            SavedDashboards.objects(id=dashboard_id).update(
+                dashboard_title = dashboard_title
+                ,dashboard_height = dashboard_height
+                ,dashboard_charts = chart_ids
+            )
     
     return 'Success'
 
