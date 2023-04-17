@@ -54,9 +54,9 @@ def update_save_chart():
     
     # Check if this chart already exists
     # If it does, update otherwise save
-    if len(SavedCharts.objects(chart_id=data['dashboard_id'])) > 0:
+    if len(SavedCharts.objects(chart_id=data['chart_id'])) > 0:
         # Update dashboard
-        SavedCharts.objects(chart_id=data['dashboard_id']).update(   
+        SavedCharts.objects(chart_id=data['chart_id']).update(   
             background_color = data['background_color']
 
             ,chart_type = data['chart_type']
@@ -94,7 +94,7 @@ def update_save_chart():
     else:
         # Store data in database
         SavedCharts(  
-            chart_id = data['dashboard_id']
+            chart_id = data['chart_id']
             ,background_color = data['background_color']
 
             ,chart_type = data['chart_type']
@@ -149,11 +149,11 @@ def save_chart(data):
     top = data['top']
     right = data['right']
     data = data["data"]
-    if len(SavedCharts.objects(chart_id=data['dashboard_id'])) == 0:
+    if len(SavedCharts.objects(chart_id=data['chart_id'])) == 0:
         # Store data in database
         print(data)
         SavedCharts(  
-            chart_id = data['dashboard_id']
+            chart_id = data['chart_id']
             ,background_color = data['background_color']
 
             ,chart_type = data['chart_type']
@@ -218,7 +218,7 @@ def save_dashboard():
             # Save our chart if it is not already saved in the database
             result = save_chart(chart)
             # Add the chart's ID to our list
-            chart_ids.append(SavedCharts.objects(chart_id=chart["data"]["dashboard_id"])[0])
+            chart_ids.append(SavedCharts.objects(chart_id=chart["data"]["chart_id"])[0])
             
         # Check if dashboard already exists
         # Save our dashboard
@@ -262,5 +262,19 @@ def retrieve_charts_by_dashboard_id(dashboard_id):
     return json_util.dumps(return_charts)
     
     
+
+@bp.route("/admin/delete-chart", methods=["DELETE"])
+@login_required
+def delete_chart():
+    data = request.form.to_dict()
+    for string in data:
+        # Data is sent as a string inside an object, parse it
+        data = loads(string)
+        # Get data
+        chart_id = data["chart_id"]
+        # Delete our chart
+        SavedCharts.objects(chart_id=chart_id).delete()
+        return "Success"
     
+    return 'Success'
     

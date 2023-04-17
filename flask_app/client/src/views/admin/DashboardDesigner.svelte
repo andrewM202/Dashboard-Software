@@ -36,8 +36,8 @@
                 >
                     <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
                     class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
-                    <h1 class="text-xl font-bold mb-4">Load Existing Chart</h1>
-                    <form id="load-chart-container" class="flex" style="justify-content: center;">
+                    <h1 style="border-bottom: 4px solid black;" class="text-xl font-bold mb-4">Load Existing Chart</h1>
+                    <form id="load-chart-container" class="flex" style="justify-content: center; height: auto; flex-wrap: wrap; max-height: 75vh; overflow: scroll;">
                     </form>
                 </div>    
             </div>
@@ -62,21 +62,105 @@
 		function displayChartsToPick(charts) {
 			charts.forEach((chart) => {
 				j$("#load-chart-container").append(`
-            <div id="${chart["dashboard_id"]}" class="chart-to-load" 
-                style="margin-right: 10px; width: calc(33% - 25px); height: 150px; display: flex; justify-content: center; align-items: center;
-                border-radius: 15px; border: 5px solid black;
-                background-color: rgba(239, 68, 68, 0.5);
-                cursor: pointer;"
-            >
-                <h2 style="font-size: 1.5rem;" class="font-bold">${chart["title_text"]}</h2>
-            </div>
-            `);
+				<div id="${chart["chart_id"]}" class="chart-to-load" 
+					style="margin-right: 10px; min-width: 30%; margin: 10px; 
+					height: 150px; display: flex; justify-content: center; align-items: center;
+					position: relative; border-radius: 15px; border: 5px solid black;
+					background-color: rgba(239, 68, 68, 0.5); cursor: pointer;"
+				>
+					<div class="delete-chart-button" 
+						style="height: 30px; width: 30px; border-radius: 50%;
+						background-color: white; border: 5px solid black; position: absolute; 
+						top: -15px; right: -15px; cursor: pointer; display: flex;
+						justify-content: center; align-items: center;
+					">
+						<i style="width: 10px; height: 10px; margin-bottom: 5px;" class="fas fa-times cursor-pointer"></i>
+					</div>
+					<h2 style="font-size: 1.5rem; padding: 10px 10px;" class="font-bold">${chart["title_text"]}</h2>
+				</div>
+				`);
 
-				j$(`div#${chart["dashboard_id"]}`).click(function () {
+				j$(`div#${chart["chart_id"]} div.delete-chart-button`).click(function (event) {
+					event.stopPropagation();
+					// Confirm they want to delete
+					j$(`body`).append(`
+					<div id="temp-background-gray" class="leave-window-button" style="position: absolute; left: 0; top: 0;
+						z-index: 10000000000;
+						width: 100vw;
+						height: 100vh;
+						background-color: rgb(0, 0, 0, 0.5);
+						display: flex;
+						justify-content: center;
+						align-items: center;
+					">
+						<div class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex" style="margin: 0px; left: 50%; bottom: 25%; transform: translate(-50%, -50%);">
+							<div class="relative w-auto my-6 max-w-sm">
+								<div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+									<div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+										<h3 class="text-3xl font-semibold">Deletion</h3>
+										<button class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"><span class="leave-window-button bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span></button>
+									</div>
+									<div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+										<button class="leave-window-button text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">Close</button>
+										<button class="confirm-delete-button bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">Confirm delete</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					`);
+
+					j$(".leave-window-button").click(function () {
+						j$("#temp-background-gray").fadeOut(400, "swing", function () {
+							j$(this).remove();
+						});
+					});
+
+					j$("button.confirm-delete-button").click(function () {
+						j$.ajax({
+							type: "DELETE",
+							data: JSON.stringify({ chart_id: chart["chart_id"] }),
+							url: `/admin/delete-chart`,
+							success: function (response) {
+								if (response.toLowerCase() === "success") {
+									j$(`div#${chart["chart_id"]}`).remove();
+								}
+							},
+						});
+					});
+				});
+
+				j$(`div#${chart["chart_id"]} div.delete-chart-button`).hover(
+					function () {
+						j$(this).css("background-color", "rgba(239, 68, 68, 1.0)");
+					},
+					function () {
+						j$(this).css("background-color", "white");
+					}
+				);
+
+				j$(`div#${chart["chart_id"]}`).hover(
+					function (event) {
+						// Only change the background if we hover over the div, not the delete button
+						if (event.target === event.currentTarget) {
+							j$(this).css("background-color", "rgba(239, 68, 68, 0.8)");
+						}
+					},
+					function () {
+						j$(this).css("background-color", "rgba(239, 68, 68, 0.5)");
+					}
+				);
+
+				j$(`div#${chart["chart_id"]}`).click(function (event) {
+					if (event.target !== event.currentTarget) return;
 					// Remove the background
 					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
 						j$(this).remove();
-						// Load the chart
+						// Load the chart, deleting attributes we don't want
+						delete chart["top"];
+						delete chart["right"];
+						delete chart["width"];
+						delete chart["height"];
 						let newChart = createChart({}, chart);
 						// Return the chart
 						charts_in_dashboard.push(newChart);
@@ -192,8 +276,8 @@
                 >
                     <i id="DashboardSettingsCloseIcon" style="width: 10px; height: 10px;" 
                     class="fas fa-times absolute top-10 right-10 cursor-pointer"></i>
-                    <h1 class="text-xl font-bold mb-4">Load Existing Dashboard</h1>
-                    <form id="load-dashboard-container" class="flex" style="justify-content: center;">
+                    <h1 style="border-bottom: 4px solid black;" class="text-xl font-bold mb-4">Load Existing Dashboard</h1>
+                    <form id="load-dashboard-container" class="flex" style="justify-content: center; height: auto; flex-wrap: wrap; max-height: 75vh; overflow: scroll;">
                     </form>
                 </div>    
             </div>
@@ -219,14 +303,23 @@
 			dashboards.forEach((dashboard) => {
 				j$("#load-dashboard-container").append(`
 					<div id="${dashboard["_id"]["$oid"]}" class="dashboard-to-load" 
-						style="margin-right: 10px; width: calc(33% - 25px); height: 150px; display: flex; justify-content: center; align-items: center;
+						style="margin-right: 10px; min-width: 30%; margin: 10px; height: 150px; display: flex; justify-content: center; align-items: center;
 						border-radius: 15px; border: 5px solid black;
 						background-color: rgba(239, 68, 68, 0.5);
 						cursor: pointer;"
 					>
-						<h2 style="font-size: 1.5rem;" class="font-bold">${dashboard["dashboard_title"]}</h2>
+						<h2 style="font-size: 1.5rem; padding: 10px 10px;" class="font-bold">${dashboard["dashboard_title"]}</h2>
 					</div>
 				`);
+
+				j$(`div#${dashboard["_id"]["$oid"]}`).hover(
+					function () {
+						j$(this).css("background-color", "rgba(239, 68, 68, 0.8)");
+					},
+					function () {
+						j$(this).css("background-color", "rgba(239, 68, 68, 0.5)");
+					}
+				);
 
 				j$(`div#${dashboard["_id"]["$oid"]}`).click(function () {
 					// Remove the background
@@ -236,7 +329,6 @@
 						j$(this).remove();
 						// Remove existing charts
 						j$("#DashboardDesignerContainer div.chart").remove();
-						console.log(dashboard);
 						// Set data for dashboard
 						j$("input#dashboard-title").val(dashboard["dashboard_title"]);
 						j$("input#dashboard-height").val(dashboard["dashboard_height"].replace("vh", ""));
@@ -336,10 +428,10 @@
 				</div>
 			</div>
 			<div class="w-full" style="margin-top: 25px;">
-				<input on:click={DashboardSave} style="height: 30px; " class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Save Settings" name="submit" />
+				<input on:click={DashboardSave} style="height: 30px; " class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Settings" name="submit" />
 			</div>
 			<div class="w-full" style="align-self: flex-end;height: 100%;order: 1;display: flex;justify-content: flex-end;flex-direction: column;">
-				<input id="dashboard-save-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="submit" value="Save Dashboard" name="submit" />
+				<input id="dashboard-save-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Dashboard" name="submit" />
 			</div>
 		</form>
 		<hr class="my-4 md:min-w-full" />
