@@ -483,6 +483,7 @@
 			},
 		});
 	};
+	let randomDashboardTitles = ["Dashboard Extreme", "The Arch Dashboard", "Dashboard of the Gods", "Dashboard of the Future", "Dashboard of the Past", "Dashboard of the Present", "The Universal Dashboard", "The Dashboard of the Demystified", "The Dashboard of the Unseen", "The Dashboard of the Unknown"];
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
@@ -490,8 +491,8 @@
 	<div class="shadow-xl bg-white w-full flex flex-column justify-between items-center px-4" id="DashboardSettingsContainer">
 		<form style="height: 80%; display: flex; flex-direction: column;">
 			<div class="w-full">
-				<label class="text-s uppercase py-3 font-bold block text-blueGray-700" for="dashboard-title"> Dashboard Title </label>
-				<input style="height: 30px;" class="picker-input w-full" id="dashboard-title" type="text" value="Dashboard Title" name="dashboard_title" />
+				<label class="text-s uppercase py-3 font-bold block text-blueGray-700" for="dashboard-title">Dashboard Title</label>
+				<input style="height: 30px;" class="picker-input w-full" id="dashboard-title" type="text" value={randomDashboardTitles[Math.floor(Math.random() * 10)]} name="dashboard_title" />
 			</div>
 			<div class="w-full" style="">
 				<label class="text-s uppercase py-3 font-bold block text-blueGray-700" for="dashboard-height"> Dashboard Height (% Screenheight) </label>
