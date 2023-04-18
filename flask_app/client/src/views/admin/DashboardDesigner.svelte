@@ -152,7 +152,7 @@
 				);
 
 				j$(`div#${chart["chart_id"]}`).click(function (event) {
-					if (event.target !== event.currentTarget) return;
+					if (event.target !== event.currentTarget && event.target != j$(`#${chart["chart_id"]} h2`)[0]) return;
 					// Remove the background
 					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
 						j$(this).remove();
