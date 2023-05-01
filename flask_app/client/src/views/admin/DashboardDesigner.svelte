@@ -667,6 +667,8 @@
 		<a on:click={initializeText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
 		<a on:click={createImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
 		<a on:click={createTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
+		<a on:click={createImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Timeline </a>
+		<a on:click={createTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Network </a>
 	</div>
 </div>
 
