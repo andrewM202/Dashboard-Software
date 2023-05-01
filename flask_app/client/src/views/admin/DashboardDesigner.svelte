@@ -216,7 +216,8 @@
 			});
 		});
 
-		j$("#create-chart-button").click(function () {
+		j$("#create-chart-button").click(function (event) {
+			event.preventDefault();
 			let chart = createChart();
 			charts_in_dashboard.push(chart);
 		});
