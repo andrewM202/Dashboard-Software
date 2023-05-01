@@ -248,6 +248,12 @@
 				texts: [],
 			};
 			for (let text of texts_in_dashboard) {
+				// Resize the % height and % top of the text so the actual pixel size doesn't change if the height of the dashboard is different
+				j$(`#text${text.textCreatedNumber}`).css({
+					height: ((j$(`#text${text.textCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#text${text.textCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#text${text.textCreatedNumber}`)[0].style["top"].replace("%", "")) + "%",
+				});
+
 				try {
 					let text_settings = {
 						height: j$(`#text${text.textCreatedNumber}`)[0].style["height"],
