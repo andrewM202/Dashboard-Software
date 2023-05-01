@@ -477,6 +477,9 @@
 				j$(`div#${dashboard["_id"]["$oid"]}`).click(function () {
 					// Remove the background
 					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+						// Scroll to the top in case the previous dashboard we are on
+						// has a greater vh than this one - so we are not off screen
+						j$("html").scrollTop(0);
 						j$("body").css("overflow", "auto");
 						// We are loading a new dashboard so we want to empty all the old ones out
 						charts_in_dashboard = [];
