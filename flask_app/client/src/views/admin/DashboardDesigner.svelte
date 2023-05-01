@@ -222,7 +222,9 @@
 		});
 
 		j$("#dashboard-save-existing-button").click(function () {
+			let oldDashboardHeight = j$("#DashboardDesignerContainer").height();
 			DashboardSave();
+			let newDashboardHeight = j$("#DashboardDesignerContainer").height();
 			let data = {
 				dashboard_title: j$("#dashboard-title").val(),
 				dashboard_height: j$("#DashboardDesignerContainer")[0].style["height"],
@@ -230,6 +232,12 @@
 				charts: [],
 			};
 			for (let chart of charts_in_dashboard) {
+				// Resize the % height and % top of the chart so the actual pixel size doesn't change if the height of the dashboard is different
+				j$(`#chart${chart.id}`).css({
+					height: ((j$(`#chart${chart.id}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#chart${chart.id}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#chart${chart.id}`)[0].style["top"].replace("%", "")) + "%",
+				});
+
 				try {
 					let chart_settings = {
 						height: j$(`#chart${chart.id}`)[0].style["height"],
@@ -243,7 +251,7 @@
 					console.log("Error, likely due to chart being deleted");
 				}
 			}
-			console.log(data);
+			// Update the new data
 			j$.ajax({
 				type: "POST",
 				url: `${location.origin}/admin/save-dashboard`,
