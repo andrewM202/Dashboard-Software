@@ -463,6 +463,7 @@
 						j$("#DashboardDesignerContainer div.chart").remove();
 						// Set background color for dashboard
 						j$("#DashboardDesignerContainer").css("background-color", dashboard["dashboard_color"]);
+						j$("div.pcr-button").css("background-color", dashboard["dashboard_color"]);
 						// Set data for dashboard
 						j$("input#dashboard-title").val(dashboard["dashboard_title"]);
 						j$("input#dashboard-height").val(dashboard["dashboard_height"].replace("vh", ""));
