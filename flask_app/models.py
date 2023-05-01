@@ -195,10 +195,23 @@ class SavedCharts(Document):
     # whether the chart is deleted or not
     deleted = BooleanField(default=False)
     
+class SavedTexts(Document):
+    """ Holds all of the texts for a dashboard """ 
+    text_id = StringField()
+    text = StringField()
+    font_family = StringField()
+    font_size = StringField()
+    width = StringField()
+    height = StringField()
+    top = StringField()
+    right = StringField()
+    color = StringField()
+    
 class SavedDashboards(Document):
     """ Holds all of the saved dashboards """
     dashboard_height = StringField()
     dashboard_title = StringField()
-    dashboard_charts = ListField(ReferenceField(SavedCharts))
+    dashboard_charts = ListField(ReferenceField(SavedCharts), default=[])
+    dashboard_texts = ListField(ReferenceField(SavedTexts), default=[])
     dashboard_color = StringField()
     

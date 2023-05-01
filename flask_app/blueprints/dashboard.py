@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint, send_from_directory, request
 from flask_login import  current_user
 from flask_security import login_required
-from models import SavedCharts, SavedDashboards, db
+from models import SavedCharts, SavedDashboards, SavedTexts, db
 from os import environ
 from bson import json_util
 from bson.objectid import ObjectId
@@ -200,7 +200,7 @@ def save_chart(data):
         ).save()
         return "Chart Saved"
     else:
-        # Store data in database
+        # Update data in database
         SavedCharts.objects(chart_id=data['chart_id']).update(  
             background_color = data['background_color']
 
@@ -247,6 +247,47 @@ def save_chart(data):
 
 
 
+@bp.route("/admin/save-text")
+@login_required
+def save_text(data):
+    width = data['width']
+    height = data['height']
+    top = data['top']
+    right = data['right']
+    text = data["text"]
+    font_size = data['font_size']
+    color = data['color']
+    font_family = data['font_family']
+    if len(SavedTexts.objects(text_id=data['text_id'])) == 0:
+        # Store data in database
+        SavedTexts(
+            text_id = data['text_id']
+            ,text = text
+            ,font_size = font_size
+            ,color = color
+            ,font_family = font_family
+            ,width = str(width)
+            ,height = str(height)
+            ,top = str(top)
+            ,right = str(right)
+        ).save()
+        return "Text Saved"
+    else:
+        # Update data in database
+        SavedTexts.objects(text_id=data['text_id']).update(  
+            text = text
+            ,font_size = font_size
+            ,color = color
+            ,font_family = font_family
+            ,width = str(width)
+            ,height = str(height)
+            ,top = str(top)
+            ,right = str(right)
+        )                                             
+        return "Text Updated"  
+
+
+
 @bp.route("/admin/save-dashboard", methods=['POST'])
 @login_required
 def save_dashboard():
@@ -262,6 +303,7 @@ def save_dashboard():
         dashboard_color = data["dashboard_color"]
         
         chart_ids = []
+        text_ids = []
         
         # Loop through and save our charts
         for chart in data["charts"]:
@@ -270,6 +312,12 @@ def save_dashboard():
             # Add the chart's ID to our list
             chart_ids.append(SavedCharts.objects(chart_id=chart["data"]["chart_id"])[0])
             
+        for text in data["texts"]:
+            # Save our text if it is not already saved in the database
+            result = save_text(text)
+            # Add the chart's ID to our list
+            text_ids.append(SavedTexts.objects(text_id=text["text_id"])[0])
+            
         # Check if dashboard already exists
         # Save our dashboard
         if dashboard_id == "":
@@ -277,6 +325,7 @@ def save_dashboard():
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
+                ,dashboard_texts = text_ids
                 ,dashboard_color = dashboard_color
             ).save()
             return "Dashboard Saved"
@@ -285,6 +334,7 @@ def save_dashboard():
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
+                ,dashboard_texts = text_ids
                 ,dashboard_color = dashboard_color
             ).save()
             return "Dashboard Saved"
@@ -295,6 +345,7 @@ def save_dashboard():
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
+                ,dashboard_texts = text_ids
                 ,dashboard_color = dashboard_color
             )
     
@@ -321,13 +372,32 @@ def retrieve_charts_by_dashboard_id(dashboard_id):
     dashboard = loads(dashboard)[0]
     charts = dashboard["dashboard_charts"]
     
-    # Loop through charts, add data to return_charrts
+    # Loop through charts, add data to return_charts
     for chart in charts:
         chart_data = loads(SavedCharts.objects(id=chart["$oid"]).to_json())[0]
         return_charts.append(chart_data)
         
     # Return our charts
     return json_util.dumps(return_charts)
+
+
+
+@bp.route("/admin/texts/get_texts_by_dashboard_id/<dashboard_id>", methods=["GET"])
+@login_required
+def retrieve_texts_by_dashboard_id(dashboard_id):
+    # Get our dashboard
+    dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
+    return_texts = []
+    dashboard = loads(dashboard)[0]
+    texts = dashboard["dashboard_texts"]
+    
+    # Loop through texts, add data to texts
+    for text in texts:
+        text_data = loads(SavedTexts.objects(id=text["$oid"]).to_json())[0]
+        return_texts.append(text_data)
+        
+    # Return our texts
+    return json_util.dumps(return_texts)
     
     
 
@@ -377,6 +447,9 @@ def delete_dashboard():
         # just marked for deletion until the dashboard it is used in is deleted.
         for chart in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_charts"]:
             SavedCharts.objects(id=chart.id, deleted=True).delete()
+        # Delete our texts
+        for text in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_texts"]:
+            SavedCharts.objects(id=text.id).delete()
         # Delete our dashboard
         SavedDashboards.objects(id=dashboard_id).delete()
         return "Success"

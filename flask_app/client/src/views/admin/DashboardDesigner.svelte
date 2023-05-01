@@ -10,6 +10,9 @@
 	let showActionBar = false;
 	let parentOffset;
 	let charts_in_dashboard = [];
+	let images_in_dashboard = [];
+	let tables_in_dashboard = [];
+	let texts_in_dashboard = [];
 
 	onDestroy(
 		// Remove added dashboard properties from the HTML element on destruction
@@ -242,7 +245,26 @@
 				dashboard_id: j$("#DashboardDesignerContainer").attr("dashboard-id"),
 				dashboard_color: j$("#DashboardDesignerContainer").css("background-color"),
 				charts: [],
+				texts: [],
 			};
+			for (let text of texts_in_dashboard) {
+				try {
+					let text_settings = {
+						height: j$(`#text${text.textCreatedNumber}`)[0].style["height"],
+						width: j$(`#text${text.textCreatedNumber}`)[0].style["width"],
+						top: j$(`#text${text.textCreatedNumber}`)[0].style["top"],
+						right: j$(`#text${text.textCreatedNumber}`)[0].style["right"],
+						font_size: j$(`#text${text.textCreatedNumber} h1`).css("font-size").replace("px", ""),
+						color: j$(`#text${text.textCreatedNumber} h1`).css("color"),
+						text: j$(`#text${text.textCreatedNumber} h1`).text(),
+						font_family: j$(`#text${text.textCreatedNumber} h1`).css("font-family"),
+						text_id: j$(`#text${text.textCreatedNumber}`).attr("data-uuid"),
+					};
+					data.texts.push(text_settings);
+				} catch {
+					console.log("Error, likely due to chart being deleted");
+				}
+			}
 			for (let chart of charts_in_dashboard) {
 				// Resize the % height and % top of the chart so the actual pixel size doesn't change if the height of the dashboard is different
 				j$(`#chart${chart.id}`).css({
@@ -458,9 +480,14 @@
 						j$("body").css("overflow", "auto");
 						// We are loading a new dashboard so we want to empty all the old ones out
 						charts_in_dashboard = [];
+						tables_in_dashboard = [];
+						images_in_dashboard = [];
+						texts_in_dashboard = [];
 						j$(this).remove();
 						// Remove existing charts
 						j$("#DashboardDesignerContainer div.chart").remove();
+						// Remove existing texts
+						j$("#DashboardDesignerContainer div.text-item").remove();
 						// Set background color for dashboard
 						j$("#DashboardDesignerContainer").css("background-color", dashboard["dashboard_color"]);
 						j$("div.pcr-button").css("background-color", dashboard["dashboard_color"]);
@@ -468,6 +495,40 @@
 						j$("input#dashboard-title").val(dashboard["dashboard_title"]);
 						j$("input#dashboard-height").val(dashboard["dashboard_height"].replace("vh", ""));
 						j$("#DashboardDesignerContainer").css("height", dashboard["dashboard_height"]);
+						// Get the dashboard's texts
+						j$.ajax({
+							type: "GET",
+							url: `/admin/texts/get_texts_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
+							success: function (data) {
+								const texts = JSON.parse(data);
+								console.log(texts);
+								texts.forEach((text) => {
+									let data = {
+										// ID
+										text_id: text.text_id,
+										// Text
+										text: text.text,
+										// Font size
+										font_size: text.font_size,
+										// Font color
+										color: text.color,
+										// Font family
+										font_family: text.font_family,
+										// Width
+										width: text.width,
+										// Height
+										height: text.height,
+										// Top
+										top: text.top.replace("%", ""),
+										// Right
+										right: text.right.replace("%", ""),
+									};
+									let result = createText({}, data);
+									// Add chart to the dashboard
+									texts_in_dashboard.push(result);
+								});
+							},
+						});
 						// Get the data for the dashboard's charts
 						j$.ajax({
 							type: "GET",
@@ -549,6 +610,12 @@
 		});
 	};
 	let randomDashboardTitles = ["Dashboard Extreme", "The Arch Dashboard", "Dashboard of the Gods", "Dashboard of the Future", "Dashboard of the Past", "Dashboard of the Present", "The Universal Dashboard", "The Dashboard of the Demystified", "The Dashboard of the Unseen", "The Dashboard of the Unknown"];
+
+	function initializeText(evt) {
+		evt.preventDefault();
+		let text = createText(evt);
+		texts_in_dashboard.push(text);
+	}
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
@@ -588,7 +655,7 @@
 		<!-- Load an existing chart instead of creating a new one -->
 		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
 		<div class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
-		<a on:click={createText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
+		<a on:click={initializeText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
 		<a on:click={createImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
 		<a on:click={createTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
 	</div>
