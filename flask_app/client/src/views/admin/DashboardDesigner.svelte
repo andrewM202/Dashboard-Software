@@ -19,9 +19,11 @@
 		}
 	);
 
-	function loadChart() {
+	function loadChart(evt) {
+		evt.preventDefault();
+		evt.stopPropagation();
 		j$("body").append(`
-            <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
+            <div id="temporary-background-gray" style="position: absolute; left: 0; top: ${j$("html").scrollTop()}px;
             z-index: 10000000000;
             width: 100vw;
             height: 100vh;
@@ -43,9 +45,13 @@
             </div>
         `);
 
+		// Make the background have no scroll
+		j$("body").css("overflow", "hidden");
+
 		// Add event listener for closing the settings
 		j$(`#chart-settings-container #DashboardSettingsCloseIcon`).click(function () {
 			j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+				j$("body").css("overflow", "auto");
 				j$(this).remove();
 			});
 		});
@@ -54,6 +60,7 @@
 			// Only close if we click on the background, and ignore clicks on the settings
 			if (j$(ev.target).is(j$("#temporary-background-gray"))) {
 				j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+					j$("body").css("overflow", "auto");
 					j$(this).remove();
 				});
 			}
@@ -84,7 +91,7 @@
 					event.stopPropagation();
 					// Confirm they want to delete
 					j$(`body`).append(`
-					<div id="temp-background-gray" class="leave-window-button" style="position: absolute; left: 0; top: 0;
+					<div id="temp-background-gray" class="leave-window-button" style="position: absolute; left: 0; top: ${j$("html").scrollTop()}px;
 						z-index: 10000000000;
 						width: 100vw;
 						height: 100vh;
@@ -155,6 +162,7 @@
 					if (event.target !== event.currentTarget && event.target != j$(`#${chart["chart_id"]} h2`)[0]) return;
 					// Remove the background
 					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+						j$("body").css("overflow", "auto");
 						j$(this).remove();
 						// Load the chart, deleting attributes we don't want
 						delete chart["top"];
@@ -274,7 +282,7 @@
 
 	const loadDashboard = function () {
 		j$("body").append(`
-            <div id="temporary-background-gray" style="position: absolute; left: 0; top: 0;
+            <div id="temporary-background-gray" style="position: absolute; left: 0; top: ${j$("html").scrollTop()}px;
             z-index: 10000000000;
             width: 100vw;
             height: 100vh;
@@ -296,9 +304,13 @@
             </div>
         `);
 
+		// Disable scrolling
+		j$("body").css("overflow", "hidden");
+
 		// Add event listener for closing the settings
 		j$(`#dashboard-settings-container #DashboardSettingsCloseIcon`).click(function () {
 			j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+				j$("body").css("overflow", "auto");
 				j$(this).remove();
 			});
 		});
@@ -307,6 +319,7 @@
 			// Only close if we click on the background, and ignore clicks on the settings
 			if (j$(ev.target).is(j$("#temporary-background-gray"))) {
 				j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+					j$("body").css("overflow", "auto");
 					j$(this).remove();
 				});
 			}
@@ -338,7 +351,7 @@
 					event.stopPropagation();
 					// Confirm they want to delete
 					j$(`body`).append(`
-					<div id="temp-background-gray" class="leave-window-button" style="position: absolute; left: 0; top: 0;
+					<div id="temp-background-gray" class="leave-window-button" style="position: absolute; left: 0; top: ${j$("html").scrollTop()}px;
 						z-index: 10000000000;
 						width: 100vw;
 						height: 100vh;
@@ -405,6 +418,7 @@
 				j$(`div#${dashboard["_id"]["$oid"]}`).click(function () {
 					// Remove the background
 					j$("#temporary-background-gray").fadeOut(400, "swing", function () {
+						j$("body").css("overflow", "auto");
 						// We are loading a new dashboard so we want to empty all the old ones out
 						charts_in_dashboard = [];
 						j$(this).remove();
