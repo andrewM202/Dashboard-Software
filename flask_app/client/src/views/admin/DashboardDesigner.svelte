@@ -217,6 +217,8 @@
 		});
 
 		j$("#create-chart-button").click(function (event) {
+			// Prevent default stops the browser from scrolling you to the top of page
+			// Which we don't want so you don't have to scroll back down to the new chart
 			event.preventDefault();
 			let chart = createChart();
 			charts_in_dashboard.push(chart);
