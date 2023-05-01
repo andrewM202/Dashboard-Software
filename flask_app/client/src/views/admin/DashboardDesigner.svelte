@@ -278,6 +278,42 @@
 				},
 			});
 		});
+
+		// Create a color picker for the dashboard color
+		let pickr = Pickr.create({
+			el: "#dashboard-color",
+			components: {
+				// color preview
+				preview: true,
+				// enables opacity slider
+				opacity: true,
+				// enables HUE slider
+				hue: true, // Hue slider
+				// shows/hides controls
+				output: {
+					rgba: true,
+					input: true,
+				},
+				interaction: {
+					save: true,
+				},
+			},
+			strings: {
+				save: "Save", // Default for save button
+				clear: "Clear", // Default for clear button
+			},
+		});
+
+		// Ssve the dashboard color
+		j$("input.pcr-save").click(function () {
+			j$("#DashboardDesignerContainer").css("background-color", j$(".pcr-current-color").css("background-color"));
+		});
+
+		// Set some styles for the button
+		j$(".pcr-button").css({
+			width: "100%",
+			border: "3px solid black",
+		});
 	} // onLoad() end
 
 	const loadDashboard = function () {
@@ -524,6 +560,12 @@
 				<div class="relative input-icon-container">
 					<input style="height: 30px;" class="picker-input w-full" id="dashboard-height" type="number" value="100" name="dashboard_height" />
 					<span class="absolute">%</span>
+				</div>
+			</div>
+			<div class="w-full" style="">
+				<label class="text-s uppercase py-3 font-bold block text-blueGray-700" for="dashboard-color"> Dashboard Color </label>
+				<div class="relative input-icon-container">
+					<div style="height: 30px; width: 100%; border: 3px solid black;" class="picker-input w-full" id="dashboard-color" />
 				</div>
 			</div>
 			<div class="w-full" style="align-self: flex-end;height: 100%;order: 1;display: flex;justify-content: flex-end;flex-direction: column;">
