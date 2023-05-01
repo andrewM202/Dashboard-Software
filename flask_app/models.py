@@ -200,4 +200,5 @@ class SavedDashboards(Document):
     dashboard_height = StringField()
     dashboard_title = StringField()
     dashboard_charts = ListField(ReferenceField(SavedCharts))
+    dashboard_color = StringField()
     

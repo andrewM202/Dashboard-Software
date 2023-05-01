@@ -259,6 +259,7 @@ def save_dashboard():
         dashboard_title = data["dashboard_title"]
         dashboard_height = data["dashboard_height"]
         dashboard_id = data["dashboard_id"]
+        dashboard_color = data["dashboard_color"]
         
         chart_ids = []
         
@@ -276,6 +277,7 @@ def save_dashboard():
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
+                ,dashboard_color = dashboard_color
             ).save()
             return "Dashboard Saved"
         if len(SavedDashboards.objects(id=dashboard_id)) == 0:
@@ -283,6 +285,7 @@ def save_dashboard():
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
+                ,dashboard_color = dashboard_color
             ).save()
             return "Dashboard Saved"
         else:
@@ -292,6 +295,7 @@ def save_dashboard():
                 dashboard_title = dashboard_title
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
+                ,dashboard_color = dashboard_color
             )
     
     return 'Success'

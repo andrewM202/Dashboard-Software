@@ -240,6 +240,7 @@
 				dashboard_title: j$("#dashboard-title").val(),
 				dashboard_height: j$("#DashboardDesignerContainer")[0].style["height"],
 				dashboard_id: j$("#DashboardDesignerContainer").attr("dashboard-id"),
+				dashboard_color: j$("#DashboardDesignerContainer").css("background-color"),
 				charts: [],
 			};
 			for (let chart of charts_in_dashboard) {
@@ -460,6 +461,8 @@
 						j$(this).remove();
 						// Remove existing charts
 						j$("#DashboardDesignerContainer div.chart").remove();
+						// Set background color for dashboard
+						j$("#DashboardDesignerContainer").css("background-color", dashboard["dashboard_color"]);
 						// Set data for dashboard
 						j$("input#dashboard-title").val(dashboard["dashboard_title"]);
 						j$("input#dashboard-height").val(dashboard["dashboard_height"].replace("vh", ""));
