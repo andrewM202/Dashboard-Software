@@ -210,6 +210,7 @@ class SavedTexts(Document):
 class SavedImages(Document):
     """ Holds all of the images for a dashboard """
     image_id = StringField()
+    image_type = StringField()
     image = FileField()
     width = StringField()
     height = StringField()

@@ -1,11 +1,13 @@
-from flask import render_template, Blueprint, send_from_directory, request
+from flask import render_template, Blueprint, send_from_directory, request, make_response
 from flask_login import  current_user
 from flask_security import login_required
 from models import SavedCharts, SavedDashboards, SavedTexts, SavedImages, db
-from os import environ
+from os import environ, path, remove
 from bson import json_util
 from bson.objectid import ObjectId
 from json import loads 
+from werkzeug.utils import secure_filename
+import base64 # For images
 
 bp = Blueprint("dashboard", __name__)
 
@@ -286,6 +288,81 @@ def save_text(data):
         )                                             
         return "Text Updated"  
     
+    
+    
+def allowed_file(filename):
+    """ Whether or not an image file is the correct extension """
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ['png', 'jpg', 'jpeg', 'svg']
+    
+    
+    
+@bp.route("/admin/upload-image", methods=["POST"])
+@login_required
+def upload_image():
+    try:
+        file = request.files["file"]
+        
+        image_id = request.headers['image-id']
+        
+        if secure_filename(file.filename):
+            if file and allowed_file(file.filename):
+                extension = file.filename.rsplit('.', 1)[1].lower()
+                
+                # Make sure this image has already been uploaded
+                if not len(SavedImages.objects(image_id=image_id)) > 0:
+                    print("Error Saving Image")
+                    return 'Error Saving Image'
+                
+                # First try to remove the file if it already exists for the image
+                try:
+                    for ext in ['png', 'jpg', 'jpeg', 'svg']:
+                        if path.exists(path.join('./image_store', f"{image_id}.{ext}")):
+                            remove(path.join('./image_store', f"{image_id}.{ext}"))
+                except Exception as e:
+                    print(e)
+                        
+                try: 
+                    # save file to specified directory
+                    file.save(path.join('./image_store', f"{image_id}.{extension}"))
+                    # Update the image mongo object with the extesion type
+                    SavedImages.objects(image_id=image_id).update(
+                        image_type = extension
+                    )
+                except Exception as e:
+                    print(e)
+                    return "Error saving image"
+                
+                print("Successful Save")
+                return "Successfully Saved"
+            print("Error2")
+            return 'Error Saving Image'
+        print("Error")
+        return 'Error Saving Image'
+    except Exception as e:    
+        print(e)
+        return 'Error Saving Image'
+    
+    
+    
+@bp.route("/admin/get-image/<image_name>", methods=["GET"])
+@login_required
+def get_image(image_name):
+    try:
+        with open(path.join('./image_store', f"{image_name}"), "rb") as f:
+            image_binary = f.read()
+            
+            extension = image_name.rsplit('.')[1].lower()
+
+            response = make_response(base64.b64encode(image_binary))
+            response.headers.set('Content-Type', 'image/gif')
+            response.headers.set('Content-Disposition', 'attachment', filename=f'image.{extension}')
+            return response
+        
+        return "Error retrieving image"
+    except Exception as e:
+        return f"Error retrieving image: {e}" 
+    
 
 
 @bp.route("/admin/save-image", methods=["POST"])
@@ -306,6 +383,7 @@ def save_image(data):
             ,height = str(height)
             ,top = str(top)
             ,right = str(right)
+            ,image_type = ""
         ).save()
         return "Image Saved"
     else:

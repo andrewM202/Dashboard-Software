@@ -205,10 +205,10 @@
 				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").show();
 				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").css({
 					top: event.pageY - parentOffset.top + "px",
-					right: j$("#DashboardDesignerContainer").width() - event.pageX + "px",
+					right: j$("#DashboardDesignerContainer").width() - event.pageX + (j$("#SideBarNav").css("display") === "none" ? 0 : j$("#SideBarNav").innerWidth()) + "px",
 				});
 				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").attr("initial-click-top", event.pageY - parentOffset.top);
-				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").attr("initial-click-right", j$("#DashboardDesignerContainer").width() - event.pageX);
+				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").attr("initial-click-right", j$("#DashboardDesignerContainer").width() - event.pageX + (j$("#SideBarNav").css("display") === "none" ? 0 : j$("#SideBarNav").innerWidth()));
 			}
 			// If the center text exists remove it, as it is just used
 			// as an initial guide
@@ -336,6 +336,31 @@
 				data: JSON.stringify(data),
 				success: function () {
 					console.log("Dashboard Successfully Saved");
+					// On save individually upload all the images to the server
+					for (let image of images_in_dashboard) {
+						// Create a form data object to send the image to the server
+						let formData = new FormData(j$(`#image${image.imageCreatedNumber} form.hidden-upload-form form`)[0]);
+						// formData.append("image", j$(`#image${image.imageCreatedNumber}`)[0].files[0]);
+						// formData.append("image_id", j$(`#image${image.imageCreatedNumber}`).attr("data-uuid"));
+						// Send the image to the server
+						j$.ajax({
+							type: "POST",
+							url: `${location.origin}/admin/upload-image`,
+							data: formData,
+							headers: { "image-id": j$(`#image${image.imageCreatedNumber}`).attr("data-uuid") },
+							processData: false,
+							contentType: false,
+							success: function () {
+								console.log("Image Successfully Uploaded");
+							},
+							error: function (e) {
+								error = "Server Error During Creation.";
+								// Error logging
+								console.log(e.statusText);
+								console.log(e.responseText);
+							},
+						});
+					}
 				},
 				error: function (e) {
 					error = "Server Error During Creation.";
@@ -569,6 +594,19 @@
 									let result = createImage({}, data);
 									// Add image to the dashboard
 									images_in_dashboard.push(result);
+								});
+								// Now that we have all the images data lets retrieve them from database
+								images.forEach((image) => {
+									console.log(image);
+									// /admin/get-image/<image_name>
+									j$.ajax({
+										url: `/admin/get-image/${image.image_id}.${image.image_type}`,
+										type: "GET",
+										contentType: `image/${image.image_type}}`,
+										success: function (result) {
+											document.querySelector(`div[data-uuid="${image.image_id}"] img`).src = `data:image/${image.image_type};base64,` + result;
+										},
+									});
 								});
 							},
 						});
