@@ -7,7 +7,6 @@
 	import { onDestroy } from "svelte";
 	import { retrieveChartSettings } from "../../../scripts/DashboardDesigner/RetrieveChartSettings.js";
 
-	let showActionBar = false;
 	let parentOffset;
 	let charts_in_dashboard = [];
 	let images_in_dashboard = [];
@@ -202,20 +201,34 @@
 			// Right mouse click
 			if (event.which === 3) {
 				// Make the action bar appear at mouse click
-				showActionBar = true;
 				parentOffset = j$(this).parent().offset();
+				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").show();
 				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").css({
 					top: event.pageY - parentOffset.top + "px",
-					right: j$(window).width() - event.pageX + "px",
+					right: j$("#DashboardDesignerContainer").width() - event.pageX + "px",
 				});
+				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").attr("initial-click-top", event.pageY - parentOffset.top);
+				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").attr("initial-click-right", j$("#DashboardDesignerContainer").width() - event.pageX);
 			}
 			// If the center text exists remove it, as it is just used
 			// as an initial guide
 			j$("#DashboardDesignerContainer > center").remove();
+			// Move the action bar into a visible location if it is offscreen
+			let actionBarPosition = j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").position();
+			if (actionBarPosition.left < 0) {
+				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").css({
+					right: j$("#DashboardDesignerContainer").innerWidth() - j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").innerWidth(),
+				});
+			}
+			if (actionBarPosition.top + j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").innerHeight() > j$("#DashboardDesignerContainer").innerHeight()) {
+				j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").css({
+					top: j$("#DashboardDesignerContainer").innerHeight() - j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").innerHeight(),
+				});
+			}
 		});
 		// Make the action bar disappear when left clicking
 		j$("#DashboardDesignerContainer").on("click", function () {
-			showActionBar = false;
+			j$("#DashboardDesignerContainer > #DashboardDesignerActionBar").hide();
 		});
 
 		// Make the HTML have no overflow
@@ -720,7 +733,7 @@
 		</div>
 	</div>
 	<div on:click={dashboardSettingsEnable} class="dashboard-settings-triangle cursor-pointer" />
-	<div id="DashboardDesignerActionBar" style="background-color: rgb(239, 68, 68, 0.85);" class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 {showActionBar ? 'block' : 'hidden'}">
+	<div id="DashboardDesignerActionBar" style="background-color: rgb(239, 68, 68, 0.85);" class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 hidden">
 		<a id="create-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Chart </a>
 		<!-- Load an existing chart instead of creating a new one -->
 		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
