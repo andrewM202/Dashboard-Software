@@ -246,7 +246,32 @@
 				dashboard_color: j$("#DashboardDesignerContainer").css("background-color"),
 				charts: [],
 				texts: [],
+				images: [],
 			};
+			for (let image of images_in_dashboard) {
+				// Resize the % height and % top of the image so the actual pixel size doesn't change if the height of the dashboard is different
+				j$(`#image${image.imageCreatedNumber}`).css({
+					height: ((j$(`#image${image.imageCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#image${image.imageCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#image${image.imageCreatedNumber}`)[0].style["top"].replace("%", "")) + "%",
+				});
+
+				try {
+					let image_settings = {
+						height: j$(`#image${image.imageCreatedNumber}`)[0].style["height"],
+						width: j$(`#image${image.imageCreatedNumber}`)[0].style["width"],
+						top: j$(`#image${image.imageCreatedNumber}`)[0].style["top"],
+						right: j$(`#image${image.imageCreatedNumber}`)[0].style["right"],
+						title: j$(`#image${image.imageCreatedNumber} h1`).text(),
+						// image_url: j$(`#image${image.imageCreatedNumber}`)[0].src,
+						image_id: j$(`#image${image.imageCreatedNumber}`).attr("data-uuid"),
+						// image: new FormData(j$("#upload-file")[0]),
+					};
+					data.images.push(image_settings);
+				} catch (err) {
+					console.log(err);
+				}
+				console.log(data.images);
+			}
 			for (let text of texts_in_dashboard) {
 				// Resize the % height and % top of the text so the actual pixel size doesn't change if the height of the dashboard is different
 				j$(`#text${text.textCreatedNumber}`).css({
@@ -497,6 +522,8 @@
 						j$("#DashboardDesignerContainer div.chart").remove();
 						// Remove existing texts
 						j$("#DashboardDesignerContainer div.text-item").remove();
+						// Remove existing images
+						j$("#DashboardDesignerContainer div.image-item").remove();
 						// Set background color for dashboard
 						j$("#DashboardDesignerContainer").css("background-color", dashboard["dashboard_color"]);
 						j$("div.pcr-button").css("background-color", dashboard["dashboard_color"]);
@@ -504,6 +531,34 @@
 						j$("input#dashboard-title").val(dashboard["dashboard_title"]);
 						j$("input#dashboard-height").val(dashboard["dashboard_height"].replace("vh", ""));
 						j$("#DashboardDesignerContainer").css("height", dashboard["dashboard_height"]);
+						// Get the dashboard's images
+						j$.ajax({
+							type: "GET",
+							url: `/admin/images/get_images_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
+							success: function (data) {
+								const images = JSON.parse(data);
+								console.log(images);
+								images.forEach((image) => {
+									let data = {
+										// ID
+										image_id: image.image_id,
+										// Text
+										title: image.title,
+										// Width
+										width: image.width.replace("%", ""),
+										// Height
+										height: image.height.replace("%", ""),
+										// Top
+										top: image.top.replace("%", ""),
+										// Right
+										right: image.right.replace("%", ""),
+									};
+									let result = createImage({}, data);
+									// Add image to the dashboard
+									images_in_dashboard.push(result);
+								});
+							},
+						});
 						// Get the dashboard's texts
 						j$.ajax({
 							type: "GET",
@@ -533,7 +588,7 @@
 										right: text.right.replace("%", ""),
 									};
 									let result = createText({}, data);
-									// Add chart to the dashboard
+									// Add text to the dashboard
 									texts_in_dashboard.push(result);
 								});
 							},
@@ -625,6 +680,12 @@
 		let text = createText(evt);
 		texts_in_dashboard.push(text);
 	}
+
+	function initializeImage(evt) {
+		evt.preventDefault();
+		let image = createImage(evt);
+		images_in_dashboard.push(image);
+	}
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
@@ -665,7 +726,7 @@
 		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
 		<div class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
 		<a on:click={initializeText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
-		<a on:click={createImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
+		<a on:click={initializeImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
 		<a on:click={createTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
 		<a on:click={createImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Timeline </a>
 		<a on:click={createTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Network </a>

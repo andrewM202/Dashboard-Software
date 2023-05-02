@@ -207,11 +207,23 @@ class SavedTexts(Document):
     right = StringField()
     color = StringField()
     
+class SavedImages(Document):
+    """ Holds all of the images for a dashboard """
+    image_id = StringField()
+    image = FileField()
+    width = StringField()
+    height = StringField()
+    top = StringField()
+    right = StringField()
+    color = StringField()
+    title = StringField()
+    
 class SavedDashboards(Document):
     """ Holds all of the saved dashboards """
     dashboard_height = StringField()
     dashboard_title = StringField()
     dashboard_charts = ListField(ReferenceField(SavedCharts), default=[])
     dashboard_texts = ListField(ReferenceField(SavedTexts), default=[])
+    dashboard_images = ListField(ReferenceField(SavedImages), default=[])
     dashboard_color = StringField()
     

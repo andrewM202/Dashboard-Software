@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint, send_from_directory, request
 from flask_login import  current_user
 from flask_security import login_required
-from models import SavedCharts, SavedDashboards, SavedTexts, db
+from models import SavedCharts, SavedDashboards, SavedTexts, SavedImages, db
 from os import environ
 from bson import json_util
 from bson.objectid import ObjectId
@@ -285,6 +285,39 @@ def save_text(data):
             ,right = str(right)
         )                                             
         return "Text Updated"  
+    
+
+
+@bp.route("/admin/save-image", methods=["POST"])
+@login_required
+def save_image(data):
+    width = data['width']
+    height = data['height']
+    top = data['top']
+    right = data['right']
+    title = data['title']
+    
+    if len(SavedImages.objects(image_id=data['image_id'])) == 0:
+        # Store data in database
+        SavedImages(
+            image_id = data['image_id']
+            ,title = title
+            ,width = str(width)
+            ,height = str(height)
+            ,top = str(top)
+            ,right = str(right)
+        ).save()
+        return "Image Saved"
+    else:
+        # Update data in database
+        SavedImages.objects(image_id=data['image_id']).update(  
+            title = title
+            ,width = str(width)
+            ,height = str(height)
+            ,top = str(top)
+            ,right = str(right)
+        )                                             
+        return "Image Updated" 
 
 
 
@@ -304,6 +337,7 @@ def save_dashboard():
         
         chart_ids = []
         text_ids = []
+        image_ids = []
         
         # Loop through and save our charts
         for chart in data["charts"]:
@@ -315,8 +349,14 @@ def save_dashboard():
         for text in data["texts"]:
             # Save our text if it is not already saved in the database
             result = save_text(text)
-            # Add the chart's ID to our list
+            # Add the text's ID to our list
             text_ids.append(SavedTexts.objects(text_id=text["text_id"])[0])
+            
+        for image in data["images"]:
+            # Save our image if it is not already saved in the database
+            result = save_image(image)
+            # Add the image's ID to our list
+            image_ids.append(SavedImages.objects(image_id=image["image_id"])[0])
             
         # Check if dashboard already exists
         # Save our dashboard
@@ -326,6 +366,7 @@ def save_dashboard():
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
                 ,dashboard_texts = text_ids
+                ,dashboard_images = image_ids
                 ,dashboard_color = dashboard_color
             ).save()
             return "Dashboard Saved"
@@ -335,6 +376,7 @@ def save_dashboard():
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
                 ,dashboard_texts = text_ids
+                ,dashboard_images = image_ids
                 ,dashboard_color = dashboard_color
             ).save()
             return "Dashboard Saved"
@@ -346,6 +388,7 @@ def save_dashboard():
                 ,dashboard_height = dashboard_height
                 ,dashboard_charts = chart_ids
                 ,dashboard_texts = text_ids
+                ,dashboard_images = image_ids
                 ,dashboard_color = dashboard_color
             )
     
@@ -398,6 +441,25 @@ def retrieve_texts_by_dashboard_id(dashboard_id):
         
     # Return our texts
     return json_util.dumps(return_texts)
+
+
+
+@bp.route("/admin/images/get_images_by_dashboard_id/<dashboard_id>", methods=["GET"])
+@login_required
+def retrieve_images_by_dashboard_id(dashboard_id):
+    # Get our dashboard
+    dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
+    return_images = []
+    dashboard = loads(dashboard)[0]
+    images = dashboard["dashboard_images"]
+    
+    # Loop through images, add data to images
+    for image in images:
+        image_data = loads(SavedImages.objects(id=image["$oid"]).to_json())[0]
+        return_images.append(image_data)
+        
+    # Return our images
+    return json_util.dumps(return_images)
     
     
 
