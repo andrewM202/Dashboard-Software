@@ -13,6 +13,7 @@ bp = Blueprint("dashboard", __name__)
 
 db_name = environ['MONGODB_DB']
 collections = db.get_database(db_name).list_collection_names()
+image_storage_path = "./image_store"
 
 @bp.route("/admin/dashboard")
 @login_required
@@ -317,14 +318,14 @@ def upload_image():
                 # First try to remove the file if it already exists for the image
                 try:
                     for ext in ['png', 'jpg', 'jpeg', 'svg']:
-                        if path.exists(path.join('./image_store', f"{image_id}.{ext}")):
-                            remove(path.join('./image_store', f"{image_id}.{ext}"))
+                        if path.exists(path.join(image_storage_path, f"{image_id}.{ext}")):
+                            remove(path.join(image_storage_path, f"{image_id}.{ext}"))
                 except Exception as e:
                     print(e)
                         
                 try: 
                     # save file to specified directory
-                    file.save(path.join('./image_store', f"{image_id}.{extension}"))
+                    file.save(path.join(image_storage_path, f"{image_id}.{extension}"))
                     # Update the image mongo object with the extesion type
                     SavedImages.objects(image_id=image_id).update(
                         image_type = extension
@@ -349,7 +350,7 @@ def upload_image():
 @login_required
 def get_image(image_name):
     try:
-        with open(path.join('./image_store', f"{image_name}"), "rb") as f:
+        with open(path.join(image_storage_path, f"{image_name}"), "rb") as f:
             image_binary = f.read()
             
             extension = image_name.rsplit('.')[1].lower()
@@ -589,7 +590,17 @@ def delete_dashboard():
             SavedCharts.objects(id=chart.id, deleted=True).delete()
         # Delete our texts
         for text in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_texts"]:
-            SavedCharts.objects(id=text.id).delete()
+            SavedTexts.objects(id=text.id).delete()
+        # Delete our images
+        for image in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_images"]:
+            SavedImages.objects(id=image.id).delete()
+            # Delete our image from the file system
+            image_id = image.image_id
+            ext = image.image_type
+            print(f"{image_id}.{ext}")
+            if path.exists(path.join(image_storage_path, f"{image_id}.{ext}")):
+                remove(path.join(image_storage_path, f"{image_id}.{ext}"))
+        
         # Delete our dashboard
         SavedDashboards.objects(id=dashboard_id).delete()
         return "Success"

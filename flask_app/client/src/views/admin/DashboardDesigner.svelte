@@ -262,6 +262,8 @@
 				images: [],
 			};
 			for (let image of images_in_dashboard) {
+				// If we cannot find the image anymore then skip this loop
+				if (j$(`#image${image.imageCreatedNumber}`).length === 0) continue;
 				// Resize the % height and % top of the image so the actual pixel size doesn't change if the height of the dashboard is different
 				j$(`#image${image.imageCreatedNumber}`).css({
 					height: ((j$(`#image${image.imageCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#image${image.imageCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
@@ -283,9 +285,10 @@
 				} catch (err) {
 					console.log(err);
 				}
-				console.log(data.images);
 			}
 			for (let text of texts_in_dashboard) {
+				// If we cannot find the text anymore then skip this loop
+				if (j$(`#text${text.textCreatedNumber}`).length === 0) continue;
 				// Resize the % height and % top of the text so the actual pixel size doesn't change if the height of the dashboard is different
 				j$(`#text${text.textCreatedNumber}`).css({
 					height: ((j$(`#text${text.textCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#text${text.textCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
@@ -310,6 +313,8 @@
 				}
 			}
 			for (let chart of charts_in_dashboard) {
+				// If we cannot find the chart anymore then skip this loop
+				if (j$(`#chart${chart.id}`).length === 0) continue;
 				// Resize the % height and % top of the chart so the actual pixel size doesn't change if the height of the dashboard is different
 				j$(`#chart${chart.id}`).css({
 					height: ((j$(`#chart${chart.id}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#chart${chart.id}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
