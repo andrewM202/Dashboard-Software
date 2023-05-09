@@ -118,9 +118,7 @@
 					if (j$(parent).innerHeight() + addHeight < 600) {
 						j$(parent).innerHeight(600);
 					} else {
-						j$(parent).innerHeight(
-							j$(parent).innerHeight() + addHeight
-						);
+						j$(parent).innerHeight(j$(parent).innerHeight() + addHeight);
 					}
 				}
 			});
@@ -143,11 +141,7 @@
 	document.addEventListener("webkitfullscreenchange", exitHandler, false);
 
 	function exitHandler() {
-		if (
-			!document.webkitIsFullScreen &&
-			!document.mozFullScreen &&
-			!document.msFullscreenElement
-		) {
+		if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
 			// Make the datatable's height back to what it was
 			// before it was fullscreen
 			j$(datatableElem).css("height", datatableHeight);
@@ -202,9 +196,7 @@
 						</table>`);
 					// Add our headers to the table
 					DataSettings[1].Table.Headers.forEach((header) => {
-						j$(`.archiveDataTable thead tr`).append(
-							`<th>${header}</th>`
-						);
+						j$(`.archiveDataTable thead tr`).append(`<th>${header}</th>`);
 					});
 					// Add the final ID column we can use to delete the entry
 					// server side
@@ -234,21 +226,21 @@
 						language: {
 							loadingRecords: "&nbsp;",
 							processing: "Loading...",
+							searchBuilder: {
+								button: "Filter",
+							},
 						},
 						deferRender: true,
 						columns: columns,
-						dom: "QBlfrtip",
+						dom: "Blfrtip",
 						buttons: [
+							"searchBuilder",
 							{
 								text: "New",
 								className: "newButton cursor-pointer",
 								action: function (e, dt, node, config) {
 									// These db field names match up with the data in table.rows().data()
-									newTableEntry(
-										e,
-										DataSettings[1].CreationCard.Inputs,
-										DataSettings[1].CollectionName
-									);
+									newTableEntry(e, DataSettings[1].CreationCard.Inputs, DataSettings[1].CollectionName);
 								},
 							},
 							{
@@ -256,21 +248,10 @@
 								className: "editButton cursor-pointer",
 								action: function (e, dt, node, config) {
 									// If there are any selected rows to edit
-									if (
-										table.rows({ selected: true }).data()
-											.length > 0
-									) {
+									if (table.rows({ selected: true }).data().length > 0) {
 										console.log(DataSettings[1]);
 										// These db field names match up with the data in table.rows().data()
-										editTableEntry(
-											e,
-											DataSettings[1].CreationCard.Inputs,
-											DataSettings[1].CollectionName,
-											table
-												.rows({ selected: true })
-												.data()
-												.toArray()
-										);
+										editTableEntry(e, DataSettings[1].CreationCard.Inputs, DataSettings[1].CollectionName, table.rows({ selected: true }).data().toArray());
 									}
 								},
 							},
@@ -279,14 +260,10 @@
 								className: "deleteButton cursor-pointer",
 								action: function (e, dt, node, config) {
 									// Get our selected table data
-									let data = table
-										.rows({ selected: true })
-										.data()
-										.toArray();
+									let data = table.rows({ selected: true }).data().toArray();
 									// Add the collection name as the last entry
 									data.unshift({
-										collection:
-											DataSettings[1].CollectionName,
+										collection: DataSettings[1].CollectionName,
 									});
 									// Stringify the data so it can be posted
 									data = JSON.stringify(data);
@@ -294,14 +271,10 @@
 										type: "POST",
 										url: "/admin/archive-data/delete-many",
 										data: data,
-										contentType:
-											"application/json; charset=utf-8",
+										contentType: "application/json; charset=utf-8",
 										success: function (data) {
 											// Delete all the selected rows from the data table / UI
-											table
-												.rows({ selected: true })
-												.remove()
-												.draw();
+											table.rows({ selected: true }).remove().draw();
 											// Print the success message
 											console.log(data);
 										},
@@ -316,16 +289,10 @@
 								text: "Select All",
 								className: "cursor-pointer",
 								action: function (e, dt, node, config) {
-									if (
-										table.rows({ selected: true }).data()
-											.length ===
-										table.rows().data().length
-									) {
+									if (table.rows({ selected: true }).data().length === table.rows().data().length) {
 										table.rows().deselect();
 									} else {
-										table
-											.rows({ search: "applied" })
-											.select();
+										table.rows({ search: "applied" }).select();
 									}
 								},
 							},
@@ -333,17 +300,10 @@
 								text: "Select Page",
 								className: "cursor-pointer",
 								action: function (e, dt, node, config) {
-									if (
-										table.rows({ page: "current" }).data()
-											.length ===
-										table.rows({ selected: true }).data()
-											.length
-									) {
+									if (table.rows({ page: "current" }).data().length === table.rows({ selected: true }).data().length) {
 										table.rows().deselect();
 									} else {
-										table
-											.rows({ page: "current" })
-											.select();
+										table.rows({ page: "current" }).select();
 									}
 								},
 							},
@@ -378,11 +338,7 @@
 								className: "cursor-pointer downloadButton",
 								action: function (e, dt, node, config) {
 									const name = `${navItems[openTab]}.json`;
-									const saveData = JSON.stringify(
-										table.data().toArray(),
-										undefined,
-										2
-									);
+									const saveData = JSON.stringify(table.data().toArray(), undefined, 2);
 
 									const a = document.createElement("a");
 									// const type = name.split(".").pop();
@@ -413,47 +369,15 @@
 									// we are in full screen mode so the datatable
 									// fits the full screen
 									if (datatableHeight === null) {
-										datatableHeight = j$(
-											j$(e.target).parentsUntil(
-												"div.tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													"div.tableBorder"
-												).length - 1
-											]
-										)
+										datatableHeight = j$(j$(e.target).parentsUntil("div.tableBorder")[j$(e.target).parentsUntil("div.tableBorder").length - 1])
 											.parent()
 											.css("height");
 
-										j$(
-											j$(e.target).parentsUntil(
-												"div.tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													"div.tableBorder"
-												).length - 1
-											]
-										)
+										j$(j$(e.target).parentsUntil("div.tableBorder")[j$(e.target).parentsUntil("div.tableBorder").length - 1])
 											.parent()
 											.css("height", "auto");
-										datatableElem = j$(
-											j$(e.target).parentsUntil(
-												"div.tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													"div.tableBorder"
-												).length - 1
-											]
-										).parent();
-										j$(
-											j$(e.target).parentsUntil(
-												".tableBorder"
-											)[
-												j$(e.target).parentsUntil(
-													".tableBorder"
-												).length - 1
-											]
-										)
+										datatableElem = j$(j$(e.target).parentsUntil("div.tableBorder")[j$(e.target).parentsUntil("div.tableBorder").length - 1]).parent();
+										j$(j$(e.target).parentsUntil(".tableBorder")[j$(e.target).parentsUntil(".tableBorder").length - 1])
 											.parent()
 											.fullScreen(true);
 									}
@@ -475,10 +399,7 @@
 						initComplete: function () {
 							// Make the page number of results (i.e. 10 results per page)
 							// be 75px wide so the icon does not go over the number
-							j$(".dataTables_length select").css(
-								"width",
-								"75px"
-							);
+							j$(".dataTables_length select").css("width", "75px");
 							j$("td").css({
 								"max-width": "14rem",
 								/* max-width: 50ch; */
@@ -493,9 +414,7 @@
 							}
 							// Add an x-overflow so that the table itself can scroll,
 							// but not the header or footer
-							j$(`.archiveDataTable`).wrap(
-								"<div class='x-overflow-auto' style='max-width: 100%; width: 100%; overflow-x: auto;'></div>"
-							);
+							j$(`.archiveDataTable`).wrap("<div class='x-overflow-auto' style='max-width: 100%; width: 100%; overflow-x: auto;'></div>");
 
 							// We have finished making our data table so set the variable
 							// to false so that we can make another one if needed
@@ -504,10 +423,7 @@
 						drawCallback: function () {
 							// Make the page number of results (i.e. 10 results per page)
 							// be 75px wide so the icon does not go over the number
-							j$(".dataTables_length select").css(
-								"width",
-								"75px"
-							);
+							j$(".dataTables_length select").css("width", "75px");
 							j$("td").css({
 								"max-width": "14rem",
 								/* max-width: 50ch; */
@@ -535,14 +451,10 @@
 						},
 					});
 					// Event listener to see which header is clicked
-					j$(`.archiveDataTable thead`).on(
-						"click",
-						"th",
-						function () {
-							let index = table.column(this).index();
-							// console.log(index);
-						}
-					);
+					j$(`.archiveDataTable thead`).on("click", "th", function () {
+						let index = table.column(this).index();
+						// console.log(index);
+					});
 				}
 			}, 10);
 		}
@@ -559,10 +471,7 @@
 		j$("nav").click(function () {
 			for (let i = 0; i < detectOverflowLater.length; i++) {
 				let e = j$(detectOverflowLater[i].event)[0];
-				if (
-					j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth()) &&
-					j$(e).children().length === 0
-				) {
+				if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth()) && j$(e).children().length === 0) {
 					// This element is now found to be overflown, remove it from
 					// detectOverflowLater
 					detectOverflowLater[i].remove = true;
@@ -583,10 +492,7 @@
 						j$(e).find("div").addClass("hidden");
 						j$(e).find("div").removeClass("block");
 					});
-				} else if (
-					j$(e)[0].scrollWidth !== 0 &&
-					j$(e)[0].scrollWidth === Math.ceil(j$(e).innerWidth())
-				) {
+				} else if (j$(e)[0].scrollWidth !== 0 && j$(e)[0].scrollWidth === Math.ceil(j$(e).innerWidth())) {
 					// This element is not found to be overflown, remove it from
 					// detectOverflowLater
 					detectOverflowLater[i].remove = true;
@@ -612,10 +518,7 @@
 					event: j$(e),
 					remove: false,
 				});
-			} else if (
-				j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth()) &&
-				j$(e).children().length === 0
-			) {
+			} else if (j$(e)[0].scrollWidth > Math.ceil(j$(e).innerWidth()) && j$(e).children().length === 0) {
 				j$(e).append(`<div
                       style="background-color: rgb(251 113 133); white-space: normal; max-width: 500px; height: auto;"
                       class="hidden z-50 text-white font-semibold p-3 rounded-t-lg"
@@ -660,79 +563,23 @@
 
 <SettingsBar SettingsFunction={loadSettingsEvent} />
 {#if DataSettings !== undefined && UserSettings !== undefined && DataSettings != null && UserSettings != null}
-	<AdminNavbar
-		bind:openTab
-		{navItems}
-		navBarBGColor={UserSettings[0].navigation_color !== undefined &&
-		UserSettings[0].navigation_color !== null
-			? `Background-color: ${UserSettings[0].navigation_color}`
-			: undefined}
-	/>
+	<AdminNavbar bind:openTab {navItems} navBarBGColor={UserSettings[0].navigation_color !== undefined && UserSettings[0].navigation_color !== null ? `Background-color: ${UserSettings[0].navigation_color}` : undefined} />
 	<div id="TableHiddenBlockContainer">
-		<HeaderStats
-			id={DataSettings[0]}
-			cards={DataSettings[1].Cards}
-			title={navItems[openTab]}
-			titleFontSize={"text-4xl"}
-			inputs={DataSettings[1].HeaderSearchInputs}
-			CollectionName={DataSettings[1].CollectionName}
-			SearchFunction={SearchResults}
-			headerBGColor={UserSettings[0].archive_header_color !== undefined &&
-			UserSettings[0].archive_header_color !== null
-				? `Background-color: ${UserSettings[0].archive_header_color}`
-				: undefined}
-		/>
-		<div
-			style={UserSettings[0].background_color !== undefined &&
-			UserSettings[0].background_color !== null
-				? `Background-color: ${UserSettings[0].background_color}`
-				: undefined}
-			class="block lg:px-10 mx-auto w-full my-12"
-		>
+		<HeaderStats id={DataSettings[0]} cards={DataSettings[1].Cards} title={navItems[openTab]} titleFontSize={"text-4xl"} inputs={DataSettings[1].HeaderSearchInputs} CollectionName={DataSettings[1].CollectionName} SearchFunction={SearchResults} headerBGColor={UserSettings[0].archive_header_color !== undefined && UserSettings[0].archive_header_color !== null ? `Background-color: ${UserSettings[0].archive_header_color}` : undefined} />
+		<div style={UserSettings[0].background_color !== undefined && UserSettings[0].background_color !== null ? `Background-color: ${UserSettings[0].background_color}` : undefined} class="block lg:px-10 mx-auto w-full my-12">
 			<div class="flex flex-wrap ml-8 w-full">
-				<div
-					style="height: auto;"
-					class="tableBorder w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6"
-				>
-					<div
-						use:archiveTableSliderStyling
-						style="right: -4px; bottom: -4px; cursor: ns-resize;"
-						class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
-					/>
-					<div
-						use:archiveTableSliderStyling
-						style="left: -4px; bottom: -4px; cursor: ns-resize;"
-						class="bg-rose-400 h-4 w-4 absolute rounded-full px-2"
-					/>
-					<div
-						class="dataTableContainer w-full bg-white p-4"
-						style="height: auto; overflow-y: scroll;"
-					/>
+				<div style="height: auto;" class="tableBorder w-full relative h-650-px bg-blueGray-700 mt-12 mb-12 flex flex-col p-6">
+					<div use:archiveTableSliderStyling style="right: -4px; bottom: -4px; cursor: ns-resize;" class="bg-rose-400 h-4 w-4 absolute rounded-full px-2" />
+					<div use:archiveTableSliderStyling style="left: -4px; bottom: -4px; cursor: ns-resize;" class="bg-rose-400 h-4 w-4 absolute rounded-full px-2" />
+					<div class="dataTableContainer w-full bg-white p-4" style="height: auto; overflow-y: scroll;" />
 				</div>
 			</div>
 		</div>
-		<div
-			style={UserSettings[0].background_color !== undefined &&
-			UserSettings[0].background_color !== null
-				? `Background-color: ${UserSettings[0].background_color}`
-				: undefined}
-			class="lg:px-10 mx-auto w-full"
-		>
+		<div style={UserSettings[0].background_color !== undefined && UserSettings[0].background_color !== null ? `Background-color: ${UserSettings[0].background_color}` : undefined} class="lg:px-10 mx-auto w-full">
 			<div class="flex flex-wrap ml-8">
 				<div class="w-full h-auto bg-blueGray-700 mb-12 p-6">
 					{#if DataSettings[1].CreationCard !== undefined}
-						<DataCreationCard
-							CollectionName={DataSettings[1].CollectionName}
-							flexdata={DataSettings[1].CreationCard
-								.Flexdatalistdata}
-							title={DataSettings[1].CreationCard.Title}
-							inputs={DataSettings[1].CreationCard.Inputs}
-							creationColor={UserSettings[0]
-								.archive_creation_color !== undefined &&
-							UserSettings[0].archive_creation_color !== null
-								? `Background-color: ${UserSettings[0].archive_creation_color}`
-								: undefined}
-						/>
+						<DataCreationCard CollectionName={DataSettings[1].CollectionName} flexdata={DataSettings[1].CreationCard.Flexdatalistdata} title={DataSettings[1].CreationCard.Title} inputs={DataSettings[1].CreationCard.Inputs} creationColor={UserSettings[0].archive_creation_color !== undefined && UserSettings[0].archive_creation_color !== null ? `Background-color: ${UserSettings[0].archive_creation_color}` : undefined} />
 					{/if}
 				</div>
 			</div>
