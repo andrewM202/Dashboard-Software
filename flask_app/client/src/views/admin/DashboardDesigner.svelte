@@ -576,6 +576,10 @@
 						j$("#DashboardDesignerContainer div.text-item").remove();
 						// Remove existing images
 						j$("#DashboardDesignerContainer div.image-item").remove();
+						// Remove existing tables
+						j$("#DashboardDesignerContainer div.table-item").remove();
+						// Remove existing timelines
+						j$("#DashboardDesignerContainer div.timeline-dashboard-item").remove();
 						// Set background color for dashboard
 						j$("#DashboardDesignerContainer").css("background-color", dashboard["dashboard_color"]);
 						j$("div.pcr-button").css("background-color", dashboard["dashboard_color"]);
