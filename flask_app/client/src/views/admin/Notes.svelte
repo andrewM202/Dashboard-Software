@@ -69,10 +69,7 @@
 					if (data.operation === "remove") {
 						// This operation is for deleting nodes
 						let updateJson;
-						if (
-							data.childNode !== undefined &&
-							data.childNode !== null
-						) {
+						if (data.childNode !== undefined && data.childNode !== null) {
 							updateJson = {
 								data: {
 									key: data.childNode.key,
@@ -116,18 +113,9 @@
 						let updateJson = {
 							data: {
 								title: data.childNode.title,
-								desc:
-									data.childNode.data.desc === undefined
-										? data.childNode.desc
-										: data.childNode.data.desc,
-								text:
-									data.childNode.data.text === undefined
-										? data.childNode.text
-										: data.childNode.data.text,
-								folder:
-									data.childNode.folder === undefined
-										? false
-										: data.childNode.folder,
+								desc: data.childNode.data.desc === undefined ? data.childNode.desc : data.childNode.data.desc,
+								text: data.childNode.data.text === undefined ? data.childNode.text : data.childNode.data.text,
+								folder: data.childNode.folder === undefined ? false : data.childNode.folder,
 								key: data.childNode.key,
 								data: data.childNode.data,
 								children: newData_children,
@@ -186,18 +174,9 @@
 								let updateJson = {
 									data: {
 										title: startNode.title,
-										desc:
-											startNode.desc === undefined
-												? startNode.data.desc
-												: startNode.desc,
-										text:
-											startNode.text === undefined
-												? startNode.data.text
-												: startNode.text,
-										folder:
-											startNode.folder === undefined
-												? false
-												: startNode.folder,
+										desc: startNode.desc === undefined ? startNode.data.desc : startNode.desc,
+										text: startNode.text === undefined ? startNode.data.text : startNode.text,
+										folder: startNode.folder === undefined ? false : startNode.folder,
 										key: startNode.key,
 										data: startNode.data,
 										children: newData_children,
@@ -212,8 +191,7 @@
 									success: function (e) {
 										if (e !== "Updated Node") {
 											// We just created a new node
-											let tree =
-												j$.ui.fancytree.getTree();
+											let tree = j$.ui.fancytree.getTree();
 											// tree.getActiveNode().key = e;
 											// tree.getActiveNode().text = "";
 											// tree.getActiveNode().desc = "";
@@ -299,9 +277,7 @@
 				},
 				postProcess: function (event, data) {
 					// Process data from load-notes route
-					data.result = j$.parseJSON(
-						JSON.stringify(data.response)
-					)[0];
+					data.result = j$.parseJSON(JSON.stringify(data.response))[0];
 				},
 				tooltip: function (event, data) {
 					return data.node.data.author;
@@ -328,11 +304,7 @@
                             <input
                                 type="text"
                                 name="desc"
-                                value="${
-									node.data.desc === undefined
-										? j$tdList.eq(3).text()
-										: node.data.desc
-								}"
+                                value="${node.data.desc === undefined ? j$tdList.eq(3).text() : node.data.desc}"
                                 placeholder="Note Description"
                                 style="color: black;"
                                 class="w-full h-full text-dark"
@@ -341,8 +313,7 @@
 									value: "Save Edit",
 								});
 
-								j$("#noteText")
-									.html(`<div class="document-editor">
+								j$("#noteText").html(`<div class="document-editor">
                                         <div class="document-editor__toolbar"></div>
                                         <div class="document-editor__editable-container">
                                             <div class="document-editor__editable">
@@ -361,41 +332,26 @@
 										var value = j$(this).val();
 
 										// set textarea value to: text before caret + tab + text after caret
-										j$(this).val(
-											value.substring(0, start) +
-												"\t" +
-												value.substring(end)
-										);
+										j$(this).val(value.substring(0, start) + "\t" + value.substring(end));
 
 										// put caret at right position again (add one for the tab)
-										this.selectionStart =
-											this.selectionEnd = start + 1;
+										this.selectionStart = this.selectionEnd = start + 1;
 
 										// prevent the focus lose
 										e.preventDefault();
 									}
 								});
 
-								DecoupledEditor.create(
-									document.querySelector(
-										".document-editor__editable"
-									),
-									{
-										initialData: node.data.text,
-										mediaEmbed: {
-											previewsInData: true,
-										},
-									}
-								)
+								DecoupledEditor.create(document.querySelector(".document-editor__editable"), {
+									initialData: node.data.text,
+									mediaEmbed: {
+										previewsInData: true,
+									},
+								})
 									.then((editor) => {
-										const toolbarContainer =
-											document.querySelector(
-												".document-editor__toolbar"
-											);
+										const toolbarContainer = document.querySelector(".document-editor__toolbar");
 
-										toolbarContainer.appendChild(
-											editor.ui.view.toolbar.element
-										);
+										toolbarContainer.appendChild(editor.ui.view.toolbar.element);
 
 										window.editor = editor;
 									})
@@ -408,10 +364,7 @@
 								editingNote = false;
 								console.log("Finished Editing");
 
-								let newDesc = j$tdList
-									.eq(3)
-									.find("input")
-									.val();
+								let newDesc = j$tdList.eq(3).find("input").val();
 								j$tdList.eq(3).html(newDesc);
 
 								j$tdList.eq(4).find("input").attr({
@@ -422,14 +375,10 @@
 								//     "#noteText .document-editor__editable"
 								// ).html();
 								// A reference to the editor editable element in the DOM.
-								const domEditableElement =
-									document.querySelector(
-										".ck-editor__editable"
-									);
+								const domEditableElement = document.querySelector(".ck-editor__editable");
 
 								// Get the editor instance from the editable element.
-								const editorInstance =
-									domEditableElement.ckeditorInstance;
+								const editorInstance = domEditableElement.ckeditorInstance;
 								let noteTextValue = editorInstance.getData();
 
 								node.data.text = noteTextValue;
@@ -585,11 +534,7 @@
 
 	// Fancytree Edit Styling
 	setInterval(function () {
-		j$(".fancytree-edit-input").css(
-			{ color: "black" },
-			{ height: "50px" },
-			{ width: "100px" }
-		);
+		j$(".fancytree-edit-input").css({ color: "black" }, { height: "50px" }, { width: "100px" });
 		j$(".fancytree-edit-input").css("min-width", "100px");
 	}, 100);
 
@@ -647,16 +592,7 @@
 <!-- <Tree /> -->
 
 <SettingsBar KeyIconDisabled={true} CogsIconDisabled={true} />
-<HeaderStats
-	title={"Notes"}
-	titleFontSize={"text-6xl"}
-	titleColor={"text-black"}
-	inputs={titleSearchInputs}
-	SearchFunction={HeaderSearchFunction}
-	submitValue={"Search Notes"}
-	enableWrenchIcon={false}
-	enableTrashIcon={false}
-/>
+<HeaderStats title={"Notes"} titleFontSize={"text-6xl"} titleColor={"text-black"} inputs={titleSearchInputs} SearchFunction={HeaderSearchFunction} submitValue={"Search Notes"} enableWrenchIcon={false} enableTrashIcon={false} />
 <div class="w-full h-auto">
 	<!-- Add a <table> element where the tree should appear: -->
 	<table id="treegrid" class="table-auto w-full">
@@ -669,52 +605,21 @@
 		</colgroup>
 		<thead>
 			<tr class="bg-blueGray-200 text-left">
-				<th
-					class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-				/>
-				<th
-					class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-					>#</th
-				>
-				<th
-					class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-					>Notes</th
-				>
-				<th
-					class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-					>Description</th
-				>
-				<th
-					class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent"
-					>Edit Note</th
-				>
+				<th class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent" />
+				<th class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent">#</th>
+				<th class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent">Notes</th>
+				<th class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent">Description</th>
+				<th class="w-1/6 min-w-[160px] text-lg font-semibold text-black py-4 lg:py-7 px-3 lg:px-4 border-l border-transparent">Edit Note</th>
 			</tr>
 		</thead>
 		<!-- Optionally define a row that serves as template, when new nodes are created: -->
 		<tbody>
 			<tr class="text-center">
-				<td
-					class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
-				/>
-				<td
-					class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
-				/>
-				<td
-					class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
-				/>
-				<td
-					class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
-				/>
-				<td
-					class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"
-					><input
-						type="button"
-						name="like"
-						value="Edit Note"
-						style=""
-						class="w-full h-full cursor-pointer"
-					/></td
-				>
+				<td class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]" />
+				<td class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]" />
+				<td class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]" />
+				<td class="text-left text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]" />
+				<td class="text-center text-dark font-medium text-base bg-[#F3F6FF] border-b border-l border-[#E8E8E8]"><input type="button" name="like" value="Edit Note" style="" class="w-full h-full cursor-pointer" /></td>
 			</tr>
 		</tbody>
 	</table>
@@ -724,12 +629,7 @@
 	<!-- <h1 class="text-2xl text-center font-medium text-base font-semibold">
 		Note Text
 	</h1> -->
-	<div
-		id="noteText"
-		class="w-full p-4 overflow-x-auto h-auto ck ck-content"
-		style="border-radius: 8px; min-height: 500px;"
-		contenteditable="false"
-	>
+	<div id="noteText" class="w-full p-4 overflow-x-auto h-auto ck ck-content" style="border-radius: 8px; min-height: 500px;" contenteditable="false">
 		<center style="margin-top: 15%;">No Note Selected</center>
 		<div />
 	</div>
