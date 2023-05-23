@@ -32,10 +32,12 @@
 		"@tailwindcss/forms": "0.2.1",
 		"chart.js": "2.9.4",
 		"d3": "^7.3.0",
+		"graphology": "^0.25.1",
 		"jquery": "^3.6.0",
 		"jquery.fancytree": "^2.38.0",
 		"pickr-widget": "^0.3.6",
 		"rollup-plugin-css-only": "^3.1.0",
+		"sigma": "^3.0.0-alpha3",
 		"sirv-cli": "1.0.11",
 		"svelte-routing": "1.5.0",
 		"timelinejs-slider": "^0.1.0"

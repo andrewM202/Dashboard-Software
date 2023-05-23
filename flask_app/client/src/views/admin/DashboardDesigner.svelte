@@ -1,13 +1,15 @@
 <script>
+	// import { Graph } from "../../../node_modules/graphology";
+	// import { Sigma } from "../../../node_modules/sigma";
 	import { dashboardSettingsEnable, DashboardSave } from "../../../scripts/DashboardDesigner/DashboardSettings.js";
 	import { createText } from "../../../scripts/DashboardDesigner/CreateText.js";
 	import { createChart } from "../../../scripts/DashboardDesigner/CreateChart.js";
 	import { createImage } from "../../../scripts/DashboardDesigner/CreateImage.js";
 	import { createTable } from "../../../scripts/DashboardDesigner/CreateTable.js";
 	import { createTimeline } from "../../../scripts/DashboardDesigner/CreateTimeline.js";
-	import { createMap } from "../../../scripts/DashboardDesigner/CreateMap.js";
+	// import { createMap } from "../../../scripts/DashboardDesigner/CreateMap.js";
 	import { createNetwork } from "../../../scripts/DashboardDesigner/CreateNetwork.js";
-	import { onDestroy } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import { retrieveChartSettings } from "../../../scripts/DashboardDesigner/RetrieveChartSettings.js";
 
 	let parentOffset;
@@ -16,7 +18,7 @@
 	let tables_in_dashboard = [];
 	let texts_in_dashboard = [];
 	let timelines_in_dashboard = [];
-	let maps_in_dashboard = [];
+	// let maps_in_dashboard = [];
 	let networks_in_dashboard = [];
 
 	onDestroy(
@@ -567,7 +569,6 @@
 						images_in_dashboard = [];
 						texts_in_dashboard = [];
 						timelines_in_dashboard = [];
-						maps_in_dashboard = [];
 						networks_in_dashboard = [];
 						j$(this).remove();
 						// Remove existing charts
@@ -768,17 +769,37 @@
 		timelines_in_dashboard.push(timeline);
 	}
 
-	function initializeMap(evt) {
-		evt.preventDefault();
-		let map = createMap(evt);
-		maps_in_dashboard.push(map);
-	}
+	// function initializeMap(evt) {
+	// 	evt.preventDefault();
+	// 	let map = createMap(evt);
+	// 	maps_in_dashboard.push(map);
+	// }
 
 	function initializeNetwork(evt) {
 		evt.preventDefault();
 		let network = createNetwork(evt);
 		networks_in_dashboard.push(network);
 	}
+
+	// j$(document).ready(function () {
+	// 	const container = document.getElementById("DashboardDesignerContainer");
+	// 	const graph = new Graph();
+	// 	graph.addNode("John", { x: 0, y: 10, size: 5, label: "John", color: "blue" });
+	// 	graph.addNode("Mary", { x: 10, y: 0, size: 3, label: "Mary", color: "red" });
+	// 	graph.addEdge("John", "Mary");
+	// 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// 	// const renderer = new Sigma(graph, container);
+	// });
+
+	// onMount(async () => {
+	// 	const container = document.getElementById("DashboardDesignerContainer");
+	// 	const graph = new Graph();
+	// 	graph.addNode("John", { x: 0, y: 10, size: 5, label: "John", color: "blue" });
+	// 	graph.addNode("Mary", { x: 10, y: 0, size: 3, label: "Mary", color: "red" });
+	// 	graph.addEdge("John", "Mary");
+	// 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// 	// const renderer = new Sigma(graph, container);
+	// });
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
@@ -822,7 +843,7 @@
 		<a on:click={initializeImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
 		<a on:click={initializeTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
 		<a on:click={initializeTimeline} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Timeline </a>
-		<a on:click={initializeMap} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Map </a>
+		<!-- <a on:click={initializeMap} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Map </a> -->
 		<a on:click={initializeNetwork} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Network </a>
 	</div>
 </div>
