@@ -33,6 +33,7 @@
 		"chart.js": "2.9.4",
 		"d3": "^7.3.0",
 		"graphology": "^0.25.1",
+		"graphology-layout-force": "^0.2.4",
 		"jquery": "^3.6.0",
 		"jquery.fancytree": "^2.38.0",
 		"pickr-widget": "^0.3.6",
