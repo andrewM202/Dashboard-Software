@@ -219,12 +219,33 @@ class SavedImages(Document):
     color = StringField()
     title = StringField()
     
+class SavedNetworks(Document):
+    """ Holds all of the networks for a dashboard """
+    network_id = StringField()
+    width = StringField()
+    height = StringField()
+    top = StringField()
+    right = StringField()
+    backgroundcolor = StringField()
+    nodetitles = ListField()
+    nodes = ListField()
+    edges = ListField()
+    nodesubtitles = ListField()
+    
 class SavedDashboards(Document):
     """ Holds all of the saved dashboards """
     dashboard_height = StringField()
     dashboard_title = StringField()
-    dashboard_charts = ListField(ReferenceField(SavedCharts), default=[])
-    dashboard_texts = ListField(ReferenceField(SavedTexts), default=[])
-    dashboard_images = ListField(ReferenceField(SavedImages), default=[])
     dashboard_color = StringField()
+    
+class ItemInDashboard(Document):
+    """ If an item is saved to a dashboard, it is here """
+    dashboard_reference = ReferenceField(SavedDashboards) # The dashboard this item is in
+    item_id = StringField() # This is the ID of the original saved item (for instance
+                            # the network_id in the SavedNetworks class)
+    item_type = StringField()
+    width = StringField()
+    height = StringField()
+    top = StringField()
+    right = StringField()
     

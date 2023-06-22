@@ -347,8 +347,10 @@
 				type: "POST",
 				url: `${location.origin}/admin/save-dashboard`,
 				data: JSON.stringify(data),
-				success: function () {
+				success: function (result) {
 					console.log("Dashboard Successfully Saved");
+					// Set the new dashboard ID
+					j$("div#DashboardDesignerContainer").attr("dashboard-id", result["dashboard_id"]);
 					// On save individually upload all the images to the server
 					for (let image of images_in_dashboard) {
 						// Create a form data object to send the image to the server
@@ -376,6 +378,7 @@
 					}
 				},
 				error: function (e) {
+					console.log(e);
 					error = "Server Error During Creation.";
 					// Error logging
 					console.log(e.statusText);

@@ -1,7 +1,8 @@
 from flask import render_template, Blueprint, send_from_directory, request, make_response
 from flask_login import  current_user
 from flask_security import login_required
-from models import SavedCharts, SavedDashboards, SavedTexts, SavedImages, db
+from models import (SavedCharts, SavedDashboards, SavedTexts, SavedImages, 
+    db, SavedNetworks, ItemInDashboard)
 from os import environ, path, remove
 from bson import json_util
 from bson.objectid import ObjectId
@@ -151,11 +152,8 @@ def get_charts():
 @bp.route("/admin/save-chart")
 @login_required
 def save_chart(data):
-    width = data['width']
-    height = data['height']
-    top = data['top']
-    right = data['right']
     data = data["data"]
+    id = ""
     if len(SavedCharts.objects(chart_id=data['chart_id'])) == 0:
         # Store data in database
         SavedCharts(  
@@ -194,14 +192,8 @@ def save_chart(data):
             
             ,chart_padding = str(data['chart_padding'])
             
-            ,width = str(width)
-            ,height = str(height)
-            ,top = str(top)
-            ,right = str(right)
-            
             ,deleted = False
         ).save()
-        return "Chart Saved"
     else:
         # Update data in database
         SavedCharts.objects(chart_id=data['chart_id']).update(  
@@ -239,14 +231,9 @@ def save_chart(data):
             
             ,chart_padding = str(data['chart_padding'])
             
-            ,width = str(width)
-            ,height = str(height)
-            ,top = str(top)
-            ,right = str(right)
-            
             ,deleted = False
         )
-        return "Chart Updated"
+    return SavedCharts.objects(chart_id=data['chart_id'])[0].id
 
 
 
@@ -274,7 +261,6 @@ def save_text(data):
             ,top = str(top)
             ,right = str(right)
         ).save()
-        return "Text Saved"
     else:
         # Update data in database
         SavedTexts.objects(text_id=data['text_id']).update(  
@@ -287,7 +273,7 @@ def save_text(data):
             ,top = str(top)
             ,right = str(right)
         )                                             
-        return "Text Updated"  
+    return SavedTexts.objects(text_id=data['text_id'])[0].id
     
     
     
@@ -386,7 +372,6 @@ def save_image(data):
             ,right = str(right)
             ,image_type = ""
         ).save()
-        return "Image Saved"
     else:
         # Update data in database
         SavedImages.objects(image_id=data['image_id']).update(  
@@ -396,7 +381,36 @@ def save_image(data):
             ,top = str(top)
             ,right = str(right)
         )                                             
-        return "Image Updated" 
+        
+    return SavedImages.objects(image_id=data['image_id'])[0].id
+    
+    
+    
+@bp.route("/admin/save-network", methods=["POST"])
+@login_required
+def save_network():
+    data = request.form.to_dict()
+    # print(data)
+    
+    for string in data:
+        # Data is sent as a string inside an object, parse it
+        data = loads(string)
+    
+        network_id = data['uuid']
+        network_width = data["width"]
+        network_height =  data["height"]
+        network_top = data["top"]
+        network_right = data["right"]
+        
+        for node in data["nodes"]:
+            print(node)
+            print()
+            
+        # for edge in data["edges"]:
+            # print(edge)
+            # print()
+    
+    return ''
 
 
 
@@ -414,64 +428,112 @@ def save_dashboard():
         dashboard_id = data["dashboard_id"]
         dashboard_color = data["dashboard_color"]
         
-        chart_ids = []
-        text_ids = []
-        image_ids = []
+        print(f"DASH ID: {dashboard_id}")
+        
+        # Check if dashboard already exists
+        # Save our dashboard
+        if dashboard_id == "":
+            dashboard_id = SavedDashboards(
+                dashboard_title = dashboard_title
+                ,dashboard_height = dashboard_height
+                ,dashboard_color = dashboard_color
+            ).save()
+            dashboard_id = dashboard_id.id
+        elif len(SavedDashboards.objects(id=dashboard_id)) == 0:
+            dashboard_id = SavedDashboards(
+                dashboard_title = dashboard_title
+                ,dashboard_height = dashboard_height
+                ,dashboard_color = dashboard_color
+            ).save()
+            dashboard_id = dashboard_id.id
+        else:
+            # Othewise update our dashboard
+            SavedDashboards.objects(id=dashboard_id).update(
+                dashboard_title = dashboard_title
+                ,dashboard_height = dashboard_height
+                ,dashboard_color = dashboard_color
+            )
         
         # Loop through and save our charts
         for chart in data["charts"]:
+            
             # Save our chart if it is not already saved in the database
             result = save_chart(chart)
-            # Add the chart's ID to our list
-            chart_ids.append(SavedCharts.objects(chart_id=chart["data"]["chart_id"])[0])
+            # Save the entry to the ItemInDashboard collection
+            if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
+                ItemInDashboard(
+                    dashboard_reference = SavedDashboards.objects(id=dashboard_id)[0]
+                    ,item_id = str(result)
+                    ,item_type = "chart"
+                    ,width = str(chart['width'])
+                    ,height = str(chart['height'])
+                    ,top = str(chart['top'])
+                    ,right = str(chart['right'])
+                ).save()
+            else:
+                # If we are updating we need all of the preference dashboard references as well
+                ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id).update(
+                    item_id = str(result)
+                    ,item_type = "chart"
+                    ,width = str(chart['width'])
+                    ,height = str(chart['height'])
+                    ,top = str(chart['top'])
+                    ,right = str(chart['right'])
+                )
             
         for text in data["texts"]:
             # Save our text if it is not already saved in the database
             result = save_text(text)
-            # Add the text's ID to our list
-            text_ids.append(SavedTexts.objects(text_id=text["text_id"])[0])
+            # Save the entry to the ItemInDashboard collection
+            if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
+                ItemInDashboard(
+                    dashboard_reference = SavedDashboards.objects(id=dashboard_id)[0]
+                    ,item_id = str(result)
+                    ,item_type = "text"
+                    ,width = str(text['width'])
+                    ,height = str(text['height'])
+                    ,top = str(text['top'])
+                    ,right = str(text['right'])
+                ).save()
+            else:
+                # If we are updating we need all of the preference dashboard references as well
+                ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id).update(
+                    item_id = str(result)
+                    ,item_type = "text"
+                    ,width = str(text['width'])
+                    ,height = str(text['height'])
+                    ,top = str(text['top'])
+                    ,right = str(text['right'])
+                )
+                   
             
         for image in data["images"]:
             # Save our image if it is not already saved in the database
             result = save_image(image)
-            # Add the image's ID to our list
-            image_ids.append(SavedImages.objects(image_id=image["image_id"])[0])
+            # Save the entry to the ItemInDashboard collection
+            if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
+                ItemInDashboard(
+                    dashboard_reference = SavedDashboards.objects(id=dashboard_id)[0]
+                    ,item_id = str(result)
+                    ,item_type = "image"
+                    ,width = str(image['width'])
+                    ,height = str(image['height'])
+                    ,top = str(image['top'])
+                    ,right = str(image['right'])
+                ).save()
+            else:
+                # If we are updating we need all of the preference dashboard references as well
+                ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id).update(
+                    item_id = str(result)
+                    ,item_type = "image"
+                    ,width = str(image['width'])
+                    ,height = str(image['height'])
+                    ,top = str(image['top'])
+                    ,right = str(image['right'])
+                )
+                   
             
-        # Check if dashboard already exists
-        # Save our dashboard
-        if dashboard_id == "":
-            SavedDashboards(
-                dashboard_title = dashboard_title
-                ,dashboard_height = dashboard_height
-                ,dashboard_charts = chart_ids
-                ,dashboard_texts = text_ids
-                ,dashboard_images = image_ids
-                ,dashboard_color = dashboard_color
-            ).save()
-            return "Dashboard Saved"
-        if len(SavedDashboards.objects(id=dashboard_id)) == 0:
-            SavedDashboards(
-                dashboard_title = dashboard_title
-                ,dashboard_height = dashboard_height
-                ,dashboard_charts = chart_ids
-                ,dashboard_texts = text_ids
-                ,dashboard_images = image_ids
-                ,dashboard_color = dashboard_color
-            ).save()
-            return "Dashboard Saved"
-        else:
-            # Othewise update our dashboard
-            print("Updating Dashboard")
-            SavedDashboards.objects(id=dashboard_id).update(
-                dashboard_title = dashboard_title
-                ,dashboard_height = dashboard_height
-                ,dashboard_charts = chart_ids
-                ,dashboard_texts = text_ids
-                ,dashboard_images = image_ids
-                ,dashboard_color = dashboard_color
-            )
-    
-    return 'Success'
+    return {"status": "success", "dashboard_id": str(dashboard_id)}
 
 
 
@@ -492,11 +554,15 @@ def retrieve_charts_by_dashboard_id(dashboard_id):
     dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
     return_charts = []
     dashboard = loads(dashboard)[0]
-    charts = dashboard["dashboard_charts"]
-    
-    # Loop through charts, add data to return_charts
-    for chart in charts:
-        chart_data = loads(SavedCharts.objects(id=chart["$oid"]).to_json())[0]
+    # Loop through all of our dashboard chart items
+    for item in ItemInDashboard.objects(dashboard_reference=dashboard_id, item_type="chart"):
+        # Get the chart object for this
+        chart_data = loads(SavedCharts.objects(id=item.item_id).to_json())[0]
+        # Add the extra dashboard-specific information to chart_data
+        chart_data["width"] = item.width
+        chart_data["height"] = item.height
+        chart_data["top"] = item.top
+        chart_data["right"] = item.right
         return_charts.append(chart_data)
         
     # Return our charts
@@ -511,11 +577,15 @@ def retrieve_texts_by_dashboard_id(dashboard_id):
     dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
     return_texts = []
     dashboard = loads(dashboard)[0]
-    texts = dashboard["dashboard_texts"]
-    
-    # Loop through texts, add data to texts
-    for text in texts:
-        text_data = loads(SavedTexts.objects(id=text["$oid"]).to_json())[0]
+    # Loop through all of our dashboard text items
+    for item in ItemInDashboard.objects(dashboard_reference=dashboard_id, item_type="text"):
+        # Get the text object for this
+        text_data = loads(SavedTexts.objects(id=item.item_id).to_json())[0]
+        # Add the extra dashboard-specific information to text_data
+        text_data["width"] = item.width
+        text_data["height"] = item.height
+        text_data["top"] = item.top
+        text_data["right"] = item.right
         return_texts.append(text_data)
         
     # Return our texts
@@ -530,11 +600,15 @@ def retrieve_images_by_dashboard_id(dashboard_id):
     dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
     return_images = []
     dashboard = loads(dashboard)[0]
-    images = dashboard["dashboard_images"]
-    
-    # Loop through images, add data to images
-    for image in images:
-        image_data = loads(SavedImages.objects(id=image["$oid"]).to_json())[0]
+    # Loop through all of our dashboard image items
+    for item in ItemInDashboard.objects(dashboard_reference=dashboard_id, item_type="image"):
+        # Get the image object for this
+        image_data = loads(SavedImages.objects(id=item.item_id).to_json())[0]
+        # Add the extra dashboard-specific information to image_data
+        image_data["width"] = item.width
+        image_data["height"] = item.height
+        image_data["top"] = item.top
+        image_data["right"] = item.right
         return_images.append(image_data)
         
     # Return our images
