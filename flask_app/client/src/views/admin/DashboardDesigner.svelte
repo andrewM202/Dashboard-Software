@@ -11,6 +11,7 @@
 	import { createNetwork } from "../../../scripts/DashboardDesigner/CreateNetwork.js";
 	import { onDestroy, onMount } from "svelte";
 	import { retrieveChartSettings } from "../../../scripts/DashboardDesigner/RetrieveChartSettings.js";
+	import { loadDashboardItem } from "../../../scripts/DashboardDesigner/LoadDashboardItem.js";
 
 	let parentOffset;
 	let charts_in_dashboard = [];
@@ -584,6 +585,8 @@
 						j$("#DashboardDesignerContainer div.table-item").remove();
 						// Remove existing timelines
 						j$("#DashboardDesignerContainer div.timeline-dashboard-item").remove();
+						// Remove existing networks
+						j$("#DashboardDesignerContainer div.network-item").remove();
 						// Set background color for dashboard
 						j$("#DashboardDesignerContainer").css("background-color", dashboard["dashboard_color"]);
 						j$("div.pcr-button").css("background-color", dashboard["dashboard_color"]);
@@ -784,25 +787,12 @@
 		networks_in_dashboard.push(network);
 	}
 
-	// j$(document).ready(function () {
-	// 	const container = document.getElementById("DashboardDesignerContainer");
-	// 	const graph = new Graph();
-	// 	graph.addNode("John", { x: 0, y: 10, size: 5, label: "John", color: "blue" });
-	// 	graph.addNode("Mary", { x: 10, y: 0, size: 3, label: "Mary", color: "red" });
-	// 	graph.addEdge("John", "Mary");
-	// 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	// 	// const renderer = new Sigma(graph, container);
-	// });
-
-	// onMount(async () => {
-	// 	const container = document.getElementById("DashboardDesignerContainer");
-	// 	const graph = new Graph();
-	// 	graph.addNode("John", { x: 0, y: 10, size: 5, label: "John", color: "blue" });
-	// 	graph.addNode("Mary", { x: 10, y: 0, size: 3, label: "Mary", color: "red" });
-	// 	graph.addEdge("John", "Mary");
-	// 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	// 	// const renderer = new Sigma(graph, container);
-	// });
+	function loadTest(evt) {
+		loadDashboardItem(evt, "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
+			charts_in_dashboard.push(newItem);
+		});
+	}
+	$: console.log(charts_in_dashboard);
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
@@ -839,15 +829,18 @@
 	<div on:click={dashboardSettingsEnable} class="dashboard-settings-triangle cursor-pointer" />
 	<div id="DashboardDesignerActionBar" style="background-color: rgb(239, 68, 68, 0.85);" class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 hidden">
 		<a id="create-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Chart </a>
-		<!-- Load an existing chart instead of creating a new one -->
-		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
-		<div class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
 		<a on:click={initializeText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
 		<a on:click={initializeImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
 		<a on:click={initializeTable} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Table </a>
 		<a on:click={initializeTimeline} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Timeline </a>
-		<!-- <a on:click={initializeMap} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Map </a> -->
 		<a on:click={initializeNetwork} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Network </a>
+		<div class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
+		<!-- Load an existing chart instead of creating a new one -->
+		<a on:click={loadTest} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
+		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Image </a>
+		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Table </a>
+		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Timeline </a>
+		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Network </a>
 	</div>
 </div>
 

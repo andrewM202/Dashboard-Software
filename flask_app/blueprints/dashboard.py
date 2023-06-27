@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, send_from_directory, request, make
 from flask_login import  current_user
 from flask_security import login_required
 from models import (SavedCharts, SavedDashboards, SavedTexts, SavedImages, 
-    db, SavedNetworks, ItemInDashboard)
+    db, SavedNetworks, ItemInDashboard, NetworkNode, NetworkEdge)
 from os import environ, path, remove
 from bson import json_util
 from bson.objectid import ObjectId
@@ -139,6 +139,23 @@ def update_save_chart():
         ).save()
     
     return 'Success'
+
+
+@bp.route("/admin/networks", methods=["GET"])
+@login_required
+def get_networks():
+    # print(SavedNetworks.objects())
+    networks = loads(SavedNetworks.objects().to_json())
+    for i in range(0, len(networks)):
+        for node_index in range(0, len(networks[i]['nodes'])):
+            new_json = NetworkNode.objects(id=networks[i]['nodes'][node_index]["$oid"]).to_json()  
+            networks[i]['nodes'][node_index] = new_json
+            
+        for edge_index in range(0, len(networks[i]['edges'])):
+            new_json = NetworkEdge.objects(id=networks[i]['edges'][edge_index]["$oid"]).to_json()  
+            networks[i]['edges'][edge_index] = new_json
+    # return SavedNetworks.objects().to_json()
+    return json_util.dumps(networks)
 
 
 
@@ -401,14 +418,98 @@ def save_network():
         network_height =  data["height"]
         network_top = data["top"]
         network_right = data["right"]
+        network_title = data["name"]
+        network_color = data["color"]
         
-        for node in data["nodes"]:
-            print(node)
-            print()
+        if len(SavedNetworks.objects(network_id=network_id)) == 0:
+            new_network = SavedNetworks(
+                network_id = network_id
+                ,width = network_width
+                ,height = network_height
+                ,top = network_top
+                ,right = network_right
+                ,background_color = network_color
+            ).save()
             
-        # for edge in data["edges"]:
-            # print(edge)
-            # print()
+            network_edges = []
+            network_nodes = []
+            
+            for node in data["nodes"]:
+                # print(node)
+                # print()
+                
+                new_node = NetworkNode(
+                    linked_network_id = str(new_network.id)
+                    ,label = node["attributes"]["label"]
+                    ,x_pos = str(node["attributes"]["x"])
+                    ,y_pos = str(node["attributes"]["y"])
+                    ,size = str(node["attributes"]["size"])
+                    ,color = node["attributes"]["default-color"]
+                    ,additional_info = node["attributes"]["additional-information"]
+                ).save()
+                network_nodes.append(new_node)
+                
+            for edge in data["edges"]:
+                # print(edge)
+                # print()
+                
+                new_edge = NetworkEdge(
+                    size = str(edge["attributes"]["size"])
+                    ,color = edge["attributes"]["default-color"]
+                    ,edge_type = edge["attributes"]["type"]
+                    ,source_node = NetworkNode.objects(label=edge["source"], linked_network_id=str(new_network.id))[0]
+                    ,target_node = NetworkNode.objects(label=edge["target"], linked_network_id=str(new_network.id))[0]
+                ).save()
+                network_edges.append(new_edge)
+                
+            SavedNetworks.objects(id=str(new_network.id)).update(
+                nodes = network_nodes
+                ,edges = network_edges   
+            )
+        else: 
+            SavedNetworks.objects(network_id = network_id).update(
+                width = network_width
+                ,height = network_height
+                ,top = network_top
+                ,right = network_right
+                ,background_color = network_color
+            )
+            
+            network_edges = []
+            network_nodes = []
+            
+            # for node in data["nodes"]:
+            #     # print(node)
+            #     # print()
+                
+            #     new_node = NetworkNode(
+            #         linked_network_id = str(new_network.id)
+            #         ,label = node["attributes"]["label"]
+            #         ,x_pos = str(node["attributes"]["x"])
+            #         ,y_pos = str(node["attributes"]["y"])
+            #         ,size = str(node["attributes"]["size"])
+            #         ,color = node["attributes"]["default-color"]
+            #         ,additional_info = node["attributes"]["additional-information"]
+            #     ).save()
+            #     network_nodes.append(new_node)
+                
+            # for edge in data["edges"]:
+            #     # print(edge)
+            #     # print()
+                
+            #     new_edge = NetworkEdge(
+            #         size = str(edge["attributes"]["size"])
+            #         ,color = edge["attributes"]["default-color"]
+            #         ,edge_type = edge["attributes"]["type"]
+            #         ,source_node = NetworkNode.objects(label=edge["source"], linked_network_id=str(new_network.id))[0]
+            #         ,target_node = NetworkNode.objects(label=edge["target"], linked_network_id=str(new_network.id))[0]
+            #     ).save()
+            #     network_edges.append(new_edge)
+                
+            # SavedNetworks.objects(id=str(new_network.id)).update(
+            #     nodes = network_nodes
+            #     ,edges = network_edges   
+            # )
     
     return ''
 

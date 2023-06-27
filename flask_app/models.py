@@ -151,7 +151,7 @@ class Notes(Document):
 ########################### Dashboard #####################################
 
 class SavedCharts(Document):
-    """ Holds all of the saved dashboards """
+    """ Holds all of the saved charts for a dashboard """
     chart_id = StringField()
     background_color = StringField()
     
@@ -219,6 +219,24 @@ class SavedImages(Document):
     color = StringField()
     title = StringField()
     
+class NetworkNode(Document):
+    """ A singular node in a network """
+    linked_network_id = StringField() # The network that this node is linked to
+    label = StringField()
+    x_pos = StringField()
+    y_pos = StringField()
+    size = StringField()
+    color = StringField()
+    additional_info = StringField()
+    
+class NetworkEdge(Document):
+    """ A singular edge in a network """ 
+    source_node = ReferenceField(NetworkNode)
+    target_node = ReferenceField(NetworkNode)
+    size = StringField()
+    color = StringField()
+    edge_type = StringField()
+    
 class SavedNetworks(Document):
     """ Holds all of the networks for a dashboard """
     network_id = StringField()
@@ -226,11 +244,9 @@ class SavedNetworks(Document):
     height = StringField()
     top = StringField()
     right = StringField()
-    backgroundcolor = StringField()
-    nodetitles = ListField()
-    nodes = ListField()
-    edges = ListField()
-    nodesubtitles = ListField()
+    background_color = StringField()
+    nodes = ListField(ReferenceField(NetworkNode))
+    edges = ListField(ReferenceField(NetworkEdge))
     
 class SavedDashboards(Document):
     """ Holds all of the saved dashboards """
@@ -239,7 +255,8 @@ class SavedDashboards(Document):
     dashboard_color = StringField()
     
 class ItemInDashboard(Document):
-    """ If an item is saved to a dashboard, it is here """
+    """ If an item is saved to a dashboard, it is here. 
+        Holds dashboard specific information """
     dashboard_reference = ReferenceField(SavedDashboards) # The dashboard this item is in
     item_id = StringField() # This is the ID of the original saved item (for instance
                             # the network_id in the SavedNetworks class)
