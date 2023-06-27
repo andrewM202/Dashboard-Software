@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, send_from_directory, request, make_response
+from flask import render_template, Blueprint, send_from_directory, request, make_response, jsonify
 from flask_login import  current_user
 from flask_security import login_required
 from models import (SavedCharts, SavedDashboards, SavedTexts, SavedImages, 
@@ -149,12 +149,12 @@ def get_networks():
     for i in range(0, len(networks)):
         for node_index in range(0, len(networks[i]['nodes'])):
             new_json = NetworkNode.objects(id=networks[i]['nodes'][node_index]["$oid"]).to_json()  
-            networks[i]['nodes'][node_index] = new_json
+            networks[i]['nodes'][node_index] = loads(new_json)
             
         for edge_index in range(0, len(networks[i]['edges'])):
             new_json = NetworkEdge.objects(id=networks[i]['edges'][edge_index]["$oid"]).to_json()  
-            networks[i]['edges'][edge_index] = new_json
-    # return SavedNetworks.objects().to_json()
+            networks[i]['edges'][edge_index] = loads(new_json)
+            
     return json_util.dumps(networks)
 
 
@@ -429,6 +429,7 @@ def save_network():
                 ,top = network_top
                 ,right = network_right
                 ,background_color = network_color
+                ,title_text = network_title
             ).save()
             
             network_edges = []

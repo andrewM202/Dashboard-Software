@@ -245,6 +245,7 @@ class SavedNetworks(Document):
     top = StringField()
     right = StringField()
     background_color = StringField()
+    title_text = StringField()
     nodes = ListField(ReferenceField(NetworkNode))
     edges = ListField(ReferenceField(NetworkEdge))
     
