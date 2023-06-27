@@ -629,7 +629,7 @@
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
-	<center id="chart-creation-hint" style="font-size: 1.2rem; font-weight: bold;">Right Click to Create Chart</center>
+	<center id="chart-creation-hint" style="font-size: 1.2rem; font-weight: bold;">Right Click to Create</center>
 	<div class="shadow-xl bg-white w-full flex flex-column justify-between items-center px-4" id="DashboardSettingsContainer">
 		<form style="height: 80%; display: flex; flex-direction: column;">
 			<div class="w-full">

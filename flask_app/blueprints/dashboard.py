@@ -147,6 +147,7 @@ def get_networks():
     # print(SavedNetworks.objects())
     networks = loads(SavedNetworks.objects().to_json())
     for i in range(0, len(networks)):
+        print(networks[i]['nodes'])
         for node_index in range(0, len(networks[i]['nodes'])):
             new_json = NetworkNode.objects(id=networks[i]['nodes'][node_index]["$oid"])[0].to_json()  
             networks[i]['nodes'][node_index] = loads(new_json)
@@ -405,6 +406,16 @@ def save_image(data):
     
     
     
+@bp.route("/admin/delete-network", methods=["GET", "DELETE"])
+@login_required
+def delete_network():
+    SavedNetworks.objects().delete()
+    NetworkEdge.objects().delete()
+    NetworkNode.objects().delete()
+    return {"success": True}
+
+
+    
 @bp.route("/admin/save-network", methods=["POST"])
 @login_required
 def save_network():
@@ -438,32 +449,23 @@ def save_network():
             network_nodes = []
             
             for node in data["nodes"]:
-                print(node)
-                print()
-                
                 new_node = NetworkNode(
-                    linked_network_id = str(new_network.id)
+                    uuid = str(node["attributes"]["uuid"])
+                    ,linked_network_id = str(new_network.id)
                     ,label = str(node["attributes"]["label"])
                     ,key = str(node["key"])
                     ,x_pos = str(node["attributes"]["x"])
                     ,y_pos = str(node["attributes"]["y"])
-                    ,size = str(node["attributes"]["size"])
+                    ,node_size = str(node["attributes"]["size"])
                     ,color = node["attributes"]["default-color"]
                     ,additional_info = node["attributes"]["additional-information"]
                 ).save()
                 network_nodes.append(new_node)
                 
             for edge in data["edges"]:
-                # print(edge)
-                # print()
-                
-                # print(edge)
-                # print(str(edge["source"]))
-                # print(str(new_network.id))
-                # print(len(NetworkNode.objects(label=str(edge["source"]), linked_network_id=str(new_network.id))))
-                # print()
                 new_edge = NetworkEdge(
-                    size = str(edge["attributes"]["size"])
+                    uuid = str(edge["attributes"]["uuid"])
+                    ,edge_size = str(edge["attributes"]["size"])
                     ,color = edge["attributes"]["default-color"]
                     ,edge_type = edge["attributes"]["type"]
                     ,source_node = NetworkNode.objects(key=str(edge["source"]), linked_network_id=str(new_network.id))[0]
@@ -482,43 +484,75 @@ def save_network():
                 ,top = network_top
                 ,right = network_right
                 ,background_color = network_color
+                ,title_text = network_title
             )
             
             network_edges = []
             network_nodes = []
             
-            # for node in data["nodes"]:
-            #     # print(node)
-            #     # print()
+            print("UPDATING!")
+            
+            for node in data["nodes"]:
+                # Save node if it doesn't exist
+                if len(NetworkNode.objects(uuid=str(node["attributes"]["uuid"]))) == 0:
+                    new_node = NetworkNode(
+                        linked_network_id = str(SavedNetworks.objects(network_id = network_id)[0].id)
+                        ,uuid = str(node["attributes"]["uuid"])
+                        ,label = str(node["attributes"]["label"])
+                        ,key = str(node["key"])
+                        ,x_pos = str(node["attributes"]["x"])
+                        ,y_pos = str(node["attributes"]["y"])
+                        ,node_size = str(node["attributes"]["size"])
+                        ,color = str(node["attributes"]["default-color"])
+                        ,additional_info = str(node["attributes"]["additional-information"])
+                    ).save()
+                    network_nodes.append(new_node)
+                # Update node if it does exist
+                else:
+                    NetworkNode.objects(uuid=str(node["attributes"]["uuid"]), linked_network_id=str(SavedNetworks.objects(network_id = network_id)[0].id)).update(
+                        label = str(node["attributes"]["label"])
+                        ,node_size = str(node["attributes"]["size"])
+                        ,key = str(node["key"])
+                        ,x_pos = str(node["attributes"]["x"])
+                        ,y_pos = str(node["attributes"]["y"])
+                        ,color = str(node["attributes"]["default-color"])
+                        ,additional_info = str(node["attributes"]["additional-information"])
+                    )
+                    network_nodes.append(NetworkNode.objects(uuid=str(node["attributes"]["uuid"]))[0])
                 
-            #     new_node = NetworkNode(
-            #         linked_network_id = str(new_network.id)
-            #         ,label = node["attributes"]["label"]
-            #         ,x_pos = str(node["attributes"]["x"])
-            #         ,y_pos = str(node["attributes"]["y"])
-            #         ,size = str(node["attributes"]["size"])
-            #         ,color = node["attributes"]["default-color"]
-            #         ,additional_info = node["attributes"]["additional-information"]
-            #     ).save()
-            #     network_nodes.append(new_node)
-                
-            # for edge in data["edges"]:
-            #     # print(edge)
-            #     # print()
-                
-            #     new_edge = NetworkEdge(
-            #         size = str(edge["attributes"]["size"])
-            #         ,color = edge["attributes"]["default-color"]
-            #         ,edge_type = edge["attributes"]["type"]
-            #         ,source_node = NetworkNode.objects(label=edge["source"], linked_network_id=str(new_network.id))[0]
-            #         ,target_node = NetworkNode.objects(label=edge["target"], linked_network_id=str(new_network.id))[0]
-            #     ).save()
-            #     network_edges.append(new_edge)
-                
-            # SavedNetworks.objects(id=str(new_network.id)).update(
-            #     nodes = network_nodes
-            #     ,edges = network_edges   
-            # )
+            for edge in data["edges"]:
+                # print(edge)
+                # print(str(SavedNetworks.objects(network_id = network_id)[0].id))
+                # print(NetworkNode.objects(key=edge["source"]))
+                # print()
+                # Save edge if it doesn't exist
+                if len(NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"]))) == 0:
+                    new_edge = NetworkEdge(
+                        edge_size = str(edge["attributes"]["size"])
+                        ,uuid = str(edge["attributes"]["uuid"])
+                        ,color = edge["attributes"]["default-color"]
+                        ,edge_type = edge["attributes"]["type"]
+                        ,source_node = NetworkNode.objects(key=edge["source"], linked_network_id=str(SavedNetworks.objects(network_id = network_id)[0].id))[0]
+                        ,target_node = NetworkNode.objects(key=edge["target"], linked_network_id=str(SavedNetworks.objects(network_id = network_id)[0].id))[0]
+                    ).save()
+                    network_edges.append(new_edge)
+                # Update edge if it does exist
+                else:
+                    # print(str(edge["attributes"]["uuid"]))
+                    # print( NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"])))
+                    NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"])).update(
+                        edge_size = str(edge["attributes"]["size"])
+                        ,color = edge["attributes"]["default-color"]
+                        ,edge_type = edge["attributes"]["type"]
+                        ,source_node = NetworkNode.objects(key=edge["source"], linked_network_id=str(SavedNetworks.objects(network_id = network_id)[0].id))[0]
+                        ,target_node = NetworkNode.objects(key=edge["target"], linked_network_id=str(SavedNetworks.objects(network_id = network_id)[0].id))[0]
+                    )
+                    network_edges.append(NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"]))[0])
+
+            SavedNetworks.objects(id=str(SavedNetworks.objects(network_id = network_id)[0].id)).update(
+                nodes = network_nodes
+                ,edges = network_edges   
+            )
     
     return ''
 

@@ -221,20 +221,22 @@ class SavedImages(Document):
     
 class NetworkNode(Document):
     """ A singular node in a network """
+    uuid = StringField() # The identifying uuid of this node created client side
     linked_network_id = StringField() # The network that this node is linked to
     label = StringField()
     key = StringField()
     x_pos = StringField()
     y_pos = StringField()
-    size = StringField()
+    node_size = StringField()
     color = StringField()
     additional_info = StringField()
     
 class NetworkEdge(Document):
     """ A singular edge in a network """ 
+    uuid = StringField() # The identifying uuid of this edge created client side
     source_node = ReferenceField(NetworkNode)
     target_node = ReferenceField(NetworkNode)
-    size = StringField()
+    edge_size = StringField()
     color = StringField()
     edge_type = StringField()
     
