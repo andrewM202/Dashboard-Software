@@ -409,10 +409,23 @@ def save_image(data):
 @bp.route("/admin/delete-network", methods=["GET", "DELETE"])
 @login_required
 def delete_network():
-    SavedNetworks.objects().delete()
-    NetworkEdge.objects().delete()
-    NetworkNode.objects().delete()
-    return {"success": True}
+    """ Delete a network and all associated nodes, edges """ 
+    data = request.form.to_dict()
+    for string in data:
+        # Data is sent as a string inside an object, parse it
+        data = loads(string)
+        # Get data
+        network_id = data["item_id"]
+        # Delete all associated edges
+        for edge in SavedNetworks.objects(network_id=network_id)[0].edges:
+            edge.delete()
+        # Delete all associated nodes
+        for node in SavedNetworks.objects(network_id=network_id)[0].nodes:
+            node.delete()
+        # Delete the network
+        SavedNetworks.objects(network_id=network_id).delete()
+        
+    return "success"
 
 
     
@@ -420,7 +433,6 @@ def delete_network():
 @login_required
 def save_network():
     data = request.form.to_dict()
-    # print(data)
     
     for string in data:
         # Data is sent as a string inside an object, parse it
@@ -538,8 +550,6 @@ def save_network():
                     network_edges.append(new_edge)
                 # Update edge if it does exist
                 else:
-                    # print(str(edge["attributes"]["uuid"]))
-                    # print( NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"])))
                     NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"])).update(
                         edge_size = str(edge["attributes"]["size"])
                         ,color = edge["attributes"]["default-color"]
@@ -768,21 +778,15 @@ def delete_chart():
         # Data is sent as a string inside an object, parse it
         data = loads(string)
         # Get data
-        chart_id = data["chart_id"]
+        chart_id = data["item_id"]
         # Delete our chart if it is not used in any dashboards
-        for dashboard in SavedDashboards.objects:
-            for chart in dashboard["dashboard_charts"]:
-                charts = SavedCharts.objects(id=chart.id)
-                if len(charts) > 0:
-                    chart = charts[0]
-                    if chart.chart_id == chart_id:
-                        # Chart is in use, just mark is for deletion later 
-                        # when the dashboard is used
-                        print("Marking for deletion")
-                        SavedCharts.objects(chart_id=chart_id).update(
-                            deleted = True
-                        )
-                        return "Success"
+        if len(ItemInDashboard.objects(item_id=chart_id)) > 0:
+            # Chart is in use, just mark is for deletion later 
+            # when the dashboard is used
+            SavedCharts.objects(chart_id=chart_id).update(
+                deleted = True
+            )
+            return "Success"
      
     print("Regular deleted")
     # If we don't find the chart in any dashboards, delete it   

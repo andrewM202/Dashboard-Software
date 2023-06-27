@@ -616,13 +616,13 @@
 	}
 
 	function loadChart(evt) {
-		loadDashboardItem(evt, "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
+		loadDashboardItem(evt, "chart_id", "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
 			charts_in_dashboard.push(newItem);
 		});
 	}
 
 	function loadNetwork(evt) {
-		loadDashboardItem(evt, "/admin/delete-network", "/admin/networks", createNetwork, function (newItem) {
+		loadDashboardItem(evt, "network_id", "/admin/delete-network", "/admin/networks", createNetwork, function (newItem) {
 			networks_in_dashboard.push(newItem);
 		});
 	}
