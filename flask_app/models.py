@@ -212,10 +212,6 @@ class SavedImages(Document):
     image_id = StringField()
     image_type = StringField()
     image = FileField()
-    width = StringField()
-    height = StringField()
-    top = StringField()
-    right = StringField()
     color = StringField()
     title = StringField()
     

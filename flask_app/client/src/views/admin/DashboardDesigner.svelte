@@ -1,6 +1,4 @@
 <script>
-	// import { Graph } from "../../../node_modules/graphology";
-	// import { Sigma } from "../../../node_modules/sigma";
 	import { dashboardSettingsEnable, DashboardSave } from "../../../scripts/DashboardDesigner/DashboardSettings.js";
 	import { createText } from "../../../scripts/DashboardDesigner/CreateText.js";
 	import { createChart } from "../../../scripts/DashboardDesigner/CreateChart.js";
@@ -184,8 +182,6 @@
 					for (let image of images_in_dashboard) {
 						// Create a form data object to send the image to the server
 						let formData = new FormData(j$(`#image${image.imageCreatedNumber} form.hidden-upload-form form`)[0]);
-						// formData.append("image", j$(`#image${image.imageCreatedNumber}`)[0].files[0]);
-						// formData.append("image_id", j$(`#image${image.imageCreatedNumber}`).attr("data-uuid"));
 						// Send the image to the server
 						j$.ajax({
 							type: "POST",
@@ -428,7 +424,6 @@
 							url: `/admin/images/get_images_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
 							success: function (data) {
 								const images = JSON.parse(data);
-								console.log(images);
 								images.forEach((image) => {
 									let data = {
 										// ID
@@ -616,14 +611,20 @@
 	}
 
 	function loadChart(evt) {
-		loadDashboardItem(evt, "chart_id", "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
+		loadDashboardItem(evt, "chart_id", "title_text", "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
 			charts_in_dashboard.push(newItem);
 		});
 	}
 
 	function loadNetwork(evt) {
-		loadDashboardItem(evt, "network_id", "/admin/delete-network", "/admin/networks", createNetwork, function (newItem) {
+		loadDashboardItem(evt, "network_id", "title_text", "/admin/delete-network", "/admin/networks", createNetwork, function (newItem) {
 			networks_in_dashboard.push(newItem);
+		});
+	}
+
+	function loadImage(evt) {
+		loadDashboardItem(evt, "image_id", "title", "/admin/delete-image", "/admin/images", createImage, function (newItem) {
+			images_in_dashboard.push(newItem);
 		});
 	}
 </script>
@@ -670,7 +671,7 @@
 		<div class="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
 		<!-- Load an existing chart instead of creating a new one -->
 		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
-		<a on:click={loadChart} id="load-image-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Image </a>
+		<a on:click={loadImage} id="load-image-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Image </a>
 		<a on:click={loadChart} id="load-table-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Table </a>
 		<a on:click={loadChart} id="load-timeline-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Timeline </a>
 		<a on:click={loadNetwork} id="load-network-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Network </a>

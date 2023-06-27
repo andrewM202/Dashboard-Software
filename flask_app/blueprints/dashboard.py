@@ -169,6 +169,13 @@ def get_charts():
 
 
 
+@bp.route("/admin/images", methods=["GET"])
+@login_required
+def get_images():
+    return SavedImages.objects.filter().to_json()
+
+
+
 @bp.route("/admin/save-chart")
 @login_required
 def save_chart(data):
@@ -257,6 +264,13 @@ def save_chart(data):
 
 
 
+@bp.route("/admin/save-timeline")
+@login_required
+def save_timeline(data):
+    print(data)
+
+
+
 @bp.route("/admin/save-text")
 @login_required
 def save_text(data):
@@ -308,9 +322,13 @@ def allowed_file(filename):
 @login_required
 def upload_image():
     try:
+        # print("yeet3")
+        print(request.files)
         file = request.files["file"]
         
+        # print("yeet1")
         image_id = request.headers['image-id']
+        # print("yeet2")
         
         if secure_filename(file.filename):
             if file and allowed_file(file.filename):
@@ -328,6 +346,7 @@ def upload_image():
                             remove(path.join(image_storage_path, f"{image_id}.{ext}"))
                 except Exception as e:
                     print(e)
+                    return "Error saving image"
                         
                 try: 
                     # save file to specified directory
@@ -372,13 +391,7 @@ def get_image(image_name):
     
 
 
-@bp.route("/admin/save-image", methods=["POST"])
-@login_required
-def save_image(data):
-    width = data['width']
-    height = data['height']
-    top = data['top']
-    right = data['right']
+def save_image_helper(data):
     title = data['title']
     
     if len(SavedImages.objects(image_id=data['image_id'])) == 0:
@@ -386,27 +399,43 @@ def save_image(data):
         SavedImages(
             image_id = data['image_id']
             ,title = title
-            ,width = str(width)
-            ,height = str(height)
-            ,top = str(top)
-            ,right = str(right)
             ,image_type = ""
         ).save()
     else:
         # Update data in database
         SavedImages.objects(image_id=data['image_id']).update(  
             title = title
-            ,width = str(width)
-            ,height = str(height)
-            ,top = str(top)
-            ,right = str(right)
         )                                             
         
     return SavedImages.objects(image_id=data['image_id'])[0].id
+
+
+
+@bp.route("/admin/save-image", methods=["POST"])
+@login_required
+def save_image():
+    data = request.form.to_dict()
+    print(data)
+    title = data['title']
+    
+    if len(SavedImages.objects(image_id=data['image_id'])) == 0:
+        # Store data in database
+        SavedImages(
+            image_id = data['image_id']
+            ,title = title
+            ,image_type = ""
+        ).save()
+    else:
+        # Update data in database
+        SavedImages.objects(image_id=data['image_id']).update(  
+            title = title
+        )                                             
+        
+    return "Sucess"
     
     
     
-@bp.route("/admin/delete-network", methods=["GET", "DELETE"])
+@bp.route("/admin/delete-network", methods=["DELETE"])
 @login_required
 def delete_network():
     """ Delete a network and all associated nodes, edges """ 
@@ -663,7 +692,7 @@ def save_dashboard():
             
         for image in data["images"]:
             # Save our image if it is not already saved in the database
-            result = save_image(image)
+            result = save_image_helper(image)
             # Save the entry to the ItemInDashboard collection
             if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
                 ItemInDashboard(
