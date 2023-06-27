@@ -223,6 +223,7 @@ class NetworkNode(Document):
     """ A singular node in a network """
     linked_network_id = StringField() # The network that this node is linked to
     label = StringField()
+    key = StringField()
     x_pos = StringField()
     y_pos = StringField()
     size = StringField()

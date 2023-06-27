@@ -438,12 +438,13 @@ def save_network():
             network_nodes = []
             
             for node in data["nodes"]:
-                # print(node)
-                # print()
+                print(node)
+                print()
                 
                 new_node = NetworkNode(
                     linked_network_id = str(new_network.id)
                     ,label = str(node["attributes"]["label"])
+                    ,key = str(node["key"])
                     ,x_pos = str(node["attributes"]["x"])
                     ,y_pos = str(node["attributes"]["y"])
                     ,size = str(node["attributes"]["size"])
@@ -456,17 +457,17 @@ def save_network():
                 # print(edge)
                 # print()
                 
-                print(edge)
-                print(str(edge["source"]))
-                print(str(new_network.id))
-                print(len(NetworkNode.objects(label=str(edge["source"]), linked_network_id=str(new_network.id))))
-                print()
+                # print(edge)
+                # print(str(edge["source"]))
+                # print(str(new_network.id))
+                # print(len(NetworkNode.objects(label=str(edge["source"]), linked_network_id=str(new_network.id))))
+                # print()
                 new_edge = NetworkEdge(
                     size = str(edge["attributes"]["size"])
                     ,color = edge["attributes"]["default-color"]
                     ,edge_type = edge["attributes"]["type"]
-                    ,source_node = NetworkNode.objects(label=str(edge["source"]), linked_network_id=str(new_network.id))[0]
-                    ,target_node = NetworkNode.objects(label=str(edge["target"]), linked_network_id=str(new_network.id))[0]
+                    ,source_node = NetworkNode.objects(key=str(edge["source"]), linked_network_id=str(new_network.id))[0]
+                    ,target_node = NetworkNode.objects(key=str(edge["target"]), linked_network_id=str(new_network.id))[0]
                 ).save()
                 network_edges.append(new_edge)
                 
