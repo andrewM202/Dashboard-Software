@@ -148,12 +148,14 @@ def get_networks():
     networks = loads(SavedNetworks.objects().to_json())
     for i in range(0, len(networks)):
         for node_index in range(0, len(networks[i]['nodes'])):
-            new_json = NetworkNode.objects(id=networks[i]['nodes'][node_index]["$oid"]).to_json()  
+            new_json = NetworkNode.objects(id=networks[i]['nodes'][node_index]["$oid"])[0].to_json()  
             networks[i]['nodes'][node_index] = loads(new_json)
             
         for edge_index in range(0, len(networks[i]['edges'])):
-            new_json = NetworkEdge.objects(id=networks[i]['edges'][edge_index]["$oid"]).to_json()  
-            networks[i]['edges'][edge_index] = loads(new_json)
+            new_json = loads(NetworkEdge.objects(id=networks[i]['edges'][edge_index]["$oid"])[0].to_json())
+            new_json["source_node"] = NetworkNode.objects(id=new_json["source_node"]["$oid"])[0].label
+            new_json["target_node"] = NetworkNode.objects(id=new_json["target_node"]["$oid"])[0].label
+            networks[i]['edges'][edge_index] = new_json
             
     return json_util.dumps(networks)
 
@@ -441,7 +443,7 @@ def save_network():
                 
                 new_node = NetworkNode(
                     linked_network_id = str(new_network.id)
-                    ,label = node["attributes"]["label"]
+                    ,label = str(node["attributes"]["label"])
                     ,x_pos = str(node["attributes"]["x"])
                     ,y_pos = str(node["attributes"]["y"])
                     ,size = str(node["attributes"]["size"])
@@ -454,12 +456,17 @@ def save_network():
                 # print(edge)
                 # print()
                 
+                print(edge)
+                print(str(edge["source"]))
+                print(str(new_network.id))
+                print(len(NetworkNode.objects(label=str(edge["source"]), linked_network_id=str(new_network.id))))
+                print()
                 new_edge = NetworkEdge(
                     size = str(edge["attributes"]["size"])
                     ,color = edge["attributes"]["default-color"]
                     ,edge_type = edge["attributes"]["type"]
-                    ,source_node = NetworkNode.objects(label=edge["source"], linked_network_id=str(new_network.id))[0]
-                    ,target_node = NetworkNode.objects(label=edge["target"], linked_network_id=str(new_network.id))[0]
+                    ,source_node = NetworkNode.objects(label=str(edge["source"]), linked_network_id=str(new_network.id))[0]
+                    ,target_node = NetworkNode.objects(label=str(edge["target"]), linked_network_id=str(new_network.id))[0]
                 ).save()
                 network_edges.append(new_edge)
                 
