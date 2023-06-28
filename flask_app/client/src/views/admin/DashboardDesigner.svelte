@@ -627,6 +627,12 @@
 			images_in_dashboard.push(newItem);
 		});
 	}
+
+	function loadTimeline(evt) {
+		loadDashboardItem(evt, "timeline_id", "title", "/admin/delete-timeline", "/admin/timelines", createTimeline, function (newItem) {
+			timelines_in_dashboard.push(newItem);
+		});
+	}
 </script>
 
 <div use:onLoad style="height: 100vh;" dashboard-id="" id="DashboardDesignerContainer" class="h-screen w-screen border-solid border-blueGray-100 border-r border-b">
@@ -673,7 +679,7 @@
 		<a on:click={loadChart} id="load-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Chart </a>
 		<a on:click={loadImage} id="load-image-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Image </a>
 		<a on:click={loadChart} id="load-table-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Table </a>
-		<a on:click={loadChart} id="load-timeline-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Timeline </a>
+		<a on:click={loadTimeline} id="load-timeline-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Timeline </a>
 		<a on:click={loadNetwork} id="load-network-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Load Network </a>
 	</div>
 </div>

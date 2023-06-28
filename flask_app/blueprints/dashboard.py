@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, send_from_directory, request, make
 from flask_login import  current_user
 from flask_security import login_required
 from models import (SavedCharts, SavedDashboards, SavedTexts, SavedImages, 
-    db, SavedNetworks, ItemInDashboard, NetworkNode, NetworkEdge)
+    db, SavedNetworks, SavedTimelines, TimelineDate, ItemInDashboard, NetworkNode, NetworkEdge)
 from os import environ, path, remove
 from bson import json_util
 from bson.objectid import ObjectId
@@ -169,6 +169,13 @@ def get_charts():
 
 
 
+@bp.route("/admin/timelines", methods=["GET"])
+@login_required
+def get_timelines():
+    return SavedTimelines.objects.to_json()
+
+
+
 @bp.route("/admin/images", methods=["GET"])
 @login_required
 def get_images():
@@ -264,10 +271,34 @@ def save_chart(data):
 
 
 
-@bp.route("/admin/save-timeline")
+@bp.route("/admin/save-timeline", methods=["POST"])
 @login_required
-def save_timeline(data):
-    print(data)
+def save_timeline():
+    new_data = request.form.to_dict()
+    for data in new_data:
+        data = loads(data)
+        # Get data now that its processed
+        uuid = data['uuid']
+        title = data['title']
+        color = data['color']
+        items = data['timeline_items']
+        dates_processed = []
+        for item in items:
+            print(item)
+            new_date = TimelineDate(
+                date_id = item['uuid']
+                ,date = item['date']
+                ,text = item['content']
+            )
+            dates_processed.append(new_date)
+        SavedTimelines(
+            timeline_id = uuid
+            ,color = color
+            ,title = title
+            ,dates = dates_processed
+        ).save()
+        
+    return ''
 
 
 

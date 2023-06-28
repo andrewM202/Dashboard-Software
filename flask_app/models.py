@@ -215,6 +215,19 @@ class SavedImages(Document):
     color = StringField()
     title = StringField()
     
+class TimelineDate(EmbeddedDocument):
+    """ Holds all of the dates for a timeline """
+    date_id = StringField()
+    date = StringField()
+    text = StringField()
+    
+class SavedTimelines(Document):
+    """ Holds all of the timelines for a dashboard """
+    timeline_id = StringField()
+    color = StringField()
+    title = StringField()
+    dates = ListField(EmbeddedDocumentField(TimelineDate))
+    
 class NetworkNode(Document):
     """ A singular node in a network """
     uuid = StringField() # The identifying uuid of this node created client side
