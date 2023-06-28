@@ -282,21 +282,36 @@ def save_timeline():
         title = data['title']
         color = data['color']
         items = data['timeline_items']
-        dates_processed = []
-        for item in items:
-            print(item)
-            new_date = TimelineDate(
-                date_id = item['uuid']
-                ,date = item['date']
-                ,text = item['content']
+        # Check if this timeline has already been saved
+        if len(SavedTimelines.objects(timeline_id=uuid)) > 0:
+            dates_processed = []
+            for item in items:
+                new_date = TimelineDate(
+                    date_id = item['uuid']
+                    ,date = item['date']
+                    ,text = item['content']
+                )
+                dates_processed.append(new_date)
+            SavedTimelines.objects(timeline_id=uuid).update(
+                color = color
+                ,title = title     
+                ,dates = dates_processed 
             )
-            dates_processed.append(new_date)
-        SavedTimelines(
-            timeline_id = uuid
-            ,color = color
-            ,title = title
-            ,dates = dates_processed
-        ).save()
+        else:
+            dates_processed = []
+            for item in items:
+                new_date = TimelineDate(
+                    date_id = item['uuid']
+                    ,date = item['date']
+                    ,text = item['content']
+                )
+                dates_processed.append(new_date)
+            SavedTimelines(
+                timeline_id = uuid
+                ,color = color
+                ,title = title
+                ,dates = dates_processed
+            ).save()
         
     return ''
 
