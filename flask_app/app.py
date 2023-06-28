@@ -74,4 +74,5 @@ if __name__ == "__main__":
         from webui import WebUI 
         WebUI(app, debug=True).run()
     else:
-        app.run(debug=True, host=environ['FLASK_HOST'])
+        # app.run(debug=True, host=environ['FLASK_HOST'])
+        app.run()
