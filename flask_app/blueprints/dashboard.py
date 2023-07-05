@@ -553,6 +553,23 @@ def delete_network():
     return "success"
 
 
+
+@bp.route("/admin/delete-table", methods=["DELETE"])
+@login_required
+def delete_table():
+    """ Delete a table and all associated columns, rows """
+    data = request.form.to_dict()
+    for string in data:
+        # Data is sent as a string inside an object, parse it
+        data = loads(string)
+        # Get data
+        table_id = data["item_id"]
+        # Delete the table
+        SavedTables.objects(table_id=table_id).delete()
+        
+    return "success"
+
+
     
 @bp.route("/admin/save-network", methods=["POST"])
 @login_required
