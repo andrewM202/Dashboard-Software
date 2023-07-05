@@ -261,6 +261,18 @@ class SavedNetworks(Document):
     nodes = ListField(ReferenceField(NetworkNode))
     edges = ListField(ReferenceField(NetworkEdge))
     
+class SavedTables(Document):
+    """ Holds all of the saved tables for a dashboard """
+    table_id = StringField()
+    width = StringField()
+    height = StringField()
+    top = StringField()
+    right = StringField()
+    background_color = StringField()
+    title = StringField()
+    column_names = ListField(StringField())
+    data = ListField(ListField(StringField()))
+    
 class SavedDashboards(Document):
     """ Holds all of the saved dashboards """
     dashboard_height = StringField()

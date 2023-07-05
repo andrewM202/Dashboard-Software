@@ -2,7 +2,8 @@ from flask import render_template, Blueprint, send_from_directory, request, make
 from flask_login import  current_user
 from flask_security import login_required
 from models import (SavedCharts, SavedDashboards, SavedTexts, SavedImages, 
-    db, SavedNetworks, SavedTimelines, TimelineDate, ItemInDashboard, NetworkNode, NetworkEdge)
+    db, SavedNetworks, SavedTimelines, TimelineDate, ItemInDashboard, NetworkNode, 
+    NetworkEdge, SavedTables)
 from os import environ, path, remove
 from bson import json_util
 from bson.objectid import ObjectId
@@ -176,6 +177,13 @@ def get_timelines():
 
 
 
+@bp.route("/admin/tables-preliminary", methods=["GET"])
+@login_required
+def get_tables():
+    return SavedTables.objects.to_json()
+
+
+
 @bp.route("/admin/images", methods=["GET"])
 @login_required
 def get_images():
@@ -268,6 +276,48 @@ def save_chart(data):
             ,deleted = False
         )
     return SavedCharts.objects(chart_id=data['chart_id'])[0].id
+
+
+
+@bp.route("/admin/save-table", methods=["POST"])
+@login_required
+def save_table():
+    # Get request data
+    new_data = request.form.to_dict()
+    # Get data from dict
+    uuid = new_data['uuid']
+    title = new_data["tableName"]
+    color = new_data['tableColor']
+    top = new_data['top']
+    right = new_data['right']
+    width = new_data['width']
+    height = new_data['height']
+    # Save table to database if it doesn't exist
+    if len(SavedTables.objects(table_id=uuid)) == 0:
+        SavedTables(
+            table_id = uuid
+            ,title = title
+            ,background_color = color
+            ,width = width
+            ,height = height
+            ,top = top
+            ,right = right
+            ,column_names = loads(new_data["columnNames"])
+            ,data = loads(new_data["data"])
+        ).save()
+    # Update the data if it does exist
+    else:
+        SavedTables.objects(table_id=uuid).update(
+            title = title
+            ,background_color = color
+            ,width = width
+            ,height = height
+            ,top = top
+            ,right = right
+            ,column_names = loads(new_data["columnNames"])
+            ,data = loads(new_data["data"])
+        )
+    return "success"
 
 
 
