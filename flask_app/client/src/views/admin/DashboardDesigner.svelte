@@ -181,7 +181,6 @@
 					}
 					chart_settings["data"]["datasets"] = JSON.stringify(dataSets);
 					chart_settings["data"]["labels"] = JSON.stringify(chart.config.data.labels);
-					console.log(chart_settings);
 					data.charts.push(chart_settings);
 				} catch {
 					console.log("Error, likely due to chart being deleted");
@@ -259,7 +258,6 @@
 				}
 			}
 			for (let timeline of timelines_in_dashboard) {
-				console.log(timeline);
 				// If we cannot find the timeline anymore then skip this loop
 				if (j$(`#timeline${timeline.timelineCreatedNumber}`).length === 0) continue;
 				// Resize the % height and % top of the timeline so the actual pixel size doesn't change if the height of the dashboard is different
@@ -304,7 +302,8 @@
 					j$("div#DashboardDesignerContainer").attr("dashboard-id", result["dashboard_id"]);
 					// On save individually upload all the images to the server
 					for (let image of images_in_dashboard) {
-						// Create a form data object to send the image to the server
+						// Create a form data object to send the image to the server if the image has changed
+						if (j$(`#image${image.imageCreatedNumber} form.hidden-upload-form form`).length == 0) continue;
 						let formData = new FormData(j$(`#image${image.imageCreatedNumber} form.hidden-upload-form form`)[0]);
 						// Send the image to the server
 						j$.ajax({
@@ -569,8 +568,6 @@
 								});
 								// Now that we have all the images data lets retrieve them from database
 								images.forEach((image) => {
-									console.log(image);
-									// /admin/get-image/<image_name>
 									j$.ajax({
 										url: `/admin/get-image/${image.image_id}.${image.image_type}`,
 										type: "GET",
@@ -588,7 +585,6 @@
 							url: `/admin/texts/get_texts_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
 							success: function (data) {
 								const texts = JSON.parse(data);
-								console.log(texts);
 								texts.forEach((text) => {
 									let data = {
 										// ID
@@ -686,10 +682,11 @@
 							type: "GET",
 							url: `/admin/tables/get_tables_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
 							success: function (data) {
-								console.log(data);
 								const tables = JSON.parse(data);
 								tables.forEach((table) => {
-									createTable({}, table);
+									let result = createTable({}, table);
+									// Add table to the dashboard
+									tables_in_dashboard.push(result);
 								});
 							},
 						});
@@ -698,10 +695,11 @@
 							type: "GET",
 							url: `/admin/networks/get_networks_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
 							success: function (data) {
-								console.log(data);
 								const networks = JSON.parse(data);
 								networks.forEach((network) => {
-									createNetwork({}, network);
+									let result = createNetwork({}, network);
+									// Add network to the dashboard
+									networks_in_dashboard.push(result);
 								});
 							},
 						});
@@ -710,10 +708,11 @@
 							type: "GET",
 							url: `/admin/timelines/get_timelines_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
 							success: function (data) {
-								console.log(data);
 								const timelines = JSON.parse(data);
 								timelines.forEach((timeline) => {
-									createTimeline({}, timeline);
+									let result = createTimeline({}, timeline);
+									// Add timeline to the dashboard
+									timelines_in_dashboard.push(result);
 								});
 							},
 						});

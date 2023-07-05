@@ -181,10 +181,8 @@ def update_save_chart(data=None):
 @bp.route("/admin/networks", methods=["GET"])
 @login_required
 def get_networks():
-    # print(SavedNetworks.objects())
     networks = loads(SavedNetworks.objects().to_json())
     for i in range(0, len(networks)):
-        print(networks[i]['nodes'])
         for node_index in range(0, len(networks[i]['nodes'])):
             new_json = NetworkNode.objects(id=networks[i]['nodes'][node_index]["$oid"])[0].to_json()  
             networks[i]['nodes'][node_index] = loads(new_json)
@@ -424,13 +422,9 @@ def allowed_file(filename):
 @login_required
 def upload_image():
     try:
-        # print("yeet3")
-        print(request.files)
         file = request.files["file"]
         
-        # print("yeet1")
         image_id = request.headers['image-id']
-        # print("yeet2")
         
         if secure_filename(file.filename):
             if file and allowed_file(file.filename):
@@ -517,7 +511,6 @@ def save_image_helper(data):
 @login_required
 def save_image():
     data = request.form.to_dict()
-    print(data)
     title = data['title']
     
     if len(SavedImages.objects(image_id=data['image_id'])) == 0:
@@ -673,8 +666,6 @@ def save_network(data=None):
             network_edges = []
             network_nodes = []
             
-            print("UPDATING!")
-            
             for node in data["nodes"]:
                 # Save node if it doesn't exist
                 if len(NetworkNode.objects(uuid=str(node["attributes"]["uuid"]))) == 0:
@@ -704,10 +695,6 @@ def save_network(data=None):
                     network_nodes.append(NetworkNode.objects(uuid=str(node["attributes"]["uuid"]))[0])
                 
             for edge in data["edges"]:
-                # print(edge)
-                # print(str(SavedNetworks.objects(network_id = network_id)[0].id))
-                # print(NetworkNode.objects(key=edge["source"]))
-                # print()
                 # Save edge if it doesn't exist
                 if len(NetworkEdge.objects(uuid=str(edge["attributes"]["uuid"]))) == 0:
                     new_edge = NetworkEdge(
@@ -789,7 +776,6 @@ def save_dashboard():
             
             # Save our chart if it is not already saved in the database
             result = update_save_chart(chart)
-            print(f"Result: {result}")
             # Save the entry to the ItemInDashboard collection
             if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
                 ItemInDashboard(
@@ -914,7 +900,6 @@ def save_dashboard():
                 )
             
         for timeline in data["timelines"]:
-            print(timeline)
             # Save our timeline if it is not already saved in the database
             result = save_timeline(timeline)
             # Save the entry to the ItemInDashboard collection
