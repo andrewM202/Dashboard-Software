@@ -29,6 +29,19 @@
 								}
 							},
 						});
+						j$.ajax({
+							type: "POST",
+							url: `${location.origin}/auth/login`,
+							data: j$("#SignUpForm").serialize(),
+							success: function (location) {
+								window.location = location;
+							},
+							error: function (e) {
+								// Error logging
+								console.log(e.statusText);
+								console.log(e.responseText);
+							},
+						});
 					});
 				}
 			},
