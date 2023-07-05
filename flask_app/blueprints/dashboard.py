@@ -3,7 +3,7 @@ from flask_login import  current_user
 from flask_security import login_required
 from models import (SavedCharts, SavedDashboards, SavedTexts, SavedImages, 
     db, SavedNetworks, SavedTimelines, TimelineDate, ItemInDashboard, NetworkNode, 
-    NetworkEdge, SavedTables)
+    NetworkEdge, SavedTables, ChartDataset)
 from os import environ, path, remove
 from bson import json_util
 from bson.objectid import ObjectId
@@ -54,92 +54,128 @@ def chart_designer():
 
 @bp.route("/admin/update-save-chart", methods=['POST'])
 @login_required
-def update_save_chart():
-    data = request.form.to_dict()
+def update_save_chart(data=None):
+    data_originally_none = True
+    datasets = []
+    labels = []
+    if data is None:
+        data = request.form.to_dict()
+        data_originally_none = True
+        datasets = loads(data["data[datasets]"])
+        labels = loads(data["data[labels]"])
+    else:
+        data_originally_none = False
+        datasets = loads(data["data"]["datasets"])
+        labels = loads(data["data"]["labels"])
+        
+    
+    to_save_datasets = []
+    for dataset in datasets:
+        to_save_datasets.append(ChartDataset(
+            background_color = str(dataset['backgroundColor'])
+            ,border_color = str(dataset['borderColor'])
+            ,bar_thickness = str(dataset['barThickness'])
+            ,data = dataset['data']
+            ,fill = str(dataset['fill'])
+            ,label = str(dataset['label'])
+            ,pointBackgroundColor = str(dataset['pointBackgroundColor'])
+            ,pointRadius = str(dataset['pointRadius'])
+        ))
     
     # Check if this chart already exists
     # If it does, update otherwise save
     if len(SavedCharts.objects(chart_id=data['chart_id'])) > 0:
         print("Save chart")
+        
         # Update dashboard
-        SavedCharts.objects(chart_id=data['chart_id']).update(   
-            background_color = data['background_color']
+        SavedCharts.objects(chart_id=str(data['chart_id'])).update(   
+            background_color = str(data['background_color'])
 
-            ,chart_type = data['chart_type']
-            ,legend_enabled = data['legend_enabled']
+            ,chart_type = str(data['chart_type'])
+            ,legend_enabled = str(data['legend_enabled'])
             
-            ,yaxes_scale_label = data['yaxes_scale_label']
-            ,xaxes_scale_label = data['xaxes_scale_label']
+            ,yaxes_scale_label = str(data['yaxes_scale_label'])
+            ,xaxes_scale_label = str(data['xaxes_scale_label'])
             
-            ,yaxes_scale_label_enabled = data['yaxes_scale_label_enabled']
-            ,xaxes_scale_label_enabled = data['xaxes_scale_label_enabled']
+            ,yaxes_scale_label_enabled = str(data['yaxes_scale_label_enabled'])
+            ,xaxes_scale_label_enabled = str(data['xaxes_scale_label_enabled'])
 
-            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
-            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
+            ,yaxes_gridlines_color = str(data['yaxes_gridlines_color'])
+            ,xaxes_gridlines_color = str(data['xaxes_gridlines_color'])
             
-            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
-            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
+            ,yaxes_scalelabel_color = str(data['yaxes_scalelabel_color'])
+            ,xaxes_scalelabel_color = str(data['xaxes_scalelabel_color'])
             
-            ,legend_font_color = data['legend_font_color']
+            ,legend_font_color = str(data['legend_font_color'])
             
-            ,yaxes_tick_color = data['yaxes_tick_color']
-            ,xaxes_tick_color = data['xaxes_tick_color']
+            ,yaxes_tick_color = str(data['yaxes_tick_color'])
+            ,xaxes_tick_color = str(data['xaxes_tick_color'])
             
-            ,yaxes_gridline_enabled = data['yaxes_gridline_enabled']
-            ,xaxes_gridline_enabled = data['xaxes_gridline_enabled']
+            ,yaxes_gridline_enabled = str(data['yaxes_gridline_enabled'])
+            ,xaxes_gridline_enabled = str(data['xaxes_gridline_enabled'])
             
-            ,title_fontsize = data['title_fontsize']
-            ,title_fontcolor = data['title_fontcolor']
-            ,title_text = data['title_text']
-            ,title_enabled = data['title_enabled']
+            ,title_fontsize = str(data['title_fontsize'])
+            ,title_fontcolor = str(data['title_fontcolor'])
+            ,title_text = str(data['title_text'])
+            ,title_enabled = str(data['title_enabled'])
             
-            ,default_font_family = data['default_font_family']
+            ,default_font_family = str(data['default_font_family'])
             
-            ,chart_padding = data['chart_padding']
+            ,chart_padding = str(data['chart_padding'])
+            
+            ,datasets = to_save_datasets
+            ,labels = labels
+            
             ,deleted = False
         )
     else:
         # Store data in database
         SavedCharts(  
-            chart_id = data['chart_id']
-            ,background_color = data['background_color']
+            chart_id = str(data['chart_id'])
+            ,background_color = str(data['background_color'])
 
-            ,chart_type = data['chart_type']
-            ,legend_enabled = data['legend_enabled']
+            ,chart_type = str(data['chart_type'])
+            ,legend_enabled = str(data['legend_enabled'])
             
-            ,yaxes_scale_label = data['yaxes_scale_label']
-            ,xaxes_scale_label = data['xaxes_scale_label']
+            ,yaxes_scale_label = str(data['yaxes_scale_label'])
+            ,xaxes_scale_label = str(data['xaxes_scale_label'])
             
-            ,yaxes_scale_label_enabled = data['yaxes_scale_label_enabled']
-            ,xaxes_scale_label_enabled = data['xaxes_scale_label_enabled']
+            ,yaxes_scale_label_enabled = str(data['yaxes_scale_label_enabled'])
+            ,xaxes_scale_label_enabled = str(data['xaxes_scale_label_enabled'])
 
-            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
-            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
+            ,yaxes_gridlines_color = str(data['yaxes_gridlines_color'])
+            ,xaxes_gridlines_color = str(data['xaxes_gridlines_color'])
             
-            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
-            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
+            ,yaxes_scalelabel_color = str(data['yaxes_scalelabel_color'])
+            ,xaxes_scalelabel_color = str(data['xaxes_scalelabel_color'])
             
-            ,legend_font_color = data['legend_font_color']
+            ,legend_font_color = str(data['legend_font_color'])
             
-            ,yaxes_tick_color = data['yaxes_tick_color']
-            ,xaxes_tick_color = data['xaxes_tick_color']
+            ,yaxes_tick_color = str(data['yaxes_tick_color'])
+            ,xaxes_tick_color = str(data['xaxes_tick_color'])
             
-            ,yaxes_gridline_enabled = data['yaxes_gridline_enabled']
-            ,xaxes_gridline_enabled = data['xaxes_gridline_enabled']
+            ,yaxes_gridline_enabled = str(data['yaxes_gridline_enabled'])
+            ,xaxes_gridline_enabled = str(data['xaxes_gridline_enabled'])
             
-            ,title_fontsize = data['title_fontsize']
-            ,title_fontcolor = data['title_fontcolor']
-            ,title_text = data['title_text']
-            ,title_enabled = data['title_enabled']
+            ,title_fontsize = str(data['title_fontsize'])
+            ,title_fontcolor = str(data['title_fontcolor'])
+            ,title_text = str(data['title_text'])
+            ,title_enabled = str(data['title_enabled'])
             
-            ,default_font_family = data['default_font_family']
+            ,default_font_family = str(data['default_font_family'])
             
-            ,chart_padding = data['chart_padding']
+            ,chart_padding = str(data['chart_padding'])
+            
+            ,datasets = to_save_datasets
+            ,labels = labels
             
             ,deleted = False
         ).save()
     
-    return 'Success'
+    if data_originally_none:
+        return 'Success'
+    else:
+        return SavedCharts.objects(chart_id=data['chart_id'])[0].id
 
 
 @bp.route("/admin/networks", methods=["GET"])
@@ -188,94 +224,6 @@ def get_tables():
 @login_required
 def get_images():
     return SavedImages.objects.filter().to_json()
-
-
-
-@bp.route("/admin/save-chart")
-@login_required
-def save_chart(data):
-    data = data["data"]
-    id = ""
-    if len(SavedCharts.objects(chart_id=data['chart_id'])) == 0:
-        # Store data in database
-        SavedCharts(  
-            chart_id = data['chart_id']
-            ,background_color = data['background_color']
-
-            ,chart_type = data['chart_type']
-            ,legend_enabled = str(data['legend_enabled'])
-            
-            ,yaxes_scale_label = data['yaxes_scale_label']
-            ,xaxes_scale_label = data['xaxes_scale_label']
-            
-            ,yaxes_scale_label_enabled = str(data['yaxes_scale_label_enabled'])
-            ,xaxes_scale_label_enabled = str(data['xaxes_scale_label_enabled'])
-
-            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
-            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
-            
-            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
-            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
-            
-            ,legend_font_color = data['legend_font_color']
-            
-            ,yaxes_tick_color = data['yaxes_tick_color']
-            ,xaxes_tick_color = data['xaxes_tick_color']
-            
-            ,yaxes_gridline_enabled = str(data['yaxes_gridline_enabled'])
-            ,xaxes_gridline_enabled = str(data['xaxes_gridline_enabled'])
-            
-            ,title_fontsize = str(data['title_fontsize'])
-            ,title_fontcolor = data['title_fontcolor']
-            ,title_text = data['title_text']
-            ,title_enabled = str(data['title_enabled'])
-            
-            ,default_font_family = data['default_font_family']
-            
-            ,chart_padding = str(data['chart_padding'])
-            
-            ,deleted = False
-        ).save()
-    else:
-        # Update data in database
-        SavedCharts.objects(chart_id=data['chart_id']).update(  
-            background_color = data['background_color']
-
-            ,chart_type = data['chart_type']
-            ,legend_enabled = str(data['legend_enabled'])
-            
-            ,yaxes_scale_label = data['yaxes_scale_label']
-            ,xaxes_scale_label = data['xaxes_scale_label']
-            
-            ,yaxes_scale_label_enabled = str(data['yaxes_scale_label_enabled'])
-            ,xaxes_scale_label_enabled = str(data['xaxes_scale_label_enabled'])
-
-            ,yaxes_gridlines_color = data['yaxes_gridlines_color']
-            ,xaxes_gridlines_color = data['xaxes_gridlines_color']
-            
-            ,yaxes_scalelabel_color = data['yaxes_scalelabel_color']
-            ,xaxes_scalelabel_color = data['xaxes_scalelabel_color']
-            
-            ,legend_font_color = data['legend_font_color']
-            
-            ,yaxes_tick_color = data['yaxes_tick_color']
-            ,xaxes_tick_color = data['xaxes_tick_color']
-            
-            ,yaxes_gridline_enabled = str(data['yaxes_gridline_enabled'])
-            ,xaxes_gridline_enabled = str(data['xaxes_gridline_enabled'])
-            
-            ,title_fontsize = str(data['title_fontsize'])
-            ,title_fontcolor = data['title_fontcolor']
-            ,title_text = data['title_text']
-            ,title_enabled = str(data['title_enabled'])
-            
-            ,default_font_family = data['default_font_family']
-            
-            ,chart_padding = str(data['chart_padding'])
-            
-            ,deleted = False
-        )
-    return SavedCharts.objects(chart_id=data['chart_id'])[0].id
 
 
 
@@ -754,7 +702,8 @@ def save_dashboard():
         for chart in data["charts"]:
             
             # Save our chart if it is not already saved in the database
-            result = save_chart(chart)
+            result = update_save_chart(chart)
+            print(f"Result: {result}")
             # Save the entry to the ItemInDashboard collection
             if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
                 ItemInDashboard(
@@ -950,21 +899,31 @@ def delete_dashboard():
         # Delete charts in our dashboard if they were previously marked for deleted. 
         # Right now if a user delete a chart, it isn't actually deleted from the database, 
         # just marked for deletion until the dashboard it is used in is deleted.
-        for chart in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_charts"]:
-            SavedCharts.objects(id=chart.id, deleted=True).delete()
-        # Delete our texts
-        for text in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_texts"]:
-            SavedTexts.objects(id=text.id).delete()
-        # Delete our images
-        for image in SavedDashboards.objects(id=dashboard_id)[0]["dashboard_images"]:
-            SavedImages.objects(id=image.id).delete()
-            # Delete our image from the file system
-            image_id = image.image_id
-            ext = image.image_type
-            print(f"{image_id}.{ext}")
-            if path.exists(path.join(image_storage_path, f"{image_id}.{ext}")):
-                remove(path.join(image_storage_path, f"{image_id}.{ext}"))
         
+        # Get all of the items in the dashboard
+        for item in ItemInDashboard.objects(dashboard_reference=dashboard_id):
+            # Get the item type
+            item_type = item.item_type
+            # Get the item id
+            item_id = item.item_id
+            # Delete the item
+            if item_type == "chart":
+                SavedCharts.objects(chart_id=item_id).delete()
+            elif item_type == "text":
+                SavedTexts.objects(text_id=item_id).delete()
+            elif item_type == "image":
+                image = SavedImages.objects(id=item_id)[0]
+                # Delete our image from the file system
+                image_id = image.image_id
+                ext = image.image_type
+                SavedImages.objects(id=item_id).delete()
+                print(f"{image_id}.{ext}")
+                if path.exists(path.join(image_storage_path, f"{image_id}.{ext}")):
+                    remove(path.join(image_storage_path, f"{image_id}.{ext}"))
+                    
+        # Delete our items in dashboard
+        ItemInDashboard.objects(dashboard_reference=dashboard_id).delete()
+  
         # Delete our dashboard
         SavedDashboards.objects(id=dashboard_id).delete()
         return "Success"

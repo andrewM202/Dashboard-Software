@@ -157,13 +157,28 @@
 				});
 
 				try {
-					let chart_settings = {
-						height: j$(`#chart${chart.id}`)[0].style["height"],
-						width: j$(`#chart${chart.id}`)[0].style["width"],
-						top: j$(`#chart${chart.id}`)[0].style["top"],
-						right: j$(`#chart${chart.id}`)[0].style["right"],
-						data: retrieveChartSettings(chart, j$(`#chart${chart.id}`)),
-					};
+					let chart_settings = retrieveChartSettings(chart, j$(`#chart${chart.id}`));
+					chart_settings["height"] = j$(`#chart${chart.id}`)[0].style["height"];
+					chart_settings["width"] = j$(`#chart${chart.id}`)[0].style["width"];
+					chart_settings["top"] = j$(`#chart${chart.id}`)[0].style["top"];
+					chart_settings["right"] = j$(`#chart${chart.id}`)[0].style["right"];
+					chart_settings["data"] = {};
+					let dataSets = [];
+					for (let set of chart.config.data.datasets) {
+						dataSets.push({
+							backgroundColor: set.backgroundColor,
+							borderColor: set.borderColor,
+							barThickness: set.barThickness,
+							data: set.data,
+							fill: set.fill,
+							label: set.label,
+							pointBackgroundColor: set.pointBackgroundColor,
+							pointRadius: set.pointRadius,
+						});
+					}
+					chart_settings["data"]["datasets"] = JSON.stringify(dataSets);
+					chart_settings["data"]["labels"] = JSON.stringify(chart.config.data.labels);
+					console.log(chart_settings);
 					data.charts.push(chart_settings);
 				} catch {
 					console.log("Error, likely due to chart being deleted");
@@ -611,31 +626,31 @@
 	}
 
 	function loadChart(evt) {
-		loadDashboardItem(evt, "chart_id", "title_text", "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
+		loadDashboardItem(evt, "Load Existing Chart", "chart_id", "title_text", "/admin/delete-chart", "/admin/charts", createChart, function (newItem) {
 			charts_in_dashboard.push(newItem);
 		});
 	}
 
 	function loadNetwork(evt) {
-		loadDashboardItem(evt, "network_id", "title_text", "/admin/delete-network", "/admin/networks", createNetwork, function (newItem) {
+		loadDashboardItem(evt, "Load Existing Network", "network_id", "title_text", "/admin/delete-network", "/admin/networks", createNetwork, function (newItem) {
 			networks_in_dashboard.push(newItem);
 		});
 	}
 
 	function loadImage(evt) {
-		loadDashboardItem(evt, "image_id", "title", "/admin/delete-image", "/admin/images", createImage, function (newItem) {
+		loadDashboardItem(evt, "Load Existing Image", "image_id", "title", "/admin/delete-image", "/admin/images", createImage, function (newItem) {
 			images_in_dashboard.push(newItem);
 		});
 	}
 
 	function loadTimeline(evt) {
-		loadDashboardItem(evt, "timeline_id", "title", "/admin/delete-timeline", "/admin/timelines", createTimeline, function (newItem) {
+		loadDashboardItem(evt, "Load Existing Timeline", "timeline_id", "title", "/admin/delete-timeline", "/admin/timelines", createTimeline, function (newItem) {
 			timelines_in_dashboard.push(newItem);
 		});
 	}
 
 	function loadTable(evt) {
-		loadDashboardItem(evt, "table_id", "title", "/admin/delete-table", "/admin/tables-preliminary", createTable, function (newItem) {
+		loadDashboardItem(evt, "Load Existing Table", "table_id", "title", "/admin/delete-table", "/admin/tables-preliminary", createTable, function (newItem) {
 			tables_in_dashboard.push(newItem);
 		});
 	}

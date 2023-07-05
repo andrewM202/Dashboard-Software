@@ -150,6 +150,17 @@ class Notes(Document):
     
 ########################### Dashboard #####################################
 
+class ChartDataset(EmbeddedDocument):
+    """ Holds all of the datasets for a chart """
+    background_color = StringField()
+    border_color = StringField()
+    bar_thickness = StringField()
+    data = ListField()
+    fill = StringField()
+    label = StringField()
+    pointBackgroundColor = StringField()
+    pointRadius = StringField()
+
 class SavedCharts(Document):
     """ Holds all of the saved charts for a dashboard """
     chart_id = StringField()
@@ -187,10 +198,8 @@ class SavedCharts(Document):
     
     chart_padding = StringField()
     
-    width = StringField()
-    height = StringField()
-    top = StringField()
-    right = StringField()
+    datasets = ListField(EmbeddedDocumentField(ChartDataset))
+    labels = ListField()
     
     # whether the chart is deleted or not
     deleted = BooleanField(default=False)
