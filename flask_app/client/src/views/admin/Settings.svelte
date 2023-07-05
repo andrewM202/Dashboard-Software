@@ -4,12 +4,7 @@
 	import AdminNavbar from "components/Navbars/AdminNavbar.svelte";
 	import AuthTable from "components/Cards/AuthTable.svelte";
 	import SettingsBar from "components/Headers/SettingsBar.svelte";
-	import {
-		userSettingsStore,
-		unapprovedUsersStore,
-		usersStore,
-		refreshAuth,
-	} from "../../stores.js";
+	import { userSettingsStore, unapprovedUsersStore, usersStore, refreshAuth } from "../../stores.js";
 
 	export let location;
 
@@ -30,109 +25,63 @@
 					type: "color",
 					placeholder: "Sidebar Color",
 					name: "sidebar-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].sidebar_color === null
-								? "#FFFFFF"
-								: settingsConfig[0].sidebar_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].sidebar_color === null ? "#FFFFFF" : settingsConfig[0].sidebar_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Archive Header Color",
 					name: "archive-header-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].archive_header_color === null
-								? "#EF4444"
-								: settingsConfig[0].archive_header_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].archive_header_color === null ? "#EF4444" : settingsConfig[0].archive_header_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Archive Table Background Color",
 					name: "archive-table-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].archive_table_color === null
-								? "#EF4444"
-								: settingsConfig[0].archive_table_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].archive_table_color === null ? "#EF4444" : settingsConfig[0].archive_table_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Archive Table Headers Color",
 					name: "archive-table-header-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].archive_table_header_color ===
-							  null
-								? "#BE123C"
-								: settingsConfig[0].archive_table_header_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].archive_table_header_color === null ? "#BE123C" : settingsConfig[0].archive_table_header_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Archive Table Alt Row Color",
 					name: "archive-table-alt-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].archive_table_alt_color === null
-								? "#DC2626"
-								: settingsConfig[0].archive_table_alt_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].archive_table_alt_color === null ? "#DC2626" : settingsConfig[0].archive_table_alt_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Archive Creation Card Color",
 					name: "archive-creation-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].archive_creation_color === null
-								? "#EF4444"
-								: settingsConfig[0].archive_creation_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].archive_creation_color === null ? "#EF4444" : settingsConfig[0].archive_creation_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Background Color",
 					name: "background-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].background_color === null
-								? "#F1F5F9"
-								: settingsConfig[0].background_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].background_color === null ? "#F1F5F9" : settingsConfig[0].background_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Footer Color",
 					name: "footer-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].footer_color === null
-								? "#F1F5F9"
-								: settingsConfig[0].footer_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].footer_color === null ? "#F1F5F9" : settingsConfig[0].footer_color) : "",
 					flexdatalistdisabled: true,
 				},
 				{
 					type: "color",
 					placeholder: "Navigation Color",
 					name: "navigation-color",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].navigation_color === null
-								? "#EF4444"
-								: settingsConfig[0].navigation_color
-							: "",
+					value: settingsConfig !== undefined ? (settingsConfig[0].navigation_color === null ? "#EF4444" : settingsConfig[0].navigation_color) : "",
 					flexdatalistdisabled: true,
 				},
 			],
@@ -144,14 +93,8 @@
 					type: "checkbox",
 					placeholder: "Sidebar State",
 					name: "sidebar-state",
-					value:
-						settingsConfig !== undefined
-							? settingsConfig[0].sidebar_state === true
-								? "on"
-								: "off"
-							: "",
-					popoverMessage:
-						"Should the sidebar be closed or open by default?",
+					value: settingsConfig !== undefined ? (settingsConfig[0].sidebar_state === true ? "on" : "off") : "",
+					popoverMessage: "Should the sidebar be closed or open by default?",
 					flexdatalistdata: ["Closed", "Open"],
 					flexdataid: Math.random().toString(36).substring(2, 8),
 				},
@@ -164,8 +107,7 @@
 					type: "submit",
 					placeholder: "Submit Changes",
 					value: "Submit Change",
-					popoverMessage:
-						"Press this button to create the collection",
+					popoverMessage: "Press this button to create the collection",
 					postURL: "/admin/setting-changes",
 				},
 			],
@@ -207,8 +149,7 @@
 					type: "submit",
 					placeholder: "Submit Changes",
 					value: "Submit Change",
-					popoverMessage:
-						"Press this button to create the collection",
+					popoverMessage: "Press this button to create the collection",
 					postURL: "/admin/admin-setting-changes",
 				},
 			],
@@ -257,6 +198,7 @@
 	function updateUserFunction(e) {
 		e.preventDefault();
 		let form;
+		// Note 7/5/2023 : e.path seems to no longer work in chrome
 		for (let i = 0; i < e.path.length; i++) {
 			if (e.path[i].tagName === "TR") {
 				form = e.path[i];
@@ -299,14 +241,7 @@
 
 <SettingsBar KeyIconDisabled={true} CogsIconDisabled={true} />
 {#if settingsConfig !== undefined}
-	<AdminNavbar
-		bind:openTab
-		navBarBGColor={settingsConfig[0].navigation_color !== undefined &&
-		settingsConfig[0].navigation_color !== null
-			? `Background-color: ${settingsConfig[0].navigation_color}`
-			: undefined}
-		{navItems}
-	/>
+	<AdminNavbar bind:openTab navBarBGColor={settingsConfig[0].navigation_color !== undefined && settingsConfig[0].navigation_color !== null ? `Background-color: ${settingsConfig[0].navigation_color}` : undefined} {navItems} />
 {:else}
 	<AdminNavbar bind:openTab {navItems} />
 {/if}
@@ -315,11 +250,7 @@
 	<div class="flex flex-wrap">
 		<div class="w-full px-4 mt-4">
 			{#if tableData.includes(undefined) !== true}
-				<CardSettings
-					settings={generalSettings}
-					title={"Site Settings"}
-					clearForm={false}
-				/>
+				<CardSettings settings={generalSettings} title={"Site Settings"} clearForm={false} />
 			{:else}
 				<CardSettings settings={[]} title={"Site Settings"} />
 			{/if}
@@ -332,26 +263,9 @@
 		</div>
 	</div>
 	<div class="w-full px-4 mt-4">
-		<AuthTable
-			data={unapprovedUsers}
-			approveFunction={approvalSubmitFunction}
-			denyFunction={denySubmitFunction}
-			tableHeaders={["User", "Role", "Approve", "Deny"]}
-			DBFieldNames={["email"]}
-			roles={["Admin", "User", "Guest"]}
-			use={"approval"}
-			title={"New Account Approval"}
-		/>
+		<AuthTable data={unapprovedUsers} approveFunction={approvalSubmitFunction} denyFunction={denySubmitFunction} tableHeaders={["User", "Role", "Approve", "Deny"]} DBFieldNames={["email"]} roles={["Admin", "User", "Guest"]} use={"approval"} title={"New Account Approval"} />
 	</div>
 	<div class="w-full px-4 mt-4">
-		<AuthTable
-			data={users}
-			roles={["Admin", "User", "Guest"]}
-			approveFunction={updateUserFunction}
-			denyFunction={deleteUserFunction}
-			tableHeaders={["User", "Role", "Delete Account", "Save Changes"]}
-			title={"Existing Account Management"}
-			use={"user-updating"}
-		/>
+		<AuthTable data={users} roles={["Admin", "User", "Guest"]} approveFunction={updateUserFunction} denyFunction={deleteUserFunction} tableHeaders={["User", "Role", "Delete Account", "Save Changes"]} title={"Existing Account Management"} use={"user-updating"} />
 	</div>
 {/if}

@@ -229,9 +229,15 @@ def get_images():
 
 @bp.route("/admin/save-table", methods=["POST"])
 @login_required
-def save_table():
-    # Get request data
-    new_data = request.form.to_dict()
+def save_table(new_data=None):
+    data_originally_none = True
+    if new_data is None:
+        # Get request data
+        new_data = request.form.to_dict()
+        data_originally_none = True
+    else:
+        data_originally_none = False
+        
     # Get data from dict
     uuid = new_data['uuid']
     title = new_data["tableName"]
@@ -265,16 +271,65 @@ def save_table():
             ,column_names = loads(new_data["columnNames"])
             ,data = loads(new_data["data"])
         )
-    return "success"
+        
+    if data_originally_none:
+        return 'success'
+    else:
+        return SavedTables.objects(table_id=uuid)[0].id
 
 
 
 @bp.route("/admin/save-timeline", methods=["POST"])
 @login_required
-def save_timeline():
-    new_data = request.form.to_dict()
-    for data in new_data:
-        data = loads(data)
+def save_timeline(new_data=None):
+    data_originally_none = True
+    if new_data is None:
+        # Get request data
+        new_data = request.form.to_dict()
+        data_originally_none = True
+    else:
+        data_originally_none = False
+    
+    if data_originally_none:
+        for data in new_data:
+            data = loads(data)
+            # Get data now that its processed
+            uuid = data['uuid']
+            title = data['title']
+            color = data['color']
+            items = data['timeline_items']
+            # Check if this timeline has already been saved
+            if len(SavedTimelines.objects(timeline_id=uuid)) > 0:
+                dates_processed = []
+                for item in items:
+                    new_date = TimelineDate(
+                        date_id = item['uuid']
+                        ,date = item['date']
+                        ,text = item['content']
+                    )
+                    dates_processed.append(new_date)
+                SavedTimelines.objects(timeline_id=uuid).update(
+                    color = color
+                    ,title = title     
+                    ,dates = dates_processed 
+                )
+            else:
+                dates_processed = []
+                for item in items:
+                    new_date = TimelineDate(
+                        date_id = item['uuid']
+                        ,date = item['date']
+                        ,text = item['content']
+                    )
+                    dates_processed.append(new_date)
+                SavedTimelines(
+                    timeline_id = uuid
+                    ,color = color
+                    ,title = title
+                    ,dates = dates_processed
+                ).save()
+    else:
+        data = new_data
         # Get data now that its processed
         uuid = data['uuid']
         title = data['title']
@@ -310,8 +365,11 @@ def save_timeline():
                 ,title = title
                 ,dates = dates_processed
             ).save()
-        
-    return ''
+ 
+    if data_originally_none:
+        return 'success'
+    else:
+        return SavedTimelines.objects(timeline_id=data['uuid'])[0].id       
 
 
 
@@ -518,15 +576,38 @@ def delete_table():
     return "success"
 
 
-    
-@bp.route("/admin/save-network", methods=["POST"])
+
+@bp.route("/admin/delete-timeline", methods=["DELETE"])
 @login_required
-def save_network():
+def timeline():
+    """ Delete a timeline """
     data = request.form.to_dict()
-    
     for string in data:
         # Data is sent as a string inside an object, parse it
         data = loads(string)
+        # Get data
+        timeline_id = data["item_id"]
+        # Delete the table
+        SavedTimelines.objects(timeline_id=timeline_id).delete()
+        
+    return "success"
+
+
+    
+@bp.route("/admin/save-network", methods=["POST"])
+@login_required
+def save_network(data=None):
+    data_originally_none = True
+    if data is None:
+        data = request.form.to_dict()
+        data_originally_none = True
+    else:
+        data_originally_none = False
+        
+    for string in data:
+        if data_originally_none:
+            # Data is sent as a string inside an object, parse it
+            data = loads(string)
     
         network_id = data['uuid']
         network_width = data["width"]
@@ -653,8 +734,13 @@ def save_network():
                 nodes = network_nodes
                 ,edges = network_edges   
             )
+            
+    if data_originally_none:
+        return 'success'
+    else:
+        return SavedNetworks.objects(network_id=network_id)[0].id
     
-    return ''
+    return 'success'
 
 
 
@@ -776,6 +862,82 @@ def save_dashboard():
                     ,top = str(image['top'])
                     ,right = str(image['right'])
                 )
+                
+        for table in data["tables"]:
+            # Save our table if it is not already saved in the database
+            result = save_table(table)
+            # Save the entry to the ItemInDashboard collection
+            if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
+                ItemInDashboard(
+                    dashboard_reference = SavedDashboards.objects(id=dashboard_id)[0]
+                    ,item_id = str(result)
+                    ,item_type = "table"
+                    ,width = str(table['width'])
+                    ,height = str(table['height'])
+                    ,top = str(table['top'])
+                    ,right = str(table['right'])
+                ).save()
+            else:
+                # If we are updating we need all of the preference dashboard references as well
+                ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id).update(
+                    item_id = str(result)
+                    ,item_type = "table"
+                    ,width = str(table['width'])
+                    ,height = str(table['height'])
+                    ,top = str(table['top'])
+                    ,right = str(table['right'])
+                )
+            
+        for network in data["networks"]:
+            # Save our network if it is not already saved in the database
+            result = save_network(network)
+            # Save the entry to the ItemInDashboard collection
+            if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
+                ItemInDashboard(
+                    dashboard_reference = SavedDashboards.objects(id=dashboard_id)[0]
+                    ,item_id = str(result)
+                    ,item_type = "network"
+                    ,width = str(network['width'])
+                    ,height = str(network['height'])
+                    ,top = str(network['top'])
+                    ,right = str(network['right'])
+                ).save()
+            else:
+                # If we are updating we need all of the preference dashboard references as well
+                ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id).update(
+                    item_id = str(result)
+                    ,item_type = "network"
+                    ,width = str(network['width'])
+                    ,height = str(network['height'])
+                    ,top = str(network['top'])
+                    ,right = str(network['right'])
+                )
+            
+        for timeline in data["timelines"]:
+            print(timeline)
+            # Save our timeline if it is not already saved in the database
+            result = save_timeline(timeline)
+            # Save the entry to the ItemInDashboard collection
+            if len(ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id)) == 0:
+                ItemInDashboard(
+                    dashboard_reference = SavedDashboards.objects(id=dashboard_id)[0]
+                    ,item_id = str(result)
+                    ,item_type = "timeline"
+                    ,width = str(timeline['width'])
+                    ,height = str(timeline['height'])
+                    ,top = str(timeline['top'])
+                    ,right = str(timeline['right'])
+                ).save()
+            else:
+                # If we are updating we need all of the preference dashboard references as well
+                ItemInDashboard.objects(item_id=str(result), dashboard_reference=SavedDashboards.objects(id=dashboard_id)[0].id).update(
+                    item_id = str(result)
+                    ,item_type = "timeline"
+                    ,width = str(timeline['width'])
+                    ,height = str(timeline['height'])
+                    ,top = str(timeline['top'])
+                    ,right = str(timeline['right'])
+                )
                    
             
     return {"status": "success", "dashboard_id": str(dashboard_id)}
@@ -858,6 +1020,87 @@ def retrieve_images_by_dashboard_id(dashboard_id):
         
     # Return our images
     return json_util.dumps(return_images)
+
+
+
+@bp.route("/admin/networks/get_networks_by_dashboard_id/<dashboard_id>", methods=["GET"])
+@login_required
+def retrieve_networks_by_dashboard_id(dashboard_id):
+    # Get our dashboard
+    dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
+    return_networks = []
+    dashboard = loads(dashboard)[0]
+    # Loop through all of our dashboard network items
+    for item in ItemInDashboard.objects(dashboard_reference=dashboard_id, item_type="network"):
+        # Get the image object for this
+        network_data = loads(SavedNetworks.objects(id=item.item_id).to_json())
+        for i in range(0, len(network_data)):
+            for node_index in range(0, len(network_data[i]['nodes'])):
+                new_json = NetworkNode.objects(id=network_data[i]['nodes'][node_index]["$oid"])[0].to_json()  
+                network_data[i]['nodes'][node_index] = loads(new_json)
+                
+            for edge_index in range(0, len(network_data[i]['edges'])):
+                new_json = loads(NetworkEdge.objects(id=network_data[i]['edges'][edge_index]["$oid"])[0].to_json())
+                new_json["source_node"] = NetworkNode.objects(id=new_json["source_node"]["$oid"])[0].label
+                new_json["target_node"] = NetworkNode.objects(id=new_json["target_node"]["$oid"])[0].label
+                network_data[i]['edges'][edge_index] = new_json
+        network_data = network_data[0]
+        # Add the extra dashboard-specific information to network_data
+        network_data["width"] = item.width
+        network_data["height"] = item.height
+        network_data["top"] = item.top
+        network_data["right"] = item.right
+        return_networks.append(network_data)
+        
+        networks = loads(SavedNetworks.objects().to_json())
+        
+    # Return our networks
+    return json_util.dumps(return_networks)
+
+
+@bp.route("/admin/timelines/get_timelines_by_dashboard_id/<dashboard_id>", methods=["GET"])
+@login_required
+def retrieve_timelines_by_dashboard_id(dashboard_id):
+    # Get our dashboard
+    dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
+    return_timelines = []
+    dashboard = loads(dashboard)[0]
+    # Loop through all of our dashboard timeline items
+    for item in ItemInDashboard.objects(dashboard_reference=dashboard_id, item_type="timeline"):
+        # Get the image object for this
+        timeline_data = loads(SavedTimelines.objects(id=item.item_id).to_json())[0]
+        # Add the extra dashboard-specific information to timeline_data
+        timeline_data["width"] = item.width
+        timeline_data["height"] = item.height
+        timeline_data["top"] = item.top
+        timeline_data["right"] = item.right
+        return_timelines.append(timeline_data)
+        
+    # Return our timelines
+    return json_util.dumps(return_timelines)
+
+
+
+@bp.route("/admin/tables/get_tables_by_dashboard_id/<dashboard_id>", methods=["GET"])
+@login_required
+def retrieve_tables_by_dashboard_id(dashboard_id):
+    # Get our dashboard
+    dashboard = SavedDashboards.objects(id=dashboard_id).to_json()
+    return_tables = []
+    dashboard = loads(dashboard)[0]
+    # Loop through all of our dashboard table items
+    for item in ItemInDashboard.objects(dashboard_reference=dashboard_id, item_type="table"):
+        # Get the image object for this
+        table_data = loads(SavedTables.objects(id=item.item_id).to_json())[0]
+        # Add the extra dashboard-specific information to table_data
+        table_data["width"] = item.width
+        table_data["height"] = item.height
+        table_data["top"] = item.top
+        table_data["right"] = item.right
+        return_tables.append(table_data)
+        
+    # Return our tables
+    return json_util.dumps(return_tables)
     
     
 

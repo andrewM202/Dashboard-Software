@@ -95,6 +95,9 @@
 				charts: [],
 				texts: [],
 				images: [],
+				tables: [],
+				networks: [],
+				timelines: [],
 			};
 			for (let image of images_in_dashboard) {
 				// If we cannot find the image anymore then skip this loop
@@ -144,7 +147,7 @@
 					};
 					data.texts.push(text_settings);
 				} catch {
-					console.log("Error, likely due to chart being deleted");
+					console.log("Error, likely due to text being deleted");
 				}
 			}
 			for (let chart of charts_in_dashboard) {
@@ -184,7 +187,113 @@
 					console.log("Error, likely due to chart being deleted");
 				}
 			}
+
+			function rgb2hex(rgb) {
+				if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
+
+				rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+				function hex(x) {
+					return ("0" + parseInt(x).toString(16)).slice(-2);
+				}
+				return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+			}
+
+			// Get the table data to save dashboard
+			for (let table of tables_in_dashboard) {
+				// If we cannot find the table anymore then skip this loop
+				if (j$(`#table${table.tableCreatedNumber}`).length === 0) continue;
+				// Resize the % height and % top of the table so the actual pixel size doesn't change if the height of the dashboard is different
+				j$(`#table${table.tableCreatedNumber}`).css({
+					height: ((j$(`#table${table.tableCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#table${table.tableCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#table${table.tableCreatedNumber}`)[0].style["top"].replace("%", "")) + "%",
+				});
+
+				try {
+					let tableHeaders = [];
+					j$(`#table${table.tableCreatedNumber}`)
+						.find(".table-headers th")
+						.each(function () {
+							tableHeaders.push(j$(this).text());
+						});
+					let table_settings = {
+						uuid: j$(`#table${table.tableCreatedNumber}`).attr("data-uuid"),
+						tableName: j$(`#table${table.tableCreatedNumber}`).find("h1").text(),
+						tableColor: rgb2hex(j$(`#table${table.tableCreatedNumber}`).css("background-color")),
+						top: j$(`#table${table.tableCreatedNumber}`)[0].style["top"],
+						right: j$(`#table${table.tableCreatedNumber}`)[0].style["right"],
+						width: j$(`#table${table.tableCreatedNumber}`)[0].style["width"],
+						height: j$(`#table${table.tableCreatedNumber}`)[0].style["height"],
+						columnNames: JSON.stringify(tableHeaders),
+						data: JSON.stringify(table.table.rows().data().toArray()),
+					};
+					data.tables.push(table_settings);
+				} catch (e) {
+					console.log(e.message);
+				}
+			}
+			for (let network of networks_in_dashboard) {
+				// If we cannot find the network anymore then skip this loop
+				if (j$(`#network${network.networkCreatedNumber}`).length === 0) continue;
+				// Resize the % height and % top of the network so the actual pixel size doesn't change if the height of the dashboard is different
+				j$(`#network${network.networkCreatedNumber}`).css({
+					height: ((j$(`#network${network.networkCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#network${network.networkCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#network${network.networkCreatedNumber}`)[0].style["top"].replace("%", "")) + "%",
+				});
+
+				try {
+					let network_settings = {};
+					let graphData = network.graph.toJSON();
+
+					network_settings["edges"] = graphData.edges;
+					network_settings["nodes"] = graphData.nodes;
+					network_settings["uuid"] = j$(`#network${network.networkCreatedNumber}`).attr("data-uuid");
+					network_settings["top"] = j$(`#network${network.networkCreatedNumber}`)[0].style["top"];
+					network_settings["right"] = j$(`#network${network.networkCreatedNumber}`)[0].style["right"];
+					network_settings["color"] = rgb2hex(j$(`#network${network.networkCreatedNumber}`).css("background-color"));
+					network_settings["name"] = j$(`#network${network.networkCreatedNumber}`).find("h1.network-title").text();
+					network_settings["width"] = j$(`#network${network.networkCreatedNumber}`)[0].style["width"];
+					network_settings["height"] = j$(`#network${network.networkCreatedNumber}`)[0].style["height"];
+					data.networks.push(network_settings);
+				} catch (e) {
+					console.log(e.message);
+				}
+			}
+			for (let timeline of timelines_in_dashboard) {
+				console.log(timeline);
+				// If we cannot find the timeline anymore then skip this loop
+				if (j$(`#timeline${timeline.timelineCreatedNumber}`).length === 0) continue;
+				// Resize the % height and % top of the timeline so the actual pixel size doesn't change if the height of the dashboard is different
+				j$(`#timeline${timeline.timelineCreatedNumber}`).css({
+					height: ((j$(`#timeline${timeline.timelineCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#timeline${timeline.timelineCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#timeline${timeline.timelineCreatedNumber}`)[0].style["top"].replace("%", "")) + "%",
+				});
+
+				try {
+					let timeline_settings = {
+						uuid: j$(`#timeline${timeline.timelineCreatedNumber}`).attr("data-uuid"),
+						title: j$(`#timeline${timeline.timelineCreatedNumber}`).find("h1.title").text(),
+						color: rgb2hex(j$(`#timeline${timeline.timelineCreatedNumber}`).css("background-color")),
+						top: j$(`#timeline${timeline.timelineCreatedNumber}`)[0].style["top"],
+						right: j$(`#timeline${timeline.timelineCreatedNumber}`)[0].style["right"],
+						width: j$(`#timeline${timeline.timelineCreatedNumber}`)[0].style["width"],
+						height: j$(`#timeline${timeline.timelineCreatedNumber}`)[0].style["height"],
+						timeline_items: [],
+					};
+					// Get all the timeline items
+					for (let i = 0; i < j$(`#timeline${timeline.timelineCreatedNumber}`).find("ul.timeline-dots li").length; i++) {
+						timeline_settings["timeline_items"].push({
+							date: j$(j$(`#timeline${timeline.timelineCreatedNumber}`).find("ul.timeline-dots li")[i]).text(),
+							content: j$(j$(`#timeline${timeline.timelineCreatedNumber}`).find(".timeline-list-wrap > div")[i]).html(),
+							uuid: j$(j$(`#timeline${timeline.timelineCreatedNumber}`).find(".timeline-list-wrap > div")[i]).attr("uuid"),
+						});
+					}
+					data.timelines.push(timeline_settings);
+				} catch (e) {
+					console.log(e.message);
+				}
+			}
 			// Update the new data
+			console.log(data);
 			j$.ajax({
 				type: "POST",
 				url: `${location.origin}/admin/save-dashboard`,
@@ -562,10 +671,49 @@
 										height: chart.height,
 										top: chart.top,
 										right: chart.right,
+										// Data
+										datasets: chart.datasets,
+										labels: chart.labels,
 									};
 									let result = createChart({}, data);
 									// Add chart to the dashboard
 									charts_in_dashboard.push(result);
+								});
+							},
+						});
+						// Get the data for the dashboard's tables
+						j$.ajax({
+							type: "GET",
+							url: `/admin/tables/get_tables_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
+							success: function (data) {
+								console.log(data);
+								const tables = JSON.parse(data);
+								tables.forEach((table) => {
+									createTable({}, table);
+								});
+							},
+						});
+						// Get the data for the dashboard's networks
+						j$.ajax({
+							type: "GET",
+							url: `/admin/networks/get_networks_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
+							success: function (data) {
+								console.log(data);
+								const networks = JSON.parse(data);
+								networks.forEach((network) => {
+									createNetwork({}, network);
+								});
+							},
+						});
+						// Get the data for the dashboard's timelines
+						j$.ajax({
+							type: "GET",
+							url: `/admin/timelines/get_timelines_by_dashboard_id/${dashboard["_id"]["$oid"]}`,
+							success: function (data) {
+								console.log(data);
+								const timelines = JSON.parse(data);
+								timelines.forEach((timeline) => {
+									createTimeline({}, timeline);
 								});
 							},
 						});
@@ -678,8 +826,7 @@
 				</div>
 			</div>
 			<div class="w-full" style="align-self: flex-end;height: 100%;order: 1;display: flex;justify-content: flex-end;flex-direction: column;">
-				<input id="dashboard-save-new-button" style="height: 30px;" class="my-4 picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save as New Dashboard" name="submit" />
-				<input id="dashboard-save-existing-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Existing Dashboard" name="submit" />
+				<input id="dashboard-save-existing-button" style="height: 30px;" class="picker-input w-full cursor-pointer placeholder-blueGray-300 text-blueGray-600 hover:bg-gray-200 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" type="button" value="Save Dashboard" name="submit" />
 			</div>
 		</form>
 		<hr class="my-4 md:min-w-full" />

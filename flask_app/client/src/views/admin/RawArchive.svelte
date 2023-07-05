@@ -69,15 +69,16 @@
 	// Searh function for headerstats
 	function SearchResults(e) {
 		e.preventDefault();
-		let formSelector;
+		let formSelector = j$("#HeaderStatsInputContainer form")[0];
 		// Instead of hard coding form selector, find first form element
 		// and set that as selector
-		for (let i = 0; i < e.path.length; i++) {
-			if (e.path[i].tagName === "FORM") {
-				formSelector = e.path[i];
-				break;
-			}
-		}
+		// Note 7/5/2023 : e.path seems to no longer work in chrome
+		// for (let i = 0; i < e.path.length; i++) {
+		// 	if (e.path[i].tagName === "FORM") {
+		// 		formSelector = e.path[i];
+		// 		break;
+		// 	}
+		// }
 		// Get data from form
 		let data = j$(formSelector).serialize();
 		// Clear form
