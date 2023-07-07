@@ -573,7 +573,23 @@
 										type: "GET",
 										contentType: `image/${image.image_type}}`,
 										success: function (result) {
-											document.querySelector(`div[data-uuid="${image.image_id}"] img`).src = `data:image/${image.image_type};base64,` + result;
+											// Use img object so if image fails to load
+											// it will not fail completely and we can set a placeholder image in case
+											let img = new Image();
+											img.src = `data:image/${image.image_type};base64,` + result;
+
+											img.onerror = function () {
+												// Failed to load
+												j$(`div[data-uuid="${image.image_id}"] img`).attr("src", "../../assets/placeholder_image/iceberg-placeholder.jpeg");
+											};
+											img.onload = function () {
+												// Loaded successfully
+												j$(`div[data-uuid="${image.image_id}"] img`).attr("src", `data:image/${image.image_type};base64,` + result);
+											};
+										},
+										error: function (error) {
+											console.log(error);
+											j$(`div[data-uuid="${image.image_id}"] img`).attr("src", "../../assets/placeholder_image/iceberg-placeholder.jpeg");
 										},
 									});
 								});
@@ -834,7 +850,7 @@
 		</div>
 	</div>
 	<div on:click={dashboardSettingsEnable} class="dashboard-settings-triangle cursor-pointer" />
-	<div id="DashboardDesignerActionBar" style="background-color: rgb(239, 68, 68, 0.85);" class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 hidden">
+	<div id="DashboardDesignerActionBar" style="background-color: #4c51bf;" class="absolute text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48 hidden">
 		<a id="create-chart-button" href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Chart </a>
 		<a on:click={initializeText} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Text </a>
 		<a on:click={initializeImage} href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white"> Create Image </a>
@@ -859,7 +875,8 @@
 	.dashboard-settings-triangle {
 		width: 100px;
 		height: 100px;
-		background-color: rgba(239, 68, 68, 0.5);
+		/* background-color: rgba(239, 68, 68, 0.5); */
+		background-color: #ed64a6;
 		transform: rotate(135deg) translate(-71%, 0);
 		position: fixed;
 		right: 0;
