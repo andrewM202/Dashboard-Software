@@ -234,8 +234,9 @@
 				// If we cannot find the network anymore then skip this loop
 				if (j$(`#network${network.networkCreatedNumber}`).length === 0) continue;
 				// Resize the % height and % top of the network so the actual pixel size doesn't change if the height of the dashboard is different
+
 				j$(`#network${network.networkCreatedNumber}`).css({
-					height: ((j$(`#network${network.networkCreatedNumber}`).height() - (newDashboardHeight - oldDashboardHeight) * (j$(`#network${network.networkCreatedNumber}`).height() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
+					height: ((j$(`#network${network.networkCreatedNumber}`).outerHeight() - (newDashboardHeight - oldDashboardHeight) * (j$(`#network${network.networkCreatedNumber}`).outerHeight() / j$("#DashboardDesignerContainer").height())) / j$("#DashboardDesignerContainer").height()) * 100 + "%",
 					top: (oldDashboardHeight / newDashboardHeight) * Number(j$(`#network${network.networkCreatedNumber}`)[0].style["top"].replace("%", "")) + "%",
 				});
 
